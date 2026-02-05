@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 export type EvalResults = {
@@ -30,7 +30,10 @@ export async function writeEvalResults(
   baseDir: string,
   results: EvalResults,
 ): Promise<void> {
-  const outputDir = process.env.EVAL_RESULTS_DIR || baseDir;
+  const outputDir =
+    process.env.EVAL_RESULTS_DIR ||
+    path.join(process.cwd(), "runs", path.basename(baseDir));
+  await mkdir(outputDir, { recursive: true });
   const resultPath = path.join(outputDir, "eval-results.json");
   await writeFile(resultPath, JSON.stringify(results, null, 2), "utf8");
 }

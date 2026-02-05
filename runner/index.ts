@@ -6,6 +6,8 @@ import {
   createWorkspace,
   generateDiff,
   runBunTests,
+  writeModelCache,
+  writeRunResults,
 } from "./workspace";
 import { runModel } from "./model/index";
 import { writeReport } from "./report/writer";
@@ -63,12 +65,24 @@ for (const model of config.models) {
       modelOutput = await runModel(model, prompt);
       await applyModelOutput(workspace.path, modelOutput);
     } catch (error) {
+      const runResultsPath = await writeRunResults({
+        workspacePath: workspace.path,
+        results: {
+          eval_id: evalItem.evalId,
+          model_id: model.id,
+          status: "error",
+          error: error instanceof Error ? error.message : String(error),
+          duration_ms: Date.now() - start,
+        },
+      });
       results.push({
         eval_id: evalItem.evalId,
         model_id: model.id,
         status: "error",
         error: error instanceof Error ? error.message : String(error),
         duration_ms: Date.now() - start,
+        run_results_path: runResultsPath,
+        workspace_path: workspace.path,
       });
       if (debug) {
         console.error(`[${evalItem.evalId}] model error`, error);
@@ -84,11 +98,31 @@ for (const model of config.models) {
       workspacePath: workspace.path,
     });
 
+    const modelOutputPath = await writeModelCache({
+      workspacePath: workspace.path,
+      modelId: model.id,
+      prompt,
+      output: modelOutput,
+    });
+
     /*
       Runs bun tests and collects eval results.
     */
     const testResult = await runBunTests(workspace.path);
     const evalResults = await workspace.readEvalResults();
+    const runResultsPath = await writeRunResults({
+      workspacePath: workspace.path,
+      results: {
+        eval_id: evalItem.evalId,
+        model_id: model.id,
+        status: testResult.exitCode === 0 ? "pass" : "fail",
+        duration_ms: Date.now() - start,
+        exit_code: testResult.exitCode,
+        stdout: testResult.stdout,
+        stderr: testResult.stderr,
+        eval_results: evalResults,
+      },
+    });
 
     results.push({
       eval_id: evalItem.evalId,
@@ -99,7 +133,14 @@ for (const model of config.models) {
       stdout: testResult.stdout,
       stderr: testResult.stderr,
       eval_results: evalResults,
+      model_output_path: modelOutputPath,
+      run_results_path: runResultsPath,
+      workspace_path: workspace.path,
     });
+
+    if (debug && testResult.exitCode !== 0) {
+      console.error(`[${evalItem.evalId}] test failed`, testResult.stderr);
+    }
   }
 }
 

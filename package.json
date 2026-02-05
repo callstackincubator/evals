@@ -3,10 +3,9 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "bench": "bun runner/index.ts",
-    "bench:config": "bun runner/index.ts --config bench.config.json",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "test": "bun runner/index.ts --all"
+    "bench": "bun runner/index.ts --all",
+    "bench:local": "bun runner/index.ts --config bench.local.json --all --debug"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.3.1",

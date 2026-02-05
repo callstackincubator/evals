@@ -2,8 +2,10 @@
 node_modules/
 
 # runner outputs
-runs/
-reports/
+runs/*
+!runs/.gitkeep
+results/*
+!results/.gitkeep
 
 # local env
 .env

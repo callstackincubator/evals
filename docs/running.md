@@ -6,6 +6,11 @@
 - run all evals: `bun runner/index.ts --all`
 - run one eval: `bun runner/index.ts --eval <eval-id>`
 - use a config: `bun runner/index.ts --config bench.config.json`
+- run locally with noop model: `bun runner/index.ts --config bench.local.json --all`
+
+If you run `bun test` directly, results are written under
+`runs/<eval-id>/`. The runner sets `EVAL_RESULTS_DIR` so results land
+in the workspace.
 
 ## mock model output
 
@@ -25,9 +30,7 @@ or
 
 ```json
 {
-  "files": [
-    { "path": "app/App.tsx", "content": "..." }
-  ]
+  "files": [{ "path": "app/App.tsx", "content": "..." }]
 }
 ```
 
@@ -37,6 +40,14 @@ Example:
 
 ```
 MODEL_OUTPUT_JSON="/absolute/path/to/model-output.json" bun runner/index.ts --eval <eval-id>
+```
+
+## local verification
+
+Use the noop config when you just want to run the base evals without a model.
+
+```
+bun runner/index.ts --config bench.local.json --all
 ```
 
 ### Patch payload
@@ -49,7 +60,9 @@ MODEL_OUTPUT_PATH="/absolute/path/to/patch.diff" bun runner/index.ts --eval <eva
 
 ## outputs
 
-- workspaces: `runs/<timestamp>/<eval-id>/<model-id>/` (temporary)
+- workspaces: `runs/<timestamp>/<model-id>/<eval-id>/` (temporary)
 - diff: `diff.patch` in the workspace
+- model output cache: `model-output.json` in the workspace
+- run results: `run-results.json` in the workspace
 - eval results: `eval-results.json` in the workspace
-- report: `reports/<timestamp>.json`
+- report: `results/<timestamp>.json`

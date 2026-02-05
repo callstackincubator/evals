@@ -1,16 +1,11 @@
 {
   "models": [
     {
-      "id": "openai/gpt-4.1",
-      "provider": "openai",
-      "params": {
-        "temperature": 0.2,
-        "max_output_tokens": 4000
-      }
+      "id": "noop/local",
+      "provider": "noop"
     }
   ],
   "evals": [
-    "evals/rn-anim-animated-button-behavior",
     "evals/rn-anim-animated-button-prefer-reanimated",
     "evals/rn-anim-animated-button-reanimated"
   ],

@@ -64,9 +64,9 @@ export async function createWorkspace(options: {
     process.cwd(),
     workspaceBase,
     runId,
-    evalId,
+    sanitizeSegment(modelId),
   );
-  const targetPath = path.join(workspaceParent, sanitizeSegment(modelId));
+  const targetPath = path.join(workspaceParent, sanitizeSegment(evalId));
 
   await mkdir(workspaceParent, { recursive: true });
   await cp(evalPath, targetPath, { recursive: true });
@@ -82,6 +82,33 @@ export async function createWorkspace(options: {
       }
     },
   };
+}
+
+export async function writeModelCache(options: {
+  workspacePath: string;
+  modelId: string;
+  prompt: string;
+  output: ModelOutput;
+}): Promise<string> {
+  const { workspacePath, modelId, prompt, output } = options;
+  const cachePath = path.join(workspacePath, "model-output.json");
+  const payload = {
+    model_id: modelId,
+    prompt,
+    output,
+  };
+  await writeFile(cachePath, JSON.stringify(payload, null, 2), "utf8");
+  return cachePath;
+}
+
+export async function writeRunResults(options: {
+  workspacePath: string;
+  results: Record<string, unknown>;
+}): Promise<string> {
+  const { workspacePath, results } = options;
+  const resultsPath = path.join(workspacePath, "run-results.json");
+  await writeFile(resultsPath, JSON.stringify(results, null, 2), "utf8");
+  return resultsPath;
 }
 
 /*

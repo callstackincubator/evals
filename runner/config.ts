@@ -20,7 +20,7 @@ const benchConfigSchema = z.object({
   evals: z.array(z.string()).default([]),
   prompt_source: z.string().default("prompt.md"),
   workspace_root: z.string().default("runs"),
-  report: z.string().default(path.join("reports", "latest.json")),
+  report: z.string().default("results"),
 });
 
 export type BenchConfigInput = z.input<typeof benchConfigSchema>;
