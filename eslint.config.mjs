@@ -5,7 +5,7 @@ import globals from "globals";
 
 export default defineConfig([
   globalIgnores([
-    "reports/**/*",
+    "results/**/*",
     "runs/**/*",
     "**/node_modules",
     "**/lib",
