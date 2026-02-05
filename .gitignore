@@ -1,0 +1,16 @@
+# dependencies
+node_modules/
+
+# runner outputs
+runs/
+reports/
+
+# local env
+.env
+.env.*
+
+# typescript
+*.tsbuildinfo
+
+# macOS
+.DS_Store

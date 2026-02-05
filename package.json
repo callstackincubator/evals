@@ -1,0 +1,30 @@
+{
+  "name": "react-native-evals",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "bench": "bun runner/index.ts",
+    "bench:config": "bun runner/index.ts --config bench.config.json",
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "test": "bun runner/index.ts --all"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.3.1",
+    "@typescript-eslint/parser": "^7.3.1",
+    "eslint": "^9.31.0",
+    "eslint-config-expo": "^9.2.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.5.1",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "globals": "^15.14.0",
+    "prettier": "^3.7.4"
+  },
+  "packageManager": "bun@1.2.19",
+  "workspaces": [
+    "evals/*"
+  ],
+  "dependencies": {
+    "@types/bun": "^1.3.8",
+    "zod": "^3.23.8"
+  }
+}
