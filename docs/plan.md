@@ -22,7 +22,7 @@ runner/
   model/
   report/
 bench.config.json
-reports/
+results/
 runs/
 docs/
   methodology.md
@@ -66,7 +66,7 @@ docs/
   - apply output to workspace (patch or files)
   - generate `diff.patch`
   - run bun tests
-  - collect results into `reports/<timestamp>.json`
+  - collect results into `results/<timestamp>.json`
 
 ## bench config
 
@@ -82,6 +82,6 @@ docs/
   ],
   "prompt_source": "prompt.md",
   "workspace_root": "runs",
-  "report": "reports"
+  "report": "results"
 }
 ```
