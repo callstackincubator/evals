@@ -1,4 +1,11 @@
-import { cp, mkdir, readFile, writeFile } from "node:fs/promises";
+import {
+  access,
+  copyFile,
+  cp,
+  mkdir,
+  readFile,
+  writeFile,
+} from "node:fs/promises";
 import * as path from "node:path";
 import { spawn } from "node:child_process";
 
@@ -70,18 +77,36 @@ export async function createWorkspace(options: {
 
   await mkdir(workspaceParent, { recursive: true });
   await cp(evalPath, targetPath, { recursive: true });
+  await seedAppFromBase(targetPath);
 
   return {
     path: targetPath,
     readEvalResults: async () => {
       try {
-        const raw = await readFile(path.join(targetPath, "eval-results.json"), "utf8");
+        const raw = await readFile(
+          path.join(targetPath, "eval-results.json"),
+          "utf8",
+        );
         return JSON.parse(raw) as Record<string, unknown>;
       } catch {
         return null;
       }
     },
   };
+}
+
+async function seedAppFromBase(workspacePath: string): Promise<void> {
+  const appDir = path.join(workspacePath, "app");
+  const appBasePath = path.join(appDir, "App.base.tsx");
+  const appPath = path.join(appDir, "App.tsx");
+
+  try {
+    await access(appBasePath);
+  } catch {
+    return;
+  }
+
+  await copyFile(appBasePath, appPath);
 }
 
 export async function writeModelCache(options: {
@@ -135,7 +160,9 @@ export async function applyModelOutput(
       workspacePath,
     );
     if (result.exitCode !== 0) {
-      throw new Error(`failed to apply patch: ${result.stderr || result.stdout}`);
+      throw new Error(
+        `failed to apply patch: ${result.stderr || result.stdout}`,
+      );
     }
   }
 }
@@ -165,11 +192,9 @@ export async function runBunTests(
   workspacePath: string,
 ): Promise<{ exitCode: number; stdout: string; stderr: string }> {
   const testPath = path.join(workspacePath, "eval.test.ts");
-  const result = await runCommand(
-    "bun",
-    ["test", testPath],
-    workspacePath,
-    { ...process.env, EVAL_RESULTS_DIR: workspacePath },
-  );
+  const result = await runCommand("bun", ["test", testPath], workspacePath, {
+    ...process.env,
+    EVAL_RESULTS_DIR: workspacePath,
+  });
   return result;
 }

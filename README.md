@@ -84,6 +84,7 @@ evals/
     prompt.md
     eval.test.ts
     app/
+      App.base.tsx
 runner/
   index.ts
   config.ts
@@ -133,6 +134,8 @@ Use one of these env-driven modes when integrating model output:
 - `MODEL_OUTPUT_PATH` with a unified diff patch file
 
 When both file writes and patch are provided, files are written first and patch is applied after.
+
+If `app/App.base.tsx` exists in an eval, the runner seeds `app/App.tsx` from that base file before applying model output.
 
 ## Output artifacts
 
