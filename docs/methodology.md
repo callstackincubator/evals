@@ -81,3 +81,39 @@ This keeps category expansion auditable, aligned with real product work, and res
 ## task framing rule
 
 Eval prompts must be forward-looking implementation asks, as if requested by a regular app developer. Avoid framing prompts as historical bug reproductions.
+
+## execution path (authoring to completion)
+
+Use this sequence for each category:
+
+1. research and scope
+- read official docs
+- extract best-practice rules
+- collect recurring issues as secondary validation
+
+2. define eval set
+- write feature-style prompts
+- create deterministic `requirements.yaml` checks
+- keep requirements atomic and phrased as `Must ...`
+
+3. scaffold eval apps
+- add minimal `app/` starters for every eval
+- keep scaffolds intentionally incomplete so requirements can fail before implementation
+
+4. implement first pass
+- implement `app/App.tsx` for the full eval set (batch by difficulty or theme)
+- keep changes minimal and aligned to each prompt/requirement
+
+5. refine requirements after implementation
+- add tighter requirements that reflect best-practice implementation where needed
+- focus tightening on required navigation/library APIs (for example deep-link config, `useFocusEffect`, `beforeRemove`, state persistence precedence)
+
+6. verify and re-run
+- run llm-judge across the full set
+- fix implementation bugs
+- run llm-judge again after fixes
+
+7. complete and lock
+- confirm baseline scaffold fail + implemented pass behavior
+- update category documentation with final status and remaining gaps
+- mark category complete
