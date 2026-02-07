@@ -1,0 +1,10 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: uses-reanimated-library
+    description: Must use react-native-reanimated to animate the button interaction.
+  - id: renders-pressable-button
+    description: Must render a tappable button element that drives the animation.

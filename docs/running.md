@@ -1,68 +1,58 @@
-# running and mocking
+# running
 
-## run the runner
+## prerequisites
 
-- install deps: `bun install`
+- install dependencies: `bun install`
+- install and authenticate `opencode` if using `llm-judge`
+
+## execute benchmark
+
 - run all evals: `bun runner/index.ts --all`
 - run one eval: `bun runner/index.ts --eval <eval-id>`
-- use a config: `bun runner/index.ts --config bench.config.json`
-- run locally with noop model: `bun runner/index.ts --config bench.local.json --all`
+- run with config: `bun runner/index.ts --config bench.config.json --all`
+- run local noop benchmark: `bun run bench:local`
 
-If you run `bun test` directly, results are written under
-`runs/<eval-id>/`. The runner sets `EVAL_RESULTS_DIR` so results land
-in the workspace.
+## runner selection
 
-## mock model output
-
-The runner reads model output from env vars. Use one of the following:
-
-### JSON payload
-
-Set `MODEL_OUTPUT_JSON` to a JSON file that matches the model output shape.
+Enable runners in config using `runners`:
 
 ```json
 {
-  "patch": "diff --git a/app/App.tsx b/app/App.tsx\n..."
+  "runners": ["llm-judge"]
 }
 ```
 
-or
+Supported values:
 
-```json
-{
-  "files": [{ "path": "app/App.tsx", "content": "..." }]
-}
-```
+- `unit` (optional per eval; skipped when `eval.test.ts` is missing)
+- `llm-judge` (primary)
 
-If both are present, files are written first and the patch is applied after.
+## llm judge configuration
 
-Example:
+- `LLM_JUDGE_MODEL`: judge model id (`provider/model`), default `openai/gpt-5.3-codex`
+- `LLM_JUDGE_TIMEOUT_MS`: SDK server startup/judge timeout in milliseconds
+- `LLM_JUDGE_PORT`: server port used by Open Code SDK (default `4096`)
 
-```
-MODEL_OUTPUT_JSON="/absolute/path/to/model-output.json" bun runner/index.ts --eval <eval-id>
-```
+## open code sdk flow
 
-## local verification
+The judge runner uses AI SDK v6 with the Open Code provider:
 
-Use the noop config when you just want to run the base evals without a model.
-
-```
-bun runner/index.ts --config bench.local.json --all
-```
-
-### Patch payload
-
-Set `MODEL_OUTPUT_PATH` to a patch file.
-
-```
-MODEL_OUTPUT_PATH="/absolute/path/to/patch.diff" bun runner/index.ts --eval <eval-id>
-```
+1. create provider with `createOpencode`
+2. auto-start local Open Code server
+3. call `generateText` with `Output.object` schema
+4. map structured requirement results into `runner_results`
 
 ## outputs
 
-- workspaces: `runs/<timestamp>/<model-id>/<eval-id>/` (temporary)
-- diff: `diff.patch` in the workspace
-- model output cache: `model-output.json` in the workspace
-- run results: `run-results.json` in the workspace
-- eval results: `eval-results.json` in the workspace
-- report: `results/<timestamp>.json`
+Per workspace (`runs/<run-id>/<model-id>/<eval-id>/`):
+
+- `diff.patch`
+- `model-output.json`
+- `run-results.json`
+- `eval-results.json` (from bun tests, only when unit tests are present and executed)
+- `judge-prompt.txt` (llm-judge)
+- `judge-output.txt` (llm-judge)
+
+Aggregate report:
+
+- `results/<run-id>.json`

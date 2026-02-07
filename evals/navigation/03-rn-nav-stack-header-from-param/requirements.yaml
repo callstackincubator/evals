@@ -1,0 +1,10 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: header-title-from-route
+    description: Must set the stack header title from route params on the details screen.
+  - id: runtime-header-update
+    description: Must configure header options in screen logic (for example via setOptions in an effect), not as a hardcoded static title.

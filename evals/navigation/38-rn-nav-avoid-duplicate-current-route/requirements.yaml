@@ -1,0 +1,10 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: duplicate-route-guard
+    description: Must compare current route context with target params before navigating to details.
+  - id: navigate-on-different-target
+    description: Must still navigate correctly when the requested target differs from current route params.

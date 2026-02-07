@@ -6,8 +6,8 @@ import {
   readFile,
   writeFile,
 } from "node:fs/promises";
-import * as path from "node:path";
 import { spawn } from "node:child_process";
+import * as path from "node:path";
 
 export type ModelOutput = {
   patch?: string;
@@ -25,10 +25,23 @@ type CommandResult = {
   stderr: string;
 };
 
+/*
+  Returns true when a value is a plain object record.
+*/
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+/*
+  Normalizes path segments used in workspace folder names.
+*/
 function sanitizeSegment(value: string): string {
   return value.replace(/[^a-zA-Z0-9._-]/g, "_");
 }
 
+/*
+  Runs a command and returns collected stdout, stderr, and exit code.
+*/
 async function runCommand(
   command: string,
   args: string[],
@@ -87,7 +100,8 @@ export async function createWorkspace(options: {
           path.join(targetPath, "eval-results.json"),
           "utf8",
         );
-        return JSON.parse(raw) as Record<string, unknown>;
+        const parsed: unknown = JSON.parse(raw);
+        return isRecord(parsed) ? parsed : null;
       } catch {
         return null;
       }
@@ -95,10 +109,20 @@ export async function createWorkspace(options: {
   };
 }
 
+/*
+  Seeds App.tsx from App.base.tsx when the base file exists.
+*/
 async function seedAppFromBase(workspacePath: string): Promise<void> {
   const appDir = path.join(workspacePath, "app");
   const appBasePath = path.join(appDir, "App.base.tsx");
   const appPath = path.join(appDir, "App.tsx");
+
+  try {
+    await access(appPath);
+    return;
+  } catch {
+    // App.tsx does not exist, so we may seed it from App.base.tsx.
+  }
 
   try {
     await access(appBasePath);
@@ -109,6 +133,9 @@ async function seedAppFromBase(workspacePath: string): Promise<void> {
   await copyFile(appBasePath, appPath);
 }
 
+/*
+  Writes the model prompt/output payload captured for a workspace.
+*/
 export async function writeModelCache(options: {
   workspacePath: string;
   modelId: string;
@@ -126,6 +153,9 @@ export async function writeModelCache(options: {
   return cachePath;
 }
 
+/*
+  Persists per-workspace run results to run-results.json.
+*/
 export async function writeRunResults(options: {
   workspacePath: string;
   results: Record<string, unknown>;

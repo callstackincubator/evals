@@ -9,12 +9,6 @@
       }
     }
   ],
-  "evals": [
-    "evals/rn-anim-animated-button-behavior",
-    "evals/rn-anim-animated-button-prefer-reanimated",
-    "evals/rn-anim-animated-button-reanimated"
-  ],
-  "prompt_source": "prompt.md",
-  "workspace_root": "runs",
-  "report": "results"
+  "evals": ["evals/rn-anim-animated-button-reanimated"],
+  "runners": ["llm-judge"]
 }

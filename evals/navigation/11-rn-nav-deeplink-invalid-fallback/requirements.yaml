@@ -1,0 +1,10 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: invalid-link-guard
+    description: Must render fallback UI for invalid deep-link userId values.
+  - id: deterministic-parse-path
+    description: Must include an explicit parse/normalization path for deep-link params.

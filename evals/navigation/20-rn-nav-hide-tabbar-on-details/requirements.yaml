@@ -1,0 +1,10 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: tabbar-hidden-on-details
+    description: Must conditionally hide the bottom tab bar when a nested details route is focused.
+  - id: tabbar-restored-on-back
+    description: Must restore normal tab bar visibility when navigating back from details routes.

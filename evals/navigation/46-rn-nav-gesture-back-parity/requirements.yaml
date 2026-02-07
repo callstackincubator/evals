@@ -1,0 +1,10 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: platform-back-parity
+    description: Must implement equivalent back outcomes across iOS/Android in the targeted flow.
+  - id: state-consistency-after-back
+    description: Must keep navigation state consistent after each platform-specific back interaction.
