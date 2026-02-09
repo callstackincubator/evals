@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: recycling-aware-local-state
+    description: Must handle local row state in a recycling-safe way for FlashList.
+  - id: reset-on-item-identity-change
+    description: Must reset or rebind row-local state when recycled container receives a different logical item.
+  - id: deterministic-expanded-state
+    description: Must keep expanded/collapsed behavior deterministic per item identity.

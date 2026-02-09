@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: flashlist-adoption
+    description: Must implement the list with @shopify/flash-list FlashList.
+  - id: remove-nested-key-recycling-blockers
+    description: Must avoid explicit key usage patterns inside FlashList item subtrees that break recycling behavior.
+  - id: mapping-helper-when-needed
+    description: Must use FlashList mapping-safe strategy when rendering mapped nested children in row content.

@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: recycleitems-enabled
+    description: Must enable recycleItems for LegendList and use it intentionally.
+  - id: recycled-state-reset-contract
+    description: Must prevent recycled local state from leaking across different item identities.
+  - id: identity-driven-row-behavior
+    description: Must bind row state behavior to item identity, not container instance.

@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: chat-prepend-pagination
+    description: Must support prepend pagination for older chat messages.
+  - id: mvcp-configuration
+    description: Must configure maintainVisibleContentPosition behavior intentionally for prepend updates.
+  - id: controlled-near-bottom-autoscroll
+    description: Must define deterministic near-bottom auto-scroll behavior without forcing jumps for users reading older messages.

@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: legendlist-adoption
+    description: Must implement list rendering with @legendapp/list LegendList.
+  - id: stable-keyextractor-contract
+    description: Must provide a stable unique keyExtractor suitable for layout-cache reuse.
+  - id: reorder-update-safety
+    description: Must preserve correct rendering after reorder/insert updates without key collisions.
