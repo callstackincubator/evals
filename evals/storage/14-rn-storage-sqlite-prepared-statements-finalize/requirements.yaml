@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: uses-prepared-statements
+    description: Must use SQLite prepared statement APIs with bound parameters for dynamic values.
+  - id: finalize-in-finally
+    description: Must finalize prepared statements in deterministic cleanup paths.
+  - id: no-sql-string-interpolation
+    description: Must avoid interpolation based SQL for user supplied values.

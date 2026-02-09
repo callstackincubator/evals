@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: uses-batched-key-apis
+    description: Must use AsyncStorage multiGet and multiSet for related key groups.
+  - id: deterministic-batch-mapping
+    description: Must map batched read results into deterministic typed state without key-order assumptions.
+  - id: partial-failure-handling
+    description: Must handle partial batch failure paths with explicit fallback or retry behavior.

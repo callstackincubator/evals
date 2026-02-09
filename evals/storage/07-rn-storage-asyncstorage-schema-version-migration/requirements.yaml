@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: persisted-schema-version-key
+    description: Must persist and read an explicit schema version key for stored data.
+  - id: idempotent-migration-steps
+    description: Must run migrations idempotently so repeated startup does not reapply completed steps.
+  - id: incompatible-version-fallback
+    description: Must provide a deterministic fallback path for incompatible or unknown versions.

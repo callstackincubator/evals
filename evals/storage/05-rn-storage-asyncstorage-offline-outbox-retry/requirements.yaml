@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: durable-offline-outbox
+    description: Must persist queued offline mutations durably in AsyncStorage.
+  - id: connectivity-gated-replay
+    description: Must replay queued mutations only when reconnect conditions are met or manual sync is triggered.
+  - id: idempotent-mutation-ids
+    description: Must include idempotent mutation identifiers so replay does not duplicate applied actions.

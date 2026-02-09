@@ -257,9 +257,6 @@ Use this workflow for every category before writing tasks.
 - `@react-native-async-storage/async-storage`
 - `react-native-mmkv`
 - `expo-sqlite`
-- `watermelondb`
-- `realm`
-- `redux-persist`
 
 **Common pain points to benchmark**
 

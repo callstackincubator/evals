@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: versioned-entity-metadata
+    description: Must track version or updatedAt metadata for local and remote entities used in reconciliation.
+  - id: deterministic-conflict-policy
+    description: Must apply an explicit deterministic conflict merge policy when local and remote edits diverge.
+  - id: conflict-result-persistence
+    description: Must persist merged outcomes and unresolved conflict markers consistently after reconciliation.

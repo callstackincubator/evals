@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: payload-chunking-strategy
+    description: Must shard large payloads across chunk keys instead of relying on a single oversized value.
+  - id: manifest-version-contract
+    description: Must persist a manifest that includes chunk ordering and schema version metadata.
+  - id: missing-chunk-recovery
+    description: Must detect missing or corrupted chunks and recover with a safe fallback path.

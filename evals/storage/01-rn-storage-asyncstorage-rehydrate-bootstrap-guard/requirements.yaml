@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: hydration-loading-gate
+    description: Must gate interactive UI rendering until AsyncStorage rehydration finishes.
+  - id: safe-json-parse-guards
+    description: Must guard JSON parse and missing-key paths with safe defaults instead of crashing hydration.
+  - id: single-bootstrap-read-path
+    description: Must centralize startup hydration into a single deterministic bootstrap read path.
