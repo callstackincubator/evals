@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: persist-middleware-with-async-storage
+    description: Must configure Zustand persist middleware with asynchronous storage integration.
+  - id: hydration-complete-gate
+    description: Must gate protected UI decisions until persisted state hydration has completed.
+  - id: deterministic-pre-hydration-fallback
+    description: Must provide deterministic pre-hydration fallback behavior that avoids incorrect logged-in or logged-out flashes.

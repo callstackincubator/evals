@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: atomwithstorage-async-backend
+    description: Must configure atomWithStorage with an asynchronous storage backend suitable for React Native.
+  - id: rehydration-complete-guard
+    description: Must guard dependent UI logic until stored value rehydration is complete.
+  - id: safe-default-before-hydration
+    description: Must provide a deterministic safe default behavior before persisted values are available.
