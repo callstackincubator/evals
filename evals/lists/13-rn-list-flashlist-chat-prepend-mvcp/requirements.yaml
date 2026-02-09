@@ -4,9 +4,11 @@ inputs:
     - prompt.md
     - requirements.yaml
 requirements:
+  - id: flashlist-adoption
+    description: Must implement the list with @shopify/flash-list FlashList.
   - id: chat-prepend-pagination
     description: Must support prepend pagination for older chat messages.
   - id: mvcp-configuration
     description: Must configure maintainVisibleContentPosition behavior intentionally for prepend updates.
   - id: controlled-near-bottom-autoscroll
-    description: Must define deterministic near-bottom auto-scroll behavior without forcing jumps for users reading older messages.
+    description: Must define an explicit near-bottom threshold for auto-scroll and avoid forced jumps when the user is reading older messages.

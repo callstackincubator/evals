@@ -5,8 +5,8 @@ inputs:
     - requirements.yaml
 requirements:
   - id: explicit-virtualization-tuning
-    description: Must intentionally configure virtualization props such as windowSize, maxToRenderPerBatch, or updateCellsBatchingPeriod.
-  - id: responsiveness-over-fill-rate-balance
-    description: Must reflect explicit responsiveness vs fill-rate tradeoff in list configuration choices.
-  - id: lightweight-row-path
-    description: Must keep row render path lightweight enough to avoid avoidable interaction delays.
+    description: Must explicitly set FlatList windowSize, maxToRenderPerBatch, and updateCellsBatchingPeriod.
+  - id: stable-row-interaction-under-scroll
+    description: Must include a row interaction (for example toggle/favorite) that updates correctly while preserving list position.
+  - id: memoized-row-render-path
+    description: Must use a memoized row boundary and stable renderItem callback/reference to reduce unrelated row re-renders.

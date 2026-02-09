@@ -9,4 +9,4 @@ requirements:
   - id: remove-nested-key-recycling-blockers
     description: Must avoid explicit key usage patterns inside FlashList item subtrees that break recycling behavior.
   - id: mapping-helper-when-needed
-    description: Must use FlashList mapping-safe strategy when rendering mapped nested children in row content.
+    description: Must use FlashList useMappingHelper for nested `.map()` children rendered inside row content.

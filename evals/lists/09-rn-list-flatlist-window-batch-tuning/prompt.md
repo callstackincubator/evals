@@ -1,1 +1,1 @@
-Tune a large FlatList for responsiveness by configuring virtualization window and batch props with explicit tradeoffs, then keep interactions responsive under scroll.
+Build a large FlatList screen that stays interactive while scrolling. Configure window and batch props (`windowSize`, `maxToRenderPerBatch`, `updateCellsBatchingPeriod`) and keep row interactions stable.

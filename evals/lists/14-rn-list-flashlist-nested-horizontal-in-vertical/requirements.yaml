@@ -4,9 +4,9 @@ inputs:
     - prompt.md
     - requirements.yaml
 requirements:
+  - id: flashlist-parent-and-child-adoption
+    description: Must implement a vertical parent FlashList with horizontal child FlashList carousels.
   - id: nested-list-architecture
-    description: Must implement vertical list + horizontal row carousel composition with explicit list architecture.
-  - id: flashlist-parent-child-guidance
-    description: Must align nested list implementation with FlashList guidance for parent-child list combinations.
+    description: Must keep parent and child list orientations explicit (vertical parent, horizontal children) without same-orientation nested virtualization.
   - id: stable-carousel-identity
     description: Must keep carousel item identity stable so nested list updates do not cause render artifacts.

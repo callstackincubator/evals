@@ -1,1 +1,1 @@
-Create a chat-style FlashList that prepends older messages and preserves user viewport position while allowing controlled auto-scroll near the bottom.
+Create a chat-style FlashList that prepends older messages, preserves viewport position, and only auto-scrolls when the user is already near the bottom.

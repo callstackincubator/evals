@@ -4,9 +4,11 @@ inputs:
     - prompt.md
     - requirements.yaml
 requirements:
+  - id: legendlist-adoption
+    description: Must implement list rendering with @legendapp/list LegendList.
   - id: bidirectional-pagination
     description: Must support both onStartReached and onEndReached pagination paths.
+  - id: explicit-start-end-thresholds
+    description: Must explicitly configure onStartReachedThreshold and onEndReachedThreshold.
   - id: duplicate-trigger-guards
     description: Must prevent duplicate or overlapping page fetches on either direction while loading is active.
-  - id: threshold-driven-determinism
-    description: Must use explicit threshold-driven behavior so start/end pagination triggers are predictable.

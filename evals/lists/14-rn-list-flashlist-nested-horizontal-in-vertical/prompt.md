@@ -1,1 +1,1 @@
-Build a vertically scrolling FlashList feed where some rows contain horizontal carousels, while keeping parent/child list architecture compatible with FlashList performance guidance.
+Build a vertical FlashList feed where some rows render horizontal FlashList carousels. Keep parent and child list updates stable with no duplicate-key artifacts.
