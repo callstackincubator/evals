@@ -1,0 +1,10 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: nested-home-stack
+    description: Must implement a nested stack navigator inside the Home tab with a details route.
+  - id: article-param-passing
+    description: Must pass articleId params when navigating to ArticleDetails.

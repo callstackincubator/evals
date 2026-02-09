@@ -2,15 +2,33 @@
 
 ## steps
 
-1. create a folder under `evals/<eval-id>`
+1. create a folder under `evals/<eval-id>` or a category folder like `evals/navigation/<eval-id>`
 2. add `prompt.md` with the task prompt
-3. add `eval.test.ts` with bun tests
-4. add `package.json` and `tsconfig.json` for the eval
-5. add `app/` with the rn source scaffold
-6. add `app/App.base.tsx` as the starter implementation used to seed `app/App.tsx` in run workspaces
-7. align `expo`, `react`, and `react-native` versions with the latest expo sdk
+3. add `app/` with the RN scaffold
+4. add `app/App.base.tsx` as the starter implementation
+5. add `requirements.yaml` with structured LLM-judge requirements
+6. optionally add `eval.test.ts` only when deterministic unit checks are needed
+7. align `expo`, `react`, and `react-native` versions with the target Expo SDK
+
+## requirements yaml
+
+Minimal example:
+
+```yaml
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: uses-reanimated-library
+    description: Must use react-native-reanimated for button animation.
+```
 
 ## notes
 
-- evals are self-contained and should not rely on shared app code
-- keep `App.base.tsx` minimal and task-agnostic so models start from the same baseline
+- keep evals self-contained
+- keep requirement descriptions concrete and verifiable
+- keep requirement descriptions atomic (single check per requirement)
+- include only files that are needed for judging
+- prefer small input file sets to control judge token usage

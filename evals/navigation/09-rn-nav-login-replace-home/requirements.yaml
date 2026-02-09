@@ -1,0 +1,10 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: login-to-home-transition
+    description: Must transition from login to home with a navigation action that removes login from back history.
+  - id: auth-state-driven-ui
+    description: Must include explicit auth state logic controlling access to authenticated routes.

@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: payload-to-route-mapping
+    description: Must map each notification payload type to one deterministic navigation destination.
+  - id: nested-route-targeting
+    description: Must support routing payloads into nested navigators using explicit screen/params contracts.
+  - id: navigation-ref-ready-guard
+    description: Must dispatch notification navigation through a root navigation reference only after readiness is confirmed.

@@ -1,0 +1,1 @@
+Implement an unsaved edit flow in a native stack where Android predictive back and hardware back both trigger a leave confirmation. Block leave while the form is dirty, and continue the original navigation action only after confirmation.

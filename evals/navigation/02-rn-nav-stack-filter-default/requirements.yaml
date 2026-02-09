@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: optional-filter-param
+    description: Must model filter as an optional navigation param for the notifications route.
+  - id: default-filter-all
+    description: Must default filter to all when the param is absent.
+  - id: render-filter-value
+    description: Must render the normalized filter value in the screen UI.

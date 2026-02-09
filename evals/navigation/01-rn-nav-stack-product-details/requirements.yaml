@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: stack-product-details-route
+    description: Must define a native stack flow where the list screen navigates to a product details screen with a productId param.
+  - id: details-title-param
+    description: Must pass a title param when navigating from list to product details.
+  - id: product-id-fallback
+    description: Must handle missing productId with a deterministic fallback display instead of showing stale or undefined values.

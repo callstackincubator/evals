@@ -1,0 +1,10 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: query-param-parsing
+    description: Must parse feed query parameters from deep links.
+  - id: query-default-normalization
+    description: Must normalize missing or invalid query params to deterministic defaults.

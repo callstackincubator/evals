@@ -1,0 +1,10 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: focus-scoped-polling
+    description: Must start polling only while the screen is focused.
+  - id: interval-cleanup
+    description: Must clean up polling interval in focus effect teardown.

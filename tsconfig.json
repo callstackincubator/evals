@@ -8,7 +8,7 @@
     "allowJs": true,
     "baseUrl": ".",
     "paths": {
-      "@/test-utils": ["./utils/test-utils.ts"]
+      "@/test-utils": ["./runner/static/test-utils.ts"]
     },
 
     // Bundler mode
@@ -30,6 +30,6 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
   },
-  "include": ["runner/**/*.ts", "utils/**/*.ts", "evals/**/*.ts", "evals/**/*.tsx"],
+  "include": ["runner/**/*.ts", "evals/**/*.ts", "evals/**/*.tsx"],
   "exclude": ["**/node_modules", "**/Pods"]
 }

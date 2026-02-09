@@ -42,17 +42,18 @@ This file defines how agents should work in this repository.
   - skills
   - agents
   - implementation techniques
-- Evals are self-contained under `evals/<eval-id>/` and should not depend on shared app code
+- Evals are self-contained under `evals/<eval-id>/` or `evals/<category>/<eval-id>/` and should not depend on shared app code
 - Core eval structure for each eval:
   - `prompt.md`
-  - `eval.test.ts`
+  - `requirements.yaml`
   - `app/`
+  - `eval.test.ts` (optional)
 - Eval methodology uses three types:
   - `behavior`
   - `preference`
   - `constraint`
 - Prefer behavior-oriented assertions; avoid regex-only checks unless there is no practical alternative
-- MVP currently targets Bun test execution only; additional test runners are explicitly deferred
+- MVP currently uses `llm-judge` requirements as the primary signal; unit Bun tests are optional per eval
 - Each application in `app/` is a standalone React Native or Expo application
 
 ## Running and Verification

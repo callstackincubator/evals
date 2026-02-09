@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: modal-compose-route
+    description: Must configure compose as a modal presentation route in a stack navigator.
+  - id: dismiss-on-cancel
+    description: Must dismiss the modal to list context on cancel.
+  - id: dismiss-on-save
+    description: Must dismiss the modal to list context on save.

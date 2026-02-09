@@ -1,0 +1,10 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: prevent-leave-when-dirty
+    description: Must block leave actions while the form is dirty.
+  - id: explicit-confirm-path
+    description: Must provide an explicit user confirmation path that then continues the blocked navigation action.

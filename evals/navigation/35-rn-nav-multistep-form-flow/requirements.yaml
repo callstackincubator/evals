@@ -1,0 +1,10 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: multi-step-route-flow
+    description: Must implement at least three step routes plus a summary route in stack navigation.
+  - id: step-data-propagation
+    description: Must render summary data from serialized step values.

@@ -1,0 +1,16 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: native-stack-edit-route
+    description: Must define the edit flow in a native stack route.
+  - id: before-remove-block-dirty
+    description: Must block leave actions with a beforeRemove handler while the form is dirty.
+  - id: confirm-continue-original-action
+    description: Must continue the original blocked navigation action after explicit confirmation.
+  - id: android-predictive-back-covered
+    description: Must apply the confirmation flow for Android predictive back.
+  - id: android-hardware-back-covered
+    description: Must apply the confirmation flow for Android hardware back.

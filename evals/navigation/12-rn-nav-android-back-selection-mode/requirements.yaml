@@ -1,0 +1,10 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: android-back-selection-priority
+    description: Must consume Android back presses to disable selection mode before allowing route pop.
+  - id: scoped-backhandler-cleanup
+    description: Must clean up BackHandler listeners when the screen blurs.

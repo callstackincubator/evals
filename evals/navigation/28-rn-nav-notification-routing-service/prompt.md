@@ -1,0 +1,1 @@
+Create a central notification routing helper that maps incoming payload types to the correct nested app screen and params. Trigger navigation from outside screens through a root navigation reference with a readiness guard.

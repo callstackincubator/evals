@@ -1,0 +1,10 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: rapid-navigation-async-guard
+    description: Must guard async updates during rapid navigation so stale responses do not mutate inactive screens.
+  - id: cleanup-on-blur-unmount
+    description: Must perform cleanup on blur/unmount for async operations started by route focus.

@@ -1,0 +1,10 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: nested-navigation-contract
+    description: Must use nested navigate syntax with an explicit child screen target.
+  - id: notification-detail-param
+    description: Must pass deterministic params into NotificationDetails when triggering nested navigation.

@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: picker-modal-flow
+    description: Must include a modal picker flow that returns a selected value to the previous form screen.
+  - id: deterministic-color-state
+    description: Must render the selected color from deterministic form state.
+  - id: serializable-picker-params
+    description: Must keep picker route params JSON-serializable and avoid callback functions in params.

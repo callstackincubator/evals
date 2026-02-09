@@ -1,0 +1,10 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/package.json
+requirements:
+  - id: three-tab-routes
+    description: Must define three bottom tab routes named Home, Search, Profile.
+  - id: explicit-initial-tab
+    description: Must explicitly set Home as the initial tab route.
