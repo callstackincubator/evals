@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: animated-entering-for-new-items
+    description: Must apply a Reanimated entering animation for newly added rows.
+  - id: animated-exiting-for-removed-items
+    description: Must apply a Reanimated exiting animation for removed rows.
+  - id: stable-item-identity
+    description: Must preserve deterministic item identity keys so row animation behavior is stable.

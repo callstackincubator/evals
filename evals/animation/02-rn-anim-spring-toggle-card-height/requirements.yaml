@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: deterministic-collapsed-expanded-states
+    description: Must define deterministic collapsed and expanded visual states for the card.
+  - id: spring-driven-transition
+    description: Must animate the expand and collapse transition using withSpring from react-native-reanimated.
+  - id: no-react-layout-jump
+    description: Must avoid abrupt non-animated jumps when toggling between states.

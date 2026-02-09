@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: keyboard-aware-scroll-behavior
+    description: Must use keyboard-aware scroll behavior from react-native-keyboard-controller components or hooks.
+  - id: sticky-footer-coordination
+    description: Must coordinate sticky footer position with keyboard animation values without overlap glitches.
+  - id: interactive-dismiss-stability
+    description: Must keep layout stable during interactive keyboard dismissal and refocus transitions.

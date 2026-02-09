@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: use-derived-value-thresholds
+    description: Must use derived shared values to compute threshold-based state transitions.
+  - id: state-machine-consistency
+    description: Must keep state transitions deterministic across increasing and decreasing input directions.
+  - id: minimal-react-thread-coupling
+    description: Must avoid routing every intermediate frame through React state updates.
