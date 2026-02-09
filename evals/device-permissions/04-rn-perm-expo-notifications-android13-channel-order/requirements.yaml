@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: notifications-android-channel-before-token
+    description: Must configure Android notification channel before device or Expo token retrieval on Android path.
+  - id: notifications-permission-check-and-request
+    description: Must explicitly check/request notification permission status through expo-notifications APIs.
+  - id: denied-path-no-blind-token-request
+    description: Must avoid blind token registration attempts when notification permission is denied.
+  - id: denied-recovery-action
+    description: Must provide a deterministic denied fallback or recovery action for notification setup.

@@ -15,6 +15,8 @@ This repository benchmarks how coding models solve real React Native tasks.
     - lists pilot is currently text-only (`prompt.md` + `requirements.yaml`) with no `app/` scaffolds yet.
   - 18 storage pilot evals under `evals/storage/` focused on offline persistence, rehydration correctness, and sync reconciliation with AsyncStorage, MMKV, and expo-sqlite patterns.
     - storage pilot is currently text-only (`prompt.md` + `requirements.yaml`) with no `app/` scaffolds yet.
+  - 24 device-permissions pilot evals under `evals/device-permissions/` focused on permission request/denial/retry/degraded UX and integration correctness for camera, media, location, and notifications.
+    - device-permissions pilot is currently text-only (`prompt.md` + `requirements.yaml`) with no `app/` scaffolds yet.
   - 2 legacy root-level animation seed evals kept for backward compatibility (`rn-anim-animated-button-reanimated`, `rn-anim-animated-button-prefer-reanimated`).
 - Runner output is written under `runs/` (workspace artifacts) and `results/` (aggregate report).
 - Baseline authoring and category guidance is defined in `docs/benchmark-authoring-spec-v1.md`.
@@ -115,6 +117,12 @@ evals/
       requirements.yaml
       eval.test.ts (optional)
   async-state/
+    README.md
+    <eval-id>/
+      prompt.md
+      requirements.yaml
+      eval.test.ts (optional)
+  device-permissions/
     README.md
     <eval-id>/
       prompt.md

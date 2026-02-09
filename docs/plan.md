@@ -23,6 +23,8 @@
   - current stage is text-only (`prompt.md`, `requirements.yaml`), app scaffolds intentionally removed
 - storage category bootstrapped under `evals/storage/` with 18 pilot evals:
   - offline-first persistence and reconciliation coverage across `@react-native-async-storage/async-storage`, `react-native-mmkv`, and `expo-sqlite`
+- device-permissions category bootstrapped under `evals/device-permissions/` with 24 pilot evals:
+  - `expo-camera`, `expo-image-picker`, `expo-location`, `expo-notifications`, `react-native-permissions`, and `react-native-image-picker` coverage
   - current stage is text-only (`prompt.md`, `requirements.yaml`), app scaffolds intentionally removed
 - navigation category pack implemented under `evals/navigation/` with 50 evals:
   - `rn-nav-*` (48 evals)
@@ -34,6 +36,7 @@
 - animation pilot is currently text-only
 - lists pilot is currently text-only
 - storage pilot is currently text-only
+- device-permissions pilot is currently text-only
 
 ## next roadmap items
 

@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: expo-camera-permission-api
+    description: Must use expo-camera permission APIs (hook or request/get async functions) to drive request state.
+  - id: camera-preview-gated-by-grant
+    description: Must gate camera preview rendering behind granted permission status.
+  - id: denied-flow-retry-and-settings
+    description: Must provide explicit denied or cannot-ask-again recovery actions (retry and settings guidance/action).
+  - id: degraded-path-no-crash
+    description: Must include a degraded UX path when camera permission is unavailable instead of failing silently.

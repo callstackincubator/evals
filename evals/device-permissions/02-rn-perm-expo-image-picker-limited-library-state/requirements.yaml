@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: imagepicker-permission-before-library-launch
+    description: Must request or verify media library permission before launching image library selection.
+  - id: limited-access-branch
+    description: Must model limited media access as a distinct state path rather than treating it as full grant.
+  - id: partial-metadata-safe-handling
+    description: Must tolerate partial asset metadata (for example null asset identifiers) without breaking selection flow.
+  - id: limited-or-denied-fallback-ux
+    description: Must provide deterministic fallback UX for limited or denied media access.

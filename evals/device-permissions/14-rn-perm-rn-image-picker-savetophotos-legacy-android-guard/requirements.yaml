@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: save-to-photos-capture-path
+    description: Must use saveToPhotos in a capture flow where saving behavior is explicit.
+  - id: legacy-android-storage-guard
+    description: Must handle Android 28 and below storage permission requirements for save-to-photos behavior.
+  - id: save-failure-degraded-ux
+    description: Must degrade gracefully when save permission is unavailable instead of failing capture flow.
+  - id: capture-result-preserved-on-save-failure
+    description: Must preserve usable capture result data even when save-to-photos write fails.

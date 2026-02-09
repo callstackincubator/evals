@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: blocked-status-opensettings-path
+    description: Must route blocked permission outcomes to openSettings or equivalent recovery action.
+  - id: appstate-active-recheck
+    description: Must re-check permission status when app returns to active state after settings navigation.
+  - id: stale-blocked-state-avoidance
+    description: Must avoid stale blocked-state UI when permission changed in system settings.
+  - id: idempotent-resume-handling
+    description: Must keep resume recheck logic idempotent without duplicate transition side effects.

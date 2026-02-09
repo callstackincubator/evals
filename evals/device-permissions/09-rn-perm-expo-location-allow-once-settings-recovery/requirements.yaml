@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: ios-allow-once-background-denial-branch
+    description: Must include a branch for background denial following when-in-use or allow-once foreground grant.
+  - id: settings-recovery-for-background
+    description: Must provide a settings recovery action for users who need to upgrade location access.
+  - id: no-infinite-background-rerequest-loop
+    description: Must avoid repeated no-op background permission prompts in a single app session.
+  - id: foreground-mode-remains-usable
+    description: Must preserve foreground location functionality when background access is unavailable.
