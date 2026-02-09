@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: onendreached-dedupe-guard
+    description: Must guard onEndReached to prevent repeated pagination calls during active loading.
+  - id: deterministic-loading-state
+    description: Must expose explicit loading state transitions for list pagination.
+  - id: append-without-reset
+    description: Must append new page items without resetting existing list identity or jumping to top.

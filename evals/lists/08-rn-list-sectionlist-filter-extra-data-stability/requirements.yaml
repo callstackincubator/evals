@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: filter-driven-section-derivation
+    description: Must derive filtered sections deterministically from source data and query input.
+  - id: extradata-or-immutable-update
+    description: Must use extraData or immutable section updates so filtered output refreshes reliably.
+  - id: empty-state-correctness
+    description: Must render empty-list behavior when filter removes all visible rows.

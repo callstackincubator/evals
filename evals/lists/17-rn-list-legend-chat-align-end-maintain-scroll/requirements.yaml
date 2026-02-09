@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: align-items-at-end-chat
+    description: Must use LegendList alignItemsAtEnd for chat-style bottom alignment when content is short.
+  - id: maintain-scroll-at-end
+    description: Must configure maintainScrollAtEnd behavior for near-bottom new message handling.
+  - id: deterministic-autoscroll-threshold
+    description: Must define deterministic threshold behavior so users away from bottom are not forcibly snapped.

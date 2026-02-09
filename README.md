@@ -11,6 +11,8 @@ This repository benchmarks how coding models solve real React Native tasks.
     - animation pilot is currently text-only (`prompt.md` + `requirements.yaml`) with no `app/` scaffolds yet.
   - 16 async-state pilot evals under `evals/async-state/` focused on React Query, Zustand, Jotai async atoms, and React Suspense/transition patterns.
     - async-state pilot is currently text-only (`prompt.md` + `requirements.yaml`) with no `app/` scaffolds yet.
+  - 18 lists pilot evals under `evals/lists/` focused on performance-sensitive list rendering with core FlatList/SectionList, FlashList, and LegendList patterns.
+    - lists pilot is currently text-only (`prompt.md` + `requirements.yaml`) with no `app/` scaffolds yet.
   - 2 legacy root-level animation seed evals kept for backward compatibility (`rn-anim-animated-button-reanimated`, `rn-anim-animated-button-prefer-reanimated`).
 - Runner output is written under `runs/` (workspace artifacts) and `results/` (aggregate report).
 - Baseline authoring and category guidance is defined in `docs/benchmark-authoring-spec-v1.md`.
@@ -111,6 +113,12 @@ evals/
       requirements.yaml
       eval.test.ts (optional)
   async-state/
+    README.md
+    <eval-id>/
+      prompt.md
+      requirements.yaml
+      eval.test.ts (optional)
+  lists/
     README.md
     <eval-id>/
       prompt.md
