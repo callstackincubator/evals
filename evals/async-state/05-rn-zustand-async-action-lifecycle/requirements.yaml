@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: explicit-async-lifecycle-state
+    description: Must model async fetch lifecycle explicitly in store state with at least loading success and error phases.
+  - id: async-action-updates-store
+    description: Must implement the fetch as a Zustand async action that updates store state via set.
+  - id: error-reset-or-retry-path
+    description: Must provide deterministic error handling with a clear retry or reset path.

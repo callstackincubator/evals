@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: non-urgent-filter-change-in-transition
+    description: Must wrap non-urgent filter changes in a transition boundary using startTransition or useTransition.
+  - id: previous-content-kept-during-transition
+    description: Must keep previously revealed content visible during transition instead of immediately replacing with a broad fallback.
+  - id: pending-indicator-for-transition
+    description: Must expose transition pending state to communicate background work progress.
