@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: pressable-drives-animation
+    description: Must render a Pressable interaction that triggers animation state changes on press-in and press-out.
+  - id: reanimated-timing-scale
+    description: Must use react-native-reanimated shared values and withTiming to animate a scale transform.
+  - id: reset-to-rest-state
+    description: Must restore the visual scale to a deterministic rest value after release.

@@ -5,9 +5,11 @@ This repository benchmarks how coding models solve real React Native tasks.
 ## Current state
 
 - Evals are self-contained under `evals/<eval-id>/` or `evals/<category>/<eval-id>/`.
-- The repository includes 50 evals:
-  - 1 animation seed eval: `rn-anim-animated-button-reanimated`
-  - 49 navigation evals under `evals/navigation/` (`rn-nav-*` and `rn-screens-*`) based on React Navigation and react-native-screens best practices.
+- The repository includes:
+  - 50 navigation evals under `evals/navigation/` (`rn-nav-*` and `rn-screens-*`) based on React Navigation and react-native-screens best practices.
+  - 15 animation pilot evals under `evals/animation/` focused on Reanimated, Gesture Handler, Worklets, and keyboard-controller motion patterns.
+    - animation pilot is currently text-only (`prompt.md` + `requirements.yaml`) with no `app/` scaffolds yet.
+  - 2 legacy root-level animation seed evals kept for backward compatibility (`rn-anim-animated-button-reanimated`, `rn-anim-animated-button-prefer-reanimated`).
 - Runner output is written under `runs/` (workspace artifacts) and `results/` (aggregate report).
 - Baseline authoring and category guidance is defined in `docs/benchmark-authoring-spec-v1.md`.
 
@@ -100,6 +102,12 @@ bun runner/index.ts --config bench.config.json --all
 evals/
   <eval-id>/
     ...
+  animation/
+    README.md
+    <eval-id>/
+      prompt.md
+      requirements.yaml
+      eval.test.ts (optional)
   navigation/
     README.md
     <eval-id>/

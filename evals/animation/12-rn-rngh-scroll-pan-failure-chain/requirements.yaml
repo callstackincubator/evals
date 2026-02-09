@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: explicit-gesture-failure-chain
+    description: Must use Gesture Handler composition or external failure requirements to model scroll versus swipe precedence.
+  - id: no-dead-zone-interaction
+    description: Must avoid dead-zone behavior where neither scroll nor swipe responds.
+  - id: deterministic-axis-thresholds
+    description: Must define explicit axis thresholds or activation offsets for resolving competing gestures.

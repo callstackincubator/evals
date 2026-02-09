@@ -11,11 +11,17 @@
 
 ## current target set
 
-- `rn-anim-animated-button-reanimated` (seed animation eval)
-- navigation category pack implemented under `evals/navigation/` with 49 evals:
-  - `rn-nav-*` (47 evals)
+- animation category bootstrapped under `evals/animation/` with 15 pilot evals:
+  - `rn-anim-*` + `rn-rngh-*` + `rn-worklets-*` + keyboard-controller focused tasks (15 evals)
+  - current stage is text-only (`prompt.md`, `requirements.yaml`), app scaffolds intentionally removed
+- navigation category pack implemented under `evals/navigation/` with 50 evals:
+  - `rn-nav-*` (48 evals)
   - `rn-screens-*` (2 evals)
-- all follow the standard contract (`prompt.md`, `requirements.yaml`, `app/`, optional `eval.test.ts`)
+- legacy root-level animation seed evals kept for compatibility:
+  - `rn-anim-animated-button-reanimated`
+  - `rn-anim-animated-button-prefer-reanimated`
+- navigation evals follow the full standard contract (`prompt.md`, `requirements.yaml`, `app/`, optional `eval.test.ts`)
+- animation pilot is currently text-only
 
 ## next roadmap items
 
