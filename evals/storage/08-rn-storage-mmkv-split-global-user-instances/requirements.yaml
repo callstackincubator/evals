@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: mmkv-multiple-instances
+    description: Must configure multiple MMKV instances with explicit IDs for different data scopes.
+  - id: user-scope-reset-only
+    description: Must clear only user-scoped MMKV instance data during sign-out.
+  - id: global-instance-retained
+    description: Must keep global MMKV preferences intact across user session resets.

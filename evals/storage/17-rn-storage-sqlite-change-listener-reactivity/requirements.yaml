@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: change-listener-enabled
+    description: Must open SQLite with database change listener support enabled when listener APIs are used.
+  - id: listener-driven-refresh
+    description: Must trigger deterministic UI refresh from database change events.
+  - id: listener-unsubscribe-cleanup
+    description: Must remove change listeners during cleanup to avoid duplicate subscriptions.

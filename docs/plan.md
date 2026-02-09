@@ -21,6 +21,9 @@
 - lists category bootstrapped under `evals/lists/` with 18 pilot evals:
   - core `FlatList` / `SectionList`, `@shopify/flash-list`, and `legend-list` task coverage
   - current stage is text-only (`prompt.md`, `requirements.yaml`), app scaffolds intentionally removed
+- storage category bootstrapped under `evals/storage/` with 18 pilot evals:
+  - offline-first persistence and reconciliation coverage across `@react-native-async-storage/async-storage`, `react-native-mmkv`, and `expo-sqlite`
+  - current stage is text-only (`prompt.md`, `requirements.yaml`), app scaffolds intentionally removed
 - navigation category pack implemented under `evals/navigation/` with 50 evals:
   - `rn-nav-*` (48 evals)
   - `rn-screens-*` (2 evals)
@@ -30,6 +33,7 @@
 - navigation evals follow the full standard contract (`prompt.md`, `requirements.yaml`, `app/`, optional `eval.test.ts`)
 - animation pilot is currently text-only
 - lists pilot is currently text-only
+- storage pilot is currently text-only
 
 ## next roadmap items
 

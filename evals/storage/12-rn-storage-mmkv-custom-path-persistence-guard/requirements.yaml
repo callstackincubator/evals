@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: custom-path-initialization
+    description: Must initialize MMKV with explicit custom path configuration.
+  - id: path-stability-guard
+    description: Must keep path derivation stable across restarts and avoid per-session path drift.
+  - id: path-mismatch-recovery
+    description: Must provide a deterministic recovery or migration path when configured path changes.

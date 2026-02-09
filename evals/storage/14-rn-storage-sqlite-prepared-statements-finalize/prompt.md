@@ -1,0 +1,1 @@
+Implement SQLite data access with prepared statements for read and write paths and ensure statement handles are finalized deterministically.
