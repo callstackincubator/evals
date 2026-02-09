@@ -1,0 +1,1 @@
+Build a Device Access Center screen that coordinates camera, media, location, and notifications with one unified permission-capability state machine across Expo modules and react-native-permissions adapters.

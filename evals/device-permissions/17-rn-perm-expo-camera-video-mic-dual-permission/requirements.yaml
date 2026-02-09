@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: dual-permission-requests-camera-microphone
+    description: Must request and track camera and microphone permissions through expo-camera permission APIs.
+  - id: record-gated-by-dual-grant
+    description: Must gate video recording actions until both camera and microphone permissions are granted.
+  - id: partial-grant-degraded-path
+    description: Must provide deterministic degraded UX when only one permission is granted.
+  - id: blocked-or-denied-recovery-actions
+    description: Must provide retry and settings-oriented recovery for denied or blocked outcomes.
