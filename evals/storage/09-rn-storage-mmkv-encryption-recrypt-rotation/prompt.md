@@ -1,1 +1,1 @@
-Add encrypted MMKV persistence and implement key rotation using recrypt while preserving existing values through the rotation flow.
+Add encrypted MMKV persistence with key rotation using recrypt, preserve existing values through rotation, and handle invalid-key or decrypt-failure recovery safely.
