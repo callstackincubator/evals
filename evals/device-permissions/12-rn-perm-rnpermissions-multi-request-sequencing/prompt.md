@@ -1,1 +1,1 @@
-Implement react-native-permissions orchestration for camera, microphone, and notifications with deterministic per-permission outcomes and recovery actions.
+Implement a setup flow with react-native-permissions that requests camera, microphone, and notifications in explicit sequence, keeps per-permission outcomes visible, and provides retry or settings recovery actions for denied or blocked states.

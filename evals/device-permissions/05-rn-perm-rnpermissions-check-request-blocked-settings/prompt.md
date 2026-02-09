@@ -1,1 +1,1 @@
-Build a reusable react-native-permissions helper for camera access that handles check, request, blocked outcomes, and settings recovery across platforms.
+Build a camera permission screen using react-native-permissions that handles check and request flows, shows unavailable or denied or blocked or granted states, and opens settings for blocked recovery.
