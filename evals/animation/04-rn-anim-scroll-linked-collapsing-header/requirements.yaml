@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: animated-scroll-handler-source
+    description: Must derive header animation state from a Reanimated scroll handler or equivalent UI-thread scroll value source.
+  - id: interpolated-header-transform-or-opacity
+    description: Must use interpolation to map scroll offset to deterministic header visual changes.
+  - id: clamped-header-range
+    description: Must clamp the header animation to defined min and max bounds to avoid runaway values.

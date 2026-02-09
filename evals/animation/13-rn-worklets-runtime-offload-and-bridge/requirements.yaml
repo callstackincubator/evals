@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: create-and-use-worklet-runtime
+    description: Must create and use a dedicated worklets runtime or UI runtime execution path for non-trivial computation.
+  - id: schedule-on-rn-bridge
+    description: Must bridge results back to React runtime via worklets APIs such as scheduleOnRN or runOnRN.
+  - id: bounded-bridge-frequency
+    description: Must avoid unbounded per-frame bridging and enforce controlled update cadence.

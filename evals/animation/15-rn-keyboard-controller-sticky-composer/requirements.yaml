@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: keyboard-controller-integration
+    description: Must integrate react-native-keyboard-controller APIs for keyboard movement data.
+  - id: keyboard-shared-value-binding
+    description: Must map keyboard progress or height to shared value driven composer position.
+  - id: cross-platform-keyboard-follow
+    description: Must provide deterministic keyboard-follow behavior on both iOS and Android paths.

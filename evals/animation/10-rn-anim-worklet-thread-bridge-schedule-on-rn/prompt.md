@@ -1,0 +1,1 @@
+Build an interaction where a UI-thread worklet computes high-frequency animation state and then schedules a lightweight React-side update through the worklets bridge only at controlled points.
