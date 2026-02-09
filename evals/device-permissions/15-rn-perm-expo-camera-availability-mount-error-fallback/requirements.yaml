@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: camera-availability-check
+    description: Must perform camera availability checks for unsupported environments before preview usage.
+  - id: camera-mount-error-handler
+    description: Must handle camera mount errors through explicit fallback UI state.
+  - id: permission-not-equal-capability
+    description: Must not assume granted permission guarantees functional camera preview.
+  - id: fallback-action-exposed
+    description: Must provide an alternate recovery action when preview cannot be mounted.

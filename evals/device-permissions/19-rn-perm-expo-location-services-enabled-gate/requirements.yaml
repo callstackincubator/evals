@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: location-services-enabled-check
+    description: Must check device location-services availability separately from permission status.
+  - id: services-disabled-guidance
+    description: Must provide explicit user guidance or recovery action when location services are disabled.
+  - id: no-location-fetch-when-services-off
+    description: Must avoid issuing location reads when services are disabled.
+  - id: permission-and-services-state-modeled
+    description: Must model permission and services-enabled states independently in the UX flow.

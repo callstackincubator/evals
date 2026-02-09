@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: rnpermissions-photo-library-limited-branch
+    description: Must model iOS limited photo-library status as a distinct permission state.
+  - id: openphotopicker-upgrade-path
+    description: Must provide an openPhotoPicker-based upgrade path or equivalent settings recovery from limited state.
+  - id: limited-state-remains-usable
+    description: Must keep limited-access behavior usable when upgrade is declined.
+  - id: no-full-access-assumption-from-limited
+    description: Must avoid treating limited photo-library access as full grant.

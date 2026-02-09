@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: ios-notification-status-branching
+    description: Must inspect iOS notification status details and branch on provisional versus full authorization.
+  - id: provisional-usable-degraded-path
+    description: Must treat provisional authorization as a usable but degraded permission state.
+  - id: denied-and-not-determined-separation
+    description: Must separate denied and not-determined notification states with distinct actions.
+  - id: ios-permission-options-explicit
+    description: Must call requestPermissionsAsync with explicit iOS options or equivalent granularity.
