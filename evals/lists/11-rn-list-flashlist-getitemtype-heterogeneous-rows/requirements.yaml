@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: flashlist-heterogeneous-rendering
+    description: Must render heterogeneous FlashList rows with type-specific UI.
+  - id: getitemtype-enabled
+    description: Must provide getItemType for heterogeneous item categories.
+  - id: type-safe-row-identity
+    description: Must keep keys and item type mapping consistent across updates.

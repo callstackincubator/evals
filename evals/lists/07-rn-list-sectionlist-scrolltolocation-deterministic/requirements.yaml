@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: sectionlist-scrolltolocation-usage
+    description: Must use SectionList scrollToLocation for programmatic section navigation.
+  - id: deterministic-offset-strategy
+    description: Must include deterministic viewOffset/getItemLayout strategy so target rows land predictably.
+  - id: invalid-target-guard
+    description: Must handle missing or invalid section/item targets without crashing.

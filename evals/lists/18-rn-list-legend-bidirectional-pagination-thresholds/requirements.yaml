@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: bidirectional-pagination
+    description: Must support both onStartReached and onEndReached pagination paths.
+  - id: duplicate-trigger-guards
+    description: Must prevent duplicate or overlapping page fetches on either direction while loading is active.
+  - id: threshold-driven-determinism
+    description: Must use explicit threshold-driven behavior so start/end pagination triggers are predictable.

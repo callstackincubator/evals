@@ -18,6 +18,9 @@
   - `rn-rq-*` + `rn-zustand-*` + `rn-jotai-*` + `rn-react-*` tasks (16 evals)
   - focus areas include TanStack Query, Zustand, Jotai async atoms, Suspense, and transitions
   - current stage is text-only (`prompt.md`, `requirements.yaml`), app scaffolds intentionally removed
+- lists category bootstrapped under `evals/lists/` with 18 pilot evals:
+  - core `FlatList` / `SectionList`, `@shopify/flash-list`, and `legend-list` task coverage
+  - current stage is text-only (`prompt.md`, `requirements.yaml`), app scaffolds intentionally removed
 - navigation category pack implemented under `evals/navigation/` with 50 evals:
   - `rn-nav-*` (48 evals)
   - `rn-screens-*` (2 evals)
@@ -26,6 +29,7 @@
   - `rn-anim-animated-button-prefer-reanimated`
 - navigation evals follow the full standard contract (`prompt.md`, `requirements.yaml`, `app/`, optional `eval.test.ts`)
 - animation pilot is currently text-only
+- lists pilot is currently text-only
 
 ## next roadmap items
 

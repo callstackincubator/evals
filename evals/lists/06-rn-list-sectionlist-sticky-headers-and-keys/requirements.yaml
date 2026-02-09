@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: sectionlist-sticky-headers
+    description: Must render SectionList with explicit section headers configured for deterministic sticky behavior.
+  - id: section-and-item-keys
+    description: Must provide stable keys for sections and section items.
+  - id: reorder-safe-rendering
+    description: Must maintain correct header-to-items mapping after section reorder/update operations.
