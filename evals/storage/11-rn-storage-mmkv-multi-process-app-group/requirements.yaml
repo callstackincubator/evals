@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: multi-process-mode-enabled
+    description: Must enable MMKV multi-process mode for cross-process read and write scenarios.
+  - id: shared-storage-path-contract
+    description: Must configure a stable shared storage path or app group location contract.
+  - id: cross-process-refresh-path
+    description: Must include a deterministic refresh path so process external updates become visible.

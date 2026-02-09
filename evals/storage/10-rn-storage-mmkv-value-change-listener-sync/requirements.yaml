@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: mmkv-change-listener
+    description: Must subscribe to MMKV value change listener APIs for relevant keys.
+  - id: listener-driven-ui-sync
+    description: Must update UI state from listener events instead of periodic polling.
+  - id: listener-cleanup
+    description: Must unsubscribe listeners during cleanup to avoid leaks and duplicate handlers.

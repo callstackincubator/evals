@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: encrypted-mmkv-instance
+    description: Must initialize MMKV with an explicit encryption key for sensitive values.
+  - id: recrypt-key-rotation-flow
+    description: Must rotate encryption keys through a deterministic recrypt flow.
+  - id: rotation-recovery-path
+    description: Must define a safe recovery path for invalid key or decrypt failure scenarios.

@@ -1,0 +1,1 @@
+Implement namespaced AsyncStorage keys for global and user data, then add a sign-out flow that clears only user-scoped keys without wiping global settings.

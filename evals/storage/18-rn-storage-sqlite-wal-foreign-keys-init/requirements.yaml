@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: pragma-wal-enabled
+    description: Must enable journal_mode WAL during deterministic database initialization.
+  - id: pragma-foreign-keys-enabled
+    description: Must enable foreign_keys pragma so relational constraints are enforced.
+  - id: init-once-contract
+    description: Must apply initialization pragmas in a predictable startup path that avoids repeated inconsistent setup.

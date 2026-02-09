@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: namespaced-key-strategy
+    description: Must use explicit key namespaces that separate global state from user-scoped state.
+  - id: scoped-signout-clear
+    description: Must clear only user-scoped keys on sign-out and keep global keys intact.
+  - id: no-global-clear-anti-pattern
+    description: Must avoid blanket clear operations that remove unrelated persisted data.

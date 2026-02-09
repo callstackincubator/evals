@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: exclusive-transaction-usage
+    description: Must use withExclusiveTransactionAsync or equivalent exclusive transaction API for critical writes.
+  - id: transaction-scope-discipline
+    description: Must keep writes scoped to the opened transaction to avoid out of scope races.
+  - id: rollback-on-failure
+    description: Must enforce commit rollback behavior so failed operations do not partially apply writes.
