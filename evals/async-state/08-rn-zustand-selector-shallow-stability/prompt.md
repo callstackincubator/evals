@@ -1,1 +1,1 @@
-Optimize a large dashboard using Zustand selectors so unrelated store updates do not trigger avoidable rerenders.
+Build a two-panel dashboard with Zustand where updating one panel state does not trigger avoidable rerenders in the other panel.
