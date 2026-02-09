@@ -1,1 +1,1 @@
-Handle rapid query changes in React transitions so out-of-order async completions cannot overwrite the latest intended result set.
+Handle rapid query changes with React transitions so only the latest async result is committed and stale completions cannot overwrite newer intent.

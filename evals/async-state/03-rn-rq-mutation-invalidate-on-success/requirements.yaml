@@ -9,4 +9,4 @@ requirements:
   - id: targeted-invalidation-scope
     description: Must target invalidation to the affected query key family instead of broad unrelated cache resets.
   - id: post-mutation-consistency
-    description: Must ensure post-mutation UI consistency by reconciling server state through query invalidation flow.
+    description: Must invalidate the same list query key family used by the rendered list so fresh server state is refetched after mutation success.
