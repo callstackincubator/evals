@@ -147,13 +147,13 @@ These issues are used as robustness validation signals and not as prompt wording
 
 ## coverage matrix (library to evals)
 
-- `react-native-reanimated`: `01, 02, 03, 04, 05, 06, 07, 08, 10, 14, 15, 16`
-- `react-native-gesture-handler`: `05, 06, 07, 08, 09, 11, 12`
+- `react-native-reanimated`: `01, 02, 03, 04, 05, 06, 07, 10, 14, 15, 16`
+- `react-native-gesture-handler`: `05, 06, 07, 09, 11, 12`
 - `react-native-worklets`: `10, 13`
 - `react-native-keyboard-controller`: `15, 16`
 - shared-values-derived-compute emphasis: `04, 10, 14, 15, 16`
 
-## pilot animation eval set (16)
+## pilot animation eval set (15)
 
 ### easy (5)
 
@@ -163,22 +163,21 @@ These issues are used as robustness validation signals and not as prompt wording
 4. [`04-rn-anim-scroll-linked-collapsing-header`](./04-rn-anim-scroll-linked-collapsing-header)
 5. [`11-rn-rngh-exclusive-single-double-tap`](./11-rn-rngh-exclusive-single-double-tap)
 
-### medium (7)
+### medium (6)
 
 6. [`05-rn-anim-pan-drag-card-with-snap-points`](./05-rn-anim-pan-drag-card-with-snap-points)
 7. [`06-rn-anim-longpress-then-pan-activation-gate`](./06-rn-anim-longpress-then-pan-activation-gate)
 8. [`07-rn-anim-pinch-pan-simultaneous-photo-canvas`](./07-rn-anim-pinch-pan-simultaneous-photo-canvas)
-9. [`08-rn-anim-bottom-sheet-nested-scroll-handoff`](./08-rn-anim-bottom-sheet-nested-scroll-handoff)
-10. [`12-rn-rngh-scroll-pan-failure-chain`](./12-rn-rngh-scroll-pan-failure-chain)
-11. [`14-rn-shared-value-derived-threshold-state`](./14-rn-shared-value-derived-threshold-state)
-12. [`15-rn-keyboard-controller-sticky-composer`](./15-rn-keyboard-controller-sticky-composer)
+9. [`12-rn-rngh-scroll-pan-failure-chain`](./12-rn-rngh-scroll-pan-failure-chain)
+10. [`14-rn-shared-value-derived-threshold-state`](./14-rn-shared-value-derived-threshold-state)
+11. [`15-rn-keyboard-controller-sticky-composer`](./15-rn-keyboard-controller-sticky-composer)
 
 ### hard (4)
 
-13. [`09-rn-anim-android-modal-gesture-root-safety`](./09-rn-anim-android-modal-gesture-root-safety)
-14. [`10-rn-anim-worklet-thread-bridge-schedule-on-rn`](./10-rn-anim-worklet-thread-bridge-schedule-on-rn)
-15. [`13-rn-worklets-runtime-offload-and-bridge`](./13-rn-worklets-runtime-offload-and-bridge)
-16. [`16-rn-keyboard-controller-aware-scroll-footer`](./16-rn-keyboard-controller-aware-scroll-footer)
+12. [`09-rn-anim-android-modal-gesture-root-safety`](./09-rn-anim-android-modal-gesture-root-safety)
+13. [`10-rn-anim-worklet-thread-bridge-schedule-on-rn`](./10-rn-anim-worklet-thread-bridge-schedule-on-rn)
+14. [`13-rn-worklets-runtime-offload-and-bridge`](./13-rn-worklets-runtime-offload-and-bridge)
+15. [`16-rn-keyboard-controller-aware-scroll-footer`](./16-rn-keyboard-controller-aware-scroll-footer)
 
 ## deterministic outcome map (new additions)
 
@@ -209,5 +208,5 @@ These issues are used as robustness validation signals and not as prompt wording
 ## status
 
 - navigation category: complete at 50 evals.
-- animation category: structured pilot expanded to 16 evals with explicit Reanimated + RNGH + Worklets + keyboard-controller coverage.
+- animation category: structured pilot expanded to 15 evals with explicit Reanimated + RNGH + Worklets + keyboard-controller coverage.
 - current authoring phase is text-only (prompts and requirements only), with `app/` scaffolds intentionally removed.

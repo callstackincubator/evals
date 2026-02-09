@@ -11,8 +11,8 @@
 
 ## current target set
 
-- animation category bootstrapped under `evals/animation/` with 16 pilot evals:
-  - `rn-anim-*` + `rn-rngh-*` + `rn-worklets-*` + keyboard-controller focused tasks (16 evals)
+- animation category bootstrapped under `evals/animation/` with 15 pilot evals:
+  - `rn-anim-*` + `rn-rngh-*` + `rn-worklets-*` + keyboard-controller focused tasks (15 evals)
   - current stage is text-only (`prompt.md`, `requirements.yaml`), app scaffolds intentionally removed
 - navigation category pack implemented under `evals/navigation/` with 50 evals:
   - `rn-nav-*` (48 evals)

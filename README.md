@@ -7,7 +7,7 @@ This repository benchmarks how coding models solve real React Native tasks.
 - Evals are self-contained under `evals/<eval-id>/` or `evals/<category>/<eval-id>/`.
 - The repository includes:
   - 50 navigation evals under `evals/navigation/` (`rn-nav-*` and `rn-screens-*`) based on React Navigation and react-native-screens best practices.
-  - 16 animation pilot evals under `evals/animation/` focused on Reanimated, Gesture Handler, Worklets, and keyboard-controller motion patterns.
+  - 15 animation pilot evals under `evals/animation/` focused on Reanimated, Gesture Handler, Worklets, and keyboard-controller motion patterns.
     - animation pilot is currently text-only (`prompt.md` + `requirements.yaml`) with no `app/` scaffolds yet.
   - 2 legacy root-level animation seed evals kept for backward compatibility (`rn-anim-animated-button-reanimated`, `rn-anim-animated-button-prefer-reanimated`).
 - Runner output is written under `runs/` (workspace artifacts) and `results/` (aggregate report).
