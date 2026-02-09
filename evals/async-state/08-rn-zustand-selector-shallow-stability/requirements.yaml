@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: narrow-selector-subscriptions
+    description: Must subscribe components with narrow selectors instead of selecting the entire store object.
+  - id: shallow-or-equivalent-equality
+    description: Must use shallow or equivalent equality strategy for object-like selector outputs where appropriate.
+  - id: immutable-untouched-branch-preservation
+    description: Must update state immutably while preserving references for untouched branches to reduce unnecessary rerenders.

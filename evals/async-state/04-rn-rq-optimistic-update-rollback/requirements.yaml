@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: optimistic-update-with-snapshot
+    description: Must apply optimistic cache updates using a pre-mutation snapshot context.
+  - id: rollback-on-mutation-error
+    description: Must restore prior cached state when the optimistic mutation fails.
+  - id: settle-path-revalidation
+    description: Must revalidate affected queries after mutation settles to realign with authoritative server state.

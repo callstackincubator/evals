@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: stable-serializable-query-key
+    description: Must build a stable and serializable TanStack Query key that includes the active filter and pagination inputs.
+  - id: no-unstable-query-key-members
+    description: Must avoid unstable or non-serializable values in query keys such as functions or freshly-created object identities that change every render.
+  - id: queryfn-derived-from-querykey
+    description: Must derive request parameters from query key inputs inside the query function instead of hidden mutable external state.

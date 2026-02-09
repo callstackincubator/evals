@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: loadable-wrapping-for-async-atom
+    description: Must wrap async atom access with a loadable pattern to expose deterministic loading hasData and hasError branches.
+  - id: explicit-non-suspense-state-branches
+    description: Must render explicit non-Suspense UI branches for loading success and failure paths.
+  - id: no-unhandled-promise-throw
+    description: Must avoid unhandled promise throws in render when no Suspense boundary is present.

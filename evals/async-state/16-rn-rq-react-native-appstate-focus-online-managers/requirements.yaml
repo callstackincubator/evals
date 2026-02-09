@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: appstate-focusmanager-integration
+    description: Must integrate React Native AppState events with TanStack Query focusManager semantics.
+  - id: connectivity-onlinemanager-integration
+    description: Must integrate connectivity state with TanStack Query onlineManager semantics.
+  - id: controlled-refetch-behavior
+    description: Must define controlled refetch behavior across foreground background and reconnect transitions to avoid refetch storms.

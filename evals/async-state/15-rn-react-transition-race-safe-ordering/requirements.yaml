@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: latest-intent-ordering-guard
+    description: Must guard async result commits so only the latest intended transition result is applied.
+  - id: post-await-transition-wrap
+    description: Must wrap post-await non-urgent state commits in a transition-aware path where required.
+  - id: stale-completion-suppression
+    description: Must suppress stale async completions from replacing fresher UI state.

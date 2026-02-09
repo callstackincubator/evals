@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: async-read-atom-source
+    description: Must implement profile loading as an async read atom that resolves data via promise.
+  - id: suspense-boundary-for-async-atom
+    description: Must consume the async atom under a React Suspense boundary with an explicit fallback UI.
+  - id: no-duplicate-manual-loading-flag
+    description: Must avoid redundant component-level loading flags that duplicate the async atom plus Suspense contract.

@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - prompt.md
+    - requirements.yaml
+requirements:
+  - id: mutation-success-invalidates-list
+    description: Must invalidate the relevant list query key after mutation success.
+  - id: targeted-invalidation-scope
+    description: Must target invalidation to the affected query key family instead of broad unrelated cache resets.
+  - id: post-mutation-consistency
+    description: Must ensure post-mutation UI consistency by reconciling server state through query invalidation flow.
