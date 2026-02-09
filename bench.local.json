@@ -5,6 +5,6 @@
       "provider": "noop"
     }
   ],
-  "evals": ["evals/rn-anim-animated-button-reanimated"],
+  "evals": ["evals/animation/01-rn-anim-pressable-scale-with-timing"],
   "runners": ["llm-judge"]
 }
