@@ -1,8 +1,8 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
+    - app/package.json
 requirements:
   - id: keyboard-controller-integration
     description: Must integrate react-native-keyboard-controller APIs for keyboard movement data.

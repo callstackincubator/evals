@@ -1,8 +1,8 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
+    - app/package.json
 requirements:
   - id: deterministic-collapsed-expanded-states
     description: Must define deterministic collapsed and expanded visual states for the card.

@@ -1,8 +1,8 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
+    - app/package.json
 requirements:
   - id: keyboard-aware-scroll-behavior
     description: Must use keyboard-aware scroll behavior from react-native-keyboard-controller components or hooks.

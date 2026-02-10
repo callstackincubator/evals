@@ -1,8 +1,8 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
+    - app/package.json
 requirements:
   - id: animated-scroll-handler-source
     description: Must derive header animation state from a Reanimated scroll handler or equivalent UI-thread scroll value source.

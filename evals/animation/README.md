@@ -209,4 +209,4 @@ These issues are used as robustness validation signals and not as prompt wording
 
 - navigation category: complete at 50 evals.
 - animation category: structured pilot expanded to 15 evals with explicit Reanimated + RNGH + Worklets + keyboard-controller coverage.
-- current authoring phase is text-only (prompts and requirements only), with `app/` scaffolds intentionally removed.
+- all 15 animation evals now include `app/` scaffolds and code-backed requirements inputs.

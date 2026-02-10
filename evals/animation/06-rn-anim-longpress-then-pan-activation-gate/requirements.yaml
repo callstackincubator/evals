@@ -1,8 +1,8 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
+    - app/package.json
 requirements:
   - id: composed-gesture-sequence
     description: Must compose gestures so drag activation is gated by long-press completion.
