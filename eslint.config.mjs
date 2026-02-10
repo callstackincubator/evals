@@ -4,14 +4,7 @@ import simpleImportSort from "eslint-plugin-simple-import-sort";
 import globals from "globals";
 
 export default defineConfig([
-  globalIgnores([
-    "results/**/*",
-    "runs/**/*",
-    "**/node_modules",
-    "**/lib",
-    "**/build",
-    "**/dist",
-  ]),
+  globalIgnores(["**/node_modules", "**/lib", "**/build", "**/dist"]),
   eslintPluginPrettierRecommended,
   {
     plugins: {

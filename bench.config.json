@@ -1,14 +1,3 @@
 {
-  "models": [
-    {
-      "id": "openai/gpt-4.1",
-      "provider": "openai",
-      "params": {
-        "temperature": 0.2,
-        "max_output_tokens": 4000
-      }
-    }
-  ],
-  "evals": ["evals/animation/01-rn-anim-pressable-scale-with-timing"],
-  "runners": ["llm-judge"]
+  "model": "openai/gpt-4.1"
 }

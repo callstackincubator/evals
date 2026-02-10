@@ -6,24 +6,14 @@ This repository benchmarks how coding models solve real React Native tasks.
 
 - Evals are organized by category under `evals/<category>/<eval-id>/`.
 - Every eval is self-contained and includes `prompt.md` and `requirements.yaml`.
-- Optional files like `app/` and `eval.test.ts` are included when required by that category or eval.
-- Runner output is written under `runs/` (workspace artifacts) and `results/` (aggregate report).
+- Optional files like `app/` and `eval.test.ts` may exist, but the active runner uses `requirements.yaml`.
 - Authoring guidance is defined in `docs/benchmark-authoring-spec-v1.md`.
 
-## Evaluation runners
+## LLM-judge runner
 
-The bench runner supports multiple evaluation runners in one pass:
+The runner evaluates each eval by reading `requirements.yaml`, loading declared `inputs.files`, and running one structured-output judge call per eval through Open Code (`ai-sdk-provider-opencode-sdk`).
 
-- `unit`: executes `eval.test.ts` in the run workspace when present; otherwise returns `skipped`.
-- `llm-judge`: evaluates YAML requirements with Open Code Harness through the SDK (primary runner).
-
-Configure enabled runners in `bench.config.json` under `runners`.
-
-## Requirements-based judging
-
-LLM-judge reads `requirements.yaml` from each eval folder.
-
-Minimal schema:
+### Requirements schema
 
 ```yaml
 version: 1
@@ -34,64 +24,73 @@ inputs:
 requirements:
   - id: uses-reanimated-library
     description: Must use react-native-reanimated to animate the button interaction.
+    weight: 2
 ```
 
-Judge results are persisted in each workspace and included in `run-results.json` and `results/<run-id>.json`.
+`weight` is optional and defaults to `1.0` for scoring.
 
-## Open Code Harness integration
+### Scoring
 
-The judge runner uses AI SDK v6 + `ai-sdk-provider-opencode-sdk` (`createOpencode`) to access Open Code.
+Per eval:
 
-Optional environment variables:
+- `passedWeight = Σ(weight where passed=true)`
+- `totalWeight = Σ(all weights)`
+- `ratio = passedWeight / totalWeight`
 
-- `LLM_JUDGE_MODEL` (default: `openai/gpt-5.3-codex`)
-- `LLM_JUDGE_TIMEOUT_MS` (default: `120000`)
-- `LLM_JUDGE_PORT` (default: `4096`)
+## Runner defaults
 
-## Structured judge output
+Fixed defaults:
 
-The judge uses AI SDK structured output (`Output.object`) with a schema that includes:
-
-```json
-{
-  "summary": "optional summary",
-  "requirements": [
-    {
-      "id": "uses-reanimated-library",
-      "passed": true,
-      "reason": "why this passed or failed",
-      "evidence": ["supporting evidence"],
-      "confidence": 0.9
-    }
-  ]
-}
-```
+- discovery root: `evals`
+- discovery pattern: `**/requirements.yaml` (override via `--pattern`)
+- output dir: `results`
+- per-eval JSON artifacts: enabled
 
 ## How to run
 
-Run all discovered evals:
+Run all discovered evals (`evals/**/requirements.yaml`):
 
 ```bash
-bun runner/index.ts --all
+bun runner/index.ts
 ```
 
-Run local noop benchmark:
+Limit concurrency:
 
 ```bash
-bun run bench:local
+bun runner/index.ts --limit-concurrency 2
 ```
 
-Run one eval:
+Run a subset by pattern (for example animation only):
 
 ```bash
-bun runner/index.ts --eval 01-rn-nav-stack-product-details
+bun runner/index.ts --pattern 'animation/**/requirements.yaml'
 ```
 
-Run with explicit config:
+Enable debug artifacts:
 
 ```bash
-bun runner/index.ts --config bench.config.json --all
+bun runner/index.ts --debug
 ```
+
+Override judge model:
+
+```bash
+bun runner/index.ts --model openai/gpt-5.3-codex
+```
+
+Override judge timeout and port:
+
+```bash
+bun runner/index.ts --timeout 120000 --port 4096
+```
+
+## Output artifacts
+
+For each run:
+
+- `results/<run-id>/summary.json`
+- `results/<run-id>/evals/<eval-id>.json`
+- `results/<run-id>/debug/<eval-id>/judge-prompt.txt` and `judge-output.json` (debug mode only)
 
 ## Repository structure
 
@@ -103,22 +102,20 @@ evals/
       prompt.md
       requirements.yaml
       app/ (optional)
-      eval.test.ts (optional)
 runner/
   index.ts
-  config.ts
-  evals/
-    discover.ts
-  runners/
-    index.ts
-    unit.ts
-    llm-judge.ts
-  judge/
-  model/
-  report/
-bench.config.json
-bench.local.json
-runs/
+  llm/
+    run.ts
+    config.ts
+    discovery.ts
+    requirements.ts
+    files.ts
+    judge-client.ts
+    prompt.ts
+    utils.ts
+    output.ts
+    tests/
+      *.test.ts
 results/
 docs/
 ```
