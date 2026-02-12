@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: auth-gated-routes
     description: Must render route sets based on authentication state.

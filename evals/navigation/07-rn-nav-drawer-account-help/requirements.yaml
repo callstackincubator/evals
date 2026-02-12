@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: drawer-two-sections
     description: Must define drawer routes named Account, Help.

@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: capture-protected-target
     description: Must store intended deep-link destination when user is unauthenticated.

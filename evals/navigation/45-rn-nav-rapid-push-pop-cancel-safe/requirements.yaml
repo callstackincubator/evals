@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: rapid-navigation-async-guard
     description: Must guard async updates during rapid navigation so stale responses do not mutate inactive screens.

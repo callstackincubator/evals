@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: checkout-history-reset
     description: Must reset navigation state after checkout completion to a deterministic post-checkout route graph.

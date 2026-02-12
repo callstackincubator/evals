@@ -5,7 +5,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text>Implement: Safe async handling under rapid push-pop</Text>
-      <StatusBar style='auto' />
+      <StatusBar style="auto" />
     </View>
   )
 }

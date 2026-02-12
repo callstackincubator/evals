@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: ui-thread-worklet-computation
     description: Must perform animation-critical computation inside a worklet on the UI runtime.

@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: focus-fetch-start
     description: Must initiate data fetch from focus lifecycle for the screen.

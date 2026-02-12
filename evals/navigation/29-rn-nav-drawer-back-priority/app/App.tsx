@@ -5,7 +5,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text>Implement: Drawer closes before stack pop</Text>
-      <StatusBar style='auto' />
+      <StatusBar style="auto" />
     </View>
   )
 }

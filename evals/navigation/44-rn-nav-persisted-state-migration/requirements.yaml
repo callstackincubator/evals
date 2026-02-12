@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: state-version-check
     description: Must check version metadata before applying persisted navigation state.

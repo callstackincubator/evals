@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: focus-triggered-refresh
     description: Must trigger inbox refresh from focus lifecycle rather than only from mount lifecycle.

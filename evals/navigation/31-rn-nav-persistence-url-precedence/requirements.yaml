@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: cold-start-precedence-rule
     description: Must implement an explicit precedence rule that prioritizes initial deep-link URL over persisted nav state.

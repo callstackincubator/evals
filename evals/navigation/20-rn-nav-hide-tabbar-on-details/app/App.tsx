@@ -5,7 +5,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text>Implement: Hide tab bar on details view</Text>
-      <StatusBar style='auto' />
+      <StatusBar style="auto" />
     </View>
   )
 }

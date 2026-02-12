@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: onboarding-gated-routes
     description: Must conditionally render onboarding vs main routes based on onboarding completion state.

@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: modal-over-tab-architecture
     description: Must place modal routes above tab routes in navigation hierarchy.

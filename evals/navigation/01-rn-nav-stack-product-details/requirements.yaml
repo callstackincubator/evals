@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: stack-product-details-route
     description: Must define a native stack flow where the list screen navigates to a product details screen with a productId param.

@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: drawer-back-priority-order
     description: Must prioritize closing an open drawer before stack pop in Android back handling.

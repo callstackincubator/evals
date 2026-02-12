@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: static-navigation-definition
     description: Must define navigation using React Navigation static configuration and createStaticNavigation.

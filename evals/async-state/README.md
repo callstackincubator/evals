@@ -184,18 +184,22 @@ These issue threads are used as robustness validation signals and not as prompt 
 ## deterministic outcome map (new additions)
 
 13. `13-rn-react-suspense-transition-no-fallback-flash`
+
 - non-urgent update is transitioned while previously revealed content remains visible.
 - traceability: `D16`, `D17`.
 
 14. `14-rn-react-usedeferredvalue-search-stale-indicator`
+
 - urgent typing remains responsive while deferred list lags with explicit stale indicator.
 - traceability: `D17`.
 
 15. `15-rn-react-transition-race-safe-ordering`
+
 - latest user intent wins under rapid async transitions.
 - traceability: `D18`, issue `#28914`.
 
 16. `16-rn-rq-react-native-appstate-focus-online-managers`
+
 - refetch policy follows RN foreground and connectivity lifecycle with controlled behavior.
 - traceability: `D8`, issues `#6323`, `#6338`.
 

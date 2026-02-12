@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: header-filter-action
     description: Must wire a header action to update route params for filter state.

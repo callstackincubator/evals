@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: payload-to-route-mapping
     description: Must map each notification payload type to one deterministic navigation destination.

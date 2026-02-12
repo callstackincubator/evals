@@ -16,3 +16,5 @@ results/*
 
 # macOS
 .DS_Store
+
+config.json

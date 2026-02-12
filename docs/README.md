@@ -4,60 +4,54 @@
 
 - `README.md` (this file) - general setup, configuration & running instructions
 - [`eval-spec.md`](eval-spec.md) - test case format spec & instruction on how to create a benchmark test case
-- [`llm/benchmark-authoring-spec-v1.md`](./llm/benchmark-authoring-spec-v1.md) - instructions
+- [`llm/llm-benchmark-authoring-spec-v1.md`](./llm/llm-benchmark-authoring-spec-v1.md) - instructions
 
 ## Prerequisites
 
 - install dependencies: `bun install`
-- install and authenticate `opencode` if using the `llm-judge` runner (see `runner selection` section)
+- create local config: `cp config.json.example config.json`
+- set `apiKey` in `config.json` (required unless `mockTestedLLM` is `true`)
+- optional `baseURL` (keep `null` for default endpoint)
+- install and authenticate `opencode`
 
 ## Execute benchmark
 
-- run all evals: `bun runner/index.ts --all`
-- run one eval: `bun runner/index.ts --eval <eval-id>`
-- run with config: `bun runner/index.ts --config bench.config.json --all`
-- run local noop benchmark: `bun run bench:local`
+- run all discovered evals: `bun runner/index.ts`
+- run with debug artifacts: `bun runner/index.ts --debug`
+- run just one eval: `bun runner/index.ts --just-one`
 
-## Runner selection
+Configuration values are in root `config.json`:
 
-Enable runners in config using `runners`:
+- `concurrency`
+- `model`
+- `solverModel`
+- `mockTestedLLM` (use mocked tested-model output)
+- `mockJudgeLLM` (use mocked judge decisions)
+- `apiKey`
+- `baseURL` (`null` to use default OpenAI endpoint)
+- `pattern`
+- `timeout`
+- `port`
+- `solverTimeout`
 
-```json
-{
-  "runners": ["llm-judge", ...]
-}
-```
+## Defaults
 
-Supported values:
+Configured defaults in `config.json`:
 
-- `unit` (optional per eval; skipped when `eval.test.ts` is missing)
-- `llm-judge` (primary)
-- `harness` (e2e via [react-native-harness](https://github.com/callstackincubator/react-native-harness); enables agent loop and metrics)
-
-## Harness and agent loop
-
-When `harness` is in `runners`, the bench:
-
-1. Uses a single **testbench** Expo app under `testbench/` that runs all e2e test cases via react-native-harness.
-2. Runs an **agent loop** (up to `MAX_AGENT_ITERATIONS`, default 10): for each iteration, runs the model, applies output, syncs the workspace app into the testbench, runs harness, static analysis, and unstructured-requirements evaluation; stops when all harness tests pass or max iterations are reached.
-3. Collects **per-iteration metrics**: render time (from harness test duration), static code analysis (warnings, block nesting complexity, LOC, component count), and numeric scores from evaluating `unstructured_requirements.md` with the LLM.
-4. Prints a **metrics table** at the end.
-
-Servers are started automatically when harness is used:
-
-- **Metro**: started before the first harness run; the runner waits for `http://localhost:8081` then runs harness; stopped when the benchmark finishes. Status is logged with `[metro]` prefix.
-- **Open Code** (llm-judge / unstructured): started on demand; status logged with `[llm-judge]` and `[unstructured]` prefixes.
-
-Prerequisites for harness:
-
-- Install testbench deps: run `bun run testbench:merge-deps` from repo root, then `cd testbench && bun install`.
-- For web runner no extra setup. For iOS/Android, configure devices in `testbench/rn-harness.config.mjs`.
-
-## LLM judge configuration
-
-- `LLM_JUDGE_MODEL`: judge model id (`provider/model`), default `openai/gpt-5.3-codex`
-- `LLM_JUDGE_TIMEOUT_MS`: SDK server startup/judge timeout in milliseconds
-- `LLM_JUDGE_PORT`: server port used by Open Code SDK (default `4096`)
+- discovery root: `evals`
+- discovery pattern: `**/requirements.yaml`
+- output directory: `results`
+- per-eval artifacts: always written
+- default concurrency: `4`
+- default model: `openai/gpt-5.3-codex`
+- default timeout: `120000`
+- default port: `4096`
+- default solver model: `gpt-4.1-mini`
+- mockTestedLLM: `false`
+- mockJudgeLLM: `false`
+- default solver timeout: `120000`
+- baseURL: `null` (default OpenAI endpoint)
+- debug artifacts: off by default (enable via `--debug`)
 
 ## OpenCode SDK flow
 
@@ -66,20 +60,82 @@ The judge runner uses AI SDK v6 with the Open Code provider:
 1. create provider with `createOpencode`
 2. auto-start local Open Code server
 3. call `generateText` with `Output.object` schema
-4. map structured requirement results into `runner_results`
+4. map structured requirement results into weighted eval score
+
+## Runtime execution flow
+
+The benchmark pipeline runs in clear phases:
+
+1. Discovery phase
+   - discover evals by `pattern` from `config.json`
+   - optionally trim to one eval with `--just-one`
+2. Run setup phase
+   - create run output directories
+   - create generated workspace for solver outputs
+3. Concurrent eval phase
+   - process evals with bounded concurrency (`concurrency`)
+4. Solver phase (per eval, multi-step)
+   - load requirements + declared input files + optional `example/`
+   - copy solver template files into generated eval directory
+   - iterate up to max steps (currently `10`):
+     - run tested model solver
+     - run static checks (`eslint`, `tsc`, `CC`)
+     - store per-step metrics in `solver.steps`
+   - terminate early on:
+     - no code issues, or
+     - `mockTestedLLM=true`
+5. Judge phase (per eval)
+   - run requirement-based LLM judge on final generated files
+   - or use mocked judge output when `mockJudgeLLM=true`
+6. Aggregation phase
+   - compute weighted requirement score per eval
+   - write per-eval artifact and run summary
+   - print progress logs and final results table
+
+Concurrency semantics:
+
+- across evals: concurrent, bounded by `concurrency`
+- within one eval: solver steps are sequential
+- judge call: one call after the final solver step for that eval
 
 ## Outputs
 
-Per workspace (`runs/<run-id>/<model-id>/<eval-id>/`):
+Per run:
 
-- `diff.patch`
-- `model-output.json`
-- `run-results.json`
-- `eval-results.json` (from bun tests, only when unit tests are present and executed)
-- `judge-prompt.txt` (llm-judge)
-- `judge-output.txt` (llm-judge)
-- `harness-results.json` (when harness runner is used; Jest JSON output)
+- `results/<run-id>/summary.json`
+- `results/<run-id>/evals/<eval-id>.json` (when enabled)
+- `results/<run-id>/debug/<eval-id>/judge-prompt.txt` (debug mode)
+- `results/<run-id>/debug/<eval-id>/judge-output.json` (debug mode)
 
-Aggregate report:
+### `solver.steps` format
 
-- `results/<run-id>.json`
+Each eval result includes `solver.steps` as an array of step metrics:
+
+```json
+[
+  {
+    "step": 1,
+    "outputFileCount": 2,
+    "eslint": { "errorCount": 0, "warningCount": 1 },
+    "tsc": { "errorCount": 0, "warningCount": 0 },
+    "CC": 3,
+    "summary": "optional model summary",
+    "errors": []
+  }
+]
+```
+
+Field meanings:
+
+- `step`: 1-based solver iteration number
+- `outputFileCount`: number of files generated at this step
+- `eslint.errorCount` / `eslint.warningCount`: ESLint issue counts for generated output
+- `tsc.errorCount` / `tsc.warningCount`: TypeScript check issue counts for generated output
+- `CC`: total cyclomatic complexity (uppercase key by design)
+- `summary`: optional solver summary text for that step
+- `errors`: solver errors captured during that step
+
+Console results table shows a compact `steps` column using:
+
+- `#<step>(E<eslintErrors>/W<eslintWarnings>,T<tscErrors>/W<tscWarnings>,CC<cc>)`
+- example: `#1(E0/W1,T0/W0,CC3) #2(E0/W0,T1/W0,CC4)`

@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: explicit-gesture-failure-chain
     description: Must use Gesture Handler composition or external failure requirements to model scroll versus swipe precedence.

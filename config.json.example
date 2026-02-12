@@ -1,0 +1,13 @@
+{
+  "concurrency": 4,
+  "model": "openai/gpt-5.3-codex",
+  "solverModel": "gpt-4.1-mini",
+  "mockTestedLLM": false,
+  "mockJudgeLLM": false,
+  "apiKey": "replace-with-openai-api-key",
+  "baseURL": null,
+  "pattern": "**/requirements.yaml",
+  "timeout": 120000,
+  "port": 4096,
+  "solverTimeout": 120000
+}

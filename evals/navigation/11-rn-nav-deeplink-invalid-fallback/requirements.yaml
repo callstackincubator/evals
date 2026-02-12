@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: invalid-link-guard
     description: Must render fallback UI for invalid deep-link userId values.

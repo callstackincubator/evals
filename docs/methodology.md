@@ -2,7 +2,13 @@
 
 This repository currently evaluates React Native tasks with a single primary runner:
 
-1. `llm-judge`
+1. `unit`
+
+- optional deterministic checks from `eval.test.ts`
+- reported as `skipped` when no unit test file exists for an eval
+
+2. `llm-judge`
+
 - requirement-based checks from `requirements.yaml`
 - one structured-output judge call per eval
 - numeric weighted scoring per eval
@@ -64,7 +70,7 @@ Primary reporting is numeric scoring plus requirement-level evidence; no global 
 
 ## category workflow (required for new eval categories)
 
-Before writing new eval tasks for a category, follow the workflow in `docs/benchmark-authoring-spec-v1.md`:
+Before writing new eval tasks for a category, follow the workflow in `docs/llm/llm-benchmark-authoring-spec-v1.md`:
 
 1. read official docs first
 2. extract best-practice rules from those docs
@@ -87,3 +93,46 @@ Every new category should include a research note in the category root (for exam
 ## task framing rule
 
 Eval prompts must be forward-looking implementation asks, as if requested by a regular app developer. Avoid framing prompts as historical bug reproductions.
+
+## execution path (authoring to completion)
+
+Use this sequence for each category:
+
+1. research and scope
+
+- read official docs
+- extract best-practice rules
+- collect recurring issues as secondary validation
+
+2. define eval set
+
+- write feature-style prompts
+- create deterministic `requirements.yaml` checks
+- keep requirements atomic and phrased as `Must ...`
+
+3. scaffold eval apps
+
+- add minimal `app/` starters for every eval
+- keep scaffolds intentionally incomplete so requirements can fail before implementation
+
+4. implement first pass
+
+- implement `app/App.tsx` for the full eval set (batch by difficulty or theme)
+- keep changes minimal and aligned to each prompt/requirement
+
+5. refine requirements after implementation
+
+- add tighter requirements that reflect best-practice implementation where needed
+- focus tightening on required navigation/library APIs (for example deep-link config, `useFocusEffect`, `beforeRemove`, state persistence precedence)
+
+6. verify and re-run
+
+- run llm-judge across the full set
+- fix implementation bugs
+- run llm-judge again after fixes
+
+7. complete and lock
+
+- confirm baseline scaffold fail + implemented pass behavior
+- update category documentation with final status and remaining gaps
+- mark category complete

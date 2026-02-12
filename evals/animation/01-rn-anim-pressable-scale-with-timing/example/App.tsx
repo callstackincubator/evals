@@ -1,52 +1,59 @@
-import { StatusBar } from "expo-status-bar";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
-} from "react-native-reanimated";
+} from 'react-native-reanimated'
+
+const PRESSED_SCALE = 0.94
+const REST_SCALE = 1
 
 export default function App() {
-  const scale = useSharedValue(1);
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
+  const scale = useSharedValue(REST_SCALE)
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    }
+  })
 
   return (
     <View style={styles.container}>
       <Pressable
         onPressIn={() => {
-          scale.value = withTiming(0.95, { duration: 120 });
+          scale.value = withTiming(PRESSED_SCALE, { duration: 120 })
         }}
         onPressOut={() => {
-          scale.value = withTiming(1, { duration: 120 });
+          scale.value = withTiming(REST_SCALE, { duration: 140 })
         }}
       >
-        <Animated.View style={[styles.button, animatedStyle]}>
-          <Text style={styles.buttonText}>Tap Me</Text>
+        <Animated.View style={[styles.cta, animatedStyle]}>
+          <Text style={styles.ctaText}>Continue</Text>
         </Animated.View>
       </Pressable>
-      <StatusBar style="auto" />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: 'center',
+    backgroundColor: '#f4f6fb',
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    justifyContent: 'center',
+    paddingHorizontal: 24,
   },
-  button: {
-    backgroundColor: "#111827",
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 10,
+  cta: {
+    backgroundColor: '#1f4fd1',
+    borderRadius: 14,
+    minWidth: 180,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
   },
-  buttonText: {
-    color: "#ffffff",
+  ctaText: {
+    color: '#fff',
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
+    textAlign: 'center',
   },
-});
+})
