@@ -47,14 +47,7 @@ This file defines how agents should work in this repository.
   - `prompt.md`
   - `requirements.yaml`
   - `app/`
-  - `eval.test.ts` (optional)
-- Eval methodology uses three types:
-  - `behavior`
-  - `preference`
-  - `constraint`
-- Prefer behavior-oriented assertions; avoid regex-only checks unless there is no practical alternative
-- MVP currently uses `llm-judge` requirements as the primary signal; unit Bun tests are optional per eval
-- Each application in `app/` is a standalone React Native or Expo application
+  - `example/`
 
 ## Running and Verification
 

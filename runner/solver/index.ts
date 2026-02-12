@@ -140,7 +140,7 @@ export async function runSolver(params: {
     return {
       files,
       summary:
-        'mockTestedLLM enabled: used declared input files as generated output',
+        'mockTestedLLM enabled: used current baseline files as generated output',
       errors: [],
     }
   }

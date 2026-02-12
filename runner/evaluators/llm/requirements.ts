@@ -10,13 +10,6 @@ const requirementSchema = z.object({
 
 const requirementsSchema = z.object({
   version: z.number().int().positive().default(1),
-  inputs: z
-    .object({
-      files: z.array(z.string().min(1)).min(1),
-    })
-    .default({
-      files: ['app/App.tsx', 'app/package.json'],
-    }),
   requirements: z.array(requirementSchema).min(1),
 })
 

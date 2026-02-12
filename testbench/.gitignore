@@ -6,5 +6,3 @@ web-build/
 .DS_Store
 .env*.local
 runs/
-app/App.base.tsx
-app/assets/

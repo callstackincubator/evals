@@ -16,7 +16,7 @@ afterAll(async () => {
 })
 
 describe('loadRequirements', () => {
-  test('parses optional weights and defaults inputs.files when omitted', async () => {
+  test('parses optional requirement weights', async () => {
     const tempRoot = await mkdtemp(
       path.join(os.tmpdir(), 'runner-requirements-')
     )
@@ -40,7 +40,6 @@ describe('loadRequirements', () => {
 
     const parsed = await loadRequirements(requirementsPath)
 
-    expect(parsed.inputs.files).toEqual(['app/App.tsx', 'app/package.json'])
     expect(parsed.requirements[0]?.weight).toBe(2.5)
     expect(parsed.requirements[1]?.weight).toBeUndefined()
   })

@@ -8,9 +8,8 @@ import {
 } from 'runner/evaluators/code/run'
 import { discoverEvals } from 'runner/evaluators/llm/discovery'
 import {
-  collectMissingInputFiles,
+  loadAppFiles,
   loadExampleFiles,
-  loadInputFiles,
 } from 'runner/evaluators/llm/files'
 import {
   createRunOutputDirectories,
@@ -115,29 +114,29 @@ export async function runSolverStageForEval(
 
   try {
     const requirements = await loadRequirements(evalItem.requirementsPath)
-    const missingInputFiles = await collectMissingInputFiles(
-      evalItem.evalPath,
-      requirements
-    )
 
-    if (missingInputFiles.length > 0) {
+    const [loadedAppFiles, loadedExampleFiles, promptMarkdown] =
+      await Promise.all([
+        loadAppFiles(evalItem.evalPath),
+        loadExampleFiles(evalItem.evalPath),
+        loadPromptMarkdown(evalItem.evalPath),
+      ])
+
+    if (loadedExampleFiles.length === 0) {
+      console.warn(`(${evalItem.evalId}) skipping eval: missing example/** baseline`)
       return {
-        inputFiles: [],
-        errors: [`missing input files: ${missingInputFiles.join(', ')}`],
+        inputFiles: loadedAppFiles.map((file) => toRelativePath(file.absolutePath)),
+        errors: [],
+        solverSummary: 'skipped: missing example/** baseline',
         solverErrors,
+        requirements,
+        generatedFiles: loadedAppFiles,
         stepCount: 0,
         maxSteps: MAX_SOLVER_STEPS,
         finished: false,
         stepMetrics: [],
       }
     }
-
-    const [loadedInputFiles, loadedExampleFiles, promptMarkdown] =
-      await Promise.all([
-        loadInputFiles(evalItem.evalPath, requirements),
-        loadExampleFiles(evalItem.evalPath),
-        loadPromptMarkdown(evalItem.evalPath),
-      ])
 
     const generatedEvalDirectory = path.join(
       generatedOutputsDirectory,
@@ -148,7 +147,7 @@ export async function runSolverStageForEval(
       force: true,
     })
 
-    let currentInputFiles = loadedInputFiles
+    let currentInputFiles = loadedAppFiles
     let finalSolverResult: Awaited<ReturnType<typeof runSolver>> | undefined
     let finalCodeEvaluation: CodeEvaluatorResult | undefined
     const stepMetrics: SolverStageResult['stepMetrics'] = []
