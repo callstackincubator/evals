@@ -3,35 +3,30 @@
 ## prerequisites
 
 - install dependencies: `bun install`
-- install and authenticate `opencode` if using `llm-judge`
+- install and authenticate `opencode` for judge access
 
 ## execute benchmark
 
-- run all evals: `bun runner/index.ts --all`
-- run one eval: `bun runner/index.ts --eval <eval-id>`
-- run with config: `bun runner/index.ts --config bench.config.json --all`
-- run local noop benchmark: `bun run bench:local`
+- run all discovered evals: `bun runner/index.ts`
+- run with bounded concurrency: `bun runner/index.ts --limit-concurrency 2`
+- run a subset by pattern: `bun runner/index.ts --pattern 'animation/**/requirements.yaml'`
+- run with a specific model: `bun runner/index.ts --model openai/gpt-5.3-codex`
+- run with timeout/port override: `bun runner/index.ts --timeout 120000 --port 4096`
+- run with debug artifacts: `bun runner/index.ts --debug`
 
-## runner selection
+## defaults
 
-Enable runners in config using `runners`:
+Fixed defaults in code:
 
-```json
-{
-  "runners": ["llm-judge"]
-}
-```
-
-Supported values:
-
-- `unit` (optional per eval; skipped when `eval.test.ts` is missing)
-- `llm-judge` (primary)
-
-## llm judge configuration
-
-- `LLM_JUDGE_MODEL`: judge model id (`provider/model`), default `openai/gpt-5.3-codex`
-- `LLM_JUDGE_TIMEOUT_MS`: SDK server startup/judge timeout in milliseconds
-- `LLM_JUDGE_PORT`: server port used by Open Code SDK (default `4096`)
+- discovery root: `evals`
+- discovery pattern: `**/requirements.yaml` (override via `--pattern`)
+- output directory: `results`
+- per-eval artifacts: always written
+- default concurrency: `4` (override via `--limit-concurrency`)
+- default model: `openai/gpt-5.3-codex` (override via `--model`)
+- default timeout: `120000` (override via `--timeout`)
+- default port: `4096` (override via `--port`)
+- debug artifacts: off by default (enable via `--debug`)
 
 ## open code sdk flow
 
@@ -40,19 +35,13 @@ The judge runner uses AI SDK v6 with the Open Code provider:
 1. create provider with `createOpencode`
 2. auto-start local Open Code server
 3. call `generateText` with `Output.object` schema
-4. map structured requirement results into `runner_results`
+4. map structured requirement results into weighted per-eval score
 
 ## outputs
 
-Per workspace (`runs/<run-id>/<model-id>/<eval-id>/`):
+Per run:
 
-- `diff.patch`
-- `model-output.json`
-- `run-results.json`
-- `eval-results.json` (from bun tests, only when unit tests are present and executed)
-- `judge-prompt.txt` (llm-judge)
-- `judge-output.txt` (llm-judge)
-
-Aggregate report:
-
-- `results/<run-id>.json`
+- `results/<run-id>/summary.json`
+- `results/<run-id>/evals/<eval-id>.json` (when enabled)
+- `results/<run-id>/debug/<eval-id>/judge-prompt.txt` (debug mode)
+- `results/<run-id>/debug/<eval-id>/judge-output.json` (debug mode)

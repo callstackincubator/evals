@@ -2,18 +2,18 @@
 
 ## implemented now
 
-- baseline run workspace flow (`runs/<run-id>/<model>/<eval-id>/`)
-- model output apply flow (file writes and patch apply)
-- `unit` eval runner
-- `llm-judge` eval runner with per-eval `requirements.yaml`
+- modular `llm-judge` runner with per-eval `requirements.yaml`
+- glob-based eval discovery (`evals/**/requirements.yaml`)
+- weighted requirement scoring (`weight ?? 1.0`)
 - Open Code SDK integration via `createOpencode` for judge execution
-- aggregate report output in `results/<run-id>.json`
+- per-eval artifacts in `results/<run-id>/evals/*.json`
+- aggregate summary output in `results/<run-id>/summary.json`
 
 ## current target set
 
 - animation category bootstrapped under `evals/animation/` with 15 pilot evals:
   - `rn-anim-*` + `rn-rngh-*` + `rn-worklets-*` + keyboard-controller focused tasks (15 evals)
-  - current stage is text-only (`prompt.md`, `requirements.yaml`), app scaffolds intentionally removed
+  - all 15 evals now include full `app/` scaffolds and code-backed requirements inputs
 - async-state category bootstrapped under `evals/async-state/` with 16 pilot evals:
   - `rn-rq-*` + `rn-zustand-*` + `rn-jotai-*` + `rn-react-*` tasks (16 evals)
   - focus areas include TanStack Query, Zustand, Jotai async atoms, Suspense, and transitions
@@ -31,7 +31,7 @@
   - `rn-nav-*` (48 evals)
   - `rn-screens-*` (2 evals)
 - navigation evals follow the full standard contract (`prompt.md`, `requirements.yaml`, `app/`, optional `eval.test.ts`)
-- animation pilot is currently text-only
+- animation pilot is fully scaffolded at 15 evals
 - lists pilot is currently text-only
 - storage pilot is currently text-only
 - device-permissions pilot is currently text-only
@@ -39,7 +39,6 @@
 ## next roadmap items
 
 - select and lock a production judge model for Open Code Harness
-- define score aggregation semantics for requirement outcomes
 - run baseline-fail and reference-pass validation pass for the navigation pack
 - run baseline-fail and reference-pass validation passes for new category pilots as scaffolds are introduced
 - tune any flaky deterministic checks discovered during multi-model runs
