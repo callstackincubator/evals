@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: main-vs-modal-groups
     description: Must separate main routes from modal routes with explicit navigator groups.

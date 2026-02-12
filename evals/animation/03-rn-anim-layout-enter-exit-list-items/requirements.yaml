@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: animated-entering-for-new-items
     description: Must apply a Reanimated entering animation for newly added rows.

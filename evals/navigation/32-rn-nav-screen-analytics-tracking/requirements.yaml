@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: state-change-tracking-hook
     description: Must invoke analytics tracking from onStateChange route transitions.

@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: optional-filter-param
     description: Must model filter as an optional navigation param for the notifications route.

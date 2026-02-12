@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: modal-gesture-root-view-setup
     description: Must configure GestureHandlerRootView or gestureHandlerRootHOC in the modal interaction path required for Android modal gesture handling.

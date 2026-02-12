@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: pressable-drives-animation
     description: Must render a Pressable interaction that triggers animation state changes on press-in and press-out.

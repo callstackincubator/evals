@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "evals-testbench",
+    "slug": "evals-testbench",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "main": "index.ts",
+    "ios": { "supportsTablet": true },
+    "android": { "adaptiveIcon": {} },
+    "web": { "favicon": "./assets/favicon.png" }
+  }
+}

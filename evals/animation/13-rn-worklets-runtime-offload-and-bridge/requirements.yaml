@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: create-and-use-worklet-runtime
     description: Must create and use a dedicated worklets runtime or UI runtime execution path for non-trivial computation.

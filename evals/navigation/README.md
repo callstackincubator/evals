@@ -87,6 +87,7 @@ The eval pack covers the most important guides, troubleshooting topics, and APIs
 18. [`18-rn-nav-nested-notification-target`](./18-rn-nav-nested-notification-target)
 19. [`19-rn-nav-tabs-lazy-first-render`](./19-rn-nav-tabs-lazy-first-render)
 20. [`20-rn-nav-hide-tabbar-on-details`](./20-rn-nav-hide-tabbar-on-details)
+
 ### medium (19)
 
 21. [`21-rn-nav-checkout-reset-success`](./21-rn-nav-checkout-reset-success)
@@ -108,6 +109,7 @@ The eval pack covers the most important guides, troubleshooting topics, and APIs
 37. [`37-rn-nav-focus-fetch-abort`](./37-rn-nav-focus-fetch-abort)
 38. [`38-rn-nav-avoid-duplicate-current-route`](./38-rn-nav-avoid-duplicate-current-route)
 39. [`39-rn-nav-tabs-with-modal-layer`](./39-rn-nav-tabs-with-modal-layer)
+
 ### hard (11)
 
 40. [`40-rn-screens-native-stack-freeze-policy`](./40-rn-screens-native-stack-freeze-policy)

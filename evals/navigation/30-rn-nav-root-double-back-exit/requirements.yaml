@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: double-back-window
     description: Must require two back presses within a deterministic time window before exiting from root.

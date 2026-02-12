@@ -9,6 +9,7 @@
 5. add `requirements.yaml` with structured LLM-judge requirements
 6. optionally add `eval.test.ts` only when deterministic unit checks are needed
 7. align `expo`, `react`, and `react-native` versions with the target Expo SDK
+8. optionally add `example/` directory, from which all files (regardless of extension, e.g. `.tsx`, `.md`) will be appended to the system prompt of the model with a prefix message that informs it that these are examples of the right approach
 
 ## `requirements.yaml` format
 
@@ -21,13 +22,10 @@ version: 1
 inputs:
   files:
     - app/App.base.tsx
-    - app/package.json
 requirements: # specifies LLM-judged requirements
   - id: uses-reanimated-library
     description: Must use react-native-reanimated for button animation.
     weight: 1 # optional, specifies relative weight of requirement criteria
-exemplary-solutions:
-  - example/App.tsx # additional files that contents of will be concatenated to the system prompt for the LLM judge
 ```
 
 ## Notes

@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: header-title-from-route
     description: Must set the stack header title from route params on the details screen.

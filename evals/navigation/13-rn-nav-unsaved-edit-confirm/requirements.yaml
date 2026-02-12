@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: prevent-leave-when-dirty
     description: Must block leave actions while the form is dirty.

@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: per-tab-stack-structure
     description: Must define a stack navigator inside each tab instead of sharing one global stack for all tabs.

@@ -182,26 +182,32 @@ These issues are used as robustness validation signals and not as prompt wording
 ## deterministic outcome map (new additions)
 
 11. `11-rn-rngh-exclusive-single-double-tap`
+
 - deterministic single vs double tap disambiguation without double-firing.
 - traceability: `A5`, `A6`.
 
 12. `12-rn-rngh-scroll-pan-failure-chain`
+
 - deterministic axis arbitration between parent scroll and row pan gestures.
 - traceability: `A6`, `A7`, issue `#3266`, `#3049`.
 
 13. `13-rn-worklets-runtime-offload-and-bridge`
+
 - compute offloaded from React thread; bounded bridge updates.
 - traceability: `A1`, `A9`, `A10`, `A11`.
 
 14. `14-rn-shared-value-derived-threshold-state`
+
 - derived shared value state machine with stable threshold transitions.
 - traceability: `A2`, `A4`, `A11`.
 
 15. `15-rn-keyboard-controller-sticky-composer`
+
 - keyboard-follow composer using keyboard animation values/shared values.
 - traceability: `A16`, issue `#987`, `#1134`.
 
 16. `16-rn-keyboard-controller-aware-scroll-footer`
+
 - keyboard-aware scroll + sticky footer stability under show/hide/dismiss.
 - traceability: `A17`, `A18`, issue `#871`, `#1110`, `#867`.
 

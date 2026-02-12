@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: modal-compose-route
     description: Must configure compose as a modal presentation route in a stack navigator.

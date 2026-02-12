@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: transparent-modal-presentation
     description: Must configure a transparent-style modal route in stack navigation.

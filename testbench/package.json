@@ -1,0 +1,36 @@
+{
+  "name": "evals-testbench",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "harness": "react-native-harness --harnessRunner web",
+    "harness:android": "react-native-harness --harnessRunner android",
+    "harness:ios": "react-native-harness --harnessRunner ios"
+  },
+  "dependencies": {
+    "expo": "~54.0.33",
+    "expo-status-bar": "~3.0.9",
+    "react": "19.1.0",
+    "react-native": "0.81.5",
+    "react-native-reanimated": "~4.1.1",
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-navigation/bottom-tabs": "^7.3.0",
+    "@react-navigation/drawer": "^7.3.0",
+    "@react-navigation/native": "^7.1.0",
+    "@react-navigation/native-stack": "^7.3.0",
+    "react-native-gesture-handler": "~2.28.0",
+    "react-native-safe-area-context": "~5.6.0",
+    "react-native-screens": "~4.16.0"
+  },
+  "devDependencies": {
+    "@react-native-harness/platform-web": "^1.0.0-alpha.25",
+    "@types/react": "~19.1.0",
+    "react-native-harness": "^1.0.0-alpha.25",
+    "typescript": "~5.9.2"
+  }
+}

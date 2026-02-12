@@ -1,22 +1,31 @@
-import { defineConfig, globalIgnores } from "eslint/config";
-import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
-import simpleImportSort from "eslint-plugin-simple-import-sort";
-import globals from "globals";
+import { defineConfig, globalIgnores } from 'eslint/config'
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
+import simpleImportSort from 'eslint-plugin-simple-import-sort'
+import globals from 'globals'
 
 export default defineConfig([
-  globalIgnores(["**/node_modules", "**/lib", "**/build", "**/dist"]),
+  globalIgnores([
+    'results/**/*',
+    'runs/**/*',
+    'runner/solver/template/**/*',
+    '**/node_modules',
+    '**/lib',
+    '**/build',
+    '**/dist',
+    'evals/**',
+  ]),
   eslintPluginPrettierRecommended,
   {
     plugins: {
-      "simple-import-sort": simpleImportSort,
+      'simple-import-sort': simpleImportSort,
     },
     rules: {
-      "simple-import-sort/imports": "error",
-      "simple-import-sort/exports": "error",
+      'simple-import-sort/imports': 'error',
+      'simple-import-sort/exports': 'error',
     },
   },
   {
-    files: ["**/babel.config.js", "**/react-native.config.js"],
+    files: ['**/babel.config.js', '**/react-native.config.js'],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -25,7 +34,7 @@ export default defineConfig([
   },
   {
     rules: {
-      "prettier/prettier": "error",
+      'prettier/prettier': 'error',
     },
   },
-]);
+])

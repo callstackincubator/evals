@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: screens-optimization-enabled
     description: Must configure react-native-screens optimization settings for native stack behavior.

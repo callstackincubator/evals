@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: signout-history-cleared
     description: Must clear private route history when sign-out occurs.

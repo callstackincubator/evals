@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: numeric-orderid-parse
     description: Must parse orderId from deep-link input into a numeric form before use.

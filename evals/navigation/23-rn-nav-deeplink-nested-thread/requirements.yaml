@@ -2,7 +2,6 @@ version: 1
 inputs:
   files:
     - app/App.tsx
-    - app/package.json
 requirements:
   - id: nested-thread-link-map
     description: Must map deep-link paths through nested navigators to Thread route with id param.
