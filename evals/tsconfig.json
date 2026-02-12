@@ -6,7 +6,7 @@
   "include": [
     "**/app/**/*.ts",
     "**/app/**/*.tsx",
-    "**/example/**/*.ts",
-    "**/example/**/*.tsx"
+    "**/reference/**/*.ts",
+    "**/reference/**/*.tsx"
   ]
 }

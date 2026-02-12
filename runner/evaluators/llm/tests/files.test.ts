@@ -3,7 +3,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { afterAll, describe, expect, test } from 'bun:test'
 
-import { loadAppFiles, loadExampleFiles } from '../files'
+import { loadAppFiles, loadReferenceFiles } from '../files'
 
 const tempRoots: string[] = []
 
@@ -16,20 +16,20 @@ afterAll(async () => {
 })
 
 describe('files helpers', () => {
-  test('loads guidance files from example directory', async () => {
+  test('loads guidance files from reference directory', async () => {
     const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'runner-files-'))
     tempRoots.push(tempRoot)
 
     const evalDir = path.join(tempRoot, 'eval')
-    await mkdir(path.join(evalDir, 'example', 'nested'), { recursive: true })
-    await writeFile(path.join(evalDir, 'example', 'README.md'), 'guide')
-    await writeFile(path.join(evalDir, 'example', 'nested', 'App.tsx'), 'code')
+    await mkdir(path.join(evalDir, 'reference', 'nested'), { recursive: true })
+    await writeFile(path.join(evalDir, 'reference', 'README.md'), 'guide')
+    await writeFile(path.join(evalDir, 'reference', 'nested', 'App.tsx'), 'code')
 
-    const loaded = await loadExampleFiles(evalDir)
+    const loaded = await loadReferenceFiles(evalDir)
 
     expect(loaded.length).toBe(2)
-    expect(loaded.some((file) => file.absolutePath.endsWith('example/README.md'))).toBe(true)
-    expect(loaded.some((file) => file.absolutePath.endsWith('example/nested/App.tsx'))).toBe(true)
+    expect(loaded.some((file) => file.absolutePath.endsWith('reference/README.md'))).toBe(true)
+    expect(loaded.some((file) => file.absolutePath.endsWith('reference/nested/App.tsx'))).toBe(true)
   })
 
   test('loads baseline app files recursively from app directory', async () => {

@@ -11,7 +11,7 @@ Each eval is expected to include:
 - `prompt.md`
 - `requirements.yaml`
 - `app/` (baseline source context used to generate benchmark output)
-- `example/` (judge reference context)
+- `reference/` (judge reference context)
 
 ## How evaluation works
 

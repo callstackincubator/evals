@@ -39,20 +39,20 @@ export async function loadAppFiles(evalPath: string): Promise<LoadedFile[]> {
 }
 
 /*
-  Loads all files from example/ as judge reference context.
+  Loads all files from reference/ as judge reference context.
 */
-export async function loadExampleFiles(
+export async function loadReferenceFiles(
   evalPath: string
 ): Promise<LoadedFile[]> {
-  const examplePath = path.join(evalPath, 'example')
+  const referencePath = path.join(evalPath, 'reference')
 
-  if (!(await exists(examplePath))) {
+  if (!(await exists(referencePath))) {
     return []
   }
 
-  const exampleFilePaths = (await collectFilesRecursively(examplePath)).sort()
+  const referenceFilePaths = (await collectFilesRecursively(referencePath)).sort()
 
   return Promise.all(
-    exampleFilePaths.map(async (filePath) => await loadFile(filePath))
+    referenceFilePaths.map(async (filePath) => await loadFile(filePath))
   )
 }

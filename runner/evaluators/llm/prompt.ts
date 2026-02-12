@@ -8,7 +8,7 @@ import type { LoadedFile } from 'runner/utils/fs'
 function renderEvalRequirementsPrompt(
   requirementsBlock: string,
   filesBlock: string,
-  exampleFileContents: LoadedFile[]
+  referenceFileContents: LoadedFile[]
 ) {
   return dedent(
     `
@@ -26,10 +26,10 @@ function renderEvalRequirementsPrompt(
     Provided files:
     ${filesBlock}
   ` +
-      (exampleFileContents.length > 0
+      (referenceFileContents.length > 0
         ? `
-    Example correct approach guidelines:
-    ${exampleFileContents.map(({ content }) => content.trim()).join('\n\n')}
+    Reference implementation guidelines:
+    ${referenceFileContents.map(({ content }) => content.trim()).join('\n\n')}
     `
         : '')
   )
@@ -41,7 +41,7 @@ function renderEvalRequirementsPrompt(
 export function buildJudgePrompt(
   requirements: RequirementsDefinition,
   files: LoadedFile[],
-  exampleFileContents: LoadedFile[]
+  referenceFileContents: LoadedFile[]
 ) {
   const requirementsBlock = requirements.requirements
     .map((requirement) => {
@@ -68,6 +68,6 @@ export function buildJudgePrompt(
   return renderEvalRequirementsPrompt(
     requirementsBlock,
     filesBlock,
-    exampleFileContents
+    referenceFileContents
   )
 }

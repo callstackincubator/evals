@@ -142,14 +142,14 @@ function mapRequirementResults(
 async function runLlmJudgeForEval(params: {
   requirements: Awaited<ReturnType<typeof loadRequirements>>
   files: LoadedFile[]
-  exampleFiles: LoadedFile[]
+  referenceFiles: LoadedFile[]
   mockJudgeLLM: boolean
   runJudgeCall: ReturnType<typeof createJudgeClient>
 }): Promise<LlmJudgeEvaluationResult> {
   const debugPrompt = buildJudgePrompt(
     params.requirements,
     params.files,
-    params.exampleFiles
+    params.referenceFiles
   )
 
   if (params.mockJudgeLLM) {
@@ -216,11 +216,11 @@ export async function runLlmJudgePipeline(cliOptions: CliOptions) {
       cliOptions,
       judgeModel: cliOptions.model,
       resultsDir: RESULTS_DIR,
-      runLlmJudgeEval: async ({ requirements, files, exampleFiles }) =>
+      runLlmJudgeEval: async ({ requirements, files, referenceFiles }) =>
         await runLlmJudgeForEval({
           requirements,
           files,
-          exampleFiles,
+          referenceFiles,
           mockJudgeLLM: cliOptions.mockJudgeLLM,
           runJudgeCall,
         }),

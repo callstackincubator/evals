@@ -9,7 +9,7 @@ import {
 import { discoverEvals } from 'runner/evaluators/llm/discovery'
 import {
   loadAppFiles,
-  loadExampleFiles,
+  loadReferenceFiles,
 } from 'runner/evaluators/llm/files'
 import {
   createRunOutputDirectories,
@@ -61,7 +61,7 @@ export type SolverStageResult = {
   generatedDirectory?: string
   requirements?: Awaited<ReturnType<typeof loadRequirements>>
   generatedFiles?: LoadedFile[]
-  exampleFiles?: LoadedFile[]
+  referenceFiles?: LoadedFile[]
   codeEvaluation?: CodeEvaluatorResult
   stepCount: number
   maxSteps: number
@@ -115,19 +115,19 @@ export async function runSolverStageForEval(
   try {
     const requirements = await loadRequirements(evalItem.requirementsPath)
 
-    const [loadedAppFiles, loadedExampleFiles, promptMarkdown] =
+    const [loadedAppFiles, loadedReferenceFiles, promptMarkdown] =
       await Promise.all([
         loadAppFiles(evalItem.evalPath),
-        loadExampleFiles(evalItem.evalPath),
+        loadReferenceFiles(evalItem.evalPath),
         loadPromptMarkdown(evalItem.evalPath),
       ])
 
-    if (loadedExampleFiles.length === 0) {
-      console.warn(`(${evalItem.evalId}) skipping eval: missing example/** baseline`)
+    if (loadedReferenceFiles.length === 0) {
+      console.warn(`(${evalItem.evalId}) skipping eval: missing reference/** baseline`)
       return {
         inputFiles: loadedAppFiles.map((file) => toRelativePath(file.absolutePath)),
         errors: [],
-        solverSummary: 'skipped: missing example/** baseline',
+        solverSummary: 'skipped: missing reference/** baseline',
         solverErrors,
         requirements,
         generatedFiles: loadedAppFiles,
@@ -219,7 +219,7 @@ export async function runSolverStageForEval(
       generatedDirectory: generatedEvalDirectory,
       requirements,
       generatedFiles: finalSolverResult.files,
-      exampleFiles: loadedExampleFiles,
+      referenceFiles: loadedReferenceFiles,
       codeEvaluation: finalCodeEvaluation,
       stepCount: stepMetrics.length,
       maxSteps: MAX_SOLVER_STEPS,
@@ -258,7 +258,7 @@ export async function runSolverBackedLlmExecution(params: {
   runLlmJudgeEval: (params: {
     requirements: NonNullable<SolverStageResult['requirements']>
     files: NonNullable<SolverStageResult['generatedFiles']>
-    exampleFiles: NonNullable<SolverStageResult['exampleFiles']>
+    referenceFiles: NonNullable<SolverStageResult['referenceFiles']>
   }) => Promise<LlmJudgeEvaluationResult>
 }) {
   const discoveredEvals = await discoverEvals(params.cliOptions.pattern)
@@ -316,16 +316,16 @@ export async function runSolverBackedLlmExecution(params: {
         if (
           solverStage.requirements !== undefined &&
           solverStage.generatedFiles !== undefined &&
-          solverStage.exampleFiles !== undefined &&
+          solverStage.referenceFiles !== undefined &&
           solverStage.generatedDirectory !== undefined
         ) {
           const requirements = solverStage.requirements
           const generatedFiles = solverStage.generatedFiles
-          const exampleFiles = solverStage.exampleFiles
+          const referenceFiles = solverStage.referenceFiles
           const judgeResult = await params.runLlmJudgeEval({
             requirements,
             files: generatedFiles,
-            exampleFiles,
+            referenceFiles,
           })
           requirementResults = judgeResult.requirementResults
           summary = judgeResult.summary

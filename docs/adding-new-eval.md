@@ -6,7 +6,7 @@
 2. Add `app/App.tsx` as the starter implementation
 3. Add `prompt.md` with the task prompt
 4. Add `requirements.yaml` that describe requirements
-5. Add `example/App.tsx` as the reference implementation
+5. Add `reference/App.tsx` as the reference implementation
 
 ## `requirements.yaml` format
 
