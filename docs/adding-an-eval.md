@@ -2,7 +2,7 @@
 
 ## steps
 
-1. create a folder under `evals/<eval-id>` or a category folder like `evals/navigation/<eval-id>`
+1. create a folder under a category path like `evals/<category>/<eval-id>`
 2. add `prompt.md` with the task prompt
 3. add `app/` with the RN scaffold
 4. add `app/App.base.tsx` as the starter implementation

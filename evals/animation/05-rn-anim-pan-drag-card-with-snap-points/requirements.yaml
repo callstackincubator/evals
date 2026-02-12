@@ -1,8 +1,8 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
+    - app/package.json
 requirements:
   - id: gesture-handler-pan-api
     description: Must use react-native-gesture-handler gesture APIs to drive drag updates.

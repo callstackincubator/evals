@@ -1,8 +1,8 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
+    - app/package.json
 requirements:
   - id: simultaneous-pinch-and-pan
     description: Must compose pinch and pan gestures to run simultaneously using Gesture Handler composition primitives.
