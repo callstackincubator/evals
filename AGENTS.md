@@ -2,8 +2,9 @@
 
 This file defines how agents should work in this repository.
 
-## Commit Messages
+## Git Workflow
 
+### Commit Messages
 - Use Conventional Commits format: `type(scope): description`
 - Allowed types: `feat`, `fix`, `refactor`, `chore`, `docs`
 - Scope is optional; use package/eval name when relevant
@@ -12,53 +13,47 @@ This file defines how agents should work in this repository.
 - Use imperative mood
 - Example: `feat(runner): add maxSteps setting for tool iterations`
 
-## Branch Naming
-
+### Branch Naming
 - Format: `type/kebab-case-description`
 - Allowed prefixes: `feat/`, `fix/`, `refactor/`, `chore/`, `docs/`, `ci/`
-- Examples:
-  - `feat/tool-calling`
-  - `fix/streaming-first-char-missing`
+- Examples: `feat/tool-calling`, `fix/streaming-first-char-missing`
 
-## Stacked PRs
-
+### Stacked PRs
 - Create feature branches from `main`
-- Keep commits atomic and independently reviewable
 - One logical change per commit
 - Reference related PRs in commit messages when building on unmerged work
 
-## Code Style
+## Bun Workflow
 
 - Package manager: `bun` (do not use npm or yarn)
+- Run `bun lint` before committing
+- Run evals with `bun runner/index.ts`
+
+## Code Conventions
+
 - No semicolons
 - Use single quotes
 - Keep imports sorted (ESLint enforces this)
-- Run `bun lint` before committing
+- Prefer Bun/native APIs before custom implementations: CLI parsing `node:util` `parseArgs`, file discovery `Bun.Glob`, file existence checks `fs/promises` `exists`
+- Favor the simplest implementation that satisfies requirements
+- Avoid adding abstraction layers unless they are reused or clearly necessary
+- Keep config shapes flat and explicit unless nesting is required
+- Co-locate types with the module that owns them
+- Let TypeScript infer types when clear; add explicit types only where inference is ambiguous or unsafe
+- Keep line length readable; split long expressions/imports/log lines
 
-## Project-Specific Rules
+## Comments and Language
 
-- This project benchmarks real React Native task performance across:
-  - models
-  - skills
-  - agents
-  - implementation techniques
+- Use multiline block comments for function-level descriptions (`/* ... */`)
+- Use `//` comments inside function bodies for stage/progress notes
+- Keep comments concise and only where they improve clarity
+- All README/docs content must be in English
+
+## Eval Rules
+
+- This project benchmarks real React Native task performance across models, skills, agents, and implementation techniques
 - Evals are self-contained under `evals/<eval-id>/` or `evals/<category>/<eval-id>/` and should not depend on shared app code
-- Core eval structure for each eval:
-  - `prompt.md`
-  - `requirements.yaml`
-  - `app/`
-  - `eval.test.ts` (optional)
-- Eval methodology uses three types:
-  - `behavior`
-  - `preference`
-  - `constraint`
-- Prefer behavior-oriented assertions; avoid regex-only checks unless there is no practical alternative
-- MVP currently uses `llm-judge` requirements as the primary signal; unit Bun tests are optional per eval
-- Each application in `app/` is a standalone React Native or Expo application
-
-## Running and Verification
-
-- Testing evals: `bun runner/index.ts --config bench.local.json --all`
+- Core eval structure: `prompt.md`, `requirements.yaml`, `app/`, and optional `eval.test.ts`
 
 ## Documentation Hygiene
 
