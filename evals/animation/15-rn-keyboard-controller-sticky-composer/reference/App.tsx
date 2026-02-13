@@ -1,48 +1,82 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  ListRenderItemInfo,
+} from 'react-native'
 import {
   KeyboardProvider,
   useReanimatedKeyboardAnimation,
 } from 'react-native-keyboard-controller'
-import Animated, {
-  interpolateColor,
-  useAnimatedStyle,
-} from 'react-native-reanimated'
+import Animated, { useAnimatedStyle } from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useCallback } from 'react'
 
 const MESSAGES = [
   'Ship the animation evals',
   'Validate gesture edge cases',
   'Confirm keyboard behavior on Android',
   'Document threshold semantics',
-  'Merge after lint and checks',
 ]
 
 function ComposerDemo() {
   const keyboard = useReanimatedKeyboardAnimation()
+  const { top: topInset, bottom: bottomInset } = useSafeAreaInsets()
 
-  const composerStyle = useAnimatedStyle(() => {
+  const reversedMessages = [...MESSAGES].reverse()
+  const animatedComposerStyle = useAnimatedStyle(() => {
+    const keyboardHeight = Math.abs(keyboard.height.value)
+
+    const translateY = -Math.max(keyboardHeight, bottomInset)
+
     return {
-      borderTopColor: interpolateColor(
-        keyboard.progress.value,
-        [0, 1],
-        ['#cbd5e1', '#2563eb']
-      ),
-      transform: [{ translateY: -keyboard.height.value }],
+      transform: [{ translateY }],
     }
   })
 
-  return (
-    <View style={styles.screen}>
-      <View style={styles.messageList}>
-        {MESSAGES.map((message) => {
-          return (
-            <View key={message} style={styles.messageBubble}>
-              <Text style={styles.messageText}>{message}</Text>
-            </View>
-          )
-        })}
-      </View>
+  const animatedListStyle = useAnimatedStyle(() => {
+    const raw = keyboard.height.value + bottomInset
 
-      <Animated.View style={[styles.composerBar, composerStyle]}>
+    const offset = raw < 0 ? -raw : 0
+
+    return {
+      marginBottom: offset,
+    }
+  })
+
+  const renderMessage = useCallback(
+    ({ item: message, index }: ListRenderItemInfo<string>) => {
+      const receivedMessage = index % 2 === 0
+      return (
+        <View
+          key={message}
+          style={[
+            styles.messageBubble,
+            { alignSelf: receivedMessage ? 'flex-start' : 'flex-end' },
+          ]}
+        >
+          <Text style={styles.messageText}>{message}</Text>
+        </View>
+      )
+    },
+    []
+  )
+
+  return (
+    <View style={[styles.screen, { paddingTop: topInset }]}>
+      <Animated.View style={[styles.messagesContainer, animatedListStyle]}>
+        <FlatList
+          style={{ marginBottom: bottomInset }}
+          contentContainerStyle={styles.messageList}
+          inverted
+          data={reversedMessages}
+          renderItem={renderMessage}
+        />
+      </Animated.View>
+
+      <Animated.View style={[styles.composerBar, animatedComposerStyle]}>
         <TextInput
           placeholder="Type a message"
           placeholderTextColor="#64748b"
@@ -62,15 +96,12 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  messagesContainer: {
+    flex: 1,
+  },
   composerBar: {
-    backgroundColor: '#fff',
-    borderTopWidth: 2,
-    bottom: 0,
-    left: 0,
     paddingHorizontal: 12,
-    paddingVertical: 10,
-    position: 'absolute',
-    right: 0,
+    paddingVertical: 8,
   },
   input: {
     backgroundColor: '#f1f5f9',
@@ -81,18 +112,15 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   messageBubble: {
-    alignSelf: 'flex-start',
     backgroundColor: '#fff',
     borderRadius: 12,
     marginBottom: 10,
-    maxWidth: '88%',
+    maxWidth: '60%',
     paddingHorizontal: 12,
     paddingVertical: 10,
   },
   messageList: {
-    paddingBottom: 120,
     paddingHorizontal: 14,
-    paddingTop: 56,
   },
   messageText: {
     color: '#0f172a',
