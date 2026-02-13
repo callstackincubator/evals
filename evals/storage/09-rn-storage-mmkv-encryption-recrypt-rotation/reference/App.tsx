@@ -15,11 +15,17 @@ const secureStorage = new MMKV({
 
 const SECRET_KEY = 'secret:token'
 
-function safeReadSecret() {
+function readSecretValue() {
   try {
-    return secureStorage.getString(SECRET_KEY) ?? ''
+    return {
+      ok: true,
+      value: secureStorage.getString(SECRET_KEY) ?? '',
+    }
   } catch {
-    return ''
+    return {
+      ok: false,
+      value: '',
+    }
   }
 }
 
@@ -30,25 +36,29 @@ function runRecoveryPath() {
 }
 
 export default function App() {
-  const [secret, setSecret] = useState(safeReadSecret())
+  const [secret, setSecret] = useState(readSecretValue().value)
   const [activeKey, setActiveKey] = useState('v1')
   const [status, setStatus] = useState('ready')
 
   const saveSecret = () => {
     secureStorage.set(SECRET_KEY, `token-${Date.now()}`)
-    setSecret(safeReadSecret())
+    setSecret(readSecretValue().value)
   }
 
   const rotateKey = () => {
-    const snapshot = safeReadSecret()
-
     try {
       setStatus('rotating')
+      const snapshot = readSecretValue()
+      if (!snapshot.ok) {
+        throw new Error('pre-rotation decrypt failure')
+      }
+
       secureStorage.recrypt(ENCRYPTION_KEYS.next)
-      const preserved = safeReadSecret()
-      if (preserved !== snapshot) {
+      const preserved = readSecretValue()
+      if (!preserved.ok || preserved.value !== snapshot.value) {
         throw new Error('post-rotation value mismatch')
       }
+
       setActiveKey('v2')
       setStatus('ready')
     } catch {
@@ -57,7 +67,7 @@ export default function App() {
       setStatus('recovered')
     }
 
-    setSecret(safeReadSecret())
+    setSecret(readSecretValue().value)
   }
 
   return (

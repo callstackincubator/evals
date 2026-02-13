@@ -36,34 +36,29 @@ export default function App() {
   }
 
   useEffect(() => {
-    let mounted = true
-    let removeListener = () => {
-      return
-    }
+    let cancelled = false
+    let subscription: { remove: () => void } | null = null
 
     const setup = async () => {
       const db = await getDb()
       await ensureTable(db)
-      if (mounted) {
-        await refreshItems()
+      if (cancelled) {
+        return
       }
+      await refreshItems()
 
-      const subscription = SQLite.addDatabaseChangeListener((event) => {
+      subscription = SQLite.addDatabaseChangeListener((event) => {
         if (event.databaseName === 'reactive-listener.db' && event.tableName === 'items') {
           refreshItems()
         }
       })
-
-      removeListener = () => {
-        subscription.remove()
-      }
     }
 
     setup()
 
     return () => {
-      mounted = false
-      removeListener()
+      cancelled = true
+      subscription?.remove()
     }
   }, [])
 

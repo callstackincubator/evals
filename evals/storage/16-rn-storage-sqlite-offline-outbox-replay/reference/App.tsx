@@ -64,21 +64,28 @@ async function replayBatch() {
   )
 
   for (const row of rows) {
-    await db.withTransactionAsync(async () => {
-      try {
-        await sendMutation(row)
-        await db.runAsync(
+    let sent = false
+    try {
+      await sendMutation(row)
+      sent = true
+    } catch {
+      sent = false
+    }
+
+    await db.withExclusiveTransactionAsync(async (transaction) => {
+      if (sent) {
+        await transaction.runAsync(
           'UPDATE outbox SET status = ?, updated_at = ? WHERE id = ?',
           'sent',
           Date.now(),
           row.id,
         )
-      } catch {
+      } else {
         const nextAttempts = row.attempts + 1
         const nextStatus: OutboxRow['status'] = nextAttempts >= MAX_ATTEMPTS ? 'failed' : 'pending'
         const nextRetryAt = Date.now() + nextAttempts * 3_000
 
-        await db.runAsync(
+        await transaction.runAsync(
           'UPDATE outbox SET attempts = ?, status = ?, next_retry_at = ?, updated_at = ? WHERE id = ?',
           nextAttempts,
           nextStatus,

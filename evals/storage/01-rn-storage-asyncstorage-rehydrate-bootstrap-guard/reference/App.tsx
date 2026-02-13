@@ -37,13 +37,38 @@ function safeParse<T>(value: string | null, fallback: T): T {
   }
 }
 
+function parseSession(value: string | null): Session | null {
+  const parsed = safeParse<Partial<Session> | null>(value, null)
+  if (!parsed) {
+    return null
+  }
+
+  if (typeof parsed.token !== 'string' || typeof parsed.userId !== 'string') {
+    return null
+  }
+
+  return {
+    token: parsed.token,
+    userId: parsed.userId,
+  }
+}
+
+function parseDraft(value: string | null): Draft {
+  const parsed = safeParse<Partial<Draft>>(value, EMPTY_DRAFT)
+
+  return {
+    body: typeof parsed.body === 'string' ? parsed.body : '',
+    updatedAt: typeof parsed.updatedAt === 'number' ? parsed.updatedAt : 0,
+  }
+}
+
 async function bootstrapState(): Promise<BootstrapState> {
   const pairs = await AsyncStorage.multiGet([SESSION_KEY, DRAFT_KEY])
   const values = Object.fromEntries(pairs)
 
   return {
-    draft: safeParse<Draft>(values[DRAFT_KEY] ?? null, EMPTY_DRAFT),
-    session: safeParse<Session | null>(values[SESSION_KEY] ?? null, null),
+    draft: parseDraft(values[DRAFT_KEY] ?? null),
+    session: parseSession(values[SESSION_KEY] ?? null),
   }
 }
 
@@ -56,14 +81,24 @@ export default function App() {
     let cancelled = false
 
     const runBootstrap = async () => {
-      const next = await bootstrapState()
-      if (cancelled) {
-        return
-      }
+      try {
+        const next = await bootstrapState()
+        if (cancelled) {
+          return
+        }
 
-      setSession(next.session)
-      setDraft(next.draft)
-      setIsHydrating(false)
+        setSession(next.session)
+        setDraft(next.draft)
+      } catch {
+        if (!cancelled) {
+          setSession(null)
+          setDraft(EMPTY_DRAFT)
+        }
+      } finally {
+        if (!cancelled) {
+          setIsHydrating(false)
+        }
+      }
     }
 
     runBootstrap()

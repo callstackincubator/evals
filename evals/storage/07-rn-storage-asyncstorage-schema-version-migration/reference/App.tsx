@@ -13,6 +13,22 @@ type MigrationResult = {
   toVersion: number
 }
 
+function safeParseRecord(value: string | null, fallback: Record<string, unknown>) {
+  if (!value) {
+    return fallback
+  }
+
+  try {
+    const parsed = JSON.parse(value) as unknown
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+      return parsed as Record<string, unknown>
+    }
+    return fallback
+  } catch {
+    return fallback
+  }
+}
+
 async function readVersion(): Promise<number> {
   const raw = await AsyncStorage.getItem(SCHEMA_VERSION_KEY)
   if (!raw) {
@@ -46,11 +62,13 @@ async function migrateToV2() {
   }
 
   const legacy = await AsyncStorage.getItem(LEGACY_PROFILE_KEY)
-  const legacyPayload = legacy ? JSON.parse(legacy) : { name: 'Guest' }
+  const legacyPayload = safeParseRecord(legacy, { name: 'Guest' })
+  const displayName = typeof legacyPayload.name === 'string' ? legacyPayload.name : 'Guest'
+
   await AsyncStorage.setItem(
     PROFILE_V2_KEY,
     JSON.stringify({
-      displayName: legacyPayload.name,
+      displayName,
       updatedAt: Date.now(),
     }),
   )
