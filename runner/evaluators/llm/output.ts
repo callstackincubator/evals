@@ -1,60 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
-import type { CodeEvaluatorResult } from 'runner/evaluators/code/run'
-import type { RequirementResult } from './utils'
-
-export type EvalResult = {
-  runId: string
-  evalId: string
-  evalPath: string
-  judgeModel: string
-  requirementsPath: string
-  inputFiles: string[]
-  requirementResults: RequirementResult[]
-  score: {
-    passedWeight: number
-    totalWeight: number
-    ratio: number
-  }
-  errors: string[]
-  summary?: string
-  solver?: {
-    model: string
-    outputFileCount: number
-    maxSteps: number
-    stepCount: number
-    finished: boolean
-    summary?: string
-    errors: string[]
-    steps?: Array<{
-      step: number
-      outputFileCount: number
-      eslint: {
-        errorCount: number
-        warningCount: number
-      }
-      tsc: {
-        errorCount: number
-        warningCount: number
-      }
-      CC: number
-      summary?: string
-      errors: string[]
-    }>
-  }
-  code?: CodeEvaluatorResult
-  promptPath?: string
-  judgeOutputPath?: string
-}
-
-function sanitizeSegment(value: string): string {
-  return value.replace(/[^a-zA-Z0-9._-]/g, '_')
-}
-
-function toRelativePath(value: string): string {
-  return path.relative(process.cwd(), value).split(path.sep).join('/')
-}
+import { sanitizeSegment } from 'runner/utils/fs'
 
 /*
   Creates run output directories and returns absolute paths used by writers.
@@ -72,25 +19,6 @@ export async function createRunOutputDirectories(
   return {
     runDirectory,
     evalDirectory,
-  }
-}
-
-/*
-  Writes one eval result artifact and returns its index entry for summary.json.
- */
-export async function writePerEvalResult(
-  evalDirectory: string,
-  result: EvalResult
-) {
-  const fileName = `${sanitizeSegment(result.evalId)}.json`
-  const absolutePath = path.join(evalDirectory, fileName)
-
-  await writeFile(absolutePath, JSON.stringify(result, null, 2), 'utf8')
-
-  return {
-    evalId: result.evalId,
-    path: toRelativePath(absolutePath),
-    scoreRatio: result.score.ratio,
   }
 }
 
@@ -117,8 +45,8 @@ export async function writeDebugArtifacts(
   await writeFile(judgeOutputPath, JSON.stringify(rawOutput, null, 2), 'utf8')
 
   return {
-    promptPath: toRelativePath(promptPath),
-    judgeOutputPath: toRelativePath(judgeOutputPath),
+    promptPath,
+    judgeOutputPath,
   }
 }
 
@@ -128,5 +56,5 @@ export async function writeDebugArtifacts(
 export async function writeSummary(runDirectory: string, summary: unknown) {
   const summaryPath = path.join(runDirectory, 'summary.json')
   await writeFile(summaryPath, JSON.stringify(summary, null, 2), 'utf8')
-  return toRelativePath(summaryPath)
+  return summaryPath
 }

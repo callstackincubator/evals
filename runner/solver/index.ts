@@ -1,28 +1,31 @@
-import { createOpenAI } from '@ai-sdk/openai'
 import { Output, generateText } from 'ai'
+import { createOpencode } from 'ai-sdk-provider-opencode-sdk'
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { z } from 'zod'
 
-import type { RequirementsDefinition } from 'runner/evaluators/llm/requirements'
+import { ensureOpencodeServerStarted } from 'runner/utils/opencode'
 import type { LoadedFile } from 'runner/utils/fs'
 
+const SYSTEM_PROMPT = `
+  You are a React Native developer.
+  Your goal is to modify provided files to satisfy given task.
+  You must return all given files with applied modification.
+`
+
 const solverOutputSchema = z.object({
-  summary: z.string().optional(),
+  summary: z.string().describe('Short summary of performed work'),
   files: z.array(
     z.object({
-      path: z.string().min(1),
-      content: z.string().min(1),
+      path: z.string(),
+      content: z.string(),
     })
-  ),
+  ).min(1),
 })
-
-type SolverOutput = z.infer<typeof solverOutputSchema>
 
 export type SolverResult = {
   files: LoadedFile[]
   summary?: string
-  errors: string[]
 }
 
 function toPosixPath(value: string) {
@@ -39,7 +42,7 @@ function sanitizeGeneratedPath(relativePath: string) {
   return segments.join('/')
 }
 
-async function materializeFiles(
+export async function materializeFiles(
   outputDirectory: string,
   files: Array<{ path: string; content: string }>
 ): Promise<LoadedFile[]> {
@@ -60,146 +63,55 @@ async function materializeFiles(
   )
 }
 
-function buildSolverPrompt(params: {
-  evalId: string
-  requirements: RequirementsDefinition
-  promptMarkdown: string
-  inputFiles: LoadedFile[]
-}) {
-  const requirementsText = params.requirements.requirements
-    .map((requirement) => `- ${requirement.id}: ${requirement.description}`)
-    .join('\n')
-  const inputFilesText = params.inputFiles
+function buildSolverPrompt(prompt: string, inputFiles: LoadedFile[]) {
+  const files = inputFiles
     .map((file) => {
-      const fileLabel =
-        file.path.length > 0
-          ? file.path
-          : toPosixPath(path.basename(file.absolutePath))
       return `
-### FILE: ${fileLabel}
-\`\`\`
-${file.content}
-\`\`\`
-      `.trim()
+        <file path="${file.path}">
+          ${file.content}
+        </file>
+      `
     })
     .join('\n\n')
 
   return `
-You are generating a placeholder React Native solution for eval "${params.evalId}".
+    ${prompt}
 
-Return a JSON object with:
-- "summary": a brief explanation
-- "files": an array of files to evaluate, each with:
-  - "path": relative path like "app/App.tsx"
-  - "content": file contents
-
-You must return at least one file.
-
-Eval prompt:
-${params.promptMarkdown}
-
-Requirements:
-${requirementsText}
-
-Current input files:
-${inputFilesText}
-`
+    <files>
+    ${files}
+    </files>
+  `
 }
 
 /*
-  Runs a placeholder OpenAI solver and materializes generated files for judges.
- */
+  Runs an OpenCode-backed solver and materializes generated files for judges.
+*/
 export async function runSolver(params: {
-  evalId: string
+  prompt: string,
+  files: LoadedFile[],
   model: string
-  mockTestedLLM: boolean
-  apiKey: string | null
-  baseURL: string | null
-  timeoutMs: number
-  evalPath: string
-  outputDirectory: string
-  promptMarkdown: string
-  requirements: RequirementsDefinition
-  inputFiles: LoadedFile[]
-}): Promise<SolverResult> {
-  const errors: string[] = []
+  timeout: number
+  port?: number
+}) {
+  await ensureOpencodeServerStarted(params)
 
-  if (params.mockTestedLLM) {
-    console.warn(
-      `(${params.evalId}) mockTestedLLM enabled: skipping solver model execution`
-    )
-
-    const files = await materializeFiles(
-      params.outputDirectory,
-      params.inputFiles.map((file) => ({
-        path: toPosixPath(path.relative(params.evalPath, file.absolutePath)),
-        content: file.content,
-      }))
-    )
-
-    return {
-      files,
-      summary:
-        'mockTestedLLM enabled: used current baseline files as generated output',
-      errors: [],
-    }
-  }
-
-  const provider = createOpenAI({
-    apiKey: params.apiKey,
-    baseURL: params.baseURL ?? undefined,
+  const provider = createOpencode({
+    port: params.port,
+    autoStartServer: false,
   })
 
-  const prompt = buildSolverPrompt({
-    evalId: params.evalId,
-    requirements: params.requirements,
-    promptMarkdown: params.promptMarkdown,
-    inputFiles: params.inputFiles,
-  })
+  const prompt = buildSolverPrompt(params.prompt, params.files)
 
-  try {
-    const response = await generateText({
-      model: provider(params.model),
-      prompt,
-      abortSignal: AbortSignal.timeout(params.timeoutMs),
-      output: Output.object({
-        schema: solverOutputSchema,
-        name: 'solver_output',
-        description: 'Generated placeholder files for eval execution',
+  const { output } = await generateText({
+    model: provider(params.model, { createNewSession: true }),
+    prompt,
+    system: SYSTEM_PROMPT,
+    abortSignal: AbortSignal.timeout(params.timeout),
+    output: Output.object({
+      schema: solverOutputSchema,
+      description: 'Generated files that satisfy the task',
       }),
-    })
+  })
 
-    const solverOutput: SolverOutput = response.output
-    const hasFile = solverOutput.files.length > 0
-    if (!hasFile) {
-      throw new Error('solver produced no files')
-    }
-
-    const files = await materializeFiles(
-      params.outputDirectory,
-      solverOutput.files
-    )
-    return {
-      files,
-      summary: solverOutput.summary,
-      errors,
-    }
-  } catch (error) {
-    errors.push(
-      `solver error: ${error instanceof Error ? error.message : String(error)}`
-    )
-
-    const fallbackFiles = await materializeFiles(
-      params.outputDirectory,
-      params.inputFiles.map((file) => ({
-        path: toPosixPath(path.relative(params.evalPath, file.absolutePath)),
-        content: file.content,
-      }))
-    )
-
-    return {
-      files: fallbackFiles,
-      errors,
-    }
-  }
+  return output
 }

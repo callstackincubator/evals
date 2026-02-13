@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import { readdir } from 'node:fs/promises'
 import path from 'node:path'
+import { Glob } from 'bun'
 
 export type LoadedFile = {
   path: string
@@ -40,4 +41,28 @@ export async function loadFile(absolutePath: string): Promise<LoadedFile> {
 
 export function toPosix(value: string): string {
   return value.replace(/\\/g, '/')
+}
+
+export async function loadFiles(dir: string) {
+  const glob = new Glob('**/*')
+  let loadedFiles = []
+
+  for await (const filePath of glob.scan({
+    cwd: dir,
+    onlyFiles: true,
+  })) {
+    const absolutePath = path.join(dir, filePath)
+    const content = await readFile(absolutePath, 'utf8')
+    loadedFiles.push({
+      path: filePath,
+      absolutePath,
+      content,
+    })
+  }
+
+  return loadedFiles
+}
+
+export function sanitizeSegment(value: string) {
+  return value.replace(/[^a-zA-Z0-9._-]/g, '_')
 }

@@ -40,7 +40,7 @@ describe('loadRequirements', () => {
 
     const parsed = await loadRequirements(requirementsPath)
 
-    expect(parsed.requirements[0]?.weight).toBe(2.5)
-    expect(parsed.requirements[1]?.weight).toBeUndefined()
+    expect(parsed[1]?.weight).toBe(2.5)
+    expect(parsed[1]?.weight).toBeUndefined()
   })
 })
