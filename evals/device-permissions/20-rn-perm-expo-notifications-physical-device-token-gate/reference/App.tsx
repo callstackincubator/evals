@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar'
 import React, { useCallback, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-type RegistrationState = 'idle' | 'denied' | 'simulator' | 'registered'
+type RegistrationState = 'idle' | 'denied' | 'simulator' | 'registered' | 'token-error'
 
 export default function App() {
   const [registrationState, setRegistrationState] = useState<RegistrationState>('idle')
@@ -33,10 +33,15 @@ export default function App() {
       return
     }
 
-    const pushToken = await Notifications.getExpoPushTokenAsync()
-    setToken(pushToken.data)
-    setRegistrationState('registered')
-    setMessage('Registration succeeded on physical device with granted permission.')
+    try {
+      const pushToken = await Notifications.getExpoPushTokenAsync()
+      setToken(pushToken.data)
+      setRegistrationState('registered')
+      setMessage('Registration succeeded on physical device with granted permission.')
+    } catch {
+      setRegistrationState('token-error')
+      setMessage('Permission/device checks passed, but token retrieval failed. Retry registration.')
+    }
   }, [])
 
   return (

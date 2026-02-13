@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar'
 import React, { useCallback, useState } from 'react'
 import { Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 
-type RegistrationState = 'idle' | 'granted' | 'denied' | 'blocked' | 'ready'
+type RegistrationState = 'idle' | 'granted' | 'denied' | 'blocked' | 'ready' | 'token-error'
 
 export default function App() {
   const [registrationState, setRegistrationState] = useState<RegistrationState>('idle')
@@ -43,9 +43,14 @@ export default function App() {
       return
     }
 
-    const pushToken = await Notifications.getExpoPushTokenAsync()
-    setToken(pushToken.data)
-    setRegistrationState('ready')
+    try {
+      const pushToken = await Notifications.getExpoPushTokenAsync()
+      setToken(pushToken.data)
+      setRegistrationState('ready')
+    } catch {
+      setRegistrationState('token-error')
+      setMessage('Permission is granted, but token retrieval failed. Retry registration.')
+    }
   }, [])
 
   return (

@@ -3,7 +3,13 @@ import { StatusBar } from 'expo-status-bar'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AppState, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 
-type PermissionState = 'unknown' | 'loading' | 'granted' | 'denied' | 'blocked'
+type PermissionState =
+  | 'unknown'
+  | 'loading'
+  | 'not-determined'
+  | 'granted'
+  | 'denied'
+  | 'blocked'
 
 function mapPermissionState(permission: Notifications.NotificationPermissionsStatus): PermissionState {
   if (permission.status === Notifications.PermissionStatus.GRANTED) {
@@ -14,7 +20,11 @@ function mapPermissionState(permission: Notifications.NotificationPermissionsSta
     return permission.canAskAgain ? 'denied' : 'blocked'
   }
 
-  return 'denied'
+  if (permission.status === Notifications.PermissionStatus.UNDETERMINED) {
+    return 'not-determined'
+  }
+
+  return 'not-determined'
 }
 
 export default function App() {
@@ -54,7 +64,11 @@ export default function App() {
 
   const canUseNotificationFeature = permissionState === 'granted'
   const featureLabel = useMemo(() => {
-    if (permissionState === 'loading' || permissionState === 'unknown') {
+    if (
+      permissionState === 'loading' ||
+      permissionState === 'unknown' ||
+      permissionState === 'not-determined'
+    ) {
       return 'Waiting for fresh permission state...'
     }
 

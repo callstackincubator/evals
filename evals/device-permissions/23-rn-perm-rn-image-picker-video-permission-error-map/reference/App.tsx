@@ -1,11 +1,42 @@
 import { StatusBar } from 'expo-status-bar'
 import React, { useCallback, useState } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import { launchCamera, launchImageLibrary, type Asset, type ImagePickerResponse } from 'react-native-image-picker'
+import {
+  check,
+  PERMISSIONS,
+  request,
+  RESULTS,
+  type Permission,
+  type PermissionStatus,
+} from 'react-native-permissions'
 
 type CaptureState = 'idle' | 'cancelled' | 'error' | 'success' | 'fallback-library'
 
-function mapPermissionError(response: ImagePickerResponse): string {
+type PermissionOutcome = 'granted' | 'denied' | 'blocked' | 'unavailable'
+
+const CAMERA_PERMISSION: Permission =
+  Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA
+const MICROPHONE_PERMISSION: Permission =
+  Platform.OS === 'ios' ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO
+
+function mapPermissionOutcome(status: PermissionStatus): PermissionOutcome {
+  if (status === RESULTS.GRANTED || status === RESULTS.LIMITED) {
+    return 'granted'
+  }
+
+  if (status === RESULTS.BLOCKED) {
+    return 'blocked'
+  }
+
+  if (status === RESULTS.UNAVAILABLE) {
+    return 'unavailable'
+  }
+
+  return 'denied'
+}
+
+function mapPickerPermissionError(response: ImagePickerResponse): string {
   if (response.errorCode !== 'permission') {
     return 'non-permission-error'
   }
@@ -27,6 +58,15 @@ export default function App() {
   const [asset, setAsset] = useState<Asset | null>(null)
   const [message, setMessage] = useState('')
 
+  const ensurePermission = useCallback(async (permission: Permission): Promise<PermissionOutcome> => {
+    const current = await check(permission)
+    if (current === RESULTS.GRANTED || current === RESULTS.LIMITED) {
+      return 'granted'
+    }
+
+    return mapPermissionOutcome(await request(permission))
+  }, [])
+
   const fallbackToLibrary = useCallback(async () => {
     const result = await launchImageLibrary({ mediaType: 'video', selectionLimit: 1 })
 
@@ -44,6 +84,27 @@ export default function App() {
   const captureVideo = useCallback(async () => {
     setAsset(null)
     setMessage('')
+
+    const cameraAccess = await ensurePermission(CAMERA_PERMISSION)
+    if (cameraAccess === 'unavailable') {
+      setCaptureState('error')
+      setMessage('Camera unavailable-hardware outcome detected. Switching to library fallback.')
+      await fallbackToLibrary()
+      return
+    }
+
+    if (cameraAccess !== 'granted') {
+      setCaptureState('error')
+      setMessage('Permission issue: camera-permission-error.')
+      return
+    }
+
+    const microphoneAccess = await ensurePermission(MICROPHONE_PERMISSION)
+    if (microphoneAccess !== 'granted') {
+      setCaptureState('error')
+      setMessage('Permission issue: microphone-permission-error.')
+      return
+    }
 
     const response = await launchCamera({
       mediaType: 'video',
@@ -65,7 +126,7 @@ export default function App() {
         return
       }
 
-      const mappedError = mapPermissionError(response)
+      const mappedError = mapPickerPermissionError(response)
       if (mappedError !== 'non-permission-error') {
         setMessage(`Permission issue: ${mappedError}.`)
         return
@@ -85,7 +146,7 @@ export default function App() {
     setCaptureState('success')
     setAsset(firstAsset)
     setMessage('Video capture succeeded.')
-  }, [fallbackToLibrary])
+  }, [ensurePermission, fallbackToLibrary])
 
   return (
     <View style={styles.container}>

@@ -14,7 +14,7 @@ export default function App() {
 
   const refreshStatus = useCallback(async () => {
     const [permission, servicesEnabled] = await Promise.all([
-      Location.requestForegroundPermissionsAsync(),
+      Location.getForegroundPermissionsAsync(),
       Location.hasServicesEnabledAsync(),
     ])
 
@@ -26,23 +26,31 @@ export default function App() {
     setCoords('')
     setMessage('')
 
-    await refreshStatus()
-
     const servicesEnabled = await Location.hasServicesEnabledAsync()
+    setServicesState(servicesEnabled ? 'enabled' : 'disabled')
     if (!servicesEnabled) {
       setMessage('Location services are disabled. Enable services to continue.')
       return
     }
 
-    const permission = await Location.getForegroundPermissionsAsync()
+    const currentPermission = await Location.getForegroundPermissionsAsync()
+    const permission = currentPermission.granted
+      ? currentPermission
+      : await Location.requestForegroundPermissionsAsync()
+
+    setPermissionState(permission.granted ? 'granted' : permission.canAskAgain ? 'denied' : 'blocked')
     if (!permission.granted) {
       setMessage('Location permission not granted. Retry permission request.')
       return
     }
 
-    const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced })
-    setCoords(`${location.coords.latitude.toFixed(5)}, ${location.coords.longitude.toFixed(5)}`)
-  }, [refreshStatus])
+    try {
+      const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced })
+      setCoords(`${location.coords.latitude.toFixed(5)}, ${location.coords.longitude.toFixed(5)}`)
+    } catch {
+      setMessage('Location read failed. Please retry.')
+    }
+  }, [])
 
   return (
     <View style={styles.container}>
