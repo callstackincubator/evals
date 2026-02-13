@@ -1,5 +1,5 @@
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native'
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
 type Item = {
   id: string
@@ -21,22 +21,28 @@ function buildPage(page: number): Item[] {
 
 export default function App() {
   const [items, setItems] = useState<Item[]>(() => buildPage(0))
-  const [page, setPage] = useState(0)
   const [loading, setLoading] = useState(false)
+  const loadingRef = useRef(false)
+  const pageRef = useRef(0)
 
   const loadNextPage = useCallback(() => {
-    if (loading || page >= TOTAL_PAGES - 1) {
+    if (loadingRef.current || pageRef.current >= TOTAL_PAGES - 1) {
       return
     }
 
+    loadingRef.current = true
     setLoading(true)
 
     setTimeout(() => {
-      setItems((prev) => [...prev, ...buildPage(page + 1)])
-      setPage((prev) => prev + 1)
+      const nextPage = pageRef.current + 1
+
+      setItems((prev) => [...prev, ...buildPage(nextPage)])
+      pageRef.current = nextPage
+
+      loadingRef.current = false
       setLoading(false)
     }, 500)
-  }, [loading, page])
+  }, [])
 
   return (
     <View style={styles.container}>

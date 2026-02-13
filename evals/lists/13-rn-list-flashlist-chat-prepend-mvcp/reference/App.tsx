@@ -23,26 +23,29 @@ function buildRange(start: number, count: number): Message[] {
 export default function App() {
   const listRef = useRef<FlashList<Message>>(null)
   const nearBottomRef = useRef(true)
+  const loadingOlderRef = useRef(false)
+  const oldestCursorRef = useRef(200)
 
   const [messages, setMessages] = useState<Message[]>(() => buildRange(200, PAGE_SIZE))
-  const [oldestCursor, setOldestCursor] = useState(200)
   const [nextMessageId, setNextMessageId] = useState(212)
   const [loadingOlder, setLoadingOlder] = useState(false)
 
   const prependOlder = () => {
-    if (loadingOlder || oldestCursor <= 1) {
+    if (loadingOlderRef.current || oldestCursorRef.current <= 1) {
       return
     }
 
+    loadingOlderRef.current = true
     setLoadingOlder(true)
 
     setTimeout(() => {
-      const nextStart = Math.max(1, oldestCursor - PAGE_SIZE)
-      const count = oldestCursor - nextStart
+      const nextStart = Math.max(1, oldestCursorRef.current - PAGE_SIZE)
+      const count = oldestCursorRef.current - nextStart
       const older = buildRange(nextStart, count)
 
       setMessages((prev) => [...older, ...prev])
-      setOldestCursor(nextStart)
+      oldestCursorRef.current = nextStart
+      loadingOlderRef.current = false
       setLoadingOlder(false)
     }, 450)
   }

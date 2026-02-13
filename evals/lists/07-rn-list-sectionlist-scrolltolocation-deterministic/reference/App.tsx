@@ -8,6 +8,7 @@ type Topic = {
 
 type TopicSection = {
   data: Topic[]
+  key: string
   title: string
 }
 
@@ -21,6 +22,7 @@ const SECTIONS: TopicSection[] = [
       { id: 'js-2', title: 'Event loop' },
       { id: 'js-3', title: 'Memory model' },
     ],
+    key: 'javascript',
     title: 'JavaScript',
   },
   {
@@ -29,6 +31,7 @@ const SECTIONS: TopicSection[] = [
       { id: 'rn-2', title: 'Fabric' },
       { id: 'rn-3', title: 'TurboModules' },
     ],
+    key: 'react-native',
     title: 'React Native',
   },
   {
@@ -37,6 +40,7 @@ const SECTIONS: TopicSection[] = [
       { id: 'perf-2', title: 'Memoization' },
       { id: 'perf-3', title: 'Frame budgeting' },
     ],
+    key: 'performance',
     title: 'Performance',
   },
 ]
@@ -82,11 +86,6 @@ export default function App() {
 
       <SectionList
         ref={sectionListRef}
-        getItemLayout={(_, index) => ({
-          index,
-          length: ROW_HEIGHT,
-          offset: ROW_HEIGHT * index,
-        })}
         keyExtractor={(item) => item.id}
         sections={SECTIONS}
         stickySectionHeadersEnabled

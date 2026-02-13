@@ -1,5 +1,5 @@
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native'
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
 type Message = {
   id: string
@@ -20,26 +20,29 @@ function buildMessages(start: number, count: number): Message[] {
 
 export default function App() {
   const [messages, setMessages] = useState<Message[]>(() => buildMessages(100, PAGE_SIZE))
-  const [cursor, setCursor] = useState(100)
   const [loadingOlder, setLoadingOlder] = useState(false)
+  const loadingOlderRef = useRef(false)
+  const cursorRef = useRef(100)
 
   const loadOlder = useCallback(() => {
-    if (loadingOlder || cursor <= 1) {
+    if (loadingOlderRef.current || cursorRef.current <= 1) {
       return
     }
 
+    loadingOlderRef.current = true
     setLoadingOlder(true)
 
     setTimeout(() => {
-      const nextStart = Math.max(1, cursor - PAGE_SIZE)
-      const count = cursor - nextStart
+      const nextStart = Math.max(1, cursorRef.current - PAGE_SIZE)
+      const count = cursorRef.current - nextStart
       const older = buildMessages(nextStart, count)
 
       setMessages((prev) => [...older, ...prev])
-      setCursor(nextStart)
+      cursorRef.current = nextStart
+      loadingOlderRef.current = false
       setLoadingOlder(false)
     }, 450)
-  }, [cursor, loadingOlder])
+  }, [])
 
   return (
     <View style={styles.container}>

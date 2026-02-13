@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { FlashList } from '@shopify/flash-list'
 
 type TextItem = {
@@ -9,9 +9,9 @@ type TextItem = {
 
 type ImageItem = {
   caption: string
+  color: string
   id: string
   type: 'image'
-  uri: string
 }
 
 type SystemItem = {
@@ -27,9 +27,9 @@ const DATA: TimelineItem[] = [
   { id: 'txt-1', text: 'Morning update', type: 'text' },
   {
     caption: 'Seaside',
+    color: '#bfdbfe',
     id: 'img-1',
     type: 'image',
-    uri: 'https://picsum.photos/400/220',
   },
   { id: 'txt-2', text: 'Lunch summary', type: 'text' },
   { id: 'sys-2', message: 'Today', type: 'system' },
@@ -48,7 +48,7 @@ function TimelineRow({ item }: { item: TimelineItem }) {
   if (item.type === 'image') {
     return (
       <View style={styles.imageRow}>
-        <Image source={{ uri: item.uri }} style={styles.image} />
+        <View style={[styles.image, { backgroundColor: item.color }]} />
         <Text style={styles.caption}>{item.caption}</Text>
       </View>
     )

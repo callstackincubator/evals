@@ -9,6 +9,7 @@ type Contact = {
 type ContactSection = {
   data: Contact[]
   id: string
+  key: string
   title: string
 }
 
@@ -19,6 +20,7 @@ const BASE_SECTIONS: ContactSection[] = [
       { id: 'a-2', name: 'Alan Turing' },
     ],
     id: 'favorites',
+    key: 'favorites',
     title: 'Favorites',
   },
   {
@@ -27,6 +29,7 @@ const BASE_SECTIONS: ContactSection[] = [
       { id: 'b-2', name: 'Margaret Hamilton' },
     ],
     id: 'engineering',
+    key: 'engineering',
     title: 'Engineering',
   },
   {
@@ -35,6 +38,7 @@ const BASE_SECTIONS: ContactSection[] = [
       { id: 'c-2', name: 'Radia Perlman' },
     ],
     id: 'science',
+    key: 'science',
     title: 'Science',
   },
 ]

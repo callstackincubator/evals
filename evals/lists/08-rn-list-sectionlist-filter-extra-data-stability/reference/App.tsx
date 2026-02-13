@@ -8,6 +8,7 @@ type Product = {
 
 type ProductSection = {
   data: Product[]
+  key: string
   title: string
 }
 
@@ -18,6 +19,7 @@ const SOURCE_SECTIONS: ProductSection[] = [
       { id: 'fruit-2', name: 'Orange' },
       { id: 'fruit-3', name: 'Pear' },
     ],
+    key: 'fruit',
     title: 'Fruit',
   },
   {
@@ -26,6 +28,7 @@ const SOURCE_SECTIONS: ProductSection[] = [
       { id: 'veg-2', name: 'Spinach' },
       { id: 'veg-3', name: 'Broccoli' },
     ],
+    key: 'vegetables',
     title: 'Vegetables',
   },
 ]

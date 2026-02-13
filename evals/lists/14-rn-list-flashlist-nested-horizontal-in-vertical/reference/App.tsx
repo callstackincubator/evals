@@ -1,10 +1,10 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { FlashList } from '@shopify/flash-list'
 
 type CarouselCard = {
+  color: string
   id: string
   title: string
-  uri: string
 }
 
 type FeedRow =
@@ -15,9 +15,9 @@ const DATA: FeedRow[] = [
   { body: 'Top story', id: 'story-1', type: 'story' },
   {
     cards: [
-      { id: 'card-1', title: 'Mountains', uri: 'https://picsum.photos/260/160?1' },
-      { id: 'card-2', title: 'Beach', uri: 'https://picsum.photos/260/160?2' },
-      { id: 'card-3', title: 'City', uri: 'https://picsum.photos/260/160?3' },
+      { color: '#bfdbfe', id: 'card-1', title: 'Mountains' },
+      { color: '#fde68a', id: 'card-2', title: 'Beach' },
+      { color: '#fecaca', id: 'card-3', title: 'City' },
     ],
     id: 'carousel-1',
     type: 'carousel',
@@ -34,7 +34,7 @@ function HorizontalCarousel({ cards }: { cards: CarouselCard[] }) {
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
         <View style={styles.card}>
-          <Image source={{ uri: item.uri }} style={styles.cardImage} />
+          <View style={[styles.cardImage, { backgroundColor: item.color }]} />
           <Text style={styles.cardTitle}>{item.title}</Text>
         </View>
       )}

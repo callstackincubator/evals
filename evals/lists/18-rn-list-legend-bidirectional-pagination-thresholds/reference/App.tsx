@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import { LegendList } from '@legendapp/list'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 type Row = {
   id: string
@@ -23,43 +23,47 @@ function buildRows(start: number, count: number): Row[] {
 
 export default function App() {
   const [rows, setRows] = useState<Row[]>(() => buildRows(1000, PAGE_SIZE))
-  const [startCursor, setStartCursor] = useState(1000)
-  const [endCursor, setEndCursor] = useState(1000 + PAGE_SIZE)
   const [loadingStart, setLoadingStart] = useState(false)
   const [loadingEnd, setLoadingEnd] = useState(false)
-
-  const loadingAnyDirection = loadingStart || loadingEnd
+  const startCursorRef = useRef(1000)
+  const endCursorRef = useRef(1000 + PAGE_SIZE)
+  const loadingAnyDirectionRef = useRef(false)
 
   const loadStart = () => {
-    if (loadingAnyDirection || startCursor <= 1) {
+    if (loadingAnyDirectionRef.current || startCursorRef.current <= 1) {
       return
     }
 
+    loadingAnyDirectionRef.current = true
     setLoadingStart(true)
 
     setTimeout(() => {
-      const nextStart = Math.max(1, startCursor - PAGE_SIZE)
-      const count = startCursor - nextStart
+      const nextStart = Math.max(1, startCursorRef.current - PAGE_SIZE)
+      const count = startCursorRef.current - nextStart
       const older = buildRows(nextStart, count)
 
       setRows((prev) => [...older, ...prev])
-      setStartCursor(nextStart)
+      startCursorRef.current = nextStart
       setLoadingStart(false)
+      loadingAnyDirectionRef.current = false
     }, 420)
   }
 
   const loadEnd = () => {
-    if (loadingAnyDirection) {
+    if (loadingAnyDirectionRef.current) {
       return
     }
 
+    loadingAnyDirectionRef.current = true
     setLoadingEnd(true)
 
     setTimeout(() => {
-      const newer = buildRows(endCursor, PAGE_SIZE)
+      const newer = buildRows(endCursorRef.current, PAGE_SIZE)
       setRows((prev) => [...prev, ...newer])
-      setEndCursor((prev) => prev + PAGE_SIZE)
+      const nextEndCursor = endCursorRef.current + PAGE_SIZE
+      endCursorRef.current = nextEndCursor
       setLoadingEnd(false)
+      loadingAnyDirectionRef.current = false
     }, 420)
   }
 
