@@ -48,7 +48,11 @@ export default function App() {
       if (!hasStartupUrl) {
         const rawPersisted = memoryStorage[PERSISTED_NAV_KEY]
         if (rawPersisted) {
-          setInitialState(JSON.parse(rawPersisted))
+          try {
+            setInitialState(JSON.parse(rawPersisted))
+          } catch {
+            setInitialState(undefined)
+          }
         }
       }
 
@@ -67,7 +71,9 @@ export default function App() {
       linking={linking}
       initialState={initialState}
       onStateChange={(state) => {
-        memoryStorage[PERSISTED_NAV_KEY] = JSON.stringify(state)
+        if (state) {
+          memoryStorage[PERSISTED_NAV_KEY] = JSON.stringify(state)
+        }
       }}
     >
       <Stack.Navigator>

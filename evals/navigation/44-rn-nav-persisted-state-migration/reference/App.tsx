@@ -38,10 +38,14 @@ export default function App() {
         return
       }
 
-      const parsed = JSON.parse(raw)
-      if (parsed?.version === NAV_VERSION && parsed?.state) {
-        setInitialState(parsed.state)
-      } else {
+      try {
+        const parsed = JSON.parse(raw)
+        if (parsed?.version === NAV_VERSION && parsed?.state) {
+          setInitialState(parsed.state)
+        } else {
+          setInitialState(undefined)
+        }
+      } catch {
         setInitialState(undefined)
       }
 

@@ -8,7 +8,7 @@ import { BackHandler, Button, StyleSheet, Text, View } from 'react-native'
 const Drawer = createDrawerNavigator()
 const Stack = createNativeStackNavigator()
 
-function HomeScreen({ navigation }: { navigation: any }) {
+function useDrawerBackPriority(navigation: any) {
   const drawerStatus = useDrawerStatus()
 
   useFocusEffect(
@@ -25,6 +25,10 @@ function HomeScreen({ navigation }: { navigation: any }) {
       return () => subscription.remove()
     }, [drawerStatus, navigation]),
   )
+}
+
+function HomeScreen({ navigation }: { navigation: any }) {
+  useDrawerBackPriority(navigation)
 
   return (
     <View style={styles.container}>
@@ -34,7 +38,9 @@ function HomeScreen({ navigation }: { navigation: any }) {
   )
 }
 
-function DetailsScreen() {
+function DetailsScreen({ navigation }: { navigation: any }) {
+  useDrawerBackPriority(navigation)
+
   return (
     <View style={styles.container}>
       <Text>Details screen</Text>

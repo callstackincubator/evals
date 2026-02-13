@@ -33,7 +33,11 @@ export default function App() {
     const restoreState = async () => {
       const raw = memoryStorage[STATE_KEY]
       if (raw) {
-        setInitialState(JSON.parse(raw))
+        try {
+          setInitialState(JSON.parse(raw))
+        } catch {
+          setInitialState(undefined)
+        }
       }
       setIsReady(true)
     }
@@ -49,7 +53,9 @@ export default function App() {
     <NavigationContainer
       initialState={initialState}
       onStateChange={(state) => {
-        memoryStorage[STATE_KEY] = JSON.stringify(state)
+        if (state) {
+          memoryStorage[STATE_KEY] = JSON.stringify(state)
+        }
       }}
     >
       <Stack.Navigator>

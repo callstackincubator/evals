@@ -1,10 +1,11 @@
 import { useRef } from 'react'
 
-import { NavigationContainer } from '@react-navigation/native'
+import { createNavigationContainerRef, NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, Text, View } from 'react-native'
 
 const Stack = createNativeStackNavigator()
+const navigationRef = createNavigationContainerRef()
 
 const analytics = {
   trackScreenView: (routeName: string) => {
@@ -34,14 +35,19 @@ export default function App() {
 
   return (
     <NavigationContainer
+      ref={navigationRef}
       onReady={() => {
-        routeNameRef.current = 'Home'
+        const currentRoute = navigationRef.getCurrentRoute()?.name
+        if (currentRoute) {
+          analytics.trackScreenView(currentRoute)
+          routeNameRef.current = currentRoute
+        }
       }}
-      onStateChange={(state) => {
-        const routeName = state?.routes[state.index ?? 0]?.name
-        if (routeName && routeNameRef.current !== routeName) {
-          analytics.trackScreenView(routeName)
-          routeNameRef.current = routeName
+      onStateChange={() => {
+        const currentRoute = navigationRef.getCurrentRoute()?.name
+        if (currentRoute && routeNameRef.current !== currentRoute) {
+          analytics.trackScreenView(currentRoute)
+          routeNameRef.current = currentRoute
         }
       }}
     >
