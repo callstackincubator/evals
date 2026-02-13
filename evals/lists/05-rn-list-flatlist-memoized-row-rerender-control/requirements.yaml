@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: memoized-row-component
     description: Must memoize row rendering boundaries so unrelated rows are not needlessly recomputed.

@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: prepend-pagination-path
     description: Must implement top-reached prepend pagination flow for older items.
