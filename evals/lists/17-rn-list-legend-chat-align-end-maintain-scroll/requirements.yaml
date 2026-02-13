@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: align-items-at-end-chat
     description: Must use LegendList alignItemsAtEnd for chat-style bottom alignment when content is short.

@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: legendlist-adoption
     description: Must implement list rendering with @legendapp/list LegendList.

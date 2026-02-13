@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: flashlist-adoption
     description: Must implement the list with @shopify/flash-list FlashList.
