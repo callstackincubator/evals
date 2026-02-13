@@ -1,4 +1,3 @@
-import { readFile } from 'node:fs/promises'
 import YAML from 'yaml'
 import { z } from 'zod'
 
@@ -10,13 +9,6 @@ const requirementSchema = z.object({
 
 const requirementsSchema = z.object({
   version: z.number().int().positive().default(1),
-  inputs: z
-    .object({
-      files: z.array(z.string().min(1)).min(1),
-    })
-    .default({
-      files: ['app/App.tsx', 'app/package.json'],
-    }),
   requirements: z.array(requirementSchema).min(1),
 })
 
@@ -26,8 +18,7 @@ export type RequirementsDefinition = z.infer<typeof requirementsSchema>
 /*
   Loads and validates one requirements.yaml file using the runtime schema.
  */
-export async function loadRequirements(requirementsPath: string) {
-  const raw = await readFile(requirementsPath, 'utf8')
+export async function loadRequirements(raw: string) {
   const parsed = YAML.parse(raw)
-  return requirementsSchema.parse(parsed)
+  return requirementsSchema.parse(parsed).requirements
 }

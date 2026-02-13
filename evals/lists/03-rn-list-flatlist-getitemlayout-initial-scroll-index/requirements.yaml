@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: initial-scroll-index-contract
     description: Must initialize FlatList with a non-zero initialScrollIndex.

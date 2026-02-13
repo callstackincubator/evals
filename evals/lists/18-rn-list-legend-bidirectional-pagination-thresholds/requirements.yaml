@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: bidirectional-pagination
     description: Must support both onStartReached and onEndReached pagination paths.

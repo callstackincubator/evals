@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises'
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { afterAll, describe, expect, test } from 'bun:test'
@@ -16,7 +16,7 @@ afterAll(async () => {
 })
 
 describe('loadRequirements', () => {
-  test('parses optional weights and defaults inputs.files when omitted', async () => {
+  test('parses optional requirement weights', async () => {
     const tempRoot = await mkdtemp(
       path.join(os.tmpdir(), 'runner-requirements-')
     )
@@ -38,10 +38,10 @@ describe('loadRequirements', () => {
     const requirementsPath = path.join(evalDir, 'requirements.yaml')
     await writeFile(requirementsPath, `${yaml}\n`)
 
-    const parsed = await loadRequirements(requirementsPath)
+    const rawRequirements = await readFile(requirementsPath, 'utf8')
+    const parsed = await loadRequirements(rawRequirements)
 
-    expect(parsed.inputs.files).toEqual(['app/App.tsx', 'app/package.json'])
-    expect(parsed.requirements[0]?.weight).toBe(2.5)
-    expect(parsed.requirements[1]?.weight).toBeUndefined()
+    expect(parsed[0]?.weight).toBe(2.5)
+    expect(parsed[1]?.weight).toBeUndefined()
   })
 })

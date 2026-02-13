@@ -199,14 +199,10 @@ function formatEslintOutput(stdout: string, stderr: string, fallback: string) {
   }
 }
 
-function toRelativePath(absolutePath: string) {
-  return absolutePath.replace(`${process.cwd()}/`, '')
-}
-
 /*
   Evaluates generated source with static code checks and complexity metrics.
  */
-export async function runCodeEvaluator(
+export async function runCodeEvaluatorStage(
   generatedFiles: LoadedFile[],
   generatedDirectory: string
 ): Promise<CodeEvaluatorResult> {
@@ -219,7 +215,10 @@ export async function runCodeEvaluator(
   )
 
   const complexityByFile = sourceFiles.map((file) => ({
-    path: toRelativePath(file.absolutePath),
+    path: path
+      .relative(generatedDirectory, file.absolutePath)
+      .split(path.sep)
+      .join('/'),
     complexity: calculateCyclomaticComplexity(file.absolutePath, file.content),
   }))
   const totalComplexity = complexityByFile.reduce(

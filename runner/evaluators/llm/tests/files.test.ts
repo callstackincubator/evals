@@ -3,7 +3,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { afterAll, describe, expect, test } from 'bun:test'
 
-import { collectMissingInputFiles, loadExampleFiles, loadInputFiles } from '../files'
+import { loadFiles } from '../../../utils/fs'
 
 const tempRoots: string[] = []
 
@@ -15,62 +15,29 @@ afterAll(async () => {
   )
 })
 
-function makeRequirements(files: string[]) {
-  return {
-    version: 1,
-    inputs: { files },
-    requirements: [
-      {
-        id: 'r1',
-        description: 'Must exist',
-      },
-    ],
-  }
-}
-
 describe('files helpers', () => {
-  test('collects missing declared input files', async () => {
+  test('loads files recursively from the provided directory', async () => {
     const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'runner-files-'))
     tempRoots.push(tempRoot)
 
-    const evalDir = path.join(tempRoot, 'eval')
-    await mkdir(path.join(evalDir, 'app'), { recursive: true })
-    await writeFile(path.join(evalDir, 'app', 'App.tsx'), 'x'.repeat(20))
+    const rootDir = path.join(tempRoot, 'root')
+    await mkdir(path.join(rootDir, 'nested'), { recursive: true })
+    await writeFile(path.join(rootDir, 'README.md'), 'guide')
+    await writeFile(path.join(rootDir, 'nested', 'App.tsx'), 'code')
 
-    const requirements = makeRequirements(['app/App.tsx', 'app/package.json'])
-
-    const missing = await collectMissingInputFiles(evalDir, requirements)
-    expect(missing).toEqual(['app/package.json'])
-  })
-
-  test('loads declared files when all are present', async () => {
-    const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'runner-files-'))
-    tempRoots.push(tempRoot)
-
-    const evalDir = path.join(tempRoot, 'eval')
-    await mkdir(path.join(evalDir, 'app'), { recursive: true })
-    await writeFile(path.join(evalDir, 'app', 'App.tsx'), 'x'.repeat(20))
-
-    const requirements = makeRequirements(['app/App.tsx'])
-    const loaded = await loadInputFiles(evalDir, requirements)
-
-    expect(loaded.length).toBe(1)
-    expect(loaded[0]?.content.length).toBe(20)
-  })
-
-  test('loads guidance files from example directory', async () => {
-    const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'runner-files-'))
-    tempRoots.push(tempRoot)
-
-    const evalDir = path.join(tempRoot, 'eval')
-    await mkdir(path.join(evalDir, 'example', 'nested'), { recursive: true })
-    await writeFile(path.join(evalDir, 'example', 'README.md'), 'guide')
-    await writeFile(path.join(evalDir, 'example', 'nested', 'App.tsx'), 'code')
-
-    const loaded = await loadExampleFiles(evalDir)
+    const loaded = await loadFiles(rootDir)
 
     expect(loaded.length).toBe(2)
-    expect(loaded.some((file) => file.absolutePath.endsWith('example/README.md'))).toBe(true)
-    expect(loaded.some((file) => file.absolutePath.endsWith('example/nested/App.tsx'))).toBe(true)
+    expect(loaded.some((file) => file.absolutePath.endsWith('root/README.md'))).toBe(true)
+    expect(loaded.some((file) => file.absolutePath.endsWith('root/nested/App.tsx'))).toBe(true)
+  })
+
+  test('returns empty array when directory does not exist', async () => {
+    const tempRoot = await mkdtemp(path.join(os.tmpdir(), 'runner-files-'))
+    tempRoots.push(tempRoot)
+
+    const loaded = await loadFiles(path.join(tempRoot, 'missing'))
+
+    expect(loaded.length).toBe(0)
   })
 })

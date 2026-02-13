@@ -1,0 +1,12 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "**/app/**/*.ts",
+    "**/app/**/*.tsx",
+    "**/reference/**/*.ts",
+    "**/reference/**/*.tsx"
+  ]
+}
