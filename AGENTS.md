@@ -47,7 +47,7 @@ This file defines how agents should work in this repository.
   - `prompt.md`
   - `requirements.yaml`
   - `app/`
-  - `example/`
+  - `reference/`
 
 ## Running and Verification
 

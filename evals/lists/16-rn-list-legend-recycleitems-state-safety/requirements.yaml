@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: recycleitems-enabled
     description: Must enable recycleItems for LegendList and use it intentionally.

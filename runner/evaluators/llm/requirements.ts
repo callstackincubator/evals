@@ -1,4 +1,3 @@
-import { readFile } from 'node:fs/promises'
 import YAML from 'yaml'
 import { z } from 'zod'
 
@@ -19,8 +18,7 @@ export type RequirementsDefinition = z.infer<typeof requirementsSchema>
 /*
   Loads and validates one requirements.yaml file using the runtime schema.
  */
-export async function loadRequirements(requirementsPath: string) {
-  const raw = await readFile(requirementsPath, 'utf8')
+export async function loadRequirements(raw: string) {
   const parsed = YAML.parse(raw)
-  return requirementsSchema.parse(parsed)
+  return requirementsSchema.parse(parsed).requirements
 }
