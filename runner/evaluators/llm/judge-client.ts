@@ -37,6 +37,7 @@ export async function runJudgeCall(
   const response = await generateText({
     model: provider(model, { createNewSession: true }),
     prompt,
+    abortSignal: AbortSignal.timeout(timeout),
     output: Output.object({
       schema: structuredOutputSchema,
       name: 'eval_requirements_result',

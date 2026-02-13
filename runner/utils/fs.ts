@@ -1,6 +1,5 @@
-import { readFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
-import { readdir } from 'node:fs/promises'
+import { readFile, readdir } from 'node:fs/promises'
 import path from 'node:path'
 import { Glob } from 'bun'
 
@@ -43,24 +42,44 @@ export function toPosix(value: string): string {
   return value.replace(/\\/g, '/')
 }
 
-export async function loadFiles(dir: string) {
-  const glob = new Glob('**/*')
-  let loadedFiles = []
+function isNotFoundError(error: unknown) {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    error.code === 'ENOENT'
+  )
+}
 
-  for await (const filePath of glob.scan({
-    cwd: dir,
-    onlyFiles: true,
-  })) {
-    const absolutePath = path.join(dir, filePath)
-    const content = await readFile(absolutePath, 'utf8')
-    loadedFiles.push({
-      path: filePath,
-      absolutePath,
-      content,
-    })
+export async function loadFiles(dir: string): Promise<LoadedFile[]> {
+  const glob = new Glob('**/*')
+  const loadedFiles: LoadedFile[] = []
+
+  try {
+    for await (const filePath of glob.scan({
+      cwd: dir,
+      onlyFiles: true,
+    })) {
+      const absolutePath = path.join(dir, filePath)
+      const content = await readFile(absolutePath, 'utf8')
+      loadedFiles.push({
+        path: filePath,
+        absolutePath,
+        content,
+      })
+    }
+  } catch (error) {
+    if (isNotFoundError(error)) {
+      return []
+    }
+    throw error
   }
 
-  return loadedFiles
+  return loadedFiles.map((file) => ({
+    ...file,
+    path: toPosix(file.path),
+    absolutePath: path.resolve(file.absolutePath),
+  }))
 }
 
 export function sanitizeSegment(value: string) {

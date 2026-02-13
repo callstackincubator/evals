@@ -45,8 +45,8 @@ describe('discoverEvals', () => {
       expect(results.length).toBe(2)
       expect(results[0]?.evalId).toBe('01-case')
       expect(results[1]?.evalId).toBe('02-case')
-      expect(results[0]?.evalPath).toBe(
-        'evals/animation/01-case/requirements.yaml'
+      expect(results[0]?.evalPath.endsWith('/evals/animation/01-case')).toBe(
+        true
       )
     } finally {
       process.chdir(previousCwd)

@@ -3,7 +3,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { afterAll, describe, expect, test } from 'bun:test'
 
-import { loadFiles } from '../files'
+import { loadFiles } from '../../../utils/fs'
 
 const tempRoots: string[] = []
 

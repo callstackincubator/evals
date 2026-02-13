@@ -134,8 +134,8 @@ async function main() {
           await writeDebugArtifacts(
             outputDirs.runDirectory,
             evalItem.evalId,
-            'debugPrompt',
-            'debugOutput'
+            prompt,
+            llmJudgeStage
           )
           // tbd: attach this to result as debug.
         }
