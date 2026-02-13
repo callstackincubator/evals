@@ -1,5 +1,13 @@
-import { useRef, useState } from 'react'
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+/**
+ * Prompt clearly states "Create a list". ScrollView is not a list. FlatList is a React Native core component that can be easily changed to LegendList or FlashList.
+ * Above change introcuced ~0.8kB size increase.
+ * Stable references for keyExtractor and renderItem to avoid re-creation on each render as FlatList is a PureComponent.
+ * Prompt and requirements don't say anything about how new items or already existing items should be removed. We're adding at the top, removing from the bottom.
+ * Two small closures per render for adding and removing items. For a small screen it's negligible, but it's an unnecessary allocation.
+ * If the buttons were wrapped in React.memo, they'd re-render every time anyway because the prop reference changes.
+ */
+import { useCallback, useRef, useState } from 'react'
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
 import Animated, {
   FadeInDown,
   FadeOutUp,
@@ -17,9 +25,24 @@ const INITIAL_ITEMS: RowItem[] = [
   { id: 'row-3', label: 'Review frame budget' },
 ]
 
+const keyExtractor = (item: RowItem) => item.id
+
 export default function App() {
   const [items, setItems] = useState<RowItem[]>(INITIAL_ITEMS)
-  const nextId = useRef(4)
+  const nextId = useRef(INITIAL_ITEMS.length + 1)
+
+  // Stable reference for renderItem to avoid re-creation on each render as FlatList is a PureComponent.
+  // Adjust the dependency array when needed or try React Compiler.
+  const renderItem = useCallback(({ item }: { item: RowItem }) => (
+    <Animated.View
+      entering={FadeInDown.duration(220)}
+      exiting={FadeOutUp.duration(180)}
+      layout={LinearTransition}
+      style={styles.row}
+    >
+      <Text style={styles.rowText}>{item.label}</Text>
+    </Animated.View>
+  ), [])
 
   return (
     <View style={styles.screen}>
@@ -44,21 +67,12 @@ export default function App() {
         </Pressable>
       </View>
 
-      <ScrollView contentContainerStyle={styles.listContent}>
-        {items.map((item) => {
-          return (
-            <Animated.View
-              entering={FadeInDown.duration(220)}
-              exiting={FadeOutUp.duration(180)}
-              key={item.id}
-              layout={LinearTransition.springify()}
-              style={styles.row}
-            >
-              <Text style={styles.rowText}>{item.label}</Text>
-            </Animated.View>
-          )
-        })}
-      </ScrollView>
+      <FlatList
+        contentContainerStyle={styles.listContent}
+        data={items}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+      />
     </View>
   )
 }
