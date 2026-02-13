@@ -32,7 +32,9 @@ function parseBoolean(value: string | null, fallback: boolean) {
   return fallback
 }
 
-function mapBatchToSettings(pairs: [string, string | null][]): SettingsState {
+function mapBatchToSettings(
+  pairs: readonly [string, string | null][]
+): SettingsState {
   const map = Object.fromEntries(pairs)
 
   return {
@@ -42,7 +44,7 @@ function mapBatchToSettings(pairs: [string, string | null][]): SettingsState {
   }
 }
 
-async function writeSettingsBatch(next: SettingsState) {
+async function writeSettingsBatch(next: SettingsState, retryAttempts = 2) {
   const entries: [string, string][] = [
     [SETTINGS_KEYS.emailOptIn, String(next.emailOptIn)],
     [SETTINGS_KEYS.language, next.language],
@@ -55,7 +57,7 @@ async function writeSettingsBatch(next: SettingsState) {
     for (const [key, value] of entries) {
       let success = false
 
-      for (let attempt = 0; attempt < 2 && !success; attempt += 1) {
+      for (let attempt = 0; attempt < retryAttempts && !success; attempt += 1) {
         try {
           await AsyncStorage.setItem(key, value)
           success = true
@@ -87,7 +89,7 @@ export default function App() {
       setStatus('ready')
     }
 
-    read()
+    void read()
 
     return () => {
       cancelled = true
