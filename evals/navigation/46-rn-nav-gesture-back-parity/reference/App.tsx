@@ -1,21 +1,40 @@
 import { useEffect, useState } from 'react'
 
 import { NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Button, Text, View } from 'react-native'
+import {
+  createNativeStackNavigator,
+  type NativeStackScreenProps,
+} from '@react-navigation/native-stack'
+import { Button, StyleSheet, Text, View } from 'react-native'
 
-const Stack = createNativeStackNavigator()
+type RootStackParamList = {
+  Home: undefined
+  CriticalStep: undefined
+}
 
-function HomeScreen({ navigation, flowState }: { navigation: any; flowState: string }) {
+const Stack = createNativeStackNavigator<RootStackParamList>()
+
+type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'> & {
+  flowState: string
+}
+
+function HomeScreen({ navigation, flowState }: HomeScreenProps) {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+    <View style={styles.container}>
       <Text>Flow state: {flowState}</Text>
       <Button title='Start critical flow' onPress={() => navigation.navigate('CriticalStep')} />
     </View>
   )
 }
 
-function CriticalStepScreen({ navigation, onExit }: { navigation: any; onExit: () => void }) {
+type CriticalStepScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'CriticalStep'
+> & {
+  onExit: () => void
+}
+
+function CriticalStepScreen({ navigation, onExit }: CriticalStepScreenProps) {
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', () => {
       onExit()
@@ -25,7 +44,7 @@ function CriticalStepScreen({ navigation, onExit }: { navigation: any; onExit: (
   }, [navigation, onExit])
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+    <View style={styles.container}>
       <Text>Critical step</Text>
       <Button title='Complete and go back' onPress={() => navigation.goBack()} />
     </View>
@@ -55,3 +74,12 @@ export default function App() {
     </NavigationContainer>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+  },
+})
