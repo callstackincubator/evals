@@ -38,7 +38,15 @@ function Panel({ side }: { side: 'left' | 'right' }) {
 
   const panel = useDashboardStore(
     useShallow((state) => {
-      return side === 'left' ? state.leftPanel : state.rightPanel
+      return side === 'left'
+        ? {
+            clicks: state.leftPanel.clicks,
+            label: state.leftPanel.label,
+          }
+        : {
+            clicks: state.rightPanel.clicks,
+            label: state.rightPanel.label,
+          }
     })
   )
 

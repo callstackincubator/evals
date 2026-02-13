@@ -1,4 +1,4 @@
-import { Suspense, useState, useTransition } from 'react'
+import { Suspense, useRef, useState, useTransition } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 type Filter = 'all' | 'open' | 'done'
@@ -90,6 +90,7 @@ function FilterResults({ filter }: { filter: Filter }) {
 export default function App() {
   const [activeFilter, setActiveFilter] = useState<Filter>('all')
   const [queuedFilter, setQueuedFilter] = useState<Filter | null>(null)
+  const pendingRequestId = useRef(0)
   const [isPending, startTransition] = useTransition()
 
   const changeFilter = (nextFilter: Filter) => {
@@ -97,18 +98,29 @@ export default function App() {
       return
     }
 
+    const requestId = pendingRequestId.current + 1
+    pendingRequestId.current = requestId
+
     startTransition(() => {
       setQueuedFilter(nextFilter)
     })
 
     preloadFilter(nextFilter)
       .then(() => {
+        if (pendingRequestId.current !== requestId) {
+          return
+        }
+
         startTransition(() => {
           setActiveFilter(nextFilter)
           setQueuedFilter(null)
         })
       })
       .catch(() => {
+        if (pendingRequestId.current !== requestId) {
+          return
+        }
+
         startTransition(() => {
           setQueuedFilter(null)
         })

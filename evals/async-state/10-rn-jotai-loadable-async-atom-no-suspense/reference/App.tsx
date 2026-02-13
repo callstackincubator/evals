@@ -10,14 +10,14 @@ type Report = {
 const refreshIndexAtom = atom(0)
 
 const reportsAtom = atom(async (get): Promise<Report[]> => {
-  get(refreshIndexAtom)
+  const refreshIndex = get(refreshIndexAtom)
 
   await new Promise<void>((resolve) => {
     setTimeout(resolve, 260)
   })
 
-  if (Math.random() < 0.25) {
-    throw new Error('Failed to load reports')
+  if (refreshIndex % 2 === 1) {
+    throw new Error('Failed to load reports on odd refresh attempts')
   }
 
   return [

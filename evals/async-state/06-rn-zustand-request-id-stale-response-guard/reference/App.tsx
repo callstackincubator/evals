@@ -21,7 +21,11 @@ const useSearchStore = create<SearchStore>((set, get) => {
 
       set({ activeRequestId: requestId, query: nextQuery, status: 'loading' })
 
-      const networkDelay = nextQuery.length % 2 === 0 ? 700 : 220
+      const networkDelay = nextQuery.includes('-slow')
+        ? 700
+        : nextQuery.includes('-fast')
+          ? 220
+          : 420
       await new Promise<void>((resolve) => {
         setTimeout(resolve, networkDelay)
       })

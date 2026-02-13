@@ -4,6 +4,7 @@ import { create } from 'zustand'
 type FeedStatus = 'idle' | 'loading' | 'success' | 'error'
 
 type FeedStore = {
+  attemptCount: number
   errorMessage: string | null
   items: string[]
   status: FeedStatus
@@ -11,24 +12,22 @@ type FeedStore = {
   reset: () => void
 }
 
-let fetchAttempt = 0
-
-const useFeedStore = create<FeedStore>((set) => {
+const useFeedStore = create<FeedStore>((set, get) => {
   return {
+    attemptCount: 0,
     errorMessage: null,
     items: [],
     status: 'idle',
     fetchFeed: async () => {
-      set({ errorMessage: null, status: 'loading' })
+      const attempt = get().attemptCount + 1
+      set({ attemptCount: attempt, errorMessage: null, status: 'loading' })
 
       try {
-        fetchAttempt += 1
-
         await new Promise<void>((resolve) => {
           setTimeout(resolve, 260)
         })
 
-        const shouldFail = fetchAttempt === 1
+        const shouldFail = attempt === 1
         if (shouldFail) {
           throw new Error('Temporary feed error (first attempt fails by design)')
         }
@@ -46,7 +45,7 @@ const useFeedStore = create<FeedStore>((set) => {
       }
     },
     reset: () => {
-      set({ errorMessage: null, items: [], status: 'idle' })
+      set({ attemptCount: 0, errorMessage: null, items: [], status: 'idle' })
     },
   }
 })

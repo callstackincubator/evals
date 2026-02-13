@@ -18,13 +18,12 @@ type TransactionsResponse = {
   totalPages: number
 }
 
-type TransactionsParams = {
-  filter: TransactionFilter
-  page: number
-  pageSize: number
-}
-
-type TransactionsQueryKey = readonly ['transactions', TransactionsParams]
+type TransactionsQueryKey = readonly [
+  'transactions',
+  TransactionFilter,
+  number,
+  number,
+]
 
 const PAGE_SIZE = 4
 
@@ -54,23 +53,25 @@ function buildTransactionsQueryKey(
   page: number,
   pageSize: number
 ): TransactionsQueryKey {
-  return ['transactions', { filter, page, pageSize }]
+  return ['transactions', filter, page, pageSize]
 }
 
-async function fetchTransactions(params: TransactionsParams) {
+async function fetchTransactions(
+  filter: TransactionFilter,
+  page: number,
+  pageSize: number
+) {
   await wait(220)
 
   const filtered =
-    params.filter === 'all'
-      ? DATA
-      : DATA.filter((item) => item.type === params.filter)
+    filter === 'all' ? DATA : DATA.filter((item) => item.type === filter)
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / params.pageSize))
-  const safePage = Math.min(params.page, totalPages)
-  const start = (safePage - 1) * params.pageSize
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
+  const safePage = Math.min(page, totalPages)
+  const start = (safePage - 1) * pageSize
 
   return {
-    items: filtered.slice(start, start + params.pageSize),
+    items: filtered.slice(start, start + pageSize),
     page: safePage,
     totalPages,
   } satisfies TransactionsResponse
@@ -83,8 +84,9 @@ function TransactionsScreen() {
   const { data, isFetching, isLoading } = useQuery({
     placeholderData: (previous) => previous,
     queryFn: ({ queryKey }) => {
-      const [, params] = queryKey as TransactionsQueryKey
-      return fetchTransactions(params)
+      const [, activeFilter, activePage, activePageSize] =
+        queryKey as TransactionsQueryKey
+      return fetchTransactions(activeFilter, activePage, activePageSize)
     },
     queryKey: buildTransactionsQueryKey(filter, page, PAGE_SIZE),
   })

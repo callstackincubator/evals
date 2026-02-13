@@ -28,11 +28,15 @@ const hydratePreferencesAtom = atom(null, async (_get, set) => {
   try {
     const raw = await AsyncStorage.getItem(STORAGE_KEY)
     if (raw) {
-      const parsed = JSON.parse(raw) as Partial<Preferences>
-      set(preferencesAtom, {
-        ...SAFE_DEFAULT_PREFERENCES,
-        ...parsed,
-      })
+      try {
+        const parsed = JSON.parse(raw) as Partial<Preferences>
+        set(preferencesAtom, {
+          ...SAFE_DEFAULT_PREFERENCES,
+          ...parsed,
+        })
+      } catch {
+        set(preferencesAtom, SAFE_DEFAULT_PREFERENCES)
+      }
     }
   } finally {
     set(hydrationCompleteAtom, true)
