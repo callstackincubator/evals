@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: flatlist-stable-keyextractor
     description: Must provide a stable keyExtractor based on item identity, not array index.

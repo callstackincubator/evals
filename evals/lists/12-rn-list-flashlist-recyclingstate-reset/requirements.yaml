@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: recycling-aware-local-state
     description: Must handle local row state in a recycling-safe way for FlashList.

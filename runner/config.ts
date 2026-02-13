@@ -1,64 +1,44 @@
-import { readFile } from 'node:fs/promises'
-import path from 'node:path'
 import { parseArgs as parseArgv } from 'node:util'
-import { z } from 'zod'
 
-const runnerConfigSchema = z.object({
-  concurrency: z.number().int().positive().default(4),
-  model: z.string().min(1).default('openai/gpt-5.3-codex'),
-  solverModel: z.string().min(1).default('gpt-4.1-mini'),
-  mockTestedLLM: z.boolean().default(false),
-  mockJudgeLLM: z.boolean().default(false),
-  apiKey: z.string().min(1).nullable().default(null),
-  baseURL: z.string().min(1).nullable().default(null),
-  pattern: z.string().min(1).default('**/requirements.yaml'),
-  timeout: z.number().int().positive().default(120000),
-  port: z.number().int().positive().default(4096),
-  solverTimeout: z.number().int().positive().default(120000),
-})
+function parsePositiveInteger(rawValue: string, flagName: string) {
+  const parsedValue = Number.parseInt(rawValue, 10)
+  if (!Number.isInteger(parsedValue) || parsedValue <= 0) {
+    throw new Error(`${flagName} must be a positive integer`)
+  }
 
-const RUNNER_CONFIG_PATH = path.resolve(process.cwd(), 'config.json')
+  return parsedValue
+}
 
 /*
   Parses CLI flags and returns normalized runner settings.
- */
-export async function parseCliArgs(argv: string[] = Bun.argv.slice(2)) {
+*/
+export function parseCliArgs(argv: string[] = Bun.argv.slice(2)) {
   const { values } = parseArgv({
     args: argv,
     options: {
+      'concurrency': { type: 'string', default: '4' },
       'debug': { type: 'boolean', default: false },
       'fail-fast': { type: 'boolean', default: false },
-      'just-one': { type: 'boolean', default: false },
+      'model': { type: 'string' },
+      'solver-model': { type: 'string' },
+      'pattern': { type: 'string', default: 'evals/**/*' },
+      'timeout': { type: 'string', default: '120000' },
+      'port': { type: 'string' },
     },
     strict: true,
     allowPositionals: false,
   })
 
-  const configRaw = await readFile(RUNNER_CONFIG_PATH, 'utf8')
-  const parsedConfig = runnerConfigSchema.parse(JSON.parse(configRaw))
-
-  if (!parsedConfig.mockTestedLLM && !parsedConfig.apiKey) {
-    throw new Error(
-      'config.json must provide "apiKey" unless "mockTestedLLM" is true'
-    )
-  }
-
   return {
-    concurrency: parsedConfig.concurrency,
+    concurrency: parsePositiveInteger(values.concurrency, '--concurrency'),
     debug: values.debug ?? false,
-    model: parsedConfig.model,
-    solverModel: parsedConfig.solverModel,
-    mockTestedLLM: parsedConfig.mockTestedLLM,
-    mockJudgeLLM: parsedConfig.mockJudgeLLM,
-    apiKey: parsedConfig.apiKey,
-    baseURL: parsedConfig.baseURL,
-    pattern: parsedConfig.pattern,
-    timeout: parsedConfig.timeout,
-    port: parsedConfig.port,
-    solverTimeout: parsedConfig.solverTimeout,
     failFast: values['fail-fast'] ?? false,
-    justOne: values['just-one'] ?? false,
+    model: values.model,
+    solverModel: values['solver-model'],
+    pattern: values.pattern,
+    timeout: parsePositiveInteger(values.timeout, '--timeout'),
+    port: values.port ? parsePositiveInteger(values.port, '--port') : undefined,
   }
 }
 
-export type CliOptions = Awaited<ReturnType<typeof parseCliArgs>>
+export type CliOptions = ReturnType<typeof parseCliArgs>

@@ -3,7 +3,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { afterAll, describe, expect, test } from 'bun:test'
 
-import { discoverEvals } from '../discovery'
+import { discoverEvals } from '../../../utils/discovery'
 
 const tempRoots: string[] = []
 
@@ -45,8 +45,8 @@ describe('discoverEvals', () => {
       expect(results.length).toBe(2)
       expect(results[0]?.evalId).toBe('01-case')
       expect(results[1]?.evalId).toBe('02-case')
-      expect(results[0]?.relativeRequirementsPath).toBe(
-        'evals/animation/01-case/requirements.yaml'
+      expect(results[0]?.evalPath.endsWith('/evals/animation/01-case')).toBe(
+        true
       )
     } finally {
       process.chdir(previousCwd)
