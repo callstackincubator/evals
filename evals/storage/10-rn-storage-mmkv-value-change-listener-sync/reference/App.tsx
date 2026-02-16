@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { MMKV } from 'react-native-mmkv'
+import { createMMKV } from 'react-native-mmkv'
 
-const storage = new MMKV({ id: 'listener-storage' })
+const storage = createMMKV({ id: 'listener-storage' })
 const COUNTER_KEY = 'counter'
 
 export default function App() {
