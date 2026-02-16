@@ -1,5 +1,5 @@
 import { Pressable, SectionList, StyleSheet, Text, View } from 'react-native'
-import { useState } from 'react'
+import { memo, useCallback, useState } from 'react'
 
 type Contact = {
   id: string
@@ -10,6 +10,15 @@ type ContactSection = {
   data: Contact[]
   id: string
   key: string
+  title: string
+}
+
+type ContactRowProps = {
+  name: string
+}
+
+type ContactHeaderProps = {
+  id: string
   title: string
 }
 
@@ -43,33 +52,55 @@ const BASE_SECTIONS: ContactSection[] = [
   },
 ]
 
+const ContactRow = memo(function ContactRow({ name }: ContactRowProps) {
+  return (
+    <View style={styles.row}>
+      <Text style={styles.rowText}>{name}</Text>
+    </View>
+  )
+})
+
+const ContactHeader = memo(function ContactHeader({
+  id,
+  title,
+}: ContactHeaderProps) {
+  return (
+    <View style={styles.header}>
+      <Text style={styles.headerText}>{title}</Text>
+      <Text style={styles.subtleId}>{id}</Text>
+    </View>
+  )
+})
+
 export default function App() {
   const [sections, setSections] = useState<ContactSection[]>(BASE_SECTIONS)
 
+  const reverseSectionOrder = useCallback(() => {
+    setSections((prev) => [...prev].reverse())
+  }, [])
+
+  const keyExtractor = useCallback((item: Contact) => item.id, [])
+
+  const renderItem = ({ item }: { item: Contact }) => (
+    <ContactRow name={item.name} />
+  )
+
+  const renderSectionHeader = ({ section }: { section: ContactSection }) => (
+    <ContactHeader id={section.id} title={section.title} />
+  )
+
   return (
     <View style={styles.container}>
-      <Pressable
-        onPress={() => setSections((prev) => [...prev].reverse())}
-        style={styles.button}
-      >
+      <Pressable onPress={reverseSectionOrder} style={styles.button}>
         <Text style={styles.buttonText}>Reverse section order</Text>
       </Pressable>
 
       <SectionList
-        keyExtractor={(item) => item.id}
+        keyExtractor={keyExtractor}
         sections={sections}
         stickySectionHeadersEnabled
-        renderItem={({ item }) => (
-          <View style={styles.row}>
-            <Text style={styles.rowText}>{item.name}</Text>
-          </View>
-        )}
-        renderSectionHeader={({ section }) => (
-          <View style={styles.header}>
-            <Text style={styles.headerText}>{section.title}</Text>
-            <Text style={styles.subtleId}>{section.id}</Text>
-          </View>
-        )}
+        renderItem={renderItem}
+        renderSectionHeader={renderSectionHeader}
       />
     </View>
   )
