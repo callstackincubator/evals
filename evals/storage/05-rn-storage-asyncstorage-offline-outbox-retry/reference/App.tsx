@@ -83,51 +83,48 @@ export default function App() {
     setQueueSize(queue.length)
   }
 
-  const replayOutbox = useCallback(
-    async (manualTrigger: boolean) => {
-      if (isReplayingRef.current) {
-        return
-      }
-      if (!isOnline && !manualTrigger) {
-        return
-      }
+  const replayOutbox = async (manualTrigger: boolean) => {
+    if (isReplayingRef.current) {
+      return
+    }
+    if (!isOnline && !manualTrigger) {
+      return
+    }
 
-      isReplayingRef.current = true
-      setStatus(manualTrigger ? 'manual-sync' : 'reconnect-sync')
+    isReplayingRef.current = true
+    setStatus(manualTrigger ? 'manual-sync' : 'reconnect-sync')
 
-      try {
-        const queue = await readOutbox()
-        const remaining: OutboxMutation[] = []
-        const appliedIds = await readAppliedIds()
+    try {
+      const queue = await readOutbox()
+      const remaining: OutboxMutation[] = []
+      const appliedIds = await readAppliedIds()
 
-        for (const mutation of queue) {
-          if (appliedIds.has(mutation.id)) {
-            continue
-          }
-
-          try {
-            await applyRemoteMutation(mutation)
-            appliedIds.add(mutation.id)
-          } catch {
-            const next = {
-              ...mutation,
-              attempts: mutation.attempts + 1,
-            }
-            if (next.attempts < MAX_ATTEMPTS) {
-              remaining.push(next)
-            }
-          }
+      for (const mutation of queue) {
+        if (appliedIds.has(mutation.id)) {
+          continue
         }
 
-        await Promise.all([writeOutbox(remaining), writeAppliedIds(appliedIds)])
-        setQueueSize(remaining.length)
-        setStatus('idle')
-      } finally {
-        isReplayingRef.current = false
+        try {
+          await applyRemoteMutation(mutation)
+          appliedIds.add(mutation.id)
+        } catch {
+          const next = {
+            ...mutation,
+            attempts: mutation.attempts + 1,
+          }
+          if (next.attempts < MAX_ATTEMPTS) {
+            remaining.push(next)
+          }
+        }
       }
-    },
-    [isOnline]
-  )
+
+      await Promise.all([writeOutbox(remaining), writeAppliedIds(appliedIds)])
+      setQueueSize(remaining.length)
+      setStatus('idle')
+    } finally {
+      isReplayingRef.current = false
+    }
+  }
 
   useEffect(() => {
     void reloadQueueSize()
