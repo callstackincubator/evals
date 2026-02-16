@@ -10,3 +10,5 @@ requirements:
     description: Must keep path derivation stable across restarts and avoid per-session path drift.
   - id: path-mismatch-recovery
     description: Must provide a deterministic recovery or migration path when configured path changes.
+  - id: newest-library
+    description: Must use the newest available stable version of the specified library
