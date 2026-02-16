@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native'
-import { memo, useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 
 type FeedItem = {
   id: string
@@ -25,7 +25,7 @@ type RowProps = {
   onToggle: (id: string) => void
 }
 
-const Row = memo(function Row({ item, onToggle }: RowProps) {
+function Row({ item, onToggle }: RowProps) {
   return (
     <Pressable onPress={() => onToggle(item.id)} style={styles.row}>
       <Text style={styles.title}>{item.title}</Text>
@@ -34,12 +34,12 @@ const Row = memo(function Row({ item, onToggle }: RowProps) {
       </Text>
     </Pressable>
   )
-})
+}
 
 export default function App() {
   const [items, setItems] = useState<FeedItem[]>(INITIAL_ITEMS)
 
-  const toggleLike = useCallback((id: string) => {
+  const toggleLike = (id: string) => {
     setItems((prev) =>
       prev.map((item) => {
         if (item.id !== id) {
@@ -52,19 +52,15 @@ export default function App() {
         }
       })
     )
-  }, [])
+  }
 
-  const renderItem = useCallback<ListRenderItem<FeedItem>>(
-    ({ item }) => <Row item={item} onToggle={toggleLike} />,
-    [toggleLike]
+  const renderItem: ListRenderItem<FeedItem> = ({ item }) => (
+    <Row item={item} onToggle={toggleLike} />
   )
 
-  const keyExtractor = useCallback((item: FeedItem) => item.id, [])
+  const keyExtractor = (item: FeedItem) => item.id
 
-  const likedCount = useMemo(
-    () => items.filter((item) => item.liked).length,
-    [items]
-  )
+  const likedCount = items.filter((item) => item.liked).length
 
   return (
     <View style={styles.container}>
