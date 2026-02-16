@@ -1,5 +1,5 @@
 import { Pressable, SectionList, StyleSheet, Text, View } from 'react-native'
-import { memo, useCallback, useState } from 'react'
+import { useState } from 'react'
 
 type Contact = {
   id: string
@@ -52,34 +52,31 @@ const BASE_SECTIONS: ContactSection[] = [
   },
 ]
 
-const ContactRow = memo(function ContactRow({ name }: ContactRowProps) {
+function ContactRow({ name }: ContactRowProps) {
   return (
     <View style={styles.row}>
       <Text style={styles.rowText}>{name}</Text>
     </View>
   )
-})
+}
 
-const ContactHeader = memo(function ContactHeader({
-  id,
-  title,
-}: ContactHeaderProps) {
+function ContactHeader({ id, title }: ContactHeaderProps) {
   return (
     <View style={styles.header}>
       <Text style={styles.headerText}>{title}</Text>
       <Text style={styles.subtleId}>{id}</Text>
     </View>
   )
-})
+}
 
 export default function App() {
   const [sections, setSections] = useState<ContactSection[]>(BASE_SECTIONS)
 
-  const reverseSectionOrder = useCallback(() => {
+  const reverseSectionOrder = () => {
     setSections((prev) => [...prev].reverse())
-  }, [])
+  }
 
-  const keyExtractor = useCallback((item: Contact) => item.id, [])
+  const keyExtractor = (item: Contact) => item.id
 
   const renderItem = ({ item }: { item: Contact }) => (
     <ContactRow name={item.name} />
