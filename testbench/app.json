@@ -1,0 +1,11 @@
+{
+  "experiments": {
+    "reactCompiler": true
+  },
+  "ios": {
+    "bundleIdentifier": "com.anonymous.evals-testbench"
+  },
+  "android": {
+    "package": "com.anonymous.evalstestbench"
+  }
+}
