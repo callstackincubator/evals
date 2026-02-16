@@ -12,22 +12,33 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 
-type BridgeScheduler = (
-  callback: (...args: unknown[]) => void,
-  ...args: unknown[]
+type BridgeScheduler<T extends unknown[]> = (
+  callback: (...args: T) => void,
+  ...args: T
 ) => void
 
-const scheduleOnReactRuntime = scheduleOnRN as unknown as BridgeScheduler
+const scheduleOnReactRuntime = scheduleOnRN as unknown as BridgeScheduler<
+  [number]
+>
+
+const NEAR_ONE_EPSILON = 0.001
+
+const INTERACTION_BAR_HEIGHT = 24
+const INTERACTION_BAR_WIDTH = 260
+const ANIMATION_DURATION_MILLIS = 1800
+const ANIM_STEPS = 8
 
 export default function App() {
-  const [checkpointLabel, setCheckpointLabel] = useState('Checkpoint: 0/8')
+  const [checkpointLabel, setCheckpointLabel] = useState(
+    `Checkpoint: 0/${ANIM_STEPS}`
+  )
   const [running, setRunning] = useState(false)
 
   const phase = useSharedValue(0)
   const lastPublishedBucket = useSharedValue(-1)
 
   const publishCheckpoint = useCallback((bucket: number) => {
-    setCheckpointLabel(`Checkpoint: ${bucket}/8`)
+    setCheckpointLabel(`Checkpoint: ${bucket}/${ANIM_STEPS}`)
   }, [])
 
   const uiEnergy = useDerivedValue(() => {
@@ -36,10 +47,15 @@ export default function App() {
     const eased = phase.value * phase.value * (3 - 2 * phase.value)
     return eased
   })
-
   useAnimatedReaction(
     () => {
-      return Math.floor(uiEnergy.value * 8)
+      const energy = uiEnergy.value
+
+      const biasedEnergy = energy + NEAR_ONE_EPSILON
+      const clampedEnergy = Math.min(1, biasedEnergy)
+      const bucketScaled = clampedEnergy * ANIM_STEPS
+
+      return Math.floor(bucketScaled)
     },
     (nextBucket, previousBucket) => {
       if (
@@ -56,7 +72,11 @@ export default function App() {
 
   const meterStyle = useAnimatedStyle(() => {
     return {
-      width: interpolate(uiEnergy.value, [0, 1], [24, 260]),
+      width: interpolate(
+        uiEnergy.value,
+        [0, 1],
+        [INTERACTION_BAR_HEIGHT, INTERACTION_BAR_WIDTH]
+      ),
     }
   })
 
@@ -65,7 +85,6 @@ export default function App() {
       cancelAnimation(phase)
       phase.value = 0
       lastPublishedBucket.value = -1
-      setCheckpointLabel('Checkpoint: 0/8')
       setRunning(false)
       return
     }
@@ -73,7 +92,11 @@ export default function App() {
     setRunning(true)
     phase.value = 0
     lastPublishedBucket.value = -1
-    phase.value = withRepeat(withTiming(1, { duration: 1800 }), -1, true)
+    phase.value = withRepeat(
+      withTiming(1, { duration: ANIMATION_DURATION_MILLIS }),
+      -1,
+      true
+    )
   }
 
   return (
@@ -111,15 +134,15 @@ const styles = StyleSheet.create({
   meterFill: {
     backgroundColor: '#22c55e',
     borderRadius: 999,
-    height: 24,
+    height: INTERACTION_BAR_HEIGHT,
   },
   meterTrack: {
     backgroundColor: '#d1d5db',
     borderRadius: 999,
-    height: 24,
+    height: INTERACTION_BAR_HEIGHT,
     marginTop: 12,
     overflow: 'hidden',
-    width: 260,
+    width: INTERACTION_BAR_WIDTH,
   },
   screen: {
     alignItems: 'center',
