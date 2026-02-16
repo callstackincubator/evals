@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native'
-import { memo, useCallback, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 type Message = {
   id: string
@@ -29,13 +29,13 @@ function buildMessages(start: number, count: number): Message[] {
   })
 }
 
-const MessageBubble = memo(function MessageBubble({ text }: { text: string }) {
+function MessageBubble({ text }: { text: string }) {
   return (
     <View style={styles.bubble}>
       <Text style={styles.bubbleText}>{text}</Text>
     </View>
   )
-})
+}
 
 export default function App() {
   const [messages, setMessages] = useState<Message[]>(() =>
@@ -45,7 +45,7 @@ export default function App() {
   const loadingOlderRef = useRef(false)
   const cursorRef = useRef(INITIAL_CURSOR)
 
-  const loadOlder = useCallback(() => {
+  const loadOlder = () => {
     if (loadingOlderRef.current || cursorRef.current <= MIN_CURSOR) {
       return
     }
@@ -63,18 +63,19 @@ export default function App() {
       loadingOlderRef.current = false
       setLoadingOlder(false)
     }, LOAD_DELAY_MS)
-  }, [])
+  }
 
-  const keyExtractor = useCallback((item: Message) => item.id, [])
+  const keyExtractor = (item: Message) => item.id
 
-  const onScroll = useCallback(
-    ({ nativeEvent }: { nativeEvent: { contentOffset: { y: number } } }) => {
-      if (nativeEvent.contentOffset.y <= TOP_REACHED_OFFSET) {
-        loadOlder()
-      }
-    },
-    [loadOlder]
-  )
+  const onScroll = ({
+    nativeEvent,
+  }: {
+    nativeEvent: { contentOffset: { y: number } }
+  }) => {
+    if (nativeEvent.contentOffset.y <= TOP_REACHED_OFFSET) {
+      loadOlder()
+    }
+  }
 
   const renderItem: ListRenderItem<Message> = ({ item }) => (
     <MessageBubble text={item.text} />
