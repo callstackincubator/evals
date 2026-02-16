@@ -1,4 +1,11 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
+import {
+  FlatList,
+  ListRenderItem,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 import { memo, useCallback, useMemo, useState } from 'react'
 
 type FeedItem = {
@@ -43,18 +50,20 @@ export default function App() {
           ...item,
           liked: !item.liked,
         }
-      }),
+      })
     )
   }, [])
 
-  const renderItem = useCallback(
-    ({ item }: { item: FeedItem }) => <Row item={item} onToggle={toggleLike} />,
-    [toggleLike],
+  const renderItem = useCallback<ListRenderItem<FeedItem>>(
+    ({ item }) => <Row item={item} onToggle={toggleLike} />,
+    [toggleLike]
   )
+
+  const keyExtractor = useCallback((item: FeedItem) => item.id, [])
 
   const likedCount = useMemo(
     () => items.filter((item) => item.liked).length,
-    [items],
+    [items]
   )
 
   return (
@@ -62,7 +71,7 @@ export default function App() {
       <Text style={styles.header}>Liked posts: {likedCount}</Text>
       <FlatList
         data={items}
-        keyExtractor={(item) => item.id}
+        keyExtractor={keyExtractor}
         renderItem={renderItem}
       />
     </View>
