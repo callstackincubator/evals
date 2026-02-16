@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 type OutboxMutation = {
@@ -26,7 +26,7 @@ async function readOutbox(): Promise<OutboxMutation[]> {
   }
 
   try {
-    return JSON.parse(raw) as OutboxMutation[]
+    return JSON.parse(raw)
   } catch {
     return []
   }
@@ -43,7 +43,7 @@ async function readAppliedIds(): Promise<Set<string>> {
   }
 
   try {
-    return new Set(JSON.parse(raw) as string[])
+    return new Set(JSON.parse(raw))
   } catch {
     return new Set()
   }
@@ -64,6 +64,7 @@ export default function App() {
   const [isOnline, setIsOnline] = useState(false)
   const [queueSize, setQueueSize] = useState(0)
   const [status, setStatus] = useState('idle')
+  const isReplayingRef = useRef(false)
 
   const reloadQueueSize = async () => {
     const queue = await readOutbox()
@@ -82,43 +83,54 @@ export default function App() {
     setQueueSize(queue.length)
   }
 
-  const replayOutbox = async (manualTrigger: boolean) => {
-    if (!isOnline && !manualTrigger) {
-      return
-    }
-
-    setStatus(manualTrigger ? 'manual-sync' : 'reconnect-sync')
-
-    const queue = await readOutbox()
-    const remaining: OutboxMutation[] = []
-    const appliedIds = await readAppliedIds()
-
-    for (const mutation of queue) {
-      if (appliedIds.has(mutation.id)) {
-        continue
+  const replayOutbox = useCallback(
+    async (manualTrigger: boolean) => {
+      if (isReplayingRef.current) {
+        return
       }
+      if (!isOnline && !manualTrigger) {
+        return
+      }
+
+      isReplayingRef.current = true
+      setStatus(manualTrigger ? 'manual-sync' : 'reconnect-sync')
 
       try {
-        await applyRemoteMutation(mutation)
-        appliedIds.add(mutation.id)
-      } catch {
-        const next = {
-          ...mutation,
-          attempts: mutation.attempts + 1,
-        }
-        if (next.attempts < MAX_ATTEMPTS) {
-          remaining.push(next)
-        }
-      }
-    }
+        const queue = await readOutbox()
+        const remaining: OutboxMutation[] = []
+        const appliedIds = await readAppliedIds()
 
-    await Promise.all([writeOutbox(remaining), writeAppliedIds(appliedIds)])
-    setQueueSize(remaining.length)
-    setStatus('idle')
-  }
+        for (const mutation of queue) {
+          if (appliedIds.has(mutation.id)) {
+            continue
+          }
+
+          try {
+            await applyRemoteMutation(mutation)
+            appliedIds.add(mutation.id)
+          } catch {
+            const next = {
+              ...mutation,
+              attempts: mutation.attempts + 1,
+            }
+            if (next.attempts < MAX_ATTEMPTS) {
+              remaining.push(next)
+            }
+          }
+        }
+
+        await Promise.all([writeOutbox(remaining), writeAppliedIds(appliedIds)])
+        setQueueSize(remaining.length)
+        setStatus('idle')
+      } finally {
+        isReplayingRef.current = false
+      }
+    },
+    [isOnline]
+  )
 
   useEffect(() => {
-    reloadQueueSize()
+    void reloadQueueSize()
   }, [])
 
   useEffect(() => {
@@ -126,8 +138,8 @@ export default function App() {
       return
     }
 
-    replayOutbox(false)
-  }, [isOnline])
+    void replayOutbox(false)
+  }, [isOnline, replayOutbox])
 
   return (
     <View style={styles.container}>
