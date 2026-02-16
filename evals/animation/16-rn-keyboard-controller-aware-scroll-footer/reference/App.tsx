@@ -4,10 +4,8 @@ import {
   KeyboardProvider,
   useReanimatedKeyboardAnimation,
 } from 'react-native-keyboard-controller'
-import Animated, {
-  interpolate,
-  useAnimatedStyle,
-} from 'react-native-reanimated'
+import Animated, { useAnimatedStyle } from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const FIELDS = [
   'First name',
@@ -21,20 +19,22 @@ const FIELDS = [
 
 function FormScreen() {
   const keyboard = useReanimatedKeyboardAnimation()
+  const { top: topInset, bottom: bottomInset } = useSafeAreaInsets()
 
   const footerStyle = useAnimatedStyle(() => {
     return {
-      paddingBottom: interpolate(keyboard.progress.value, [0, 1], [16, 8]),
+      paddingBottom: bottomInset,
       transform: [{ translateY: -keyboard.height.value }],
     }
   })
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, { paddingTop: topInset }]}>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardDismissMode="interactive"
         keyboardShouldPersistTaps="handled"
+        bottomOffset={bottomInset}
       >
         <Text style={styles.title}>Checkout form</Text>
         {FIELDS.map((field) => {
@@ -76,11 +76,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopColor: '#cbd5e1',
     borderTopWidth: 1,
-    bottom: 0,
-    left: 0,
-    paddingHorizontal: 14,
-    position: 'absolute',
-    right: 0,
+    padding: 16,
   },
   input: {
     backgroundColor: '#fff',
@@ -102,9 +98,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 120,
     paddingHorizontal: 16,
-    paddingTop: 48,
   },
   submitButton: {
     alignItems: 'center',
