@@ -1,5 +1,5 @@
 import { Pressable, SectionList, StyleSheet, Text, View } from 'react-native'
-import { memo, useCallback, useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 type Topic = {
   id: string
@@ -53,56 +53,51 @@ const SECTIONS: TopicSection[] = [
   },
 ]
 
-const TopicRow = memo(function TopicRow({ title }: TopicRowProps) {
+function TopicRow({ title }: TopicRowProps) {
   return (
     <View style={styles.row}>
       <Text style={styles.rowText}>{title}</Text>
     </View>
   )
-})
+}
 
-const TopicHeader = memo(function TopicHeader({ title }: TopicHeaderProps) {
+function TopicHeader({ title }: TopicHeaderProps) {
   return (
     <View style={styles.header}>
       <Text style={styles.headerText}>{title}</Text>
     </View>
   )
-})
+}
 
 export default function App() {
   const sectionListRef = useRef<SectionList<Topic>>(null)
   const [status, setStatus] = useState('Ready')
 
-  const sectionIndexByTitle = useMemo(() => {
-    return new Map(SECTIONS.map((section, index) => [section.title, index]))
-  }, [])
+  const jumpTo = (sectionTitle: string, itemIndex: number) => {
+    const sectionIndex = SECTIONS.findIndex(
+      (section) => section.title === sectionTitle
+    )
 
-  const jumpTo = useCallback(
-    (sectionTitle: string, itemIndex: number) => {
-      const sectionIndex = sectionIndexByTitle.get(sectionTitle)
+    if (
+      sectionIndex < 0 ||
+      itemIndex < 0 ||
+      itemIndex >= SECTIONS[sectionIndex].data.length
+    ) {
+      setStatus('Invalid jump target')
+      return
+    }
 
-      if (
-        sectionIndex == null ||
-        itemIndex < 0 ||
-        itemIndex >= SECTIONS[sectionIndex].data.length
-      ) {
-        setStatus('Invalid jump target')
-        return
-      }
+    setStatus(`Jumped to ${sectionTitle} #${itemIndex + 1}`)
+    sectionListRef.current?.scrollToLocation({
+      animated: true,
+      itemIndex,
+      sectionIndex,
+      viewOffset: HEADER_HEIGHT,
+      viewPosition: 0,
+    })
+  }
 
-      setStatus(`Jumped to ${sectionTitle} #${itemIndex + 1}`)
-      sectionListRef.current?.scrollToLocation({
-        animated: true,
-        itemIndex,
-        sectionIndex,
-        viewOffset: HEADER_HEIGHT,
-        viewPosition: 0,
-      })
-    },
-    [sectionIndexByTitle]
-  )
-
-  const keyExtractor = useCallback((item: Topic) => item.id, [])
+  const keyExtractor = (item: Topic) => item.id
 
   const renderItem = ({ item }: { item: Topic }) => (
     <TopicRow title={item.title} />
