@@ -7,3 +7,5 @@ requirements:
     description: Must implement at least three step routes plus a summary route in stack navigation.
   - id: step-data-propagation
     description: Must render summary data from serialized step values.
+  - id: recommended-usage
+    description: Must use recommended implementation approach

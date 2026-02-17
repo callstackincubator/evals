@@ -1,56 +1,100 @@
 import { useState } from 'react'
 
-import { NavigationContainer } from '@react-navigation/native'
+import { createStaticNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Button, Text, TextInput, View } from 'react-native'
+import { Button, StyleSheet, Text, TextInput, View } from 'react-native'
+import {
+  StaticParamList,
+  StaticScreenProps,
+  useNavigation,
+} from '@react-navigation/core'
 
-const Stack = createNativeStackNavigator()
+type StepOneParams = {
+  firstName: string
+}
 
-function StepOneScreen({ navigation, route }: { navigation: any; route: any }) {
+type StepTwoParams = StepOneParams & {
+  email?: string
+}
+
+type StepThreeParams = StepTwoParams & {
+  city?: string
+}
+
+type SummaryParams = StepThreeParams
+
+function StepOneScreen({ route }: StaticScreenProps<StepOneParams>) {
+  const { navigate } = useNavigation()
   const [firstName, setFirstName] = useState(route.params?.firstName ?? '')
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10, padding: 24 }}>
+    <View style={styles.stepContainer}>
       <Text>Step 1</Text>
-      <TextInput value={firstName} onChangeText={setFirstName} placeholder='First name' style={{ width: '100%', borderWidth: 1, padding: 8 }} />
-      <Button title='Next' onPress={() => navigation.navigate('StepTwo', { firstName })} />
+      <TextInput
+        value={firstName}
+        onChangeText={setFirstName}
+        placeholder="First name"
+        style={styles.text}
+      />
+      <Button
+        title="Next"
+        onPress={() => navigate('StepTwoScreen', { firstName })}
+      />
     </View>
   )
 }
 
-function StepTwoScreen({ navigation, route }: { navigation: any; route: any }) {
+function StepTwoScreen({ route }: StaticScreenProps<StepTwoParams>) {
+  const { goBack, navigate } = useNavigation()
   const [email, setEmail] = useState(route.params?.email ?? '')
   const { firstName } = route.params
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10, padding: 24 }}>
+    <View style={styles.stepContainer}>
       <Text>Step 2</Text>
-      <TextInput value={email} onChangeText={setEmail} placeholder='Email' style={{ width: '100%', borderWidth: 1, padding: 8 }} />
-      <Button title='Back' onPress={() => navigation.goBack()} />
-      <Button title='Next' onPress={() => navigation.navigate('StepThree', { firstName, email })} />
+      <TextInput
+        value={email}
+        onChangeText={setEmail}
+        placeholder="Email"
+        style={styles.text}
+      />
+      <Button title="Back" onPress={() => goBack()} />
+      <Button
+        title="Next"
+        onPress={() => navigate('StepThreeScreen', { firstName, email })}
+      />
     </View>
   )
 }
 
-function StepThreeScreen({ navigation, route }: { navigation: any; route: any }) {
-  const [city, setCity] = useState(route.params?.city ?? '')
-  const { firstName, email } = route.params
+function StepThreeScreen({ route }: StaticScreenProps<StepThreeParams>) {
+  const { navigate, goBack } = useNavigation()
+  const { firstName, email, city: initialCityParam } = route.params ?? {}
+  const [city, setCity] = useState(initialCityParam ?? '')
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10, padding: 24 }}>
+    <View style={styles.stepContainer}>
       <Text>Step 3</Text>
-      <TextInput value={city} onChangeText={setCity} placeholder='City' style={{ width: '100%', borderWidth: 1, padding: 8 }} />
-      <Button title='Back' onPress={() => navigation.goBack()} />
-      <Button title='Summary' onPress={() => navigation.navigate('Summary', { firstName, email, city })} />
+      <TextInput
+        value={city}
+        onChangeText={setCity}
+        placeholder="City"
+        style={styles.text}
+      />
+      <Button title="Back" onPress={() => goBack()} />
+      <Button
+        title="Summary"
+        onPress={() => navigate('SummaryScreen', { firstName, email, city })}
+      />
     </View>
   )
 }
 
-function SummaryScreen({ route }: { route: any }) {
+function SummaryScreen({ route }: StaticScreenProps<SummaryParams>) {
   const { firstName, email, city } = route.params ?? {}
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+    <View style={styles.summaryContainer}>
       <Text>Summary</Text>
       <Text>firstName: {firstName ?? ''}</Text>
       <Text>email: {email ?? ''}</Text>
@@ -59,15 +103,54 @@ function SummaryScreen({ route }: { route: any }) {
   )
 }
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='StepOne' component={StepOneScreen} />
-        <Stack.Screen name='StepTwo' component={StepTwoScreen} />
-        <Stack.Screen name='StepThree' component={StepThreeScreen} />
-        <Stack.Screen name='Summary' component={SummaryScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
 }
+
+const RootStack = createNativeStackNavigator({
+  screens: {
+    StepOneScreen: {
+      screen: StepOneScreen,
+    },
+    StepTwoScreen: {
+      screen: StepTwoScreen,
+    },
+    StepThreeScreen: {
+      screen: StepThreeScreen,
+    },
+    SummaryScreen: {
+      screen: SummaryScreen,
+    },
+  },
+})
+
+const Navigation = createStaticNavigation(RootStack)
+
+export default function App() {
+  return <Navigation />
+}
+
+const styles = StyleSheet.create({
+  summaryContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  stepContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    padding: 24,
+  },
+  text: {
+    width: '100%',
+    borderWidth: 1,
+    padding: 8,
+  },
+})
