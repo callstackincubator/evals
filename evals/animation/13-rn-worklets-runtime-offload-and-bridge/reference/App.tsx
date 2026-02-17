@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import {
   createWorkletRuntime,
@@ -36,20 +36,20 @@ const TOTAL_BATCHES = 20
 const BATCH_SIZE = 3000
 const BRIDGE_EVERY_N_BATCHES = 4
 
-export default function App() {
-  const runtime = useMemo(() => buildRuntime('analysis-runtime'), [])
+const runtime = buildRuntime('analysis-runtime')
 
+export default function App() {
   const [status, setStatus] = useState('Idle')
   const [lastScore, setLastScore] = useState(0)
   const progress = useSharedValue(0)
 
-  const commitBatch = useCallback((payload: BatchPayload) => {
+  const commitBatch = (payload: BatchPayload) => {
     setLastScore(payload.score)
     setStatus(`Processed batch ${payload.batchIndex}/${payload.totalBatches}`)
     progress.value = withTiming(payload.batchIndex / payload.totalBatches, {
       duration: 140,
     })
-  }, [])
+  }
 
   const runHeavyComputation = () => {
     setStatus('Running offloaded compute')
