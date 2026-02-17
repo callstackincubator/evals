@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 
-import { NavigationContainer } from '@react-navigation/native'
+import {
+  createStaticNavigation,
+  useNavigation,
+} from '@react-navigation/native'
 import {
   createNativeStackNavigator,
   type NativeStackScreenProps,
@@ -12,66 +15,77 @@ type RootStackParamList = {
   CriticalStep: undefined
 }
 
-const Stack = createNativeStackNavigator<RootStackParamList>()
-
-type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'> & {
+type FlowContextValue = {
   flowState: string
+  onCriticalStepExit: () => void
 }
 
-function HomeScreen({ navigation, flowState }: HomeScreenProps) {
+const FlowContext = createContext<FlowContextValue | null>(null)
+
+function useFlow() {
+  const ctx = useContext(FlowContext)
+  if (!ctx) throw new Error('useFlow must be used within FlowProvider')
+  return ctx
+}
+
+function HomeScreen() {
+  const navigation = useNavigation<NativeStackScreenProps<RootStackParamList, 'Home'>['navigation']>()
+  const { flowState } = useFlow()
+  const goToCriticalStep = () => navigation.navigate('CriticalStep')
   return (
     <View style={styles.container}>
       <Text>Flow state: {flowState}</Text>
-      <Button title='Start critical flow' onPress={() => navigation.navigate('CriticalStep')} />
+      <Button title='Start critical flow' onPress={goToCriticalStep} />
     </View>
   )
 }
 
-type CriticalStepScreenProps = NativeStackScreenProps<
-  RootStackParamList,
-  'CriticalStep'
-> & {
-  onExit: () => void
-}
-
-function CriticalStepScreen({ navigation, onExit }: CriticalStepScreenProps) {
+function CriticalStepScreen() {
+  const navigation = useNavigation<
+    NativeStackScreenProps<RootStackParamList, 'CriticalStep'>['navigation']
+  >()
+  const { onCriticalStepExit } = useFlow()
+  const goBack = () => navigation.goBack()
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', () => {
-      onExit()
+      onCriticalStepExit()
     })
-
     return unsubscribe
-  }, [navigation, onExit])
+  }, [navigation, onCriticalStepExit])
 
   return (
     <View style={styles.container}>
       <Text>Critical step</Text>
-      <Button title='Complete and go back' onPress={() => navigation.goBack()} />
+      <Button title='Complete and go back' onPress={goBack} />
     </View>
   )
 }
+
+const RootStack = createNativeStackNavigator({
+  screens: {
+    Home: {
+      screen: HomeScreen,
+    },
+    CriticalStep: {
+      screen: CriticalStepScreen,
+    },
+  },
+})
+
+const Navigation = createStaticNavigation(RootStack)
 
 export default function App() {
   const [flowState, setFlowState] = useState('idle')
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='Home'>
-          {(props) => <HomeScreen {...props} flowState={flowState} />}
-        </Stack.Screen>
-        <Stack.Screen name='CriticalStep'>
-          {(props) => (
-            <CriticalStepScreen
-              {...props}
-              onExit={() => {
-                setFlowState('exited-consistently')
-              }}
-            />
-          )}
-        </Stack.Screen>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <FlowContext.Provider
+      value={{
+        flowState,
+        onCriticalStepExit: () => setFlowState('exited-consistently'),
+      }}
+    >
+      <Navigation />
+    </FlowContext.Provider>
   )
 }
 
