@@ -1,48 +1,49 @@
-import { useEffect, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 
-import {
-  createNavigationContainerRef,
-  NavigationContainer,
-  useRoute,
+import { createStaticNavigation } from '@react-navigation/native'
+import type {
+  StaticParamList,
+  StaticScreenProps,
 } from '@react-navigation/native'
-import type { RouteProp } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-type RootStackParamList = {
-  Landing: undefined
-  SignIn: undefined
-  ProtectedDetails: { itemId: string }
+const AuthContext = createContext<{ signIn: () => void }>({ signIn: () => {} })
+const SignedInContext = createContext(false)
+
+function useIsSignedIn() {
+  return useContext(SignedInContext)
 }
 
-const Stack = createNativeStackNavigator<RootStackParamList>()
-const navRef = createNavigationContainerRef<RootStackParamList>()
-
-type ProtectedTarget = {
-  name: 'ProtectedDetails'
-  params: { itemId: string }
-} | null
-
-function LandingScreen({ onDeepLink }: { onDeepLink: () => void }) {
-  return (
-    <View style={styles.landing}>
-      <Text>Public landing</Text>
-      <Button title="Simulate protected deep link" onPress={onDeepLink} />
-    </View>
-  )
+function useIsSignedOut() {
+  return !useIsSignedIn()
 }
 
-function SignInScreen({ onSignIn }: { onSignIn: () => void }) {
+function LandingScreen() {
   return (
     <View style={styles.centered}>
-      <Button title="Sign in" onPress={onSignIn} />
+      <Text>Public landing</Text>
     </View>
   )
 }
 
-function ProtectedDetailsScreen() {
-  const route = useRoute<RouteProp<RootStackParamList, 'ProtectedDetails'>>()
+function SignInScreen() {
+  const { signIn } = useContext(AuthContext)
 
+  const handleSignIn = () => {
+    signIn()
+  }
+
+  return (
+    <View style={styles.centered}>
+      <Button title="Sign in" onPress={handleSignIn} />
+    </View>
+  )
+}
+
+type ProtectedDetailsProps = StaticScreenProps<{ itemId: string }>
+
+function ProtectedDetailsScreen({ route }: ProtectedDetailsProps) {
   return (
     <View style={styles.centered}>
       <Text>Protected item: {route.params.itemId}</Text>
@@ -50,57 +51,56 @@ function ProtectedDetailsScreen() {
   )
 }
 
+const RootStack = createNativeStackNavigator({
+  UNSTABLE_routeNamesChangeBehavior: 'lastUnhandled',
+  groups: {
+    SignedIn: {
+      if: useIsSignedIn,
+      screens: {
+        Landing: LandingScreen,
+        ProtectedDetails: {
+          screen: ProtectedDetailsScreen,
+          linking: 'details/:itemId',
+        },
+      },
+    },
+    SignedOut: {
+      if: useIsSignedOut,
+      screens: {
+        SignIn: SignInScreen,
+      },
+    },
+  },
+})
+
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(RootStack)
+
+const linking = {
+  enabled: 'auto' as const,
+  prefixes: ['myapp://'],
+}
+
 export default function App() {
   const [isSignedIn, setIsSignedIn] = useState(false)
-  const [pendingTarget, setPendingTarget] = useState<ProtectedTarget>(null)
 
-  const handleIncomingProtectedDeepLink = () => {
-    const target: ProtectedTarget = {
-      name: 'ProtectedDetails',
-      params: { itemId: 'dl-99' },
-    }
-
-    if (!isSignedIn) {
-      setPendingTarget(target)
-      if (navRef.isReady()) {
-        navRef.navigate('SignIn')
-      }
-      return
-    }
-
-    if (navRef.isReady()) {
-      navRef.navigate(target.name, target.params)
-    }
+  const authContext = {
+    signIn: () => setIsSignedIn(true),
   }
-
-  const handleSignIn = () => {
-    setIsSignedIn(true)
-  }
-
-  useEffect(() => {
-    if (!isSignedIn || !pendingTarget || !navRef.isReady()) {
-      return
-    }
-
-    navRef.navigate(pendingTarget.name, pendingTarget.params)
-    setPendingTarget(null)
-  }, [isSignedIn, pendingTarget])
 
   return (
-    <NavigationContainer ref={navRef}>
-      <Stack.Navigator>
-        <Stack.Screen name="Landing">
-          {() => <LandingScreen onDeepLink={handleIncomingProtectedDeepLink} />}
-        </Stack.Screen>
-        <Stack.Screen name="SignIn">
-          {() => <SignInScreen onSignIn={handleSignIn} />}
-        </Stack.Screen>
-        <Stack.Screen
-          name="ProtectedDetails"
-          component={ProtectedDetailsScreen}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthContext.Provider value={authContext}>
+      <SignedInContext.Provider value={isSignedIn}>
+        <Navigation linking={linking} />
+      </SignedInContext.Provider>
+    </AuthContext.Provider>
   )
 }
 
@@ -109,11 +109,5 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  landing: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
   },
 })
