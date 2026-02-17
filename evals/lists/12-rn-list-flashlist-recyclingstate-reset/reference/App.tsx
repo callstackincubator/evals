@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { FlashList } from '@shopify/flash-list'
-import { memo, useEffect, useState } from 'react'
+import { useState } from 'react'
 
 type Article = {
   details: string
@@ -20,51 +20,41 @@ type RowProps = {
   onExpandedChange: (id: string, expanded: boolean) => void
 }
 
-const ExpandableRow = memo(function ExpandableRow({
-  expanded,
-  item,
-  onExpandedChange,
-}: RowProps) {
-  const [isExpanded, setIsExpanded] = useState(expanded)
-
-  useEffect(() => {
-    setIsExpanded(expanded)
-  }, [expanded, item.id])
-
+function ExpandableRow({ expanded, item, onExpandedChange }: RowProps) {
   return (
     <Pressable
       onPress={() => {
-        const next = !isExpanded
-        setIsExpanded(next)
+        const next = !expanded
         onExpandedChange(item.id, next)
       }}
       style={styles.row}
     >
       <Text style={styles.title}>{item.title}</Text>
-      {isExpanded ? <Text style={styles.details}>{item.details}</Text> : null}
+      {expanded ? <Text style={styles.details}>{item.details}</Text> : null}
     </Pressable>
   )
-})
+}
 
 export default function App() {
   const [expandedById, setExpandedById] = useState<Record<string, boolean>>({})
+
+  const handleExpandedChange = (id: string, expanded: boolean) => {
+    setExpandedById((prev) => ({
+      ...prev,
+      [id]: expanded,
+    }))
+  }
 
   return (
     <View style={styles.container}>
       <FlashList
         data={DATA}
-        estimatedItemSize={74}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <ExpandableRow
             expanded={Boolean(expandedById[item.id])}
             item={item}
-            onExpandedChange={(id, expanded) => {
-              setExpandedById((prev) => ({
-                ...prev,
-                [id]: expanded,
-              }))
-            }}
+            onExpandedChange={handleExpandedChange}
           />
         )}
       />
