@@ -1,16 +1,14 @@
-import { NavigationContainer, useNavigation } from '@react-navigation/native'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import type { StaticParamList } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
-
-const RootStack = createNativeStackNavigator()
-const Tab = createBottomTabNavigator()
 
 function FeedScreen() {
   const navigation = useNavigation()
 
   const handleCompose = () => {
-    navigation.getParent()?.navigate('ComposeModal')
+    navigation.navigate('ComposeModal')
   }
 
   return (
@@ -24,7 +22,7 @@ function ProfileScreen() {
   const navigation = useNavigation()
 
   const handleCompose = () => {
-    navigation.getParent()?.navigate('ComposeModal')
+    navigation.navigate('ComposeModal')
   }
 
   return (
@@ -34,7 +32,7 @@ function ProfileScreen() {
   )
 }
 
-function ComposeModal() {
+function ComposeModalScreen() {
   const navigation = useNavigation()
 
   const handleDismiss = () => {
@@ -49,32 +47,38 @@ function ComposeModal() {
   )
 }
 
-function Tabs() {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen name="Feed" component={FeedScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
-    </Tab.Navigator>
-  )
+const HomeTabs = createBottomTabNavigator({
+  screens: {
+    Feed: FeedScreen,
+    Profile: ProfileScreen,
+  },
+})
+
+const RootStack = createNativeStackNavigator({
+  screens: {
+    MainTabs: {
+      screen: HomeTabs,
+      options: { headerShown: false },
+    },
+    ComposeModal: {
+      screen: ComposeModalScreen,
+      options: { presentation: 'modal', title: 'Compose' },
+    },
+  },
+})
+
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
 }
 
+const Navigation = createStaticNavigation(RootStack)
+
 export default function App() {
-  return (
-    <NavigationContainer>
-      <RootStack.Navigator>
-        <RootStack.Screen
-          name="MainTabs"
-          component={Tabs}
-          options={{ headerShown: false }}
-        />
-        <RootStack.Screen
-          name="ComposeModal"
-          component={ComposeModal}
-          options={{ presentation: 'modal', title: 'Compose' }}
-        />
-      </RootStack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({
