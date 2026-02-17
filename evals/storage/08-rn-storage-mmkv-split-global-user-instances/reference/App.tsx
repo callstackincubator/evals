@@ -1,31 +1,29 @@
-import { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { MMKV } from 'react-native-mmkv'
+import { createMMKV, useMMKVString } from 'react-native-mmkv'
 
-const globalStorage = new MMKV({ id: 'global-preferences' })
-const userStorage = new MMKV({ id: 'user-session-data' })
+enum Theme {
+  System = 'system',
+  Dark = 'dark',
+}
 
-const GLOBAL_THEME_KEY = 'theme'
+const GLOBAL_STORAGE_ID = 'global.storage'
+const USER_STORAGE_ID = 'user.storage'
+const THEME_KEY = 'theme'
 const USER_DRAFT_KEY = 'draft'
 
+// Storage instance can be accessed through the useMKKV hook like this:
+// const globalStorage = useMMKV({ id: GLOBAL_STORAGE_ID })
+const globalStorage = createMMKV({ id: GLOBAL_STORAGE_ID })
+const userStorage = createMMKV({ id: USER_STORAGE_ID })
+
 export default function App() {
-  const [theme, setTheme] = useState(globalStorage.getString(GLOBAL_THEME_KEY) ?? 'system')
-  const [draft, setDraft] = useState(userStorage.getString(USER_DRAFT_KEY) ?? '')
+  const [savedTheme, setTheme] = useMMKVString(THEME_KEY, globalStorage)
+  const theme = savedTheme ?? Theme.System
 
-  const saveGlobalTheme = (nextTheme: string) => {
-    globalStorage.set(GLOBAL_THEME_KEY, nextTheme)
-    setTheme(nextTheme)
-  }
+  const [savedDraft, setDraft] = useMMKVString(USER_DRAFT_KEY, userStorage)
+  const draft = savedDraft ?? ''
 
-  const saveUserDraft = (nextDraft: string) => {
-    userStorage.set(USER_DRAFT_KEY, nextDraft)
-    setDraft(nextDraft)
-  }
-
-  const signOut = () => {
-    userStorage.clearAll()
-    setDraft('')
-  }
+  const signOut = () => userStorage.clearAll()
 
   return (
     <View style={styles.container}>
@@ -35,12 +33,14 @@ export default function App() {
 
       <Pressable
         style={styles.button}
-        onPress={() => saveGlobalTheme(theme === 'system' ? 'dark' : 'system')}
+        onPress={() =>
+          setTheme(theme === Theme.System ? Theme.Dark : Theme.System)
+        }
       >
         <Text style={styles.buttonText}>Toggle Global Theme</Text>
       </Pressable>
 
-      <Pressable style={styles.button} onPress={() => saveUserDraft(`${draft}*`)}>
+      <Pressable style={styles.button} onPress={() => setDraft(`${draft}*`)}>
         <Text style={styles.buttonText}>Append User Draft</Text>
       </Pressable>
 
