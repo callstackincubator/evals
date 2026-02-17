@@ -1,8 +1,7 @@
-import { NavigationContainer, useNavigation } from '@react-navigation/native'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import type { StaticParamList } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
-
-const Stack = createNativeStackNavigator()
 
 function HomeScreen() {
   const navigation = useNavigation()
@@ -46,21 +45,35 @@ function ComposeModalScreen() {
   )
 }
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Group>
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Details" component={DetailsScreen} />
-        </Stack.Group>
+const RootStack = createNativeStackNavigator({
+  groups: {
+    Main: {
+      screens: {
+        Home: HomeScreen,
+        Details: DetailsScreen,
+      },
+    },
+    Modal: {
+      screenOptions: { presentation: 'modal' },
+      screens: {
+        ComposeModal: ComposeModalScreen,
+      },
+    },
+  },
+})
 
-        <Stack.Group screenOptions={{ presentation: 'modal' }}>
-          <Stack.Screen name="ComposeModal" component={ComposeModalScreen} />
-        </Stack.Group>
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(RootStack)
+
+export default function App() {
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({
