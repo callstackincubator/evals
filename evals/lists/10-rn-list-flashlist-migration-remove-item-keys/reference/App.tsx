@@ -16,6 +16,14 @@ const DATA: FeedItem[] = Array.from({ length: 30 }, (_, index) => ({
   ],
 }))
 
+function TagPill({ label }: { label: string }) {
+  return (
+    <View style={styles.tagPill}>
+      <Text style={styles.tagText}>{label}</Text>
+    </View>
+  )
+}
+
 function FeedRow({ item }: { item: FeedItem }) {
   const { getMappingKey } = useMappingHelper()
 
@@ -24,9 +32,7 @@ function FeedRow({ item }: { item: FeedItem }) {
       <Text style={styles.body}>{item.body}</Text>
       <View style={styles.tagRow}>
         {item.tags.map((tag, index) => (
-          <View key={getMappingKey(tag.id, index)} style={styles.tagPill}>
-            <Text style={styles.tagText}>{tag.label}</Text>
-          </View>
+          <TagPill key={getMappingKey(tag.id, index)} label={tag.label} />
         ))}
       </View>
     </View>
@@ -38,7 +44,6 @@ export default function App() {
     <View style={styles.container}>
       <FlashList
         data={DATA}
-        estimatedItemSize={84}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <FeedRow item={item} />}
       />
