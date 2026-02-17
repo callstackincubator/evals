@@ -1,6 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useEffect, useState } from 'react'
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native'
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 
 type Session = {
   token: string
@@ -72,10 +78,28 @@ async function bootstrapState(): Promise<BootstrapState> {
   }
 }
 
+// Error handling helper function mock "imported" from another module
+function handleError(error: unknown) {
+  console.error('An error occurred while setting next draft value', error)
+}
+
 export default function App() {
   const [isHydrating, setIsHydrating] = useState(true)
   const [session, setSession] = useState<Session | null>(null)
   const [draft, setDraft] = useState<Draft>(EMPTY_DRAFT)
+
+  const appendDraft = async () => {
+    const nextDraft: Draft = {
+      body: `${draft.body}*`,
+      updatedAt: Date.now(),
+    }
+    try {
+      await AsyncStorage.setItem(DRAFT_KEY, JSON.stringify(nextDraft))
+      setDraft(nextDraft)
+    } catch (error) {
+      handleError(error)
+    }
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -101,7 +125,7 @@ export default function App() {
       }
     }
 
-    runBootstrap()
+    void runBootstrap()
 
     return () => {
       cancelled = true
@@ -111,7 +135,7 @@ export default function App() {
   if (isHydrating) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size='large' />
+        <ActivityIndicator size="large" />
         <Text style={styles.helper}>Restoring persisted state...</Text>
       </View>
     )
@@ -120,19 +144,11 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Hydration Complete</Text>
-      <Text style={styles.row}>Session: {session ? session.userId : 'Guest'}</Text>
+      <Text style={styles.row}>
+        Session: {session ? session.userId : 'Guest'}
+      </Text>
       <Text style={styles.row}>Draft chars: {draft.body.length}</Text>
-      <Pressable
-        style={styles.button}
-        onPress={async () => {
-          const nextDraft: Draft = {
-            body: `${draft.body}*`,
-            updatedAt: Date.now(),
-          }
-          setDraft(nextDraft)
-          await AsyncStorage.setItem(DRAFT_KEY, JSON.stringify(nextDraft))
-        }}
-      >
+      <Pressable style={styles.button} onPress={appendDraft}>
         <Text style={styles.buttonText}>Append Draft</Text>
       </Pressable>
     </View>
