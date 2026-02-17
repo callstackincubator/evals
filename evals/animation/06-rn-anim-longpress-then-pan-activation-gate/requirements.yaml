@@ -7,5 +7,7 @@ requirements:
     description: Must compose gestures so drag activation is gated by long-press completion.
   - id: accidental-drag-prevention
     description: Must prevent translation updates before the activation gate is satisfied.
+  - id: component-drag-direction
+    description: Must allow the component to be draggable across both the X and Y axis
   - id: visual-activation-feedback
     description: Must provide deterministic visual feedback for pre-activation versus active-drag states.

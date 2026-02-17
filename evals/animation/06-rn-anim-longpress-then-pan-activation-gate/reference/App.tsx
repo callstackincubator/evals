@@ -5,89 +5,66 @@ import {
   GestureHandlerRootView,
 } from 'react-native-gesture-handler'
 import Animated, {
-  interpolateColor,
   useAnimatedStyle,
+  useDerivedValue,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated'
 
-const DRAG_LIMIT = 170
-
-function clamp(value: number, min: number, max: number) {
-  'worklet'
-
-  return Math.min(max, Math.max(min, value))
-}
-
 export default function App() {
   const translateX = useSharedValue(0)
   const dragStartX = useSharedValue(0)
-  const gateProgress = useSharedValue(0)
-  const isDragging = useSharedValue(0)
 
-  const longPress = Gesture.LongPress()
-    .minDuration(350)
-    .onStart(() => {
-      gateProgress.value = withTiming(1, { duration: 120 })
-    })
-    .onFinalize(() => {
-      if (isDragging.value === 0) {
-        gateProgress.value = withTiming(0, { duration: 120 })
-      }
-    })
+  const translateY = useSharedValue(0)
+  const dragStartY = useSharedValue(0)
+
+  const isDragging = useSharedValue(false)
+  const dragStateColor = useDerivedValue(() =>
+    isDragging.value ? '#22c55e' : '#94a3b8'
+  )
 
   const pan = Gesture.Pan()
-    .onBegin(() => {
+    .activateAfterLongPress(350)
+    .onStart(() => {
+      isDragging.value = true
       dragStartX.value = translateX.value
+      dragStartY.value = translateY.value
     })
     .onUpdate((event) => {
-      if (gateProgress.value < 0.99) {
-        return
-      }
-
-      isDragging.value = 1
-      translateX.value = clamp(
-        dragStartX.value + event.translationX,
-        -DRAG_LIMIT,
-        DRAG_LIMIT
-      )
+      translateX.value = dragStartX.value + event.translationX
+      translateY.value = dragStartY.value + event.translationY
     })
     .onFinalize(() => {
-      isDragging.value = 0
-      translateX.value = withTiming(0, { duration: 180 })
-      gateProgress.value = withTiming(0, { duration: 120 })
+      isDragging.value = false
     })
-
-  const composedGesture = Gesture.Simultaneous(longPress, pan)
 
   const cardStyle = useAnimatedStyle(() => {
     return {
-      borderColor: interpolateColor(
-        gateProgress.value,
-        [0, 1],
-        ['#94a3b8', '#22c55e']
-      ),
+      borderColor: dragStateColor.value,
       transform: [
         { translateX: translateX.value },
-        { scale: gateProgress.value === 0 ? 1 : 1.03 },
+        { translateY: translateY.value },
+        {
+          scale: withTiming(isDragging.value ? 1.03 : 1, {
+            duration: 120,
+          }),
+        },
       ],
     }
   })
 
   const statusDotStyle = useAnimatedStyle(() => {
     return {
-      backgroundColor: interpolateColor(
-        gateProgress.value,
-        [0, 1],
-        ['#94a3b8', '#22c55e']
-      ),
-      opacity: gateProgress.value === 0 ? 0.5 : 1,
+      backgroundColor: dragStateColor.value,
+      opacity: withTiming(isDragging.value ? 1 : 0.5, {
+        duration: 120,
+      }),
     }
   })
 
   return (
     <GestureHandlerRootView style={styles.root}>
-      <GestureDetector gesture={composedGesture}>
+      <GestureDetector gesture={pan}>
         <Animated.View style={[styles.card, cardStyle]}>
           <View style={styles.row}>
             <Animated.View style={[styles.statusDot, statusDotStyle]} />
