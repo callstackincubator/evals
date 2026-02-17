@@ -1,9 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import {
   createWorkletRuntime,
-  runOnRuntime,
   scheduleOnRN,
+  scheduleOnRuntime,
 } from 'react-native-worklets'
 import Animated, {
   useAnimatedStyle,
@@ -13,10 +13,11 @@ import Animated, {
 
 type RuntimeHandle = unknown
 type RuntimeFactory = (name: string) => RuntimeHandle
-type RuntimeRunner = (
+type RuntimeScheduler = (
   runtime: RuntimeHandle,
-  worker: (...args: unknown[]) => void
-) => (...args: unknown[]) => void
+  worker: (...args: unknown[]) => void,
+  ...args: unknown[]
+) => void
 type BridgeScheduler = (
   callback: (...args: unknown[]) => void,
   ...args: unknown[]
@@ -29,10 +30,11 @@ type BatchPayload = {
 }
 
 const buildRuntime = createWorkletRuntime as unknown as RuntimeFactory
-const runInRuntime = runOnRuntime as unknown as RuntimeRunner
 const scheduleOnReactRuntime = scheduleOnRN as unknown as BridgeScheduler
 
 const TOTAL_BATCHES = 20
+const BATCH_SIZE = 3000
+const BRIDGE_EVERY_N_BATCHES = 4
 
 export default function App() {
   const runtime = useMemo(() => buildRuntime('analysis-runtime'), [])
@@ -41,41 +43,46 @@ export default function App() {
   const [lastScore, setLastScore] = useState(0)
   const progress = useSharedValue(0)
 
-  const commitBatch = (payload: BatchPayload) => {
+  const commitBatch = useCallback((payload: BatchPayload) => {
     setLastScore(payload.score)
     setStatus(`Processed batch ${payload.batchIndex}/${payload.totalBatches}`)
     progress.value = withTiming(payload.batchIndex / payload.totalBatches, {
       duration: 140,
     })
-  }
+  }, [])
 
   const runHeavyComputation = () => {
     setStatus('Running offloaded compute')
     setLastScore(0)
     progress.value = withTiming(0, { duration: 80 })
 
+    const worker = (currentBatch: number, totalBatches: number) => {
+      'worklet'
+
+      let accumulator = 0
+
+      const start = (currentBatch - 1) * BATCH_SIZE
+      const end = start + BATCH_SIZE
+
+      for (let i = start; i < end; i += 1) {
+        accumulator += Math.sqrt((i % 200) + 1) * Math.sin(i / 7)
+      }
+
+      const compactScore = Math.round(Math.abs(accumulator))
+      const isScheduledBridgePoint =
+        currentBatch % BRIDGE_EVERY_N_BATCHES === 0 ||
+        currentBatch === totalBatches
+      if (isScheduledBridgePoint) {
+        scheduleOnReactRuntime(commitBatch, {
+          batchIndex: currentBatch,
+          totalBatches,
+          score: compactScore,
+        })
+      }
+    }
+
     for (let batchIndex = 1; batchIndex <= TOTAL_BATCHES; batchIndex += 1) {
-      runInRuntime(runtime, (currentBatch: number, totalBatches: number) => {
-        'worklet'
-
-        let accumulator = 0
-        const start = (currentBatch - 1) * 3000
-        const end = start + 3000
-
-        for (let i = start; i < end; i += 1) {
-          accumulator += Math.sqrt((i % 200) + 1) * Math.sin(i / 7)
-        }
-
-        const compactScore = Math.round(Math.abs(accumulator))
-
-        if (currentBatch % 4 === 0 || currentBatch === totalBatches) {
-          scheduleOnReactRuntime(commitBatch, {
-            batchIndex: currentBatch,
-            totalBatches,
-            score: compactScore,
-          })
-        }
-      })(batchIndex, TOTAL_BATCHES)
+      scheduleOnRuntime(runtime, worker, batchIndex, TOTAL_BATCHES)
     }
   }
 
