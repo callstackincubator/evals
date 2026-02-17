@@ -1,26 +1,34 @@
-import { useLayoutEffect } from 'react'
-
-import { NavigationContainer } from '@react-navigation/native'
+import React, { useLayoutEffect } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
-
-type RootStackParamList = {
-  Home: undefined
-  Details: { name: string }
-}
-
-const Stack = createNativeStackNavigator<RootStackParamList>()
+import {
+  createStaticNavigation,
+  StaticParamList,
+  StaticScreenProps,
+  useNavigation,
+} from '@react-navigation/native'
 
 function HomeScreen({ navigation }: { navigation: any }) {
+  const openAlice = () => {
+    navigation.navigate('Details', { name: 'Alice' })
+  }
+  const openBob = () => {
+    navigation.navigate('Details', { name: 'Bob' })
+  }
   return (
     <View style={styles.container}>
-      <Button title='Open Alice' onPress={() => navigation.navigate('Details', { name: 'Alice' })} />
-      <Button title='Open Bob' onPress={() => navigation.navigate('Details', { name: 'Bob' })} />
+      <Button title="Open Alice" onPress={openAlice} />
+      <Button title="Open Bob" onPress={openBob} />
     </View>
   )
 }
 
-function DetailsScreen({ navigation, route }: { navigation: any; route: any }) {
+type DetailsScreenProps = StaticScreenProps<{
+  name: string
+}>
+
+function DetailsScreen({ route }: DetailsScreenProps) {
+  const navigation = useNavigation()
   const name = route.params?.name ?? 'Unknown'
 
   useLayoutEffect(() => {
@@ -34,15 +42,25 @@ function DetailsScreen({ navigation, route }: { navigation: any; route: any }) {
   )
 }
 
+const Stack = createNativeStackNavigator({
+  screens: {
+    Home: HomeScreen,
+    Details: DetailsScreen,
+  },
+})
+
+type RootStackParamList = StaticParamList<typeof Stack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(Stack)
+
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='Home' component={HomeScreen} />
-        <Stack.Screen name='Details' component={DetailsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({
