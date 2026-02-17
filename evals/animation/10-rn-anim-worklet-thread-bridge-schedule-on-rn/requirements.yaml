@@ -9,3 +9,5 @@ requirements:
     description: Must use react-native-worklets bridge primitives such as scheduleOnRN and or runOnRN for React-runtime callbacks.
   - id: throttled-or-bounded-react-updates
     description: Must avoid per-frame unbounded React state updates from the worklet bridge path.
+  - id: deterministic-bucket-mapping
+    description: Must map continuous UI-thread values to stable, jitter-free discrete checkpoints.
