@@ -8,28 +8,32 @@ type Message = {
 }
 
 const NEAR_BOTTOM_THRESHOLD = 0.2
+const ESTIMATED_ITEM_SIZE = 58
 
 export default function App() {
   const [messages, setMessages] = useState<Message[]>([
     { id: 'm-1', text: 'Hello' },
     { id: 'm-2', text: 'Can we sync later?' },
   ])
-  const [nextId, setNextId] = useState(3)
+
+  const appendMessage = () => {
+    setMessages((prev) => {
+      const nextIdValue = prev.length + 1
+
+      return [
+        ...prev,
+        {
+          id: `m-${nextIdValue}`,
+          text: `New incoming message ${nextIdValue}`,
+        },
+      ]
+    })
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.toolbar}>
-        <Pressable
-          onPress={() => {
-            const id = nextId
-            setMessages((prev) => [
-              ...prev,
-              { id: `m-${id}`, text: `New incoming message ${id}` },
-            ])
-            setNextId((prev) => prev + 1)
-          }}
-          style={styles.button}
-        >
+        <Pressable onPress={appendMessage} style={styles.button}>
           <Text style={styles.buttonText}>Append message</Text>
         </Pressable>
       </View>
@@ -37,11 +41,10 @@ export default function App() {
       <LegendList
         alignItemsAtEnd
         data={messages}
-        getEstimatedItemSize={() => 58}
+        getEstimatedItemSize={() => ESTIMATED_ITEM_SIZE}
         keyExtractor={(item) => item.id}
-        maintainScrollAtEnd={{
-          autoscrollToBottomThreshold: NEAR_BOTTOM_THRESHOLD,
-        }}
+        maintainScrollAtEnd={{ onDataChange: true }}
+        maintainScrollAtEndThreshold={NEAR_BOTTOM_THRESHOLD}
         renderItem={({ item }) => (
           <View style={styles.bubble}>
             <Text style={styles.bubbleText}>{item.text}</Text>
