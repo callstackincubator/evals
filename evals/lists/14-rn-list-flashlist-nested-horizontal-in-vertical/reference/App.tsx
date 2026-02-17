@@ -25,22 +25,55 @@ const DATA: FeedRow[] = [
   { body: 'Another article', id: 'story-2', type: 'story' },
 ]
 
+function CarouselCardItem({ card }: { card: CarouselCard }) {
+  return (
+    <View style={styles.card}>
+      <View style={[styles.cardImage, { backgroundColor: card.color }]} />
+      <Text style={styles.cardTitle}>{card.title}</Text>
+    </View>
+  )
+}
+
+function renderCarouselCard({ item }: { item: CarouselCard }) {
+  return <CarouselCardItem card={item} />
+}
+
 function HorizontalCarousel({ cards }: { cards: CarouselCard[] }) {
   return (
     <FlashList
       data={cards}
-      estimatedItemSize={200}
+      getItemType={() => 'card'}
       horizontal
       keyExtractor={(item) => item.id}
-      renderItem={({ item }) => (
-        <View style={styles.card}>
-          <View style={[styles.cardImage, { backgroundColor: item.color }]} />
-          <Text style={styles.cardTitle}>{item.title}</Text>
-        </View>
-      )}
+      renderItem={renderCarouselCard}
       showsHorizontalScrollIndicator={false}
     />
   )
+}
+
+function StoryRow({ body }: { body: string }) {
+  return (
+    <View style={styles.storyRow}>
+      <Text style={styles.storyText}>{body}</Text>
+    </View>
+  )
+}
+
+function CarouselFeedRow({ cards }: { cards: CarouselCard[] }) {
+  return (
+    <View style={styles.carouselRow}>
+      <Text style={styles.sectionTitle}>Featured</Text>
+      <HorizontalCarousel cards={cards} />
+    </View>
+  )
+}
+
+function renderFeedRow({ item }: { item: FeedRow }) {
+  if (item.type === 'carousel') {
+    return <CarouselFeedRow cards={item.cards} />
+  }
+
+  return <StoryRow body={item.body} />
 }
 
 export default function App() {
@@ -48,25 +81,9 @@ export default function App() {
     <View style={styles.container}>
       <FlashList
         data={DATA}
-        estimatedItemSize={140}
         getItemType={(item) => item.type}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          if (item.type === 'carousel') {
-            return (
-              <View style={styles.carouselRow}>
-                <Text style={styles.sectionTitle}>Featured</Text>
-                <HorizontalCarousel cards={item.cards} />
-              </View>
-            )
-          }
-
-          return (
-            <View style={styles.storyRow}>
-              <Text style={styles.storyText}>{item.body}</Text>
-            </View>
-          )
-        }}
+        renderItem={renderFeedRow}
       />
     </View>
   )
