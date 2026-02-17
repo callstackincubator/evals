@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import { NavigationContainer, useNavigation } from '@react-navigation/native'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import type { StaticParamList } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Button, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native'
 
-const Stack = createNativeStackNavigator()
 const NAV_VERSION = 2
 const STORAGE_KEY = 'NAV_STATE_WITH_VERSION'
 
@@ -32,6 +32,23 @@ function DetailsScreen() {
   )
 }
 
+const RootStack = createNativeStackNavigator({
+  screens: {
+    Home: HomeScreen,
+    Details: DetailsScreen,
+  },
+})
+
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(RootStack)
+
 export default function App() {
   const [ready, setReady] = useState(false)
   const [initialState, setInitialState] = useState<any>()
@@ -56,19 +73,15 @@ export default function App() {
   }
 
   if (!ready) {
-    return null
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator />
+      </View>
+    )
   }
 
   return (
-    <NavigationContainer
-      initialState={initialState}
-      onStateChange={handleStateChange}
-    >
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Details" component={DetailsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Navigation initialState={initialState} onStateChange={handleStateChange} />
   )
 }
 
