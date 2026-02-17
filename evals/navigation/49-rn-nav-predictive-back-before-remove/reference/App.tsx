@@ -1,10 +1,11 @@
 import { useState } from 'react'
 
 import {
-  NavigationContainer,
+  createStaticNavigation,
   useNavigation,
   usePreventRemove,
 } from '@react-navigation/native'
+import type { StaticParamList } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import {
   Alert,
@@ -14,8 +15,6 @@ import {
   TextInput,
   View,
 } from 'react-native'
-
-const Stack = createNativeStackNavigator()
 
 function HomeScreen() {
   const navigation = useNavigation()
@@ -79,15 +78,25 @@ function EditScreen() {
   )
 }
 
+const RootStack = createNativeStackNavigator({
+  screens: {
+    Home: HomeScreen,
+    Edit: EditScreen,
+  },
+})
+
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(RootStack)
+
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Edit" component={EditScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({
