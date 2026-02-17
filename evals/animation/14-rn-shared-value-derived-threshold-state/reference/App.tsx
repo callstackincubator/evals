@@ -5,14 +5,22 @@ import {
   GestureDetector,
   GestureHandlerRootView,
 } from 'react-native-gesture-handler'
+import { scheduleOnRN } from 'react-native-worklets'
 import Animated, {
+  interpolate,
   interpolateColor,
-  runOnJS,
   useAnimatedReaction,
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
 } from 'react-native-reanimated'
+
+type BridgeScheduler = (
+  callback: (...args: unknown[]) => void,
+  ...args: unknown[]
+) => void
+
+const scheduleOnReactRuntime = scheduleOnRN as unknown as BridgeScheduler
 
 const TRACK_WIDTH = 260
 const KNOB_SIZE = 28
@@ -21,20 +29,27 @@ const IDLE = 0
 const ACTIVE = 1
 const COMMITTED = 2
 
+const PHASE_LABELS: Record<number, string> = {
+  [IDLE]: 'idle',
+  [ACTIVE]: 'active',
+  [COMMITTED]: 'committed',
+}
+
+const THRESHOLD_IDLE_ACTIVE = 0.3
+const THRESHOLD_ACTIVE_COMMITTED = 0.75
+
+const PHASE_COLORS = {
+  trackFill: ['#94a3b8', '#f59e0b', '#16a34a'],
+  knob: ['#64748b', '#d97706', '#15803d'],
+  badge: ['#e2e8f0', '#fef3c7', '#dcfce7'],
+}
+
+const PHASE_INPUT_RANGE = [IDLE, ACTIVE, COMMITTED]
+
 function clamp(value: number, min: number, max: number) {
   'worklet'
 
   return Math.min(max, Math.max(min, value))
-}
-
-function labelForState(phase: number) {
-  if (phase === IDLE) {
-    return 'idle'
-  }
-  if (phase === ACTIVE) {
-    return 'active'
-  }
-  return 'committed'
 }
 
 export default function App() {
@@ -44,10 +59,11 @@ export default function App() {
   const startProgress = useSharedValue(0)
 
   const phase = useDerivedValue(() => {
-    if (progress.value < 0.3) {
+    'worklet'
+    if (progress.value < THRESHOLD_IDLE_ACTIVE) {
       return IDLE
     }
-    if (progress.value < 0.75) {
+    if (progress.value < THRESHOLD_ACTIVE_COMMITTED) {
       return ACTIVE
     }
     return COMMITTED
@@ -56,50 +72,65 @@ export default function App() {
   useAnimatedReaction(
     () => phase.value,
     (next, previous) => {
+      'worklet'
       if (next === previous) {
         return
       }
-      runOnJS(setPhaseLabel)(labelForState(next))
+      const label = PHASE_LABELS[next]
+      scheduleOnReactRuntime(setPhaseLabel, label)
     }
   )
 
   const pan = Gesture.Pan()
     .onBegin(() => {
+      'worklet'
       startProgress.value = progress.value
     })
     .onUpdate((event) => {
+      'worklet'
       const next = startProgress.value + event.translationX / TRACK_WIDTH
       progress.value = clamp(next, 0, 1)
     })
 
   const trackFillStyle = useAnimatedStyle(() => {
+    'worklet'
     return {
-      width: progress.value * TRACK_WIDTH,
+      width: interpolate(progress.value, [0, 1], [0, TRACK_WIDTH]),
       backgroundColor: interpolateColor(
         phase.value,
-        [IDLE, ACTIVE, COMMITTED],
-        ['#94a3b8', '#f59e0b', '#16a34a']
+        PHASE_INPUT_RANGE,
+        PHASE_COLORS.trackFill
       ),
     }
   })
 
   const knobStyle = useAnimatedStyle(() => {
+    'worklet'
     return {
-      transform: [{ translateX: progress.value * (TRACK_WIDTH - KNOB_SIZE) }],
+      transform: [
+        {
+          translateX: interpolate(
+            progress.value,
+            [0, 1],
+            [0, TRACK_WIDTH - KNOB_SIZE]
+          ),
+        },
+      ],
       backgroundColor: interpolateColor(
         phase.value,
-        [IDLE, ACTIVE, COMMITTED],
-        ['#64748b', '#d97706', '#15803d']
+        PHASE_INPUT_RANGE,
+        PHASE_COLORS.knob
       ),
     }
   })
 
   const badgeStyle = useAnimatedStyle(() => {
+    'worklet'
     return {
       backgroundColor: interpolateColor(
         phase.value,
-        [IDLE, ACTIVE, COMMITTED],
-        ['#e2e8f0', '#fef3c7', '#dcfce7']
+        PHASE_INPUT_RANGE,
+        PHASE_COLORS.badge
       ),
     }
   })
