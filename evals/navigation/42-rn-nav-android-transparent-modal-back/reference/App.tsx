@@ -1,14 +1,7 @@
-import { useCallback } from 'react'
-
-import {
-  NavigationContainer,
-  useFocusEffect,
-  useNavigation,
-} from '@react-navigation/native'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import type { StaticParamList } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { BackHandler, Button, StyleSheet, Text, View } from 'react-native'
-
-const Stack = createNativeStackNavigator()
+import { Button, StyleSheet, Text, View } from 'react-native'
 
 function HomeScreen() {
   const navigation = useNavigation()
@@ -27,20 +20,6 @@ function HomeScreen() {
 function TransparentModalScreen() {
   const navigation = useNavigation()
 
-  useFocusEffect(
-    useCallback(() => {
-      const subscription = BackHandler.addEventListener(
-        'hardwareBackPress',
-        () => {
-          navigation.goBack()
-          return true
-        }
-      )
-
-      return () => subscription.remove()
-    }, [navigation])
-  )
-
   const handleDismiss = () => {
     navigation.goBack()
   }
@@ -55,19 +34,28 @@ function TransparentModalScreen() {
   )
 }
 
+const RootStack = createNativeStackNavigator({
+  screens: {
+    Home: HomeScreen,
+    TransparentModal: {
+      screen: TransparentModalScreen,
+      options: { presentation: 'transparentModal', headerShown: false },
+    },
+  },
+})
+
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(RootStack)
+
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen
-          name="TransparentModal"
-          component={TransparentModalScreen}
-          options={{ presentation: 'transparentModal', headerShown: false }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({
