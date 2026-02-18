@@ -16,6 +16,15 @@ const INITIAL_TASKS: Task[] = [
 
 const ESTIMATED_ITEM_SIZE = 58
 
+function TaskRow({ task }: { task: Task }) {
+  return (
+    <View style={styles.row}>
+      <Text style={styles.rowText}>{task.title}</Text>
+      <Text style={styles.rowId}>{task.id}</Text>
+    </View>
+  )
+}
+
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS)
 
@@ -53,12 +62,7 @@ export default function App() {
         data={tasks}
         getEstimatedItemSize={() => ESTIMATED_ITEM_SIZE}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.row}>
-            <Text style={styles.rowText}>{item.title}</Text>
-            <Text style={styles.rowId}>{item.id}</Text>
-          </View>
-        )}
+        renderItem={({ item }) => <TaskRow task={item} />}
       />
     </View>
   )
