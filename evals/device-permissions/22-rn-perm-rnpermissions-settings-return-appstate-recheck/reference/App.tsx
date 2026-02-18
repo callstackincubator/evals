@@ -1,6 +1,15 @@
 import { StatusBar } from 'expo-status-bar'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { AppState, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
+import {
+  ActivityIndicator,
+  AppState,
+  type AppStateStatus,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 import {
   check,
   openSettings,
@@ -11,74 +20,169 @@ import {
   type PermissionStatus,
 } from 'react-native-permissions'
 
-type UiStatus = 'unavailable' | 'denied' | 'blocked' | 'granted'
+type NormalizedPermissionStatus =
+  | typeof RESULTS.UNAVAILABLE
+  | typeof RESULTS.DENIED
+  | typeof RESULTS.BLOCKED
+  | typeof RESULTS.GRANTED
 
-const CAMERA_PERMISSION: Permission =
-  Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA
+const CAMERA_PERMISSION: Permission | undefined = Platform.select({
+  ios: PERMISSIONS.IOS.CAMERA,
+  android: PERMISSIONS.ANDROID.CAMERA,
+})
 
-function mapStatus(status: PermissionStatus): UiStatus {
-  if (status === RESULTS.UNAVAILABLE) {
-    return 'unavailable'
+function normalizeStatus(status: PermissionStatus): NormalizedPermissionStatus {
+  switch (status) {
+    case RESULTS.LIMITED:
+      return RESULTS.GRANTED
+    case RESULTS.UNAVAILABLE:
+    case RESULTS.BLOCKED:
+    case RESULTS.GRANTED:
+    case RESULTS.DENIED:
+      return status
   }
-
-  if (status === RESULTS.BLOCKED) {
-    return 'blocked'
-  }
-
-  if (status === RESULTS.GRANTED || status === RESULTS.LIMITED) {
-    return 'granted'
-  }
-
-  return 'denied'
 }
 
 export default function App() {
-  const [status, setStatus] = useState<UiStatus>('denied')
-  const [message, setMessage] = useState('')
-  const pendingSettingsReturn = useRef(false)
-  const isRefreshing = useRef(false)
+  const [status, setStatus] = useState<NormalizedPermissionStatus>(
+    RESULTS.DENIED
+  )
+  const [message, setMessage] = useState('Checking permission status...')
+  const [isBootstrapping, setIsBootstrapping] = useState(true)
+  const pendingSettingsReturnRef = useRef(false)
+  const isRefreshingRef = useRef(false)
+  const appStateRef = useRef(AppState.currentState)
+
+  const handleError = useCallback((error: unknown, fallbackMessage: string) => {
+    if (__DEV__) {
+      console.error(error)
+    }
+    setMessage(fallbackMessage)
+  }, [])
+  
+  const handleRefreshStatusError = useCallback(
+    (error: unknown) => {
+      handleError(error, 'Unable to check permission status.')
+    },
+    [handleError]
+  )
+
+  const applyStatus = useCallback(
+    (rawStatus: PermissionStatus, source: 'check' | 'request') => {
+      const nextStatus = normalizeStatus(rawStatus)
+      setStatus(nextStatus)
+
+      if (nextStatus === RESULTS.BLOCKED) {
+        setMessage('Permission is blocked. Open settings to recover access.')
+        return nextStatus
+      }
+
+      if (source === 'request') {
+        setMessage(`Request result: ${nextStatus}`)
+      } else {
+        setMessage(`Current status: ${nextStatus}`)
+      }
+
+      return nextStatus
+    },
+    []
+  )
 
   const refreshStatus = useCallback(async () => {
-    if (isRefreshing.current) {
+    if (isRefreshingRef.current) {
       return
     }
 
-    isRefreshing.current = true
-    const raw = await check(CAMERA_PERMISSION)
-    setStatus(mapStatus(raw))
-    isRefreshing.current = false
-  }, [])
+    if (!CAMERA_PERMISSION) {
+      setStatus(RESULTS.UNAVAILABLE)
+      setMessage('Camera permission is unavailable on this platform.')
+      setIsBootstrapping(false)
+      return
+    }
+
+    isRefreshingRef.current = true
+    try {
+      const rawStatus = await check(CAMERA_PERMISSION)
+      applyStatus(rawStatus, 'check')
+    } catch (error: unknown) {
+      handleError(error, 'Unable to check permission status.')
+    } finally {
+      isRefreshingRef.current = false
+      setIsBootstrapping(false)
+    }
+  }, [applyStatus, handleError])
+
+  const openSettingsAsync = useCallback(async () => {
+    pendingSettingsReturnRef.current = true
+    setMessage(
+      'Open system settings, change permission, then return to the app.'
+    )
+
+    try {
+      await openSettings()
+    } catch (error: unknown) {
+      pendingSettingsReturnRef.current = false
+      handleError(error, 'Unable to open system settings.')
+    }
+  }, [handleError])
 
   const requestPermission = useCallback(async () => {
-    const raw = await request(CAMERA_PERMISSION)
-    const next = mapStatus(raw)
-    setStatus(next)
-
-    if (next === 'blocked') {
-      setMessage('Permission blocked. Open settings to recover.')
+    if (!CAMERA_PERMISSION) {
+      setStatus(RESULTS.UNAVAILABLE)
+      setMessage('Camera permission is unavailable on this platform.')
       return
     }
 
-    setMessage(`Request result: ${next}`)
-  }, [])
+    try {
+      const rawStatus = await request(CAMERA_PERMISSION)
+      const nextStatus = applyStatus(rawStatus, 'request')
+
+      if (nextStatus === RESULTS.BLOCKED) {
+        await openSettingsAsync()
+      }
+    } catch (error: unknown) {
+      handleError(error, 'Unable to request permission.')
+    }
+  }, [applyStatus, handleError, openSettingsAsync])
+
+  const handleAppStateChange = useCallback(
+    (nextState: AppStateStatus) => {
+      const previousState = appStateRef.current
+      appStateRef.current = nextState
+
+      const becameActive = previousState !== 'active' && nextState === 'active'
+      if (!becameActive || !pendingSettingsReturnRef.current) {
+        return
+      }
+
+      pendingSettingsReturnRef.current = false
+      refreshStatus().catch(handleRefreshStatusError)
+    },
+    [handleRefreshStatusError, refreshStatus]
+  )
 
   useEffect(() => {
-    refreshStatus()
+    refreshStatus().catch(handleRefreshStatusError)
 
-    const subscription = AppState.addEventListener('change', (nextState) => {
-      if (nextState === 'active' && pendingSettingsReturn.current) {
-        pendingSettingsReturn.current = false
-        refreshStatus()
-      }
-    })
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange
+    )
 
     return () => subscription.remove()
-  }, [refreshStatus])
+  }, [handleAppStateChange, handleRefreshStatusError, refreshStatus])
 
-  const openSettingsAndWait = useCallback(() => {
-    pendingSettingsReturn.current = true
-    openSettings()
-  }, [])
+  if (isBootstrapping) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="small" color="#111827" />
+        <Text style={styles.message}>
+          Checking current permission status...
+        </Text>
+        <StatusBar style="auto" />
+      </View>
+    )
+  }
 
   return (
     <View style={styles.container}>
@@ -93,8 +197,8 @@ export default function App() {
         <Text style={styles.buttonText}>Request permission</Text>
       </Pressable>
 
-      {status === 'blocked' && (
-        <Pressable onPress={openSettingsAndWait} style={styles.secondaryButton}>
+      {status === RESULTS.BLOCKED && (
+        <Pressable onPress={openSettingsAsync} style={styles.secondaryButton}>
           <Text style={styles.secondaryButtonText}>Open settings</Text>
         </Pressable>
       )}
