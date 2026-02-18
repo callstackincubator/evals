@@ -1,68 +1,111 @@
-import { useState } from 'react'
+import React, {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useState,
+} from 'react'
 
-import { NavigationContainer } from '@react-navigation/native'
+import {
+  createStaticNavigation,
+  StaticParamList,
+  useNavigation,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native'
 
-type RootStackParamList = {
-  Notes: undefined
-  Compose: undefined
+interface Notes {
+  notes: string[]
+  addNote: (note: string) => void
 }
 
-const Stack = createNativeStackNavigator<RootStackParamList>()
+const NotesContext = createContext<Notes>({
+  notes: [],
+  addNote: () => {},
+})
 
-function NotesScreen({ navigation, notes }: { navigation: any; notes: string[] }) {
+const NotesProvider = ({ children }: PropsWithChildren) => {
+  const [notes, setNotes] = useState<string[]>([])
+
+  const addNote: Notes['addNote'] = (note) => {
+    setNotes((prevNotes) => [...prevNotes, note])
+  }
+
+  return (
+    <NotesContext.Provider value={{ notes, addNote }}>
+      {children}
+    </NotesContext.Provider>
+  )
+}
+
+function NotesScreen() {
+  const navigation = useNavigation()
+  const { notes } = useContext(NotesContext)
+
+  const handleAddNote = () => {
+    navigation.navigate('Compose')
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Notes</Text>
-      <Button title='Compose Note' onPress={() => navigation.navigate('Compose')} />
-      {notes.length === 0 ? <Text>No notes yet</Text> : notes.map((note) => <Text key={note}>{note}</Text>)}
+      <Button title="Compose Note" onPress={handleAddNote} />
+      {notes.length === 0 ? (
+        <Text>No notes yet</Text>
+      ) : (
+        notes.map((note) => <Text key={note}>{note}</Text>)
+      )}
     </View>
   )
 }
 
-function ComposeScreen({ navigation, onSave }: { navigation: any; onSave: (note: string) => void }) {
+function ComposeScreen() {
+  const navigation = useNavigation()
   const [draft, setDraft] = useState('')
+  const { addNote } = useContext(NotesContext)
+
+  const onCancel = () => navigation.goBack()
+  const onSave = () => {
+    const nextNote = draft.trim()
+    addNote(nextNote)
+    navigation.goBack()
+  }
 
   return (
     <View style={styles.container}>
-      <TextInput style={styles.input} value={draft} onChangeText={setDraft} placeholder='Type note' />
-      <Button title='Cancel' onPress={() => navigation.goBack()} />
-      <Button
-        title='Save'
-        onPress={() => {
-          const nextNote = draft.trim()
-          if (nextNote) {
-            onSave(nextNote)
-          }
-          navigation.goBack()
-        }}
+      <TextInput
+        style={styles.input}
+        value={draft}
+        onChangeText={setDraft}
+        placeholder="Type note"
       />
+      <Button title="Cancel" onPress={onCancel} />
+      <Button title="Save" onPress={onSave} />
     </View>
   )
 }
 
-export default function App() {
-  const [notes, setNotes] = useState<string[]>([])
+const Stack = createNativeStackNavigator({
+  screens: {
+    Notes: NotesScreen,
+    Compose: ComposeScreen,
+  },
+})
 
+type RootStackParamList = StaticParamList<typeof Stack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(Stack)
+
+export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='Notes'>
-          {(props) => <NotesScreen {...props} notes={notes} />}
-        </Stack.Screen>
-        <Stack.Screen name='Compose' options={{ presentation: 'modal', title: 'Compose' }}>
-          {(props) => (
-            <ComposeScreen
-              {...props}
-              onSave={(nextNote) => {
-                setNotes((value) => [...value, nextNote])
-              }}
-            />
-          )}
-        </Stack.Screen>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <NotesProvider>
+      <Navigation />
+    </NotesProvider>
   )
 }
 
