@@ -34,10 +34,6 @@ function CarouselCardItem({ card }: { card: CarouselCard }) {
   )
 }
 
-function renderCarouselCard({ item }: { item: CarouselCard }) {
-  return <CarouselCardItem card={item} />
-}
-
 function HorizontalCarousel({ cards }: { cards: CarouselCard[] }) {
   return (
     <FlashList
@@ -45,7 +41,7 @@ function HorizontalCarousel({ cards }: { cards: CarouselCard[] }) {
       getItemType={() => 'card'}
       horizontal
       keyExtractor={(item) => item.id}
-      renderItem={renderCarouselCard}
+      renderItem={({ item }) => <CarouselCardItem card={item} />}
       showsHorizontalScrollIndicator={false}
     />
   )
