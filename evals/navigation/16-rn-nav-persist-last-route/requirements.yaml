@@ -7,3 +7,5 @@ requirements:
     description: Must persist navigation state on route changes.
   - id: storage-read-write-path
     description: Must restore navigation state through NavigationContainer initialState during startup.
+  - id: recommended-usage
+    description: Must use recommended implementation approach
