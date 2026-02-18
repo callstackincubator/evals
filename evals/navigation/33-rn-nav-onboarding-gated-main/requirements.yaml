@@ -7,3 +7,5 @@ requirements:
     description: Must conditionally render onboarding vs main routes based on onboarding completion state.
   - id: graph-switch-after-complete
     description: Must switch route graph after onboarding completion without leaving onboarding route in active flow.
+  - id: recommended-usage
+    description: Must use recommended implementation approach
