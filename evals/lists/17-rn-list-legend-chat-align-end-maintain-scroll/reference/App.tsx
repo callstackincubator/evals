@@ -10,6 +10,14 @@ type Message = {
 const NEAR_BOTTOM_THRESHOLD = 0.2
 const ESTIMATED_ITEM_SIZE = 58
 
+function MessageBubble({ message }: { message: Message }) {
+  return (
+    <View style={styles.bubble}>
+      <Text style={styles.bubbleText}>{message.text}</Text>
+    </View>
+  )
+}
+
 export default function App() {
   const [messages, setMessages] = useState<Message[]>([
     { id: 'm-1', text: 'Hello' },
@@ -45,11 +53,7 @@ export default function App() {
         keyExtractor={(item) => item.id}
         maintainScrollAtEnd={{ onDataChange: true }}
         maintainScrollAtEndThreshold={NEAR_BOTTOM_THRESHOLD}
-        renderItem={({ item }) => (
-          <View style={styles.bubble}>
-            <Text style={styles.bubbleText}>{item.text}</Text>
-          </View>
-        )}
+        renderItem={({ item }) => <MessageBubble message={item} />}
       />
     </View>
   )
