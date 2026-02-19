@@ -1,8 +1,7 @@
-import { NavigationContainer } from '@react-navigation/native'
+import { createStaticNavigation } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { StyleSheet, Text, View } from 'react-native'
-
-const Tab = createBottomTabNavigator()
+import { StaticParamList } from '@react-navigation/core'
 
 function buildScreen(label: string) {
   return function Screen() {
@@ -19,21 +18,41 @@ const SearchScreen = buildScreen('Search')
 const ProfileScreen = buildScreen('Profile')
 
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName='Home'
-        screenOptions={{
-          lazy: true,
-        }}
-      >
-        <Tab.Screen name='Home' component={HomeScreen} />
-        <Tab.Screen name='Search' component={SearchScreen} />
-        <Tab.Screen name='Profile' component={ProfileScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
+
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const RootStack = createBottomTabNavigator({
+  screens: {
+    Home: {
+      screen: HomeScreen,
+      options: {
+        lazy: true,
+      },
+    },
+    Search: {
+      screen: SearchScreen,
+      options: {
+        lazy: true,
+      },
+    },
+    Profile: {
+      screen: ProfileScreen,
+      options: {
+        lazy: true,
+      },
+    },
+  },
+})
+
+const Navigation = createStaticNavigation(RootStack)
 
 const styles = StyleSheet.create({
   container: {

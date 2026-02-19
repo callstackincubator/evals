@@ -7,3 +7,5 @@ requirements:
     description: Must enable lazy behavior for bottom tabs so non-initial tabs are not eagerly rendered.
   - id: explicit-tab-config
     description: Must include explicit tab navigator options for lazy rendering behavior.
+  - id: recommended-usage
+    description: Must use recommended implementation approach
