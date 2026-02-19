@@ -45,7 +45,7 @@ function mapPhotoAccess(status: PermissionStatus): PhotoAccess {
   return RESULTS.DENIED
 }
 
-function getPhotoAcessMessage(
+function getPhotoAccessMessage(
   photoAccess: PhotoAccess,
   source: 'check' | 'request'
 ): string {
@@ -89,7 +89,7 @@ export default function App() {
   ): PhotoAccess {
     const nextAccess = mapPhotoAccess(status)
     setPhotoAccess(nextAccess)
-    setMessage(getPhotoAcessMessage(nextAccess, source))
+    setMessage(getPhotoAccessMessage(nextAccess, source))
     return nextAccess
   }
 
