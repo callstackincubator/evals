@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import * as SQLite from 'expo-sqlite'
+import { SQLiteDatabase, openDatabaseAsync } from 'expo-sqlite'
 
 type MigrationStep = {
   sql: string[]
   version: number
 }
 
-const migrations: MigrationStep[] = [
+const MIGRATIONS: MigrationStep[] = [
   {
     sql: [
       'CREATE TABLE IF NOT EXISTS notes (id TEXT PRIMARY KEY NOT NULL, body TEXT NOT NULL, updated_at INTEGER NOT NULL)',
@@ -28,19 +28,19 @@ const migrations: MigrationStep[] = [
   },
 ]
 
-async function ensureVersionTable(db: SQLite.SQLiteDatabase) {
+async function ensureVersionTable(db: SQLiteDatabase) {
   await db.execAsync(
     'CREATE TABLE IF NOT EXISTS schema_meta (id INTEGER PRIMARY KEY CHECK (id = 1), version INTEGER NOT NULL)',
   )
   await db.execAsync('INSERT OR IGNORE INTO schema_meta (id, version) VALUES (1, 0)')
 }
 
-async function readSchemaVersion(db: SQLite.SQLiteDatabase) {
+async function readSchemaVersion(db: SQLiteDatabase) {
   const row = await db.getFirstAsync<{ version: number }>('SELECT version FROM schema_meta WHERE id = 1')
   return row?.version ?? 0
 }
 
-async function runMigrations(db: SQLite.SQLiteDatabase) {
+async function runMigrations(db: SQLiteDatabase, migrations: MigrationStep[]) {
   await ensureVersionTable(db)
   const currentVersion = await readSchemaVersion(db)
 
@@ -66,14 +66,19 @@ export default function App() {
 
   const run = async () => {
     setStatus('migrating')
-    const db = await SQLite.openDatabaseAsync('storage-migrations.db')
-    const nextVersion = await runMigrations(db)
-    setVersion(nextVersion)
-    setStatus('done')
+    try {
+      const db = await openDatabaseAsync('storage-migrations')
+      const nextVersion = await runMigrations(db, MIGRATIONS)
+      setVersion(nextVersion)
+      setStatus('done')
+    } catch (error) {
+      console.error('Error occurred while running migrations', error)
+      setStatus('error')
+    }
   }
 
   useEffect(() => {
-    run()
+    void run()
   }, [])
 
   return (
