@@ -1,41 +1,70 @@
-import { NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import {
+  createStaticNavigation,
+  StaticParamList,
+  StaticScreenProps,
+  useNavigation,
+} from '@react-navigation/native'
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-const Stack = createNativeStackNavigator()
-
-function ThreadsHome({ navigation }: { navigation: any }) {
-  return (
-    <View style={styles.container}>
-      <Button title='Open thread a1' onPress={() => navigation.push('Thread', { threadId: 'a1' })} />
-      <Button title='Open thread b2' onPress={() => navigation.push('Thread', { threadId: 'b2' })} />
-    </View>
-  )
-}
-
-function ThreadScreen({ navigation, route }: { navigation: any; route: any }) {
-  const threadId = route.params?.threadId ?? 'unknown'
+function HomeScreen() {
+  const navigation = useNavigation()
 
   return (
     <View style={styles.container}>
-      <Text>Thread: {threadId}</Text>
       <Button
-        title='Push follow-up thread'
-        onPress={() => navigation.push('Thread', { threadId: `${threadId}-next` })}
+        title="Open thread a1"
+        onPress={() => navigation.navigate('Thread', { threadId: 'a1' })}
+      />
+      <Button
+        title="Open thread b2"
+        onPress={() => navigation.navigate('Thread', { threadId: 'b2' })}
       />
     </View>
   )
 }
 
-export default function App() {
+type ThreadScreenProps = StaticScreenProps<{ threadId: string }>
+
+function ThreadScreen({ route }: ThreadScreenProps) {
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>()
+  const threadId = route.params.threadId
+
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='ThreadsHome' component={ThreadsHome} />
-        <Stack.Screen name='Thread' component={ThreadScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <View style={styles.container}>
+      <Text>Thread: {threadId}</Text>
+      <Button
+        title="Push follow-up thread"
+        onPress={() =>
+          navigation.push('Thread', { threadId: `${threadId}-next` })
+        }
+      />
+    </View>
   )
+}
+
+const Stack = createNativeStackNavigator({
+  screens: {
+    Home: HomeScreen,
+    Thread: ThreadScreen,
+  },
+})
+
+type StackParamList = StaticParamList<typeof Stack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends StackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(Stack)
+
+export default function App() {
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({
