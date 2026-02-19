@@ -56,7 +56,7 @@ function FeedScreen({ route }: FeedScreenProps) {
   )
 }
 
-export default function Navigation26() {
+export default function App() {
   return <Navigation />
 }
 
