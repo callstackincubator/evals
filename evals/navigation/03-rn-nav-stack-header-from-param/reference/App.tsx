@@ -8,7 +8,8 @@ import {
   useNavigation,
 } from '@react-navigation/native'
 
-function HomeScreen({ navigation }: { navigation: any }) {
+function HomeScreen() {
+  const navigation = useNavigation()
   const openAlice = () => {
     navigation.navigate('Details', { name: 'Alice' })
   }
