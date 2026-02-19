@@ -1,49 +1,75 @@
-import { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 
-import { NavigationContainer, useFocusEffect } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import {
+  createStaticNavigation,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native'
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-const Stack = createNativeStackNavigator()
+type RootStackParamList = {
+  Inbox: undefined
+  Details: undefined
+}
 
-function InboxScreen({ navigation }: { navigation: any }) {
+type InboxNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'Inbox'
+>
+type DetailsNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'Details'
+>
+
+function InboxScreen() {
+  const navigation = useNavigation<InboxNavigationProp>()
   const [refreshCount, setRefreshCount] = useState(0)
 
-  useFocusEffect(
-    useCallback(() => {
-      setRefreshCount((count) => count + 1)
+  useFocusEffect(() => {
+    setRefreshCount((count) => count + 1)
+  })
 
-      return () => {
-        // Reserved for any cleanup tied to focus refresh.
-      }
-    }, []),
-  )
+  function handleGoToDetails() {
+    navigation.navigate('Details')
+  }
 
   return (
     <View style={styles.container}>
       <Text>Inbox refreshes on focus: {refreshCount}</Text>
-      <Button title='Go to details' onPress={() => navigation.navigate('Details')} />
+      <Button title="Go to details" onPress={handleGoToDetails} />
     </View>
   )
 }
 
-function DetailsScreen({ navigation }: { navigation: any }) {
+function DetailsScreen() {
+  const navigation = useNavigation<DetailsNavigationProp>()
+
+  function handleBackToInbox() {
+    navigation.goBack()
+  }
+
   return (
     <View style={styles.container}>
-      <Button title='Back to inbox' onPress={() => navigation.goBack()} />
+      <Button title="Back to inbox" onPress={handleBackToInbox} />
     </View>
   )
 }
 
+const Stack = createNativeStackNavigator<RootStackParamList>({
+  screens: {
+    Inbox: InboxScreen,
+    Details: DetailsScreen,
+  },
+})
+
+const Navigation = createStaticNavigation(Stack)
+
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='Inbox' component={InboxScreen} />
-        <Stack.Screen name='Details' component={DetailsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({
