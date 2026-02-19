@@ -13,16 +13,13 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 function HomeScreen() {
   const navigation = useNavigation()
 
+  const navigateToThread = (threadId: string) =>
+    navigation.navigate('Thread', { threadId })
+
   return (
     <View style={styles.container}>
-      <Button
-        title="Open thread a1"
-        onPress={() => navigation.navigate('Thread', { threadId: 'a1' })}
-      />
-      <Button
-        title="Open thread b2"
-        onPress={() => navigation.navigate('Thread', { threadId: 'b2' })}
-      />
+      <Button title="Open thread a1" onPress={() => navigateToThread('a1')} />
+      <Button title="Open thread b2" onPress={() => navigateToThread('b2')} />
     </View>
   )
 }
@@ -33,15 +30,13 @@ function ThreadScreen({ route }: ThreadScreenProps) {
   const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>()
   const threadId = route.params.threadId
 
+  const pushThread = () =>
+    navigation.push('Thread', { threadId: `${threadId}-next` })
+
   return (
     <View style={styles.container}>
       <Text>Thread: {threadId}</Text>
-      <Button
-        title="Push follow-up thread"
-        onPress={() =>
-          navigation.push('Thread', { threadId: `${threadId}-next` })
-        }
-      />
+      <Button title="Push follow-up thread" onPress={pushThread} />
     </View>
   )
 }
