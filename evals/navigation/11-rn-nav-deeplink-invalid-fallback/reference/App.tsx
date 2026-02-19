@@ -1,5 +1,12 @@
-import { LinkingOptions, NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import {
+  createStaticNavigation,
+  StaticScreenProps,
+  useNavigation,
+} from '@react-navigation/native'
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
 type RootStackParamList = {
@@ -7,14 +14,49 @@ type RootStackParamList = {
   Profile: { userId?: string }
 }
 
-const Stack = createNativeStackNavigator<RootStackParamList>()
+type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
+type ProfileProps = StaticScreenProps<RootStackParamList['Profile']>
 
-const linking: LinkingOptions<RootStackParamList> = {
-  prefixes: ['myapp://'],
-  config: {
-    screens: {
-      Home: '',
-      Profile: {
+function HomeScreen() {
+  const navigation = useNavigation<HomeNavigationProp>()
+
+  function handleOpenValidProfile() {
+    navigation.navigate('Profile', { userId: '42' })
+  }
+
+  function handleOpenInvalidProfile() {
+    navigation.navigate('Profile', { userId: 'x' })
+  }
+
+  return (
+    <View style={styles.container}>
+      <Button title="Valid profile 42" onPress={handleOpenValidProfile} />
+      <Button title="Invalid profile x" onPress={handleOpenInvalidProfile} />
+    </View>
+  )
+}
+
+function ProfileScreen({ route }: ProfileProps) {
+  const normalizedId = route.params.userId ?? ''
+  const isValid = /^\d+$/.test(normalizedId)
+
+  return (
+    <View style={styles.container}>
+      {isValid ? (
+        <Text>Profile userId: {normalizedId}</Text>
+      ) : (
+        <Text>Invalid profile link</Text>
+      )}
+    </View>
+  )
+}
+
+const RootStack = createNativeStackNavigator<RootStackParamList>({
+  screens: {
+    Home: HomeScreen,
+    Profile: {
+      screen: ProfileScreen,
+      linking: {
         path: 'profile/:userId',
         parse: {
           userId: (value: string) => value.trim(),
@@ -22,37 +64,16 @@ const linking: LinkingOptions<RootStackParamList> = {
       },
     },
   },
-}
+})
 
-function HomeScreen({ navigation }: { navigation: any }) {
-  return (
-    <View style={styles.container}>
-      <Button title='Valid profile 42' onPress={() => navigation.navigate('Profile', { userId: '42' })} />
-      <Button title='Invalid profile x' onPress={() => navigation.navigate('Profile', { userId: 'x' })} />
-    </View>
-  )
-}
+const Navigation = createStaticNavigation(RootStack)
 
-function ProfileScreen({ route }: { route: any }) {
-  const normalizedId = route.params?.userId ?? ''
-  const isValid = /^\d+$/.test(normalizedId)
-
-  return (
-    <View style={styles.container}>
-      {isValid ? <Text>Profile userId: {normalizedId}</Text> : <Text>Invalid profile link</Text>}
-    </View>
-  )
+const linking = {
+  prefixes: ['myapp://'],
 }
 
 export default function App() {
-  return (
-    <NavigationContainer linking={linking}>
-      <Stack.Navigator>
-        <Stack.Screen name='Home' component={HomeScreen} />
-        <Stack.Screen name='Profile' component={ProfileScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation linking={linking} />
 }
 
 const styles = StyleSheet.create({
