@@ -1,6 +1,15 @@
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useState } from 'react'
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import {
+  ActivityIndicator,
+  AppState,
+  type AppStateStatus,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 import { launchImageLibrary } from 'react-native-image-picker'
 import {
   check,
@@ -8,108 +17,219 @@ import {
   PERMISSIONS,
   request,
   RESULTS,
+  type Permission,
   type PermissionStatus,
 } from 'react-native-permissions'
 
-type PhotoAccess = 'denied' | 'limited' | 'granted' | 'unavailable'
+type PhotoAccess =
+  | typeof RESULTS.UNAVAILABLE
+  | typeof RESULTS.DENIED
+  | typeof RESULTS.BLOCKED
+  | typeof RESULTS.LIMITED
+  | typeof RESULTS.GRANTED
+
+const PHOTO_PERMISSION: Permission | undefined = Platform.select({
+  ios: PERMISSIONS.IOS.PHOTO_LIBRARY,
+})
 
 function mapPhotoAccess(status: PermissionStatus): PhotoAccess {
-  if (status === RESULTS.UNAVAILABLE) {
-    return 'unavailable'
+  switch (status) {
+    case RESULTS.UNAVAILABLE:
+    case RESULTS.DENIED:
+    case RESULTS.BLOCKED:
+    case RESULTS.LIMITED:
+    case RESULTS.GRANTED:
+      return status
   }
 
-  if (status === RESULTS.GRANTED) {
-    return 'granted'
-  }
+  return RESULTS.DENIED
+}
 
-  if (status === RESULTS.LIMITED) {
-    return 'limited'
+function getPhotoAcessMessage(
+  photoAccess: PhotoAccess,
+  source: 'check' | 'request'
+): string {
+  switch (photoAccess) {
+    case RESULTS.LIMITED:
+      return 'Limited photo access granted. You can still pick allowed photos.'
+    case RESULTS.BLOCKED:
+      return 'Photo access is blocked. Use system settings to recover.'
+    case RESULTS.GRANTED:
+      return source === 'request'
+        ? 'Full photo access granted.'
+        : 'Current access: granted.'
+    case RESULTS.UNAVAILABLE:
+      return 'Photo library permission is unavailable on this platform.'
+    default:
+      return source === 'request'
+        ? 'Photo access denied.'
+        : 'Current access: denied.'
   }
-
-  return 'denied'
 }
 
 export default function App() {
-  const [photoAccess, setPhotoAccess] = useState<PhotoAccess>('denied')
-  const [message, setMessage] = useState('')
+  const [photoAccess, setPhotoAccess] = useState<PhotoAccess>(RESULTS.DENIED)
+  const [message, setMessage] = useState('Checking photo access...')
   const [assetLabel, setAssetLabel] = useState('No selection yet')
+  const [isBootstrapping, setIsBootstrapping] = useState(true)
+  const pendingUpgradeReturnRef = useRef(false)
+  const isRefreshingRef = useRef(false)
+  const appStateRef = useRef(AppState.currentState)
 
-  const refreshAccess = useCallback(async () => {
-    if (Platform.OS !== 'ios') {
-      setPhotoAccess('unavailable')
+  function handleError(error: unknown, fallbackMessage: string) {
+    if (__DEV__) {
+      console.error(error)
+    }
+    setMessage(fallbackMessage)
+  }
+
+  function applyPhotoAccess(
+    status: PermissionStatus,
+    source: 'check' | 'request'
+  ): PhotoAccess {
+    const nextAccess = mapPhotoAccess(status)
+    setPhotoAccess(nextAccess)
+    setMessage(getPhotoAcessMessage(nextAccess, source))
+    return nextAccess
+  }
+
+  async function refreshAccess() {
+    if (isRefreshingRef.current) {
+      return
+    }
+
+    if (!PHOTO_PERMISSION) {
+      setPhotoAccess(RESULTS.UNAVAILABLE)
+      setMessage('This eval targets iOS limited photo access behavior.')
+      setIsBootstrapping(false)
+      return
+    }
+
+    isRefreshingRef.current = true
+    try {
+      const status = await check(PHOTO_PERMISSION)
+      applyPhotoAccess(status, 'check')
+    } catch (error: unknown) {
+      handleError(error, 'Unable to check photo access.')
+    } finally {
+      isRefreshingRef.current = false
+      setIsBootstrapping(false)
+    }
+  }
+
+  async function requestAccess() {
+    if (!PHOTO_PERMISSION) {
+      setPhotoAccess(RESULTS.UNAVAILABLE)
       setMessage('This eval targets iOS limited photo access behavior.')
       return
     }
 
-    const status = await check(PERMISSIONS.IOS.PHOTO_LIBRARY)
-    setPhotoAccess(mapPhotoAccess(status))
-  }, [])
-
-  const requestAccess = useCallback(async () => {
-    if (Platform.OS !== 'ios') {
-      setPhotoAccess('unavailable')
-      return
+    try {
+      const status = await request(PHOTO_PERMISSION)
+      applyPhotoAccess(status, 'request')
+    } catch (error: unknown) {
+      handleError(error, 'Unable to request photo access.')
     }
+  }
 
-    const status = await request(PERMISSIONS.IOS.PHOTO_LIBRARY)
-    const nextAccess = mapPhotoAccess(status)
-    setPhotoAccess(nextAccess)
-
-    if (nextAccess === 'limited') {
-      setMessage('Limited photo access granted. Flow remains usable with restricted selection.')
-      return
-    }
-
-    if (nextAccess === 'granted') {
-      setMessage('Full photo access granted.')
-      return
-    }
-
-    setMessage('Photo access denied.')
-  }, [])
-
-  const openUpgradePicker = useCallback(async () => {
-    if (photoAccess !== 'limited') {
+  async function openUpgradePicker() {
+    if (photoAccess !== RESULTS.LIMITED) {
       setMessage('Upgrade picker is available from limited state only.')
       return
     }
 
+    pendingUpgradeReturnRef.current = true
+    setMessage(
+      'Select additional photos, then return to the app to re-check access.'
+    )
+
     try {
       await openPhotoPicker()
-      await refreshAccess()
-      setMessage('Returned from openPhotoPicker. Re-checking access state.')
-    } catch {
-      setMessage('openPhotoPicker is unavailable in this environment.')
+    } catch (error: unknown) {
+      pendingUpgradeReturnRef.current = false
+      handleError(error, 'openPhotoPicker is unavailable in this environment.')
     }
-  }, [photoAccess, refreshAccess])
+  }
 
-  const selectPhoto = useCallback(async () => {
-    if (photoAccess === 'denied' || photoAccess === 'unavailable') {
+  function handleRefreshAccessError(error: unknown) {
+    handleError(error, 'Unable to check photo access.')
+  }
+
+  function handleAppStateChange(nextState: AppStateStatus) {
+    const previousState = appStateRef.current
+    appStateRef.current = nextState
+
+    const becameActive = previousState !== 'active' && nextState === 'active'
+    if (!becameActive || !pendingUpgradeReturnRef.current) {
+      return
+    }
+
+    pendingUpgradeReturnRef.current = false
+    refreshAccess().catch(handleRefreshAccessError)
+  }
+
+  useEffect(() => {
+    refreshAccess().catch(handleRefreshAccessError)
+
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange
+    )
+    return () => subscription.remove()
+  }, [])
+
+  async function selectPhoto() {
+    if (
+      photoAccess === RESULTS.DENIED ||
+      photoAccess === RESULTS.BLOCKED ||
+      photoAccess === RESULTS.UNAVAILABLE
+    ) {
       setMessage('Cannot open library without photo permission.')
       return
     }
 
-    const result = await launchImageLibrary({ mediaType: 'photo', selectionLimit: 1 })
+    try {
+      const result = await launchImageLibrary({
+        mediaType: 'photo',
+        selectionLimit: 1,
+      })
 
-    if (result.didCancel) {
-      setMessage('Selection canceled.')
-      return
+      if (result.didCancel) {
+        setMessage('Selection canceled.')
+        return
+      }
+
+      if (result.errorCode) {
+        setMessage(`Picker error: ${result.errorMessage ?? result.errorCode}`)
+        return
+      }
+
+      const first = result.assets?.[0]
+      if (!first) {
+        setMessage('No asset returned.')
+        return
+      }
+
+      setAssetLabel(first.fileName ?? first.uri ?? 'unnamed')
+      setMessage(
+        photoAccess === RESULTS.LIMITED
+          ? 'Picked photo in limited mode.'
+          : 'Picked photo in full mode.'
+      )
+    } catch (error: unknown) {
+      handleError(error, 'Unable to launch image picker.')
     }
+  }
 
-    if (result.errorCode) {
-      setMessage(`Picker error: ${result.errorMessage ?? result.errorCode}`)
-      return
-    }
-
-    const first = result.assets?.[0]
-    if (!first) {
-      setMessage('No asset returned.')
-      return
-    }
-
-    setAssetLabel(first.fileName ?? first.uri ?? 'unnamed')
-    setMessage(photoAccess === 'limited' ? 'Picked photo in limited mode.' : 'Picked photo in full mode.')
-  }, [photoAccess])
+  if (isBootstrapping) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="small" />
+        <Text style={styles.message}>Checking current photo access...</Text>
+        <StatusBar style="auto" />
+      </View>
+    )
+  }
 
   return (
     <View style={styles.container}>
@@ -125,7 +245,9 @@ export default function App() {
       </Pressable>
 
       <Pressable onPress={openUpgradePicker} style={styles.secondaryButton}>
-        <Text style={styles.secondaryButtonText}>Upgrade with openPhotoPicker</Text>
+        <Text style={styles.secondaryButtonText}>
+          Upgrade with openPhotoPicker
+        </Text>
       </Pressable>
 
       <Pressable onPress={selectPhoto} style={styles.button}>
