@@ -1,16 +1,17 @@
 import { CameraView, useCameraPermissions } from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useMemo, useState } from 'react'
-import { Linking, Pressable, StyleSheet, Text, View } from 'react-native'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { AppState, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 
 type FlowState = 'idle' | 'granted' | 'denied' | 'blocked' | 'requesting'
 
 export default function App() {
   const [permission, requestPermission] = useCameraPermissions()
   const [flowState, setFlowState] = useState<FlowState>('idle')
+  const flowStateRef = useRef<FlowState>(flowState)
 
   const refreshFromPermission = useCallback(() => {
-    if (!permission) {
+    if (!permission || permission.status === 'undetermined') {
       setFlowState('idle')
       return
     }
@@ -24,6 +25,19 @@ export default function App() {
   }, [permission])
 
   const requestCamera = useCallback(async () => {
+    if(permission?.granted) {
+      setFlowState('granted')
+      return
+    }
+
+    if (flowStateRef.current === 'requesting') return
+
+    if(permission && !permission.granted && !permission.canAskAgain) {
+      setFlowState("blocked")
+      return
+    }
+
+    flowStateRef.current = 'requesting'
     setFlowState('requesting')
     const next = await requestPermission()
 
@@ -34,6 +48,16 @@ export default function App() {
 
     setFlowState(next.canAskAgain ? 'denied' : 'blocked')
   }, [requestPermission])
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (appState) => {
+      if(appState === 'active') refreshFromPermission()
+    })
+
+    return () => {
+      subscription.remove()
+    }
+  }, [refreshFromPermission])
 
   const statusText = useMemo(() => {
     switch (flowState) {
