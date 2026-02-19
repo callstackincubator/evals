@@ -7,3 +7,5 @@ requirements:
     description: Must use nested navigate syntax with an explicit child screen target.
   - id: notification-detail-param
     description: Must pass deterministic params into NotificationDetails when triggering nested navigation.
+  - id: recommended-usage
+    description: Must use recommended implementation approach
