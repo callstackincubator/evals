@@ -2,22 +2,27 @@ import { Suspense } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { atom, useAtomValue } from 'jotai'
 
+const FETCH_DELAY_MS = 260
+
+const sleep = (ms: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms))
+
 type Profile = {
   id: string
   name: string
   role: string
 }
 
-const profileAtom = atom(async (): Promise<Profile> => {
-  await new Promise<void>((resolve) => {
-    setTimeout(resolve, 260)
-  })
+const MOCK_PROFILE: Profile = {
+  id: 'p-1',
+  name: 'Jordan Lee',
+  role: 'Release engineer',
+}
 
-  return {
-    id: 'p-1',
-    name: 'Jordan Lee',
-    role: 'Release engineer',
-  }
+const profileAtom = atom(async () => {
+  await sleep(FETCH_DELAY_MS)
+  
+  return MOCK_PROFILE
 })
 
 function ProfileCard() {
