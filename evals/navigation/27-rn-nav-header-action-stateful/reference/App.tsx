@@ -1,18 +1,27 @@
-import { useLayoutEffect, useState } from 'react'
-
-import { NavigationContainer } from '@react-navigation/native'
+import {
+  createStaticNavigation,
+  StaticParamList,
+  useNavigation,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { useEffect, useState } from 'react'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-const Stack = createNativeStackNavigator()
-
-function DetailsScreen({ navigation }: { navigation: any }) {
+function DetailsScreen() {
+  const navigation = useNavigation()
   const [bookmarked, setBookmarked] = useState(false)
 
-  useLayoutEffect(() => {
+  useEffect(() => {
+    const onTogglePress = () => {
+      setBookmarked((value) => !value)
+    }
+
     navigation.setOptions({
       headerRight: () => (
-        <Button title={bookmarked ? 'Unbookmark' : 'Bookmark'} onPress={() => setBookmarked((value) => !value)} />
+        <Button
+          title={bookmarked ? 'Unbookmark' : 'Bookmark'}
+          onPress={onTogglePress}
+        />
       ),
     })
   }, [bookmarked, navigation])
@@ -24,14 +33,27 @@ function DetailsScreen({ navigation }: { navigation: any }) {
   )
 }
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='Details' component={DetailsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+const Stack = createNativeStackNavigator({
+  screens: {
+    Details: {
+      screen: DetailsScreen,
+      options: { title: 'Details' },
+    },
+  },
+})
+
+type StackParamList = StaticParamList<typeof Stack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends StackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(Stack)
+
+export default function Navigation27() {
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({
