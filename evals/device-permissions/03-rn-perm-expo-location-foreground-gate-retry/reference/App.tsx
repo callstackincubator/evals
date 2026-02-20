@@ -1,16 +1,17 @@
 import * as Location from 'expo-location'
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 type LocationState = 'idle' | 'granted' | 'denied' | 'blocked' | 'error'
 
 export default function App() {
   const [locationState, setLocationState] = useState<LocationState>('idle')
+  const [isReadingLocation, setReadingLocation] = useState(false)
   const [coords, setCoords] = useState<string>('')
   const [message, setMessage] = useState('')
 
-  const requestForeground = useCallback(async () => {
+  const requestForeground = async () => {
     setMessage('')
     const response = await Location.requestForegroundPermissionsAsync()
 
@@ -21,35 +22,56 @@ export default function App() {
 
     setLocationState(response.canAskAgain ? 'denied' : 'blocked')
     return false
-  }, [])
+  }
 
-  const readLocation = useCallback(async () => {
+  const requestAndReadLocation = async () => {
+    if (isReadingLocation) {
+      return
+    }
+    setReadingLocation(true)
     setCoords('')
     setMessage('')
 
-    const granted = await requestForeground()
-    if (!granted) {
-      setMessage('Location permission unavailable. Retry or continue without location.')
-      return
-    }
-
     try {
-      const current = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Balanced,
-      })
-      setCoords(`${current.coords.latitude.toFixed(5)}, ${current.coords.longitude.toFixed(5)}`)
-    } catch {
-      setLocationState('error')
-      setMessage('Location read failed. You can retry or use degraded mode.')
+      const granted = await requestForeground()
+      if (!granted) {
+        setMessage(
+          'Location permission unavailable. Retry or continue without location.'
+        )
+        return
+      }
+
+      try {
+        const current = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+        })
+        setCoords(
+          `${current.coords.latitude.toFixed(5)}, ${current.coords.longitude.toFixed(5)}`
+        )
+      } catch {
+        setLocationState('error')
+        setMessage('Location read failed. You can retry or use degraded mode.')
+      }
+    } finally {
+      setReadingLocation(false)
     }
-  }, [requestForeground])
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Foreground Location Flow</Text>
       <Text style={styles.state}>State: {locationState}</Text>
 
-      <Pressable onPress={readLocation} style={styles.button}>
+      <Pressable
+        disabled={isReadingLocation}
+        onPress={requestAndReadLocation}
+        style={[
+          styles.button,
+          {
+            backgroundColor: isReadingLocation ? '#1118274D' : '#111827',
+          },
+        ]}
+      >
         <Text style={styles.buttonText}>Request + Read location</Text>
       </Pressable>
 
@@ -59,7 +81,8 @@ export default function App() {
         <View style={styles.fallbackCard}>
           <Text style={styles.fallbackTitle}>Degraded mode</Text>
           <Text style={styles.fallbackBody}>
-            Location-dependent features stay disabled until permission and fetch succeed.
+            Location-dependent features stay disabled until permission and fetch
+            succeed.
           </Text>
         </View>
       )}
