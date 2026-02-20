@@ -52,7 +52,7 @@ declare global {
 
 const Navigation = createStaticNavigation(Stack)
 
-export default function Navigation27() {
+export default function App() {
   return <Navigation />
 }
 
