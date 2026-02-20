@@ -1,5 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
+import {
+  QueryClient,
+  QueryClientProvider,
+  QueryFunctionContext,
+  useQuery,
+} from '@tanstack/react-query'
 
 type Profile = {
   id: string
@@ -11,21 +16,31 @@ type Project = {
   title: string
 }
 
+type ProfileQueryKey = readonly ['profile', 'me']
+type ProjectsQueryKey = readonly ['projects', string]
+
 const queryClient = new QueryClient()
 
-function wait(ms: number) {
-  return new Promise<void>((resolve) => {
-    setTimeout(resolve, ms)
+function wait(ms: number, signal?: AbortSignal) {
+  return new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(resolve, ms)
+    signal?.addEventListener('abort', () => {
+      clearTimeout(timer)
+      reject(new DOMException('Aborted', 'AbortError'))
+    })
   })
 }
 
-async function fetchProfile(): Promise<Profile> {
-  await wait(200)
+async function fetchProfile(signal?: AbortSignal): Promise<Profile> {
+  await wait(200, signal)
   return { id: 'user-42', name: 'Casey' }
 }
 
-async function fetchProjectsByUserId(userId: string): Promise<Project[]> {
-  await wait(280)
+async function fetchProjectsByUserId(
+  userId: string,
+  signal?: AbortSignal
+): Promise<Project[]> {
+  await wait(280, signal)
   return [
     { id: `${userId}-p1`, title: 'Async-state rollout' },
     { id: `${userId}-p2`, title: 'RN performance audit' },
@@ -35,18 +50,20 @@ async function fetchProjectsByUserId(userId: string): Promise<Project[]> {
 
 function ProjectsScreen() {
   const profileQuery = useQuery({
-    queryFn: fetchProfile,
+    queryFn: ({ signal }: QueryFunctionContext<ProfileQueryKey>) =>
+      fetchProfile(signal),
     queryKey: ['profile', 'me'] as const,
   })
 
   const profileId = profileQuery.data?.id
 
   const projectsQuery = useQuery({
-    enabled: Boolean(profileId),
-    queryFn: ({ queryKey }) => {
-      const [, userId] = queryKey as readonly ['projects', string]
-      return fetchProjectsByUserId(userId)
-    },
+    enabled: !!profileId,
+    queryFn: ({
+      queryKey: [, userId],
+      signal,
+    }: QueryFunctionContext<ProjectsQueryKey>) =>
+      fetchProjectsByUserId(userId, signal),
     queryKey: ['projects', profileId ?? 'pending'] as const,
   })
 
