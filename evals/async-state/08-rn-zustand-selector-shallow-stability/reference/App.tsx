@@ -3,6 +3,8 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { create } from 'zustand'
 import { useShallow } from 'zustand/react/shallow'
 
+type Side = 'left' | 'right'
+
 type PanelState = {
   clicks: number
   label: string
@@ -15,44 +17,41 @@ type DashboardStore = {
   incrementRight: () => void
 }
 
-const useDashboardStore = create<DashboardStore>((set) => {
-  return {
-    incrementLeft: () => {
-      set((state) => ({
-        leftPanel: { ...state.leftPanel, clicks: state.leftPanel.clicks + 1 },
-      }))
-    },
-    incrementRight: () => {
-      set((state) => ({
-        rightPanel: { ...state.rightPanel, clicks: state.rightPanel.clicks + 1 },
-      }))
-    },
-    leftPanel: { clicks: 0, label: 'Left panel' },
-    rightPanel: { clicks: 0, label: 'Right panel' },
-  }
-})
+type PanelKey = 'leftPanel' | 'rightPanel'
+type ActionKey = 'incrementLeft' | 'incrementRight'
 
-function Panel({ side }: { side: 'left' | 'right' }) {
+const PANEL_KEY: Record<Side, PanelKey> = {
+  left: 'leftPanel',
+  right: 'rightPanel',
+}
+
+const ACTION_KEY: Record<Side, ActionKey> = {
+  left: 'incrementLeft',
+  right: 'incrementRight',
+}
+
+const useDashboardStore = create<DashboardStore>((set) => ({
+  leftPanel: { clicks: 0, label: 'Left panel' },
+  rightPanel: { clicks: 0, label: 'Right panel' },
+  incrementLeft: () =>
+    set((state) => ({
+      leftPanel: { ...state.leftPanel, clicks: state.leftPanel.clicks + 1 },
+    })),
+  incrementRight: () =>
+    set((state) => ({
+      rightPanel: { ...state.rightPanel, clicks: state.rightPanel.clicks + 1 },
+    })),
+}))
+
+function Panel({ side }: { side: Side }) {
   const renderCount = useRef(0)
   renderCount.current += 1
 
-  const panel = useDashboardStore(
-    useShallow((state) => {
-      return side === 'left'
-        ? {
-            clicks: state.leftPanel.clicks,
-            label: state.leftPanel.label,
-          }
-        : {
-            clicks: state.rightPanel.clicks,
-            label: state.rightPanel.label,
-          }
-    })
-  )
+  const panelKey = PANEL_KEY[side]
+  const actionKey = ACTION_KEY[side]
 
-  const increment = useDashboardStore((state) => {
-    return side === 'left' ? state.incrementLeft : state.incrementRight
-  })
+  const panel = useDashboardStore(useShallow((state) => state[panelKey]))
+  const increment = useDashboardStore((state) => state[actionKey])
 
   return (
     <View style={styles.panel}>
