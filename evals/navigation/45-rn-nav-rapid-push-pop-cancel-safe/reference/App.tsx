@@ -1,90 +1,60 @@
 import { useCallback, useState } from 'react'
 
-import {
-  createStaticNavigation,
-  StaticParamList,
-  StaticScreenProps,
-  useFocusEffect,
-  useNavigation,
-} from '@react-navigation/native'
-import {
-  createNativeStackNavigator,
-  NativeStackNavigationProp,
-} from '@react-navigation/native-stack'
-import { Button, StyleSheet, Text, View } from 'react-native'
+import { NavigationContainer, useFocusEffect } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { Button, Text, View } from 'react-native'
 
-function HomeScreen() {
-  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>()
+const Stack = createNativeStackNavigator()
 
-  const pushScreen = (id: string) => navigation.push('Details', { id })
-
+function HomeScreen({ navigation }: { navigation: any }) {
   return (
-    <View style={styles.screen}>
-      <Button title="Push details A" onPress={() => pushScreen('A')} />
-      <Button title="Push details B" onPress={() => pushScreen('B')} />
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+      <Button title='Push details A' onPress={() => navigation.push('Details', { id: 'A' })} />
+      <Button title='Push details B' onPress={() => navigation.push('Details', { id: 'B' })} />
     </View>
   )
 }
 
-type DetailsScreenProps = StaticScreenProps<{ id: string }>
-
-function DetailsScreen({ route }: DetailsScreenProps) {
+function DetailsScreen({ navigation, route }: { navigation: any; route: any }) {
   const [status, setStatus] = useState('idle')
-  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>()
-
-  const pushNextScreen = () =>
-    navigation.push('Details', { id: `${route.params?.id}-next` })
 
   useFocusEffect(
     useCallback(() => {
+      let active = true
+      const controller = new AbortController()
       setStatus('loading')
 
       const timeoutId = setTimeout(() => {
-        setStatus(`loaded ${route.params?.id}`)
+        if (active && !controller.signal.aborted) {
+          setStatus(`loaded ${route.params?.id}`)
+        }
       }, 800)
 
       return () => {
+        active = false
+        controller.abort()
         clearTimeout(timeoutId)
       }
-    }, [route.params?.id])
+    }, [route.params?.id]),
   )
 
   return (
-    <View style={styles.screen}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 }}>
       <Text>Details {route.params?.id}</Text>
       <Text>Status: {status}</Text>
-      <Button title="Push next" onPress={pushNextScreen} />
-      <Button title="Pop" onPress={() => navigation.goBack()} />
+      <Button title='Push next' onPress={() => navigation.push('Details', { id: `${route.params?.id}-next` })} />
+      <Button title='Pop' onPress={() => navigation.goBack()} />
     </View>
   )
 }
 
-const Stack = createNativeStackNavigator({
-  screens: {
-    Home: HomeScreen,
-    Details: DetailsScreen,
-  },
-})
-
-type StackParamList = StaticParamList<typeof Stack>
-
-declare global {
-  namespace ReactNavigation {
-    interface RootParamList extends StackParamList {}
-  }
-}
-
-const Navigation = createStaticNavigation(Stack)
-
 export default function App() {
-  return <Navigation />
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name='Home' component={HomeScreen} />
+        <Stack.Screen name='Details' component={DetailsScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  )
 }
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
-  },
-})
