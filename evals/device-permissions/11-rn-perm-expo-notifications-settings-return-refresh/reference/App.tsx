@@ -1,6 +1,6 @@
 import * as Notifications from 'expo-notifications'
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { AppState, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 
 type PermissionState =
@@ -12,44 +12,52 @@ type PermissionState =
   | 'blocked'
 
 function mapPermissionState(permission: Notifications.NotificationPermissionsStatus): PermissionState {
-  if (permission.status === Notifications.PermissionStatus.GRANTED) {
-    return 'granted'
+  switch (permission.status) {
+    case Notifications.PermissionStatus.GRANTED:
+      return 'granted'
+    case Notifications.PermissionStatus.DENIED:
+      return permission.canAskAgain ? 'denied' : 'blocked'
+    case Notifications.PermissionStatus.UNDETERMINED:
+      return 'not-determined'
+    default:
+      return 'unknown'
   }
-
-  if (permission.status === Notifications.PermissionStatus.DENIED) {
-    return permission.canAskAgain ? 'denied' : 'blocked'
-  }
-
-  if (permission.status === Notifications.PermissionStatus.UNDETERMINED) {
-    return 'not-determined'
-  }
-
-  return 'not-determined'
 }
 
 export default function App() {
   const [permissionState, setPermissionState] = useState<PermissionState>('unknown')
   const [message, setMessage] = useState('')
-  const awaitingSettingsReturn = useRef(false)
+  const [hasHydrated, setHasHydrated] = useState(false)
+  const isRefreshingPermissions = useRef(false)
 
   const refreshPermissions = useCallback(async () => {
+    if (isRefreshingPermissions.current) return
+    isRefreshingPermissions.current = true
     setPermissionState('loading')
-    const permission = await Notifications.getPermissionsAsync()
-    setPermissionState(mapPermissionState(permission))
+    try {
+      const permission = await Notifications.getPermissionsAsync()
+      setPermissionState(mapPermissionState(permission))
+    } finally {
+      setHasHydrated(true)
+      isRefreshingPermissions.current = false
+    }
   }, [])
 
-  const requestPermissions = useCallback(async () => {
+  const requestPermissions = async () => {
     setPermissionState('loading')
-    const permission = await Notifications.requestPermissionsAsync()
-    setPermissionState(mapPermissionState(permission))
-  }, [])
+    try {
+      const permission = await Notifications.requestPermissionsAsync()
+      setPermissionState(mapPermissionState(permission))
+    } finally {
+      setHasHydrated(true)
+    }
+  }
 
   useEffect(() => {
     refreshPermissions()
 
     const subscription = AppState.addEventListener('change', (nextState) => {
-      if (nextState === 'active' && awaitingSettingsReturn.current) {
-        awaitingSettingsReturn.current = false
+      if (nextState === 'active') {
         refreshPermissions()
       }
     })
@@ -57,18 +65,9 @@ export default function App() {
     return () => subscription.remove()
   }, [refreshPermissions])
 
-  const openSettings = useCallback(() => {
-    awaitingSettingsReturn.current = true
-    Linking.openSettings()
-  }, [])
-
-  const canUseNotificationFeature = permissionState === 'granted'
-  const featureLabel = useMemo(() => {
-    if (
-      permissionState === 'loading' ||
-      permissionState === 'unknown' ||
-      permissionState === 'not-determined'
-    ) {
+  const canUseNotificationFeature = permissionState === 'granted' && hasHydrated
+  const getFeatureLabel = () => {
+    if (permissionState === 'loading' || !hasHydrated) {
       return 'Waiting for fresh permission state...'
     }
 
@@ -77,7 +76,7 @@ export default function App() {
     }
 
     return 'Notification-only action disabled until refreshed grant state.'
-  }, [permissionState])
+  }
 
   return (
     <View style={styles.container}>
@@ -93,23 +92,23 @@ export default function App() {
       </Pressable>
 
       {(permissionState === 'denied' || permissionState === 'blocked') && (
-        <Pressable onPress={openSettings} style={styles.secondaryButton}>
+        <Pressable onPress={() => Linking.openSettings()} style={styles.secondaryButton}>
           <Text style={styles.secondaryButtonText}>Open settings</Text>
         </Pressable>
       )}
 
       <Pressable
-        disabled={!canUseNotificationFeature || permissionState === 'loading'}
+        disabled={!canUseNotificationFeature}
         onPress={() => setMessage('Notification-only action executed.')}
         style={[
           styles.button,
-          (!canUseNotificationFeature || permissionState === 'loading') && styles.disabledButton,
+          (!canUseNotificationFeature) && styles.disabledButton,
         ]}
       >
         <Text style={styles.buttonText}>Notification-only action</Text>
       </Pressable>
 
-      <Text style={styles.featureLabel}>{featureLabel}</Text>
+      <Text style={styles.featureLabel}>{getFeatureLabel()}</Text>
       <Text style={styles.message}>{message}</Text>
       <StatusBar style="auto" />
     </View>
