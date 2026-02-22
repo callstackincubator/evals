@@ -36,29 +36,41 @@ const DATA: TimelineItem[] = [
   { id: 'txt-3', text: 'Roadmap notes', type: 'text' },
 ]
 
+function SystemRow({ message }: { message: string }) {
+  return (
+    <View style={styles.systemRow}>
+      <Text style={styles.systemText}>{message}</Text>
+    </View>
+  )
+}
+
+function ImageRow({ caption, color }: { caption: string; color: string }) {
+  return (
+    <View style={styles.imageRow}>
+      <View style={[styles.image, { backgroundColor: color }]} />
+      <Text style={styles.caption}>{caption}</Text>
+    </View>
+  )
+}
+
+function TextRow({ text }: { text: string }) {
+  return (
+    <View style={styles.textRow}>
+      <Text style={styles.text}>{text}</Text>
+    </View>
+  )
+}
+
 function TimelineRow({ item }: { item: TimelineItem }) {
   if (item.type === 'system') {
-    return (
-      <View style={styles.systemRow}>
-        <Text style={styles.systemText}>{item.message}</Text>
-      </View>
-    )
+    return <SystemRow message={item.message} />
   }
 
   if (item.type === 'image') {
-    return (
-      <View style={styles.imageRow}>
-        <View style={[styles.image, { backgroundColor: item.color }]} />
-        <Text style={styles.caption}>{item.caption}</Text>
-      </View>
-    )
+    return <ImageRow caption={item.caption} color={item.color} />
   }
 
-  return (
-    <View style={styles.textRow}>
-      <Text style={styles.text}>{item.text}</Text>
-    </View>
-  )
+  return <TextRow text={item.text} />
 }
 
 export default function App() {
@@ -66,7 +78,6 @@ export default function App() {
     <View style={styles.container}>
       <FlashList
         data={DATA}
-        estimatedItemSize={86}
         getItemType={(item) => item.type}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <TimelineRow item={item} />}
