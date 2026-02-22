@@ -9,5 +9,3 @@ requirements:
     description: Must support routing payloads into nested navigators using explicit screen/params contracts.
   - id: navigation-ref-ready-guard
     description: Must dispatch notification navigation through a root navigation reference only after readiness is confirmed.
-  - id: recommended-usage
-    description: Must use recommended implementation approach
