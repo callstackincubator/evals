@@ -96,7 +96,14 @@ function mapRnPermission(status: PermissionStatus): CapabilityState {
 }
 
 async function loadCameraCapability(): Promise<CapabilityModel> {
-  const permission = await Camera.getCameraPermissionsAsync()
+  const [permission, available] = await Promise.all([
+    Camera.getCameraPermissionsAsync(),
+    Camera.isAvailableAsync(),
+  ])
+
+  if (!available) {
+    return { details: 'Camera hardware unavailable', state: 'unavailable' }
+  }
 
   return {
     details: permission.granted ? 'Camera ready' : 'Camera permission needed',
@@ -159,7 +166,7 @@ async function loadNotificationCapability(): Promise<CapabilityModel> {
     if (permission.granted) {
       return 'Notifications enabled'
     }
-    return "Notifications permission needed'"
+    return 'Notifications permission needed'
   }
 
   return {
