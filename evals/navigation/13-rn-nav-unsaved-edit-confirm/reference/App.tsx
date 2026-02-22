@@ -1,20 +1,36 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack'
 import { Alert, Button, StyleSheet, TextInput, View } from 'react-native'
 
-const Stack = createNativeStackNavigator()
+type RootStackParamList = {
+  Home: undefined
+  Edit: undefined
+}
 
-function HomeScreen({ navigation }: { navigation: any }) {
+type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
+type EditNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Edit'>
+
+function HomeScreen() {
+  const navigation = useNavigation<HomeNavigationProp>()
+
+  function handleEditProfile() {
+    navigation.navigate('Edit')
+  }
+
   return (
     <View style={styles.container}>
-      <Button title='Edit profile' onPress={() => navigation.navigate('Edit')} />
+      <Button title='Edit profile' onPress={handleEditProfile} />
     </View>
   )
 }
 
-function EditScreen({ navigation }: { navigation: any }) {
+function EditScreen() {
+  const navigation = useNavigation<EditNavigationProp>()
   const [name, setName] = useState('')
   const [savedName, setSavedName] = useState('')
 
@@ -40,24 +56,34 @@ function EditScreen({ navigation }: { navigation: any }) {
     return unsubscribe
   }, [isDirty, navigation])
 
+  function handleSave() {
+    setSavedName(name)
+  }
+
+  function handleBack() {
+    navigation.goBack()
+  }
+
   return (
     <View style={styles.container}>
       <TextInput style={styles.input} value={name} onChangeText={setName} placeholder='Name' />
-      <Button title='Save' onPress={() => setSavedName(name)} />
-      <Button title='Back' onPress={() => navigation.goBack()} />
+      <Button title='Save' onPress={handleSave} />
+      <Button title='Back' onPress={handleBack} />
     </View>
   )
 }
 
+const Stack = createNativeStackNavigator<RootStackParamList>({
+  screens: {
+    Home: HomeScreen,
+    Edit: EditScreen,
+  },
+})
+
+const Navigation = createStaticNavigation(Stack)
+
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='Home' component={HomeScreen} />
-        <Stack.Screen name='Edit' component={EditScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({
