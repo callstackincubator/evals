@@ -1,103 +1,199 @@
-import { createNavigationContainerRef, NavigationContainer } from '@react-navigation/native'
+import {
+  createNavigationContainerRef,
+  createStaticNavigation,
+} from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Button, View } from 'react-native'
+import { Button, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { StaticParamList, StaticScreenProps } from '@react-navigation/core'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 type NotificationPayload =
   | { type: 'thread'; threadId: string }
   | { type: 'profile'; userId: string }
 
-type RootStackParamList = {
-  MainTabs: {
-    screen: 'MessagesTab' | 'ProfileTab'
-    params?: any
-  }
+type NotificationTarget = {
+  name: 'MainTabs'
+  params: RootStackParamList['MainTabs']
 }
 
-const navRef = createNavigationContainerRef<RootStackParamList>()
-const RootStack = createNativeStackNavigator()
-const Tab = createBottomTabNavigator()
-const MessagesStack = createNativeStackNavigator()
-
-const notificationRouteMap: Record<NotificationPayload['type'], (payload: any) => any> = {
-  thread: (payload: { threadId: string }) => ({
+const notificationRouteMap: {
+  [K in NotificationPayload['type']]: (
+    payload: Extract<NotificationPayload, { type: K }>
+  ) => NotificationTarget
+} = {
+  thread: (payload) => ({
     name: 'MainTabs',
     params: {
-      screen: 'MessagesTab',
+      screen: 'Messages',
       params: {
         screen: 'Thread',
-        params: { threadId: payload.threadId },
+        params: { threadId: payload.threadId } as never,
       },
     },
   }),
-  profile: (payload: { userId: string }) => ({
+  profile: (payload) => ({
     name: 'MainTabs',
     params: {
-      screen: 'ProfileTab',
-      params: { userId: payload.userId },
+      screen: 'Profile',
+      params: {
+        screen: 'Profile',
+        params: {
+          userId: payload.userId,
+        } as never,
+      },
     },
   }),
 }
+
+const navRef = createNavigationContainerRef()
 
 function routeNotificationFromService(payload: NotificationPayload) {
   if (!navRef.isReady()) {
     return
   }
 
-  const target = notificationRouteMap[payload.type](payload)
+  let target
+  switch (payload.type) {
+    case 'thread':
+      target = notificationRouteMap.thread(payload)
+      break
+    case 'profile':
+      target = notificationRouteMap.profile(payload)
+      break
+    default:
+      throw new Error('Unsupported payload type')
+  }
+
   navRef.navigate(target.name, target.params)
 }
 
 function InboxScreen() {
-  return <View style={{ flex: 1 }} />
-}
-
-function ThreadScreen() {
-  return <View style={{ flex: 1 }} />
-}
-
-function MessagesNavigator() {
   return (
-    <MessagesStack.Navigator>
-      <MessagesStack.Screen name='Inbox' component={InboxScreen} />
-      <MessagesStack.Screen name='Thread' component={ThreadScreen} />
-    </MessagesStack.Navigator>
+    <View style={styles.container}>
+      <Text>Inbox</Text>
+    </View>
   )
 }
 
-function ProfileScreen() {
-  return <View style={{ flex: 1 }} />
+function ThreadScreen({ route }: StaticScreenProps<{ threadId: string }>) {
+  return (
+    <View style={styles.container}>
+      <Text>Thread: {route.params.threadId}</Text>
+    </View>
+  )
 }
 
-function Tabs() {
+function ProfileScreen({ route }: StaticScreenProps<{ userId: string }>) {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name='MessagesTab' component={MessagesNavigator} options={{ headerShown: false, title: 'Messages' }} />
-      <Tab.Screen name='ProfileTab' component={ProfileScreen} options={{ title: 'Profile' }} />
-    </Tab.Navigator>
+    <View style={styles.container}>
+      <Text>Profile {route.params?.userId}</Text>
+    </View>
   )
 }
 
 function NotificationServicePanel() {
   return (
-    <View style={{ flexDirection: 'row', gap: 12, padding: 12 }}>
-      <Button title='Thread payload' onPress={() => routeNotificationFromService({ type: 'thread', threadId: 't-55' })} />
-      <Button title='Profile payload' onPress={() => routeNotificationFromService({ type: 'profile', userId: 'u-8' })} />
+    <View style={styles.notificationServicePanelContainer}>
+      <Button
+        title="Thread payload"
+        onPress={() =>
+          routeNotificationFromService({ type: 'thread', threadId: 't-55' })
+        }
+      />
+      <Button
+        title="Profile payload"
+        onPress={() =>
+          routeNotificationFromService({ type: 'profile', userId: 'u-8' })
+        }
+      />
     </View>
   )
 }
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const MessagesStack = createNativeStackNavigator({
+  screens: {
+    Inbox: {
+      screen: InboxScreen,
+      options: {
+        title: 'Inbox',
+      },
+    },
+    Thread: {
+      screen: ThreadScreen,
+      options: {
+        title: 'Thread',
+      },
+    },
+  },
+})
+
+const ProfileStack = createNativeStackNavigator({
+  screens: {
+    Profile: {
+      screen: ProfileScreen,
+    },
+  },
+})
+
+const MainTabsNav = createBottomTabNavigator({
+  screenOptions: {
+    headerShown: true,
+  },
+  screens: {
+    Messages: {
+      options: { headerShown: false },
+      name: 'Messages',
+      screen: MessagesStack,
+    },
+    Profile: {
+      name: 'Profile',
+      options: { headerShown: false },
+      screen: ProfileStack,
+    },
+  },
+})
+
+const RootStack = createNativeStackNavigator({
+  screenOptions: {
+    headerShown: false,
+  },
+  screens: {
+    MainTabs: MainTabsNav,
+  },
+})
+
+const Navigation = createStaticNavigation(RootStack)
 
 export default function App() {
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaProvider>
       <NotificationServicePanel />
-      <View style={{ flex: 1 }}>
-        <NavigationContainer ref={navRef}>
-          <RootStack.Navigator>
-            <RootStack.Screen name='MainTabs' component={Tabs} options={{ headerShown: false }} />
-          </RootStack.Navigator>
-        </NavigationContainer>
-      </View>
-    </View>
+      <Navigation ref={navRef} />
+      <StatusBar barStyle="dark-content" />
+    </SafeAreaProvider>
   )
 }
+
+const styles = StyleSheet.create({
+  notificationServicePanelContainer: {
+    position: 'absolute',
+    top: '45%',
+    left: 0,
+    right: 0,
+    zIndex: 100,
+    justifyContent: 'space-between',
+    padding: 12,
+    gap: 12,
+  },
+  container: {
+    flex: 1,
+  },
+})
