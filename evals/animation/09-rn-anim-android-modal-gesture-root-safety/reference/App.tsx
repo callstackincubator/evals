@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native'
 import {
   Gesture,
@@ -6,25 +6,36 @@ import {
   GestureHandlerRootView,
 } from 'react-native-gesture-handler'
 import Animated, {
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
   withTiming,
 } from 'react-native-reanimated'
+import { scheduleOnRN } from 'react-native-worklets'
 
 const SHEET_HEIGHT = 320
 const CLOSE_THRESHOLD = 140
 
 export default function App() {
   const [visible, setVisible] = useState(false)
-  const translateY = useSharedValue(0)
+  const translateY = useSharedValue(SHEET_HEIGHT)
 
-  useEffect(() => {
-    if (visible) {
-      translateY.value = withTiming(0, { duration: 180 })
-    }
-  }, [translateY, visible])
+  function handleOnShow() {
+    translateY.value = withTiming(0, { duration: 160 })
+  }
+
+  function handleOnClose() {
+    'worklet'
+    translateY.value = withTiming(
+      SHEET_HEIGHT,
+      { duration: 160 },
+      (finished) => {
+        if (finished) {
+          scheduleOnRN(setVisible, false)
+        }
+      }
+    )
+  }
 
   const pan = Gesture.Pan()
     .onUpdate((event) => {
@@ -32,15 +43,7 @@ export default function App() {
     })
     .onEnd(() => {
       if (translateY.value > CLOSE_THRESHOLD) {
-        translateY.value = withTiming(
-          SHEET_HEIGHT,
-          { duration: 160 },
-          (finished) => {
-            if (finished) {
-              runOnJS(setVisible)(false)
-            }
-          }
-        )
+        handleOnClose()
         return
       }
 
@@ -61,15 +64,13 @@ export default function App() {
 
       <Modal
         animationType="fade"
-        onRequestClose={() => setVisible(false)}
+        onShow={handleOnShow}
+        onRequestClose={handleOnClose}
         transparent
         visible={visible}
       >
         <GestureHandlerRootView style={styles.modalRoot}>
-          <Pressable
-            onPress={() => setVisible(false)}
-            style={styles.backdrop}
-          />
+          <Pressable onPress={handleOnClose} style={styles.backdrop} />
           <GestureDetector gesture={pan}>
             <Animated.View style={[styles.sheet, sheetStyle]}>
               <View style={styles.grabber} />
