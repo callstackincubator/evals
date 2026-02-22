@@ -1,5 +1,12 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
-import { memo, useCallback, useState } from 'react'
+import {
+  FlatList,
+  ListRenderItem,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
+import { useState } from 'react'
 
 type Item = {
   id: string
@@ -11,24 +18,41 @@ const DATA: Item[] = Array.from({ length: 2000 }, (_, index) => ({
   label: `Large row #${index + 1}`,
 }))
 
+const LIST_TUNING = {
+  initialNumToRender: 10,
+  maxToRenderPerBatch: 8,
+  updateCellsBatchingPeriod: 32,
+  windowSize: 7,
+} as const
+
+const ROW_HEIGHT = 40
+
 type RowProps = {
   item: Item
 }
 
-const Row = memo(function Row({ item }: RowProps) {
+function Row({ item }: RowProps) {
   return (
     <View style={styles.row}>
       <Text style={styles.rowText}>{item.label}</Text>
     </View>
   )
-})
+}
 
 export default function App() {
   const [pressCount, setPressCount] = useState(0)
 
-  const renderItem = useCallback(({ item }: { item: Item }) => {
-    return <Row item={item} />
-  }, [])
+  const onPressCheck = () => {
+    setPressCount((prev) => prev + 1)
+  }
+
+  const renderItem: ListRenderItem<Item> = ({ item }) => <Row item={item} />
+
+  const getItemLayout = (_: unknown, index: number) => ({
+    length: ROW_HEIGHT,
+    offset: ROW_HEIGHT * index,
+    index,
+  })
 
   return (
     <View style={styles.container}>
@@ -36,19 +60,22 @@ export default function App() {
         Smaller batches improve responsiveness, with slight fill-rate tradeoff.
       </Text>
 
-      <Pressable onPress={() => setPressCount((prev) => prev + 1)} style={styles.button}>
-        <Text style={styles.buttonText}>Tap responsiveness check: {pressCount}</Text>
+      <Pressable onPress={onPressCheck} style={styles.button}>
+        <Text style={styles.buttonText}>
+          Tap responsiveness check: {pressCount}
+        </Text>
       </Pressable>
 
       <FlatList
         data={DATA}
-        initialNumToRender={10}
+        initialNumToRender={LIST_TUNING.initialNumToRender}
+        getItemLayout={getItemLayout}
         keyExtractor={(item) => item.id}
-        maxToRenderPerBatch={8}
+        maxToRenderPerBatch={LIST_TUNING.maxToRenderPerBatch}
         removeClippedSubviews
         renderItem={renderItem}
-        updateCellsBatchingPeriod={32}
-        windowSize={7}
+        updateCellsBatchingPeriod={LIST_TUNING.updateCellsBatchingPeriod}
+        windowSize={LIST_TUNING.windowSize}
       />
     </View>
   )
@@ -80,8 +107,9 @@ const styles = StyleSheet.create({
   row: {
     borderBottomColor: '#e5e7eb',
     borderBottomWidth: StyleSheet.hairlineWidth,
+    height: ROW_HEIGHT,
+    justifyContent: 'center',
     paddingHorizontal: 12,
-    paddingVertical: 12,
   },
   rowText: {
     color: '#111827',
