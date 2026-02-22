@@ -1,43 +1,16 @@
-import { LinkingOptions, NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import {
+  createStaticNavigation,
+  StaticParamList,
+  StaticScreenProps,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Text, View } from 'react-native'
-
-const RootStack = createNativeStackNavigator()
-const Tab = createBottomTabNavigator()
-const HomeStack = createNativeStackNavigator()
-const MessagesStack = createNativeStackNavigator()
-
-type RootParamList = {
-  RootTabs: undefined
-}
-
-const linking: LinkingOptions<RootParamList> = {
-  prefixes: ['myapp://'],
-  config: {
-    screens: {
-      RootTabs: {
-        screens: {
-          HomeTab: {
-            screens: {
-              Home: '',
-              MessagesFlow: {
-                screens: {
-                  Messages: 'messages',
-                  Thread: 'messages/thread/:id',
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-}
+import * as Linking from 'expo-linking'
+import { StyleSheet, Text, View } from 'react-native'
 
 function HomeScreen() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={styles.screen}>
       <Text>Home</Text>
     </View>
   )
@@ -45,52 +18,81 @@ function HomeScreen() {
 
 function MessagesScreen() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={styles.screen}>
       <Text>Messages</Text>
     </View>
   )
 }
 
-function ThreadScreen({ route }: { route: any }) {
+type ThreadScreenProps = StaticScreenProps<{
+  id: string
+}>
+
+function ThreadScreen({ route }: ThreadScreenProps) {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Thread ID: {route.params?.id}</Text>
+    <View style={styles.screen}>
+      <Text>Thread ID: {route.params.id}</Text>
     </View>
   )
 }
 
-function MessagesNavigator() {
-  return (
-    <MessagesStack.Navigator>
-      <MessagesStack.Screen name='Messages' component={MessagesScreen} />
-      <MessagesStack.Screen name='Thread' component={ThreadScreen} />
-    </MessagesStack.Navigator>
-  )
+const MessagesStack = createNativeStackNavigator({
+  screens: {
+    Messages: {
+      screen: MessagesScreen,
+      options: { title: 'Messages' },
+    },
+    Thread: {
+      screen: ThreadScreen,
+      options: { title: 'Thread' },
+      linking: {
+        path: 'thread/:id',
+      },
+    },
+  },
+})
+
+const HomeStack = createNativeStackNavigator({
+  screens: {
+    Home: { screen: HomeScreen, options: { title: 'Home' } },
+    MessageStack: {
+      screen: MessagesStack,
+      options: { headerShown: false },
+      linking: {
+        path: 'messages',
+      },
+    },
+  },
+})
+
+const RootTabs = createBottomTabNavigator({
+  screens: {
+    HomeTab: {
+      screen: HomeStack,
+      options: { headerShown: false },
+      linking: {
+        path: 'home',
+      },
+    },
+  },
+})
+
+type RootNavigatorParamList = StaticParamList<typeof RootTabs>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootNavigatorParamList {}
+  }
 }
 
-function HomeStackNavigator() {
-  return (
-    <HomeStack.Navigator>
-      <HomeStack.Screen name='Home' component={HomeScreen} />
-      <HomeStack.Screen name='MessagesFlow' component={MessagesNavigator} options={{ headerShown: false }} />
-    </HomeStack.Navigator>
-  )
+const Navigation = createStaticNavigation(RootTabs)
+
+const linking = { prefixes: [Linking.createURL('/')] }
+
+export default function Navigation23() {
+  return <Navigation linking={linking} />
 }
 
-function RootTabs() {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen name='HomeTab' component={HomeStackNavigator} options={{ headerShown: false, title: 'Home' }} />
-    </Tab.Navigator>
-  )
-}
-
-export default function App() {
-  return (
-    <NavigationContainer linking={linking}>
-      <RootStack.Navigator>
-        <RootStack.Screen name='RootTabs' component={RootTabs} options={{ headerShown: false }} />
-      </RootStack.Navigator>
-    </NavigationContainer>
-  )
-}
+const styles = StyleSheet.create({
+  screen: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+})
