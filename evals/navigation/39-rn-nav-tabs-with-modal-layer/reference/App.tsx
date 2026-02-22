@@ -1,56 +1,96 @@
-import { NavigationContainer } from '@react-navigation/native'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import type { StaticParamList } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Button, Text, View } from 'react-native'
+import { Button, StyleSheet, Text, View } from 'react-native'
 
-const RootStack = createNativeStackNavigator()
-const Tab = createBottomTabNavigator()
+function FeedScreen() {
+  const navigation = useNavigation()
 
-function FeedScreen({ navigation }: { navigation: any }) {
+  const handleCompose = () => {
+    navigation.navigate('ComposeModal')
+  }
+
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button title='Compose' onPress={() => navigation.getParent()?.navigate('ComposeModal')} />
+    <View style={styles.centered}>
+      <Button title="Compose" onPress={handleCompose} />
     </View>
   )
 }
 
-function ProfileScreen({ navigation }: { navigation: any }) {
+function ProfileScreen() {
+  const navigation = useNavigation()
+
+  const handleCompose = () => {
+    navigation.navigate('ComposeModal')
+  }
+
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button title='Compose' onPress={() => navigation.getParent()?.navigate('ComposeModal')} />
+    <View style={styles.centered}>
+      <Button title="Compose" onPress={handleCompose} />
     </View>
   )
 }
 
-function ComposeModal({ navigation }: { navigation: any }) {
+function ComposeModalScreen() {
+  const navigation = useNavigation()
+
+  const handleDismiss = () => {
+    navigation.goBack()
+  }
+
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+    <View style={styles.modal}>
       <Text>Compose modal</Text>
-      <Button title='Dismiss' onPress={() => navigation.goBack()} />
+      <Button title="Dismiss" onPress={handleDismiss} />
     </View>
   )
 }
 
-function Tabs() {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen name='Feed' component={FeedScreen} />
-      <Tab.Screen name='Profile' component={ProfileScreen} />
-    </Tab.Navigator>
-  )
+const HomeTabs = createBottomTabNavigator({
+  screens: {
+    Feed: FeedScreen,
+    Profile: ProfileScreen,
+  },
+})
+
+const RootStack = createNativeStackNavigator({
+  screens: {
+    MainTabs: {
+      screen: HomeTabs,
+      options: { headerShown: false },
+    },
+    ComposeModal: {
+      screen: ComposeModalScreen,
+      options: { presentation: 'modal', title: 'Compose' },
+    },
+  },
+})
+
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
 }
+
+const Navigation = createStaticNavigation(RootStack)
 
 export default function App() {
-  return (
-    <NavigationContainer>
-      <RootStack.Navigator>
-        <RootStack.Screen name='MainTabs' component={Tabs} options={{ headerShown: false }} />
-        <RootStack.Screen
-          name='ComposeModal'
-          component={ComposeModal}
-          options={{ presentation: 'modal', title: 'Compose' }}
-        />
-      </RootStack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
+
+const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modal: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+  },
+})
