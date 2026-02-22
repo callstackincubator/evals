@@ -98,13 +98,13 @@ export default function App() {
   }
 
   const handleCameraError = async (response: ImagePickerResponse) => {
-    setCaptureState('error')
-
     if (response.errorCode === 'camera_unavailable') {
       setMessage('Camera hardware unavailable. Switching to library fallback.')
       await fallbackToLibrary()
       return
     }
+
+    setCaptureState('error')
 
     const mappedError = mapPickerPermissionError(response)
     if (mappedError !== 'non-permission-error') {
