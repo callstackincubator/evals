@@ -4,14 +4,14 @@ import {
   useNavigation,
 } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
 function DetailsScreen() {
   const navigation = useNavigation()
   const [bookmarked, setBookmarked] = useState(false)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const onTogglePress = () => {
       setBookmarked((value) => !value)
     }
