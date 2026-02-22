@@ -21,7 +21,7 @@ const MOCK_PROFILE: Profile = {
 
 const profileAtom = atom(async () => {
   await sleep(FETCH_DELAY_MS)
-  
+
   return MOCK_PROFILE
 })
 
