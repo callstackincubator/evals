@@ -1,53 +1,79 @@
-import { NavigationContainer } from '@react-navigation/native'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import type {
+  StaticParamList,
+  StaticScreenProps,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Button, Text, View } from 'react-native'
+import { Button, StyleSheet, Text, View } from 'react-native'
 
-const Stack = createNativeStackNavigator()
+function ListScreen() {
+  const navigation = useNavigation()
 
-function ListScreen({ navigation }: { navigation: any }) {
-  const openDetails = (itemId: string) => {
-    const currentRoute = navigation.getState().routes[navigation.getState().index]
-    const currentItemId = currentRoute?.name === 'Details' ? currentRoute.params?.itemId : undefined
-
-    if (currentItemId === itemId) {
-      return
-    }
-
+  const handleOpenItem = (itemId: string) => {
     navigation.navigate('Details', { itemId })
   }
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 }}>
-      <Button title='Open item 1' onPress={() => openDetails('1')} />
-      <Button title='Open item 2' onPress={() => openDetails('2')} />
+    <View style={styles.list}>
+      <Button title="Open item 1" onPress={() => handleOpenItem('1')} />
+      <Button title="Open item 2" onPress={() => handleOpenItem('2')} />
     </View>
   )
 }
 
-function DetailsScreen({ navigation, route }: { navigation: any; route: any }) {
-  const openSibling = (itemId: string) => {
-    if (route.params?.itemId === itemId) {
+type DetailsProps = StaticScreenProps<{ itemId: string }>
+
+function DetailsScreen({ route }: DetailsProps) {
+  const navigation = useNavigation()
+
+  const handleOpenItem = (itemId: string) => {
+    if (route.params.itemId === itemId) {
       return
     }
     navigation.navigate('Details', { itemId })
   }
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 }}>
-      <Text>Details for item {route.params?.itemId}</Text>
-      <Button title='Try opening same item' onPress={() => openSibling(route.params?.itemId)} />
-      <Button title='Open different item 3' onPress={() => openSibling('3')} />
+    <View style={styles.list}>
+      <Text>Details for item {route.params.itemId}</Text>
+      <Button
+        title="Try opening same item"
+        onPress={() => handleOpenItem(route.params.itemId)}
+      />
+      <Button
+        title="Open different item 3"
+        onPress={() => handleOpenItem('3')}
+      />
     </View>
   )
 }
+
+const RootStack = createNativeStackNavigator({
+  screens: {
+    List: ListScreen,
+    Details: DetailsScreen,
+  },
+})
+
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(RootStack)
 
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='List' component={ListScreen} />
-        <Stack.Screen name='Details' component={DetailsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
+
+const styles = StyleSheet.create({
+  list: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+  },
+})
