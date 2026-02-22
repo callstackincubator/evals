@@ -1,5 +1,5 @@
 import { SectionList, StyleSheet, Text, TextInput, View } from 'react-native'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 type Product = {
   id: string
@@ -33,30 +33,63 @@ const SOURCE_SECTIONS: ProductSection[] = [
   },
 ]
 
+type ProductRowProps = {
+  name: string
+}
+
+type ProductHeaderProps = {
+  title: string
+}
+
+function ProductRow({ name }: ProductRowProps) {
+  return (
+    <View style={styles.row}>
+      <Text style={styles.rowText}>{name}</Text>
+    </View>
+  )
+}
+
+function ProductHeader({ title }: ProductHeaderProps) {
+  return (
+    <View style={styles.header}>
+      <Text style={styles.headerText}>{title}</Text>
+    </View>
+  )
+}
+
+function EmptyState() {
+  return (
+    <View style={styles.emptyState}>
+      <Text style={styles.emptyText}>No items match this filter.</Text>
+    </View>
+  )
+}
+
 export default function App() {
   const [query, setQuery] = useState('')
 
-  const filteredSections = useMemo(() => {
-    const normalized = query.trim().toLowerCase()
+  const trimmedQuery = query.trim()
+  const queryLower = trimmedQuery.toLowerCase()
 
-    if (normalized.length === 0) {
-      return SOURCE_SECTIONS.map((section) => ({
-        ...section,
-        data: [...section.data],
-      }))
-    }
+  const filteredSections =
+    trimmedQuery.length === 0
+      ? SOURCE_SECTIONS
+      : SOURCE_SECTIONS.reduce<ProductSection[]>((result, section) => {
+          const data = section.data.filter((item) =>
+            item.name.toLowerCase().includes(queryLower)
+          )
 
-    return SOURCE_SECTIONS.map((section) => {
-      const data = section.data.filter((item) =>
-        item.name.toLowerCase().includes(normalized),
-      )
+          if (data.length === 0) {
+            return result
+          }
 
-      return {
-        ...section,
-        data,
-      }
-    }).filter((section) => section.data.length > 0)
-  }, [query])
+          result.push({
+            ...section,
+            data,
+          })
+
+          return result
+        }, [])
 
   return (
     <View style={styles.container}>
@@ -71,21 +104,11 @@ export default function App() {
         extraData={query}
         keyExtractor={(item) => item.id}
         sections={filteredSections}
-        renderItem={({ item }) => (
-          <View style={styles.row}>
-            <Text style={styles.rowText}>{item.name}</Text>
-          </View>
-        )}
+        renderItem={({ item }) => <ProductRow name={item.name} />}
         renderSectionHeader={({ section }) => (
-          <View style={styles.header}>
-            <Text style={styles.headerText}>{section.title}</Text>
-          </View>
+          <ProductHeader title={section.title} />
         )}
-        ListEmptyComponent={
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyText}>No items match this filter.</Text>
-          </View>
-        }
+        ListEmptyComponent={<EmptyState />}
       />
     </View>
   )
