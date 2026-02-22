@@ -1,46 +1,24 @@
-import { useCallback } from 'react'
-
-import { NavigationContainer, useFocusEffect } from '@react-navigation/native'
-import { createDrawerNavigator, useDrawerStatus } from '@react-navigation/drawer'
+import { createStaticNavigation } from '@react-navigation/native'
+import { createDrawerNavigator } from '@react-navigation/drawer'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { BackHandler, Button, StyleSheet, Text, View } from 'react-native'
+import { Button, StyleSheet, Text, View } from 'react-native'
+import { StaticParamList, useNavigation } from '@react-navigation/core'
 
-const Drawer = createDrawerNavigator()
-const Stack = createNativeStackNavigator()
-
-function useDrawerBackPriority(navigation: any) {
-  const drawerStatus = useDrawerStatus()
-
-  useFocusEffect(
-    useCallback(() => {
-      const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
-        if (drawerStatus === 'open') {
-          navigation.getParent()?.closeDrawer()
-          return true
-        }
-
-        return false
-      })
-
-      return () => subscription.remove()
-    }, [drawerStatus, navigation]),
-  )
-}
-
-function HomeScreen({ navigation }: { navigation: any }) {
-  useDrawerBackPriority(navigation)
+function HomeScreen() {
+  const { navigate } = useNavigation()
 
   return (
     <View style={styles.container}>
       <Text>Home screen</Text>
-      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
+      <Button
+        title="Open details"
+        onPress={() => navigate('Main', { screen: 'Details' })}
+      />
     </View>
   )
 }
 
-function DetailsScreen({ navigation }: { navigation: any }) {
-  useDrawerBackPriority(navigation)
-
+function DetailsScreen() {
   return (
     <View style={styles.container}>
       <Text>Details screen</Text>
@@ -48,14 +26,22 @@ function DetailsScreen({ navigation }: { navigation: any }) {
   )
 }
 
-function MainStack() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name='Home' component={HomeScreen} />
-      <Stack.Screen name='Details' component={DetailsScreen} />
-    </Stack.Navigator>
-  )
-}
+const MainStack = createNativeStackNavigator({
+  screens: {
+    Home: {
+      screen: HomeScreen,
+      options: {
+        headerShown: false,
+      },
+    },
+    Details: {
+      screen: DetailsScreen,
+      options: {
+        headerShown: false,
+      },
+    },
+  },
+})
 
 function HelpScreen() {
   return (
@@ -66,15 +52,27 @@ function HelpScreen() {
 }
 
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Drawer.Navigator>
-        <Drawer.Screen name='Main' component={MainStack} options={{ headerShown: false }} />
-        <Drawer.Screen name='Help' component={HelpScreen} />
-      </Drawer.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
+
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const RootStack = createDrawerNavigator({
+  screens: {
+    Main: {
+      screen: MainStack,
+    },
+    Help: HelpScreen,
+  },
+})
+
+const Navigation = createStaticNavigation(RootStack)
 
 const styles = StyleSheet.create({
   container: {
