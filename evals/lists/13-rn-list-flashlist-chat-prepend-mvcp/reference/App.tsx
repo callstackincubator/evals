@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { FlashList } from '@shopify/flash-list'
+import type { FlashListRef } from '@shopify/flash-list'
 import { useRef, useState } from 'react'
 
 type Message = {
@@ -8,7 +9,15 @@ type Message = {
 }
 
 const PAGE_SIZE = 12
-const NEAR_BOTTOM_THRESHOLD = 120
+const INITIAL_OLDEST_CURSOR = 200
+const MIN_CURSOR = 1
+const PREPEND_DELAY_MS = 450
+const FLASH_LIST_CONFIG = {
+  autoScrollToBottomThreshold: 0.2,
+  nearBottomThreshold: 120,
+  scrollEventThrottle: 16,
+  startReachedThreshold: 0.15,
+}
 
 function buildRange(start: number, count: number): Message[] {
   return Array.from({ length: count }, (_, index) => {
@@ -20,18 +29,23 @@ function buildRange(start: number, count: number): Message[] {
   })
 }
 
+function getMessageIdValue(id: string) {
+  return Number(id.replace('msg-', ''))
+}
+
 export default function App() {
-  const listRef = useRef<FlashList<Message>>(null)
+  const listRef = useRef<FlashListRef<Message>>(null)
   const nearBottomRef = useRef(true)
   const loadingOlderRef = useRef(false)
-  const oldestCursorRef = useRef(200)
+  const oldestCursorRef = useRef(INITIAL_OLDEST_CURSOR)
 
-  const [messages, setMessages] = useState<Message[]>(() => buildRange(200, PAGE_SIZE))
-  const [nextMessageId, setNextMessageId] = useState(212)
+  const [messages, setMessages] = useState<Message[]>(() =>
+    buildRange(INITIAL_OLDEST_CURSOR, PAGE_SIZE)
+  )
   const [loadingOlder, setLoadingOlder] = useState(false)
 
   const prependOlder = () => {
-    if (loadingOlderRef.current || oldestCursorRef.current <= 1) {
+    if (loadingOlderRef.current || oldestCursorRef.current <= MIN_CURSOR) {
       return
     }
 
@@ -39,7 +53,10 @@ export default function App() {
     setLoadingOlder(true)
 
     setTimeout(() => {
-      const nextStart = Math.max(1, oldestCursorRef.current - PAGE_SIZE)
+      const nextStart = Math.max(
+        MIN_CURSOR,
+        oldestCursorRef.current - PAGE_SIZE
+      )
       const count = oldestCursorRef.current - nextStart
       const older = buildRange(nextStart, count)
 
@@ -47,20 +64,25 @@ export default function App() {
       oldestCursorRef.current = nextStart
       loadingOlderRef.current = false
       setLoadingOlder(false)
-    }, 450)
+    }, PREPEND_DELAY_MS)
   }
 
   const appendMessage = () => {
-    const id = nextMessageId
+    setMessages((prev) => {
+      const lastMessage = prev[prev.length - 1]
+      const lastIdValue = lastMessage
+        ? getMessageIdValue(lastMessage.id)
+        : INITIAL_OLDEST_CURSOR - 1
+      const nextIdValue = lastIdValue + 1
 
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: `msg-${id}`,
-        text: `New message ${id}`,
-      },
-    ])
-    setNextMessageId((prev) => prev + 1)
+      return [
+        ...prev,
+        {
+          id: `msg-${nextIdValue}`,
+          text: `New message ${nextIdValue}`,
+        },
+      ]
+    })
 
     if (nearBottomRef.current) {
       requestAnimationFrame(() => {
@@ -86,27 +108,27 @@ export default function App() {
       <FlashList
         ref={listRef}
         data={messages}
-        estimatedItemSize={56}
         keyExtractor={(item) => item.id}
         maintainVisibleContentPosition={{
-          autoscrollToBottomThreshold: 0.2,
-          minIndexForVisible: 0,
+          autoscrollToBottomThreshold:
+            FLASH_LIST_CONFIG.autoScrollToBottomThreshold,
         }}
         onScroll={({ nativeEvent }) => {
           const distanceFromBottom =
             nativeEvent.contentSize.height -
             (nativeEvent.contentOffset.y + nativeEvent.layoutMeasurement.height)
 
-          nearBottomRef.current = distanceFromBottom <= NEAR_BOTTOM_THRESHOLD
+          nearBottomRef.current =
+            distanceFromBottom <= FLASH_LIST_CONFIG.nearBottomThreshold
         }}
         onStartReached={prependOlder}
-        onStartReachedThreshold={0.15}
+        onStartReachedThreshold={FLASH_LIST_CONFIG.startReachedThreshold}
         renderItem={({ item }) => (
           <View style={styles.bubble}>
             <Text style={styles.bubbleText}>{item.text}</Text>
           </View>
         )}
-        scrollEventThrottle={16}
+        scrollEventThrottle={FLASH_LIST_CONFIG.scrollEventThrottle}
       />
     </View>
   )
