@@ -1,6 +1,6 @@
 import * as Location from 'expo-location'
 import { StatusBar } from 'expo-status-bar'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 type LocationState = 'idle' | 'granted' | 'denied' | 'blocked' | 'error'
@@ -10,6 +10,7 @@ export default function App() {
   const [isReadingLocation, setReadingLocation] = useState(false)
   const [coords, setCoords] = useState<string>('')
   const [message, setMessage] = useState('')
+  const readLocationLockRef = useRef(false)
 
   const requestForeground = async () => {
     setMessage('')
@@ -25,9 +26,10 @@ export default function App() {
   }
 
   const requestAndReadLocation = async () => {
-    if (isReadingLocation) {
+    if (readLocationLockRef.current) {
       return
     }
+    readLocationLockRef.current = true
     setReadingLocation(true)
     setCoords('')
     setMessage('')
@@ -54,6 +56,7 @@ export default function App() {
       }
     } finally {
       setReadingLocation(false)
+      readLocationLockRef.current = false
     }
   }
 
