@@ -1,75 +1,94 @@
 import { useEffect, useState } from 'react'
 
-import { NavigationContainer } from '@react-navigation/native'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import type { StaticParamList } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Button, Text, View } from 'react-native'
+import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native'
 
-const Stack = createNativeStackNavigator()
 const NAV_VERSION = 2
 const STORAGE_KEY = 'NAV_STATE_WITH_VERSION'
 
 const memoryStorage: Record<string, string | undefined> = {}
 
-function HomeScreen({ navigation }: { navigation: any }) {
+function HomeScreen() {
+  const navigation = useNavigation()
+
+  const handleOpenDetails = () => {
+    navigation.navigate('Details')
+  }
+
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
+    <View style={styles.centered}>
+      <Button title="Open details" onPress={handleOpenDetails} />
     </View>
   )
 }
 
 function DetailsScreen() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={styles.centered}>
       <Text>Details</Text>
     </View>
   )
 }
+
+const RootStack = createNativeStackNavigator({
+  screens: {
+    Home: HomeScreen,
+    Details: DetailsScreen,
+  },
+})
+
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(RootStack)
 
 export default function App() {
   const [ready, setReady] = useState(false)
   const [initialState, setInitialState] = useState<any>()
 
   useEffect(() => {
-    const bootstrap = () => {
-      const raw = memoryStorage[STORAGE_KEY]
-      if (!raw) {
-        setReady(true)
-        return
-      }
-
+    const raw = memoryStorage[STORAGE_KEY]
+    if (raw) {
       try {
         const parsed = JSON.parse(raw)
         if (parsed?.version === NAV_VERSION && parsed?.state) {
           setInitialState(parsed.state)
-        } else {
-          setInitialState(undefined)
         }
       } catch {
         setInitialState(undefined)
       }
-
-      setReady(true)
     }
-
-    bootstrap()
+    setReady(true)
   }, [])
 
+  const handleStateChange = (state: any) => {
+    memoryStorage[STORAGE_KEY] = JSON.stringify({ version: NAV_VERSION, state })
+  }
+
   if (!ready) {
-    return null
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator />
+      </View>
+    )
   }
 
   return (
-    <NavigationContainer
-      initialState={initialState}
-      onStateChange={(state) => {
-        memoryStorage[STORAGE_KEY] = JSON.stringify({ version: NAV_VERSION, state })
-      }}
-    >
-      <Stack.Navigator>
-        <Stack.Screen name='Home' component={HomeScreen} />
-        <Stack.Screen name='Details' component={DetailsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Navigation initialState={initialState} onStateChange={handleStateChange} />
   )
 }
+
+const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})
