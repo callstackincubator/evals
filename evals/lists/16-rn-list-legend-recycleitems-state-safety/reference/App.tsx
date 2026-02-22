@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { LegendList } from '@legendapp/list'
-import { memo, useEffect, useState } from 'react'
+import { useState } from 'react'
 
 type Note = {
   details: string
@@ -20,30 +20,30 @@ type RowProps = {
   onToggle: (id: string, expanded: boolean) => void
 }
 
-const NoteRow = memo(function NoteRow({ expanded, item, onToggle }: RowProps) {
-  const [isExpanded, setIsExpanded] = useState(expanded)
-
-  useEffect(() => {
-    setIsExpanded(expanded)
-  }, [expanded, item.id])
-
+function NoteRow({ expanded, item, onToggle }: RowProps) {
   return (
     <Pressable
       onPress={() => {
-        const next = !isExpanded
-        setIsExpanded(next)
+        const next = !expanded
         onToggle(item.id, next)
       }}
       style={styles.row}
     >
       <Text style={styles.title}>{item.title}</Text>
-      {isExpanded ? <Text style={styles.details}>{item.details}</Text> : null}
+      {expanded ? <Text style={styles.details}>{item.details}</Text> : null}
     </Pressable>
   )
-})
+}
 
 export default function App() {
   const [expandedById, setExpandedById] = useState<Record<string, boolean>>({})
+
+  const handleToggle = (id: string, expanded: boolean) => {
+    setExpandedById((prev) => ({
+      ...prev,
+      [id]: expanded,
+    }))
+  }
 
   return (
     <View style={styles.container}>
@@ -56,12 +56,7 @@ export default function App() {
           <NoteRow
             expanded={Boolean(expandedById[item.id])}
             item={item}
-            onToggle={(id, expanded) => {
-              setExpandedById((prev) => ({
-                ...prev,
-                [id]: expanded,
-              }))
-            }}
+            onToggle={handleToggle}
           />
         )}
       />
