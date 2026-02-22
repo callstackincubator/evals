@@ -1,12 +1,23 @@
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native'
-import { useCallback, useRef, useState } from 'react'
+import {
+  ActivityIndicator,
+  FlatList,
+  ListRenderItem,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
+import { useRef, useState } from 'react'
 
 type Message = {
   id: string
   text: string
 }
 
-const PAGE_SIZE = 15
+const PAGE_SIZE = 24
+const INITIAL_CURSOR = 100
+const MIN_CURSOR = 1
+const TOP_REACHED_OFFSET = 8
+const LOAD_DELAY_MS = 450
 
 function buildMessages(start: number, count: number): Message[] {
   return Array.from({ length: count }, (_, index) => {
@@ -18,14 +29,24 @@ function buildMessages(start: number, count: number): Message[] {
   })
 }
 
+function MessageBubble({ text }: { text: string }) {
+  return (
+    <View style={styles.bubble}>
+      <Text style={styles.bubbleText}>{text}</Text>
+    </View>
+  )
+}
+
 export default function App() {
-  const [messages, setMessages] = useState<Message[]>(() => buildMessages(100, PAGE_SIZE))
+  const [messages, setMessages] = useState<Message[]>(() =>
+    buildMessages(INITIAL_CURSOR, PAGE_SIZE)
+  )
   const [loadingOlder, setLoadingOlder] = useState(false)
   const loadingOlderRef = useRef(false)
-  const cursorRef = useRef(100)
+  const cursorRef = useRef(INITIAL_CURSOR)
 
-  const loadOlder = useCallback(() => {
-    if (loadingOlderRef.current || cursorRef.current <= 1) {
+  const loadOlder = () => {
+    if (loadingOlderRef.current || cursorRef.current <= MIN_CURSOR) {
       return
     }
 
@@ -33,7 +54,7 @@ export default function App() {
     setLoadingOlder(true)
 
     setTimeout(() => {
-      const nextStart = Math.max(1, cursorRef.current - PAGE_SIZE)
+      const nextStart = Math.max(MIN_CURSOR, cursorRef.current - PAGE_SIZE)
       const count = cursorRef.current - nextStart
       const older = buildMessages(nextStart, count)
 
@@ -41,8 +62,24 @@ export default function App() {
       cursorRef.current = nextStart
       loadingOlderRef.current = false
       setLoadingOlder(false)
-    }, 450)
-  }, [])
+    }, LOAD_DELAY_MS)
+  }
+
+  const keyExtractor = (item: Message) => item.id
+
+  const onScroll = ({
+    nativeEvent,
+  }: {
+    nativeEvent: { contentOffset: { y: number } }
+  }) => {
+    if (nativeEvent.contentOffset.y <= TOP_REACHED_OFFSET) {
+      loadOlder()
+    }
+  }
+
+  const renderItem: ListRenderItem<Message> = ({ item }) => (
+    <MessageBubble text={item.text} />
+  )
 
   return (
     <View style={styles.container}>
@@ -55,18 +92,10 @@ export default function App() {
 
       <FlatList
         data={messages}
-        keyExtractor={(item) => item.id}
+        keyExtractor={keyExtractor}
         maintainVisibleContentPosition={{ minIndexForVisible: 0 }}
-        onScroll={({ nativeEvent }) => {
-          if (nativeEvent.contentOffset.y <= 8) {
-            loadOlder()
-          }
-        }}
-        renderItem={({ item }) => (
-          <View style={styles.bubble}>
-            <Text style={styles.bubbleText}>{item.text}</Text>
-          </View>
-        )}
+        onScroll={onScroll}
+        renderItem={renderItem}
         scrollEventThrottle={16}
       />
     </View>
