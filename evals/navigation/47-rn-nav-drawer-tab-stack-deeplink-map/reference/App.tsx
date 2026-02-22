@@ -1,108 +1,131 @@
-import { LinkingOptions, NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createDrawerNavigator } from '@react-navigation/drawer'
+import {
+  createStaticNavigation,
+  StaticParamList,
+  StaticScreenProps,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Text, View } from 'react-native'
-
-const RootStack = createNativeStackNavigator()
-const Drawer = createDrawerNavigator()
-const Tab = createBottomTabNavigator()
-const ItemStack = createNativeStackNavigator()
-
-type RootParamList = {
-  AppDrawer: undefined
-  NotFound: undefined
-}
-
-const linking: LinkingOptions<RootParamList> = {
-  prefixes: ['myapp://'],
-  config: {
-    screens: {
-      AppDrawer: {
-        screens: {
-          MainTabs: {
-            screens: {
-              HomeTab: {
-                screens: {
-                  Home: '',
-                  Details: 'item/:id',
-                },
-              },
-              SettingsTab: 'settings',
-            },
-          },
-        },
-      },
-      NotFound: '*',
-    },
-  },
-}
+import * as Linking from 'expo-linking'
+import { StyleSheet, Text, View } from 'react-native'
 
 function HomeScreen() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={styles.screen}>
       <Text>Home</Text>
     </View>
   )
 }
 
-function DetailsScreen({ route }: { route: any }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Deep route item: {route.params?.id}</Text>
-    </View>
-  )
-}
+type DetailsScreenProps = StaticScreenProps<{
+  id: string
+}>
 
-function HomeStackNavigator() {
+function DetailsScreen({ route }: DetailsScreenProps) {
   return (
-    <ItemStack.Navigator>
-      <ItemStack.Screen name='Home' component={HomeScreen} />
-      <ItemStack.Screen name='Details' component={DetailsScreen} />
-    </ItemStack.Navigator>
+    <View style={styles.screen}>
+      <Text>Deep route item: {route.params.id}</Text>
+    </View>
   )
 }
 
 function SettingsScreen() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={styles.screen}>
       <Text>Settings</Text>
     </View>
   )
 }
 
-function MainTabs() {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen name='HomeTab' component={HomeStackNavigator} options={{ headerShown: false, title: 'Home' }} />
-      <Tab.Screen name='SettingsTab' component={SettingsScreen} options={{ title: 'Settings' }} />
-    </Tab.Navigator>
-  )
-}
-
 function NotFoundScreen() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={styles.screen}>
       <Text>Unknown link fallback</Text>
     </View>
   )
 }
 
-function DrawerNavigator() {
-  return (
-    <Drawer.Navigator>
-      <Drawer.Screen name='MainTabs' component={MainTabs} options={{ headerShown: false }} />
-    </Drawer.Navigator>
-  )
+const HomeStack = createNativeStackNavigator({
+  screens: {
+    Home: {
+      screen: HomeScreen,
+      options: { headerShown: false },
+      linking: {
+        path: '',
+      },
+    },
+    Details: {
+      screen: DetailsScreen,
+      options: { headerShown: false },
+      linking: {
+        path: 'item/:id',
+      },
+    },
+  },
+})
+
+const MainTabs = createBottomTabNavigator({
+  screens: {
+    HomeTab: {
+      screen: HomeStack,
+      options: { headerShown: false },
+    },
+    SettingsTab: {
+      screen: SettingsScreen,
+      options: { headerShown: false },
+      linking: {
+        path: 'settings',
+      },
+    },
+  },
+})
+
+const Drawer = createDrawerNavigator({
+  screens: {
+    MainTabs: {
+      screen: MainTabs,
+      options: { title: 'Main tabs' },
+    },
+  },
+})
+
+const Stack = createNativeStackNavigator({
+  screens: {
+    AppDrawer: {
+      screen: Drawer,
+      options: { headerShown: false },
+    },
+    NotFound: {
+      screen: NotFoundScreen,
+      linking: {
+        path: '*',
+      },
+    },
+  },
+})
+
+type StackParamList = StaticParamList<typeof Stack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends StackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(Stack)
+
+const linking = {
+  prefixes: [Linking.createURL('/')],
 }
 
 export default function App() {
-  return (
-    <NavigationContainer linking={linking}>
-      <RootStack.Navigator>
-        <RootStack.Screen name='AppDrawer' component={DrawerNavigator} options={{ headerShown: false }} />
-        <RootStack.Screen name='NotFound' component={NotFoundScreen} />
-      </RootStack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation linking={linking} />
 }
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})
