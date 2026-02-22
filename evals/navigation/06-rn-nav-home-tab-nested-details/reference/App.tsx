@@ -1,36 +1,65 @@
-import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import {
+  createStaticNavigation,
+  StaticParamList,
+  StaticScreenProps,
+  useNavigation,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-const Tab = createBottomTabNavigator()
-const HomeStack = createNativeStackNavigator()
+const HomeStack = createNativeStackNavigator({
+  screens: {
+    Home: HomeScreen,
+    ArticleDetails: ArticleDetailsScreen,
+  },
+})
 
-function HomeScreen({ navigation }: { navigation: any }) {
+const TabNavigator = createBottomTabNavigator({
+  screens: {
+    HomeTab: { screen: HomeStack, options: { headerShown: false } },
+    Settings: SettingsScreen,
+  },
+})
+
+type TabNavigatorParamList = StaticParamList<typeof TabNavigator>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends TabNavigatorParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(TabNavigator)
+
+function HomeScreen() {
+  const navigation = useNavigation()
+
+  const handleNavigateToArticleDetails = () =>
+    navigation.navigate('HomeTab', {
+      screen: 'ArticleDetails',
+      params: { articleId: '1001' },
+    })
+
   return (
     <View style={styles.container}>
       <Button
-        title='Open article 1001'
-        onPress={() => navigation.navigate('ArticleDetails', { articleId: '1001' })}
+        title="Open article 1001"
+        onPress={handleNavigateToArticleDetails}
       />
     </View>
   )
 }
 
-function ArticleDetailsScreen({ route }: { route: any }) {
+type ArticleDetailsScreenProps = StaticScreenProps<{
+  articleId: string
+}>
+
+function ArticleDetailsScreen({ route }: ArticleDetailsScreenProps) {
   return (
     <View style={styles.container}>
-      <Text>Article ID: {route.params?.articleId ?? 'missing'}</Text>
+      <Text>Article ID: {route.params.articleId}</Text>
     </View>
-  )
-}
-
-function HomeStackNavigator() {
-  return (
-    <HomeStack.Navigator>
-      <HomeStack.Screen name='HomeList' component={HomeScreen} options={{ title: 'Home' }} />
-      <HomeStack.Screen name='ArticleDetails' component={ArticleDetailsScreen} />
-    </HomeStack.Navigator>
   )
 }
 
@@ -42,15 +71,8 @@ function SettingsScreen() {
   )
 }
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name='HomeTab' component={HomeStackNavigator} options={{ title: 'Home' }} />
-        <Tab.Screen name='Settings' component={SettingsScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
-  )
+export default function Navigation06() {
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({
