@@ -1,7 +1,14 @@
-import { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 
-import { NavigationContainer, useFocusEffect } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import {
+  createStaticNavigation,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native'
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack'
 import { BackHandler, Button, StyleSheet, Text, View } from 'react-native'
 
 type RootStackParamList = {
@@ -9,12 +16,18 @@ type RootStackParamList = {
   SelectableList: undefined
 }
 
-const Stack = createNativeStackNavigator<RootStackParamList>()
+type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
-function HomeScreen({ navigation }: { navigation: any }) {
+function HomeScreen() {
+  const navigation = useNavigation<HomeNavigationProp>()
+
+  function handleOpenList() {
+    navigation.navigate('SelectableList')
+  }
+
   return (
     <View style={styles.container}>
-      <Button title='Open list' onPress={() => navigation.navigate('SelectableList')} />
+      <Button title="Open list" onPress={handleOpenList} />
     </View>
   )
 }
@@ -22,44 +35,53 @@ function HomeScreen({ navigation }: { navigation: any }) {
 function SelectableListScreen() {
   const [selectionMode, setSelectionMode] = useState(false)
 
-  useFocusEffect(
-    useCallback(() => {
-      const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+  function handleToggleSelectionMode() {
+    setSelectionMode((value) => !value)
+  }
+
+  useFocusEffect(() => {
+    const subscription = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
         if (selectionMode) {
           setSelectionMode(false)
           return true
         }
 
         return false
-      })
-
-      return () => {
-        subscription.remove()
       }
-    }, [selectionMode]),
-  )
+    )
+
+    return () => {
+      subscription.remove()
+    }
+  })
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{selectionMode ? 'Selection mode ON' : 'Selection mode OFF'}</Text>
+      <Text style={styles.title}>{`Selection mode ${selectionMode ? 'ON' : 'OFF'}`}</Text>
       <Button
-        title={selectionMode ? 'Disable selection mode' : 'Enable selection mode'}
-        onPress={() => setSelectionMode((value) => !value)}
+        title={`${selectionMode ? 'Disable' : 'Enable'} selection mode`}
+        onPress={handleToggleSelectionMode}
       />
-      <Text>Press Android back to exit selection mode before leaving screen.</Text>
+      <Text>
+        Press Android back to exit selection mode before leaving screen.
+      </Text>
     </View>
   )
 }
 
+const Stack = createNativeStackNavigator<RootStackParamList>({
+  screens: {
+    Home: HomeScreen,
+    SelectableList: SelectableListScreen,
+  },
+})
+
+const Navigation = createStaticNavigation(Stack)
+
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='Home' component={HomeScreen} />
-        <Stack.Screen name='SelectableList' component={SelectableListScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({
