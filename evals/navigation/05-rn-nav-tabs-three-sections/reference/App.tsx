@@ -1,8 +1,9 @@
-import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import {
+  createStaticNavigation,
+  StaticParamList,
+} from '@react-navigation/native'
 import { StyleSheet, Text, View } from 'react-native'
-
-const Tab = createBottomTabNavigator()
 
 function HomeScreen() {
   return (
@@ -28,16 +29,27 @@ function ProfileScreen() {
   )
 }
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Tab.Navigator initialRouteName='Home'>
-        <Tab.Screen name='Home' component={HomeScreen} />
-        <Tab.Screen name='Search' component={SearchScreen} />
-        <Tab.Screen name='Profile' component={ProfileScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
-  )
+const TabNavigator = createBottomTabNavigator({
+  initialRouteName: 'Home',
+  screens: {
+    Home: HomeScreen,
+    Search: SearchScreen,
+    Profile: ProfileScreen,
+  },
+})
+
+type TabNavigatorParamList = StaticParamList<typeof TabNavigator>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends TabNavigatorParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(TabNavigator)
+
+export default function Navigation05() {
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({
