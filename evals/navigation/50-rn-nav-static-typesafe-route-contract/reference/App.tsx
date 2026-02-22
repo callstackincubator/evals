@@ -1,27 +1,30 @@
-import { createStaticNavigation } from '@react-navigation/native'
-import type { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import type {
+  StaticParamList,
+  StaticScreenProps,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Button, Text, View } from 'react-native'
+import { Button, StyleSheet, Text, View } from 'react-native'
 
-type RootStackParamList = {
-  Home: undefined
-  Details: { itemId: string }
-}
+function HomeScreen() {
+  const navigation = useNavigation()
 
-type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>
-type DetailsProps = NativeStackScreenProps<RootStackParamList, 'Details'>
+  const handleOpenDetails = () => {
+    navigation.navigate('Details', { itemId: '123' })
+  }
 
-function HomeScreen({ navigation }: HomeProps) {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button title='Open item 123' onPress={() => navigation.navigate('Details', { itemId: '123' })} />
+    <View style={styles.container}>
+      <Button title="Open item 123" onPress={handleOpenDetails} />
     </View>
   )
 }
 
+type DetailsProps = StaticScreenProps<{ itemId: string }>
+
 function DetailsScreen({ route }: DetailsProps) {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={styles.container}>
       <Text>Typed itemId: {route.params.itemId}</Text>
     </View>
   )
@@ -34,8 +37,24 @@ const RootStack = createNativeStackNavigator({
   },
 })
 
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
 const Navigation = createStaticNavigation(RootStack)
 
 export default function App() {
   return <Navigation />
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})
