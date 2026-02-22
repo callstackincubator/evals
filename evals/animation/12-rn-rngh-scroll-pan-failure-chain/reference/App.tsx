@@ -6,12 +6,25 @@ import {
   ScrollView,
 } from 'react-native-gesture-handler'
 import Animated, {
+  cancelAnimation,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated'
 
 const ROW_OPEN_OFFSET = -96
+const ROW_SNAP_OPEN_THRESHOLD = ROW_OPEN_OFFSET / 2
+
+const PAN_ACTIVATE_HORIZONTAL_PX = 14
+const PAN_FAIL_VERTICAL_PX = 10
+
+const ROW_SPRING_CONFIG = {
+  damping: 16,
+  stiffness: 180,
+  overshootClamping: true,
+}
+
+const ACTION_BACKGROUND_WIDTH = 120
 
 function clamp(value: number, min: number, max: number) {
   'worklet'
@@ -28,25 +41,29 @@ export default function App() {
   const nativeScroll = Gesture.Native()
 
   const rowPan = Gesture.Pan()
-    .activeOffsetX([-14, 14])
-    .failOffsetY([-10, 10])
+    .activeOffsetX([-PAN_ACTIVATE_HORIZONTAL_PX, PAN_ACTIVATE_HORIZONTAL_PX])
+    .failOffsetY([-PAN_FAIL_VERTICAL_PX, PAN_FAIL_VERTICAL_PX])
     .simultaneousWithExternalGesture(nativeScroll)
     .onBegin(() => {
+      'worklet'
+      cancelAnimation(rowTranslateX)
       dragStartX.value = rowTranslateX.value
     })
     .onUpdate((event) => {
+      'worklet'
       rowTranslateX.value = clamp(
         dragStartX.value + event.translationX,
         ROW_OPEN_OFFSET,
         0
       )
     })
-    .onEnd(() => {
-      const shouldOpen = rowTranslateX.value < ROW_OPEN_OFFSET / 2
-      rowTranslateX.value = withSpring(shouldOpen ? ROW_OPEN_OFFSET : 0, {
-        damping: 16,
-        stiffness: 180,
-      })
+    .onEnd((event) => {
+      'worklet'
+      const shouldOpen = rowTranslateX.value < ROW_SNAP_OPEN_THRESHOLD
+      rowTranslateX.value = withSpring(
+        shouldOpen ? ROW_OPEN_OFFSET : 0,
+        { ...ROW_SPRING_CONFIG, velocity: event.velocityX }
+      )
     })
 
   const rowAnimatedStyle = useAnimatedStyle(() => {
@@ -65,7 +82,7 @@ export default function App() {
           {ITEMS.map((item, index) => {
             if (index === 0) {
               return (
-                <View key={item} style={styles.rowShell}>
+                <View key={`row-${index}`} style={styles.rowShell}>
                   <View style={styles.actionBackground}>
                     <Text style={styles.actionText}>Archive</Text>
                   </View>
@@ -82,7 +99,7 @@ export default function App() {
             }
 
             return (
-              <View key={item} style={styles.row}>
+              <View key={`row-${index}`} style={styles.row}>
                 <Text style={styles.rowText}>{item}</Text>
               </View>
             )
@@ -104,7 +121,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     top: 0,
-    width: 120,
+    width: ACTION_BACKGROUND_WIDTH,
   },
   actionText: {
     color: '#fff',
