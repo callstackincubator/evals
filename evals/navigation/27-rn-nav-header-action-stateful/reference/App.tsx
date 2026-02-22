@@ -1,10 +1,8 @@
 import { useLayoutEffect, useState } from 'react'
 
-import { NavigationContainer } from '@react-navigation/native'
+import { createStaticNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
-
-const Stack = createNativeStackNavigator()
 
 function DetailsScreen({ navigation }: { navigation: any }) {
   const [bookmarked, setBookmarked] = useState(false)
@@ -27,14 +25,16 @@ function DetailsScreen({ navigation }: { navigation: any }) {
   )
 }
 
+const Stack = createNativeStackNavigator({
+  screens: {
+    Details: DetailsScreen,
+  },
+})
+
+const Navigation = createStaticNavigation(Stack)
+
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='Details' component={DetailsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({
