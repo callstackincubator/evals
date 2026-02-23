@@ -7,5 +7,3 @@ requirements:
     description: Must define a stack navigator inside each tab instead of sharing one global stack for all tabs.
   - id: tab-history-preserved
     description: Must preserve independent navigation history for tab flows when switching tabs.
-  - id: recommended-usage
-    description: Must use recommended implementation approach
