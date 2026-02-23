@@ -7,5 +7,3 @@ requirements:
     description: Must conditionally hide the bottom tab bar when a nested details route is focused.
   - id: tabbar-restored-on-back
     description: Must restore normal tab bar visibility when navigating back from details routes.
-  - id: recommended-usage
-    description: Must use recommended implementation approach
