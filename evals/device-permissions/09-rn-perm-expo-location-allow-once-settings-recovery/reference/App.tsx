@@ -1,9 +1,25 @@
+/**
+ * Changes aligned with 08 refactor:
+ * 1. Renamed types and variables for clarity (flowState → currentStep, FlowState → Step, enableForeground → requestForegroundPermissions, readForegroundLocation → fetchForegroundLocation, upgradeToBackground → requestBackgroundPermissions, attemptedBackgroundUpgrade → hasAttemptedBackgroundThisSession).
+ * 2. Removed StatusBar (unrelated to prompt/requirements).
+ * 3. Open Settings Pressable uses Linking.openSettings directly — safe because the function ignores any arguments passed to it.
+ * 4. Removed useCallback memoization.
+ * 5. hasAttemptedBackgroundThisSession is a ref (not state) to avoid unnecessary rerenders when recording that background was already attempted this session.
+ *
+ * Note on requirement naming:
+ * The requirement id `ios-allow-once-background-denial-branch` is misleading. "Allow Once" and
+ * "When In Use" are options on the foreground permission dialog, not the background one. The branch
+ * this requirement actually describes is when the user taps "Keep Only While Using" on the
+ * background upgrade dialog — which is iOS's response when foreground was previously granted via
+ * either of those two options. The message referencing "Allow Once / When In Use" in
+ * requestBackgroundPermissions reflects this same naming imprecision from the original prompt.
+ */
+
 import * as Location from 'expo-location'
-import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 
-type FlowState =
+type Step =
   | 'idle'
   | 'foreground-denied'
   | 'foreground-granted'
@@ -11,84 +27,89 @@ type FlowState =
   | 'background-denied-needs-settings'
 
 export default function App() {
-  const [flowState, setFlowState] = useState<FlowState>('idle')
+  const [currentStep, setCurrentStep] = useState<Step>('idle')
   const [message, setMessage] = useState('')
   const [foregroundCoords, setForegroundCoords] = useState('')
-  const [attemptedBackgroundUpgrade, setAttemptedBackgroundUpgrade] = useState(false)
 
-  const enableForeground = useCallback(async () => {
+  const hasAttemptedBackgroundThisSessionRef = useRef(false)
+
+  const requestForegroundPermissions = async (): Promise<boolean> => {
     setMessage('')
     const permission = await Location.requestForegroundPermissionsAsync()
 
     if (!permission.granted) {
-      setFlowState('foreground-denied')
+      setCurrentStep('foreground-denied')
       setMessage('Foreground permission denied. Retry permission request.')
       return false
     }
 
-    setFlowState((previous) =>
-      previous === 'background-granted' ? 'background-granted' : 'foreground-granted'
+    setCurrentStep((prev) =>
+      prev === 'background-granted'
+        ? 'background-granted'
+        : 'foreground-granted'
     )
     return true
-  }, [])
+  }
 
-  const readForegroundLocation = useCallback(async () => {
-    const hasForeground = await enableForeground()
-    if (!hasForeground) {
-      return
-    }
+  const fetchForegroundLocation = async () => {
+    const hasForeground = await requestForegroundPermissions()
+    if (!hasForeground) return
 
-    const position = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced })
-    setForegroundCoords(`${position.coords.latitude.toFixed(5)}, ${position.coords.longitude.toFixed(5)}`)
-  }, [enableForeground])
+    const position = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.Balanced,
+    })
+    setForegroundCoords(
+      `${position.coords.latitude.toFixed(5)}, ${position.coords.longitude.toFixed(5)}`
+    )
+  }
 
-  const upgradeToBackground = useCallback(async () => {
+  const requestBackgroundPermissions = async () => {
     setMessage('')
-    const hasForeground = await enableForeground()
-    if (!hasForeground) {
+    const hasForeground = await requestForegroundPermissions()
+    if (!hasForeground) return
+
+    if (hasAttemptedBackgroundThisSessionRef.current) {
+      setCurrentStep('background-denied-needs-settings')
+      setMessage(
+        'Background upgrade was already attempted this session. Use settings recovery.'
+      )
       return
     }
 
-    if (attemptedBackgroundUpgrade) {
-      setFlowState('background-denied-needs-settings')
-      setMessage('Background upgrade was already attempted this session. Use settings recovery.')
-      return
-    }
-
-    setAttemptedBackgroundUpgrade(true)
+    hasAttemptedBackgroundThisSessionRef.current = true
     const background = await Location.requestBackgroundPermissionsAsync()
 
     if (background.granted) {
-      setFlowState('background-granted')
+      setCurrentStep('background-granted')
       setMessage('Background location granted.')
       return
     }
 
-    setFlowState('background-denied-needs-settings')
-    setMessage(
-      'Background not granted in-session (Allow Once / When In Use path). Open settings to upgrade.'
-    )
-  }, [attemptedBackgroundUpgrade, enableForeground])
+    setCurrentStep('background-denied-needs-settings')
+    setMessage('Background not granted in-session. Open settings to upgrade.')
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>iOS Location Upgrade Flow</Text>
-      <Text style={styles.state}>State: {flowState}</Text>
+      <Text style={styles.state}>Step: {currentStep}</Text>
+      <Text style={styles.message}>{message}</Text>
 
-      <Pressable onPress={readForegroundLocation} style={styles.button}>
+      <Pressable onPress={fetchForegroundLocation} style={styles.button}>
         <Text style={styles.buttonText}>Use foreground location</Text>
       </Pressable>
 
-      <Pressable onPress={upgradeToBackground} style={styles.button}>
+      <Pressable onPress={requestBackgroundPermissions} style={styles.button}>
         <Text style={styles.buttonText}>Upgrade to background</Text>
       </Pressable>
 
       <Pressable
-        disabled={flowState !== 'background-denied-needs-settings'}
-        onPress={() => Linking.openSettings()}
+        disabled={currentStep !== 'background-denied-needs-settings'}
+        onPress={Linking.openSettings}
         style={[
           styles.secondaryButton,
-          flowState !== 'background-denied-needs-settings' && styles.disabledButton,
+          currentStep !== 'background-denied-needs-settings' &&
+          styles.disabledButton,
         ]}
       >
         <Text style={styles.secondaryButtonText}>Open settings</Text>
@@ -97,13 +118,13 @@ export default function App() {
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Foreground mode remains usable</Text>
         <Text style={styles.cardBody}>
-          Foreground reads keep working even when background permission is unavailable.
+          Foreground reads keep working even when background permission is
+          unavailable.
         </Text>
-        <Text style={styles.coords}>Last foreground coords: {foregroundCoords || 'not loaded'}</Text>
+        <Text style={styles.coords}>
+          Last foreground coords: {foregroundCoords || 'not loaded'}
+        </Text>
       </View>
-
-      <Text style={styles.message}>{message}</Text>
-      <StatusBar style="auto" />
     </View>
   )
 }
