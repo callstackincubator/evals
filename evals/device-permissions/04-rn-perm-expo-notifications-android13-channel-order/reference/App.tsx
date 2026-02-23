@@ -1,57 +1,82 @@
 import * as Device from 'expo-device'
 import * as Notifications from 'expo-notifications'
+import { NotificationPermissionsStatus } from 'expo-notifications'
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useState } from 'react'
-import { Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import {
+  Linking,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 
-type RegistrationState = 'idle' | 'granted' | 'denied' | 'blocked' | 'ready' | 'token-error'
+type RegistrationState = 'idle' | 'denied' | 'blocked' | 'ready' | 'token-error'
 
 export default function App() {
-  const [registrationState, setRegistrationState] = useState<RegistrationState>('idle')
+  const [registrationState, setRegistrationState] =
+    useState<RegistrationState>('idle')
   const [token, setToken] = useState<string>('')
   const [message, setMessage] = useState('')
 
-  const register = useCallback(async () => {
-    setMessage('')
-    setToken('')
+  const requestNotificationPermissions =
+    async (): Promise<NotificationPermissionsStatus> => {
+      const currentStatus = await Notifications.getPermissionsAsync()
+      const finalStatus =
+        currentStatus.status !== Notifications.PermissionStatus.GRANTED
+          ? await Notifications.requestPermissionsAsync()
+          : currentStatus
 
-    if (Platform.OS === 'android') {
-      await Notifications.setNotificationChannelAsync('default', {
-        importance: Notifications.AndroidImportance.MAX,
-        lightColor: '#4f46e5',
-        lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
-        name: 'default',
-      })
+      return finalStatus
     }
 
-    const current = await Notifications.getPermissionsAsync()
-    const next =
-      current.status === Notifications.PermissionStatus.UNDETERMINED
-        ? await Notifications.requestPermissionsAsync()
-        : current
-
-    if (next.status !== Notifications.PermissionStatus.GRANTED) {
-      setRegistrationState(next.canAskAgain ? 'denied' : 'blocked')
-      setMessage('Notifications permission denied. Token registration is intentionally skipped.')
-      return
-    }
-
-    setRegistrationState('granted')
-
-    if (!Device.isDevice) {
-      setMessage('Permission granted, but this is not a physical device. Token registration disabled.')
-      return
-    }
-
+  const getPushToken = async () => {
     try {
       const pushToken = await Notifications.getExpoPushTokenAsync()
       setToken(pushToken.data)
       setRegistrationState('ready')
     } catch {
       setRegistrationState('token-error')
-      setMessage('Permission is granted, but token retrieval failed. Retry registration.')
+      setMessage(
+        'Permission is granted, but token retrieval failed. Retry registration.'
+      )
     }
-  }, [])
+  }
+
+  const register = async () => {
+    setMessage('')
+    setToken('')
+
+    if (!Device.isDevice) {
+      setMessage(
+        'This is not a physical device. Push notification not supported on emulators/simulators.'
+      )
+      return
+    }
+
+    if (Platform.OS === 'android') {
+      await Notifications.setNotificationChannelAsync('default', {
+        importance: Notifications.AndroidImportance.MAX,
+        lightColor: '#4f46e5',
+        lockscreenVisibility:
+          Notifications.AndroidNotificationVisibility.PUBLIC,
+        name: 'default',
+      })
+    }
+
+    const permissionsResult = await requestNotificationPermissions()
+    if (permissionsResult.status === Notifications.PermissionStatus.DENIED) {
+      setRegistrationState(permissionsResult.canAskAgain ? 'denied' : 'blocked')
+
+      setMessage(
+        'Notifications permission denied. Token registration is intentionally skipped.'
+      )
+      return
+    }
+
+    await getPushToken()
+  }
 
   return (
     <View style={styles.container}>
@@ -62,18 +87,25 @@ export default function App() {
         <Text style={styles.buttonText}>Configure + Register</Text>
       </Pressable>
 
-      <Pressable onPress={() => Linking.openSettings()} style={styles.secondaryButton}>
+      <Pressable
+        onPress={() => Linking.openSettings()}
+        style={styles.secondaryButton}
+      >
         <Text style={styles.secondaryButtonText}>Open settings</Text>
       </Pressable>
 
       {token ? (
         <Text style={styles.token}>Expo token: {token}</Text>
       ) : (
-        <Text style={styles.fallback}>No token yet. Denied path keeps registration disabled.</Text>
+        <Text style={styles.fallback}>
+          No token yet. Denied path keeps registration disabled.
+        </Text>
       )}
 
       <Text style={styles.message}>{message}</Text>
-      <Text style={styles.deviceInfo}>Device: {Device.isDevice ? 'Physical' : 'Simulator/Emulator'}</Text>
+      <Text style={styles.deviceInfo}>
+        Device: {Device.isDevice ? 'Physical' : 'Simulator/Emulator'}
+      </Text>
       <StatusBar style="auto" />
     </View>
   )
