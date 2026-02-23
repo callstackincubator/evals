@@ -1,12 +1,3 @@
-/**
- * Renamed types, methods, and variables for clarity (e.g. flow → currentStep, BackgroundFlow → Step, startBackgroundSetup → requestForegroundPermissions).
- * Added Android 11+ version check (Platform.OS === 'android' && Platform.Version >= 30) to show appropriate rationale.
- * Updated rationale message to meet requirements: explain why background is needed and that tapping continue takes user to Settings with "Allow all the time" on Android 11+.
- * Removed StatusBar (unrelated to prompt/requirements).
- * Open Settings Pressable uses Linking.openSettings directly instead of () => Linking.openSettings() to avoid unnecessary anonymous function.
- * Removed useCallback memoization.
- */
-
 import * as Location from 'expo-location'
 import React, { useState } from 'react'
 import {
