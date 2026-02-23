@@ -7,5 +7,3 @@ requirements:
     description: Must require two back presses within a deterministic time window before exiting from root.
   - id: root-only-handler
     description: Must scope this behavior to root navigation context rather than all screens.
-  - id: recommended-usage
-    description: Must use recommended implementation approach
