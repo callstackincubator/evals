@@ -1,46 +1,66 @@
-import { Camera, CameraView, useCameraPermissions, type CameraMountError } from 'expo-camera'
+import { Camera, CameraView, PermissionResponse, type CameraMountError } from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
 import React, { useCallback, useEffect, useState } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { AppState, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 
 type CameraState = 'checking' | 'permission-denied' | 'available' | 'unavailable' | 'mount-error'
+type WebCameraType = typeof Camera & {
+  isAvailableAsync(): Promise<boolean>
+}
 
 export default function App() {
-  const [permission, requestPermission] = useCameraPermissions()
   const [cameraState, setCameraState] = useState<CameraState>('checking')
   const [mountError, setMountError] = useState('')
 
-  const checkAvailability = useCallback(async () => {
-    const available = await Camera.isAvailableAsync()
-    setCameraState((previous) => {
-      if (!permission?.granted) {
-        return 'permission-denied'
-      }
+  const safelyCheckCameraAvailability = async () => {
+    try {
+      // The method isAvailableAsync is available at runtime only in web platform
+      // On other platforms it's handled natively during request and it's implicitly considered as available
+      return await (Camera as WebCameraType).isAvailableAsync()
+    } catch (error) {
+      console.warn('Camera availability check failed', error);
+      return true
+    }
+  }
 
-      if (!available) {
-        return 'unavailable'
-      }
+  const checkAvailability = useCallback(async (permission?: PermissionResponse) => {
+    const available = await safelyCheckCameraAvailability()
 
-      return previous === 'mount-error' ? 'mount-error' : 'available'
-    })
-  }, [permission?.granted])
+    if(!available) {
+      setCameraState('unavailable')
+      return
+    }
 
-  useEffect(() => {
-    checkAvailability()
-  }, [checkAvailability])
-
-  const requestAndCheck = useCallback(async () => {
-    const next = await requestPermission()
-    if (!next.granted) {
+    const currentPermission = permission ?? await Camera.getCameraPermissionsAsync()
+    
+    if (!currentPermission?.granted) {
       setCameraState('permission-denied')
       return
     }
 
-    setMountError('')
-    await checkAvailability()
-  }, [checkAvailability, requestPermission])
+    if (currentPermission?.granted) {
+      setCameraState('available')
+      return
+    }
+  }, [])
 
-  const showPreview = cameraState === 'available' && permission?.granted
+  useEffect(() => {
+    checkAvailability()    
+
+    const subscription = AppState.addEventListener('change', (state) => {
+      if(state === 'active') checkAvailability()
+    })
+
+    return subscription.remove
+  }, [checkAvailability])
+
+  const requestAndCheck = async () => {
+    setMountError('')
+    const next = await Camera.requestCameraPermissionsAsync()
+    await checkAvailability(next)
+  }
+
+  const showPreview = cameraState === 'available'
 
   return (
     <View style={styles.container}>
@@ -48,16 +68,14 @@ export default function App() {
       <Text style={styles.state}>State: {cameraState}</Text>
 
       {showPreview ? (
-        <View style={styles.previewWrap}>
-          <CameraView
-            facing="back"
-            onMountError={(event: CameraMountError) => {
-              setMountError(event.message)
-              setCameraState('mount-error')
-            }}
-            style={styles.preview}
-          />
-        </View>
+        <CameraView
+          facing="front"
+          onMountError={(event: CameraMountError) => {
+            setMountError(event.message)
+            setCameraState('mount-error')
+          }}
+          style={styles.preview}
+        />
       ) : (
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Preview fallback</Text>
@@ -72,8 +90,12 @@ export default function App() {
         <Text style={styles.buttonText}>Request permission + retry</Text>
       </Pressable>
 
-      <Pressable onPress={checkAvailability} style={styles.secondaryButton}>
+      <Pressable onPress={() => checkAvailability()} style={styles.secondaryButton}>
         <Text style={styles.secondaryButtonText}>Recheck camera availability</Text>
+      </Pressable>
+
+      <Pressable onPress={() => Linking.openSettings()} style={styles.secondaryButton}>
+        <Text style={styles.secondaryButtonText}>Open Settings</Text>
       </Pressable>
 
       <StatusBar style="auto" />
@@ -98,14 +120,10 @@ const styles = StyleSheet.create({
   state: {
     color: '#374151',
   },
-  previewWrap: {
-    borderRadius: 12,
-    height: 220,
-    overflow: 'hidden',
-    width: '100%',
-  },
   preview: {
-    flex: 1,
+    borderRadius: 12,
+    width: '100%',
+    aspectRatio: 16 / 9,
   },
   card: {
     backgroundColor: '#f9fafb',
