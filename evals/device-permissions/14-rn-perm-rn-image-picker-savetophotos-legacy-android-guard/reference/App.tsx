@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar'
-import React, { useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import { launchCamera, type Asset } from 'react-native-image-picker'
 import {
@@ -10,15 +10,9 @@ import {
   type PermissionStatus,
 } from 'react-native-permissions'
 
-type SaveMode = 'saving-enabled' | 'capture-only' | 'capture-denied' | 'undetermined'
-
 const isLegacyAndroid = Platform.OS === 'android' && Number(Platform.Version) <= 28
 
 const LEGACY_STORAGE_PERMISSION: Permission = PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE
-
-const CAMERA_PERMISSION: Permission = Platform.OS == 'android' ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA
-
-const IOS_PHOTO_ADD_PERMISSION: Permission = PERMISSIONS.IOS.PHOTO_LIBRARY_ADD_ONLY ?? PERMISSIONS.IOS.PHOTO_LIBRARY
 
 function isGranted(status: PermissionStatus): boolean {
   return status === RESULTS.GRANTED || status === RESULTS.LIMITED
@@ -27,32 +21,20 @@ function isGranted(status: PermissionStatus): boolean {
 export default function App() {
   const [asset, setAsset] = useState<Asset | null>(null)
   const [message, setMessage] = useState('')
-  const [saveMode, setSaveMode] = useState<SaveMode>('undetermined')
+  const [saveMode, setSaveMode] = useState<'saving-enabled' | 'capture-only'>('saving-enabled')
 
-
-  const handleSaveMode = async (permission: Permission, denialMessage: string, denialSaveMode: SaveMode = 'capture-only') => {
-    const currentPermission = await request(permission)
-
-    if (!isGranted(currentPermission)) {
-      setSaveMode(denialSaveMode)
-      setMessage(denialMessage)
-      return false
-    }
-
-    setSaveMode('saving-enabled')
-    return true
-  }
-
-  const capture = async () => {
-    let canSaveToPhotos = await handleSaveMode(CAMERA_PERMISSION ,'Camera permission denied, cannot capture.', 'capture-denied')
-    if (!canSaveToPhotos) return
+  const capture = useCallback(async () => {
+    let canSaveToPhotos = true
 
     if (isLegacyAndroid) {
-      canSaveToPhotos = await handleSaveMode(LEGACY_STORAGE_PERMISSION ,'Legacy Android storage denied. Capturing without save-to-photos.')
-    } else if (Platform.OS === 'ios') {
-      canSaveToPhotos = await handleSaveMode(IOS_PHOTO_ADD_PERMISSION ,'Photos permission denied. Capturing without save-to-photos.')
-    } else {
-      setSaveMode('saving-enabled')
+      const storage = await request(LEGACY_STORAGE_PERMISSION)
+      if (!isGranted(storage)) {
+        canSaveToPhotos = false
+        setSaveMode('capture-only')
+        setMessage('Legacy Android storage denied. Capturing without save-to-photos.')
+      } else {
+        setSaveMode('saving-enabled')
+      }
     }
 
     const response = await launchCamera({
@@ -70,7 +52,7 @@ export default function App() {
       return
     }
 
-    const firstAsset = response.assets?.length ? response.assets?.[0] : undefined
+    const firstAsset = response.assets?.[0]
     if (!firstAsset) {
       setMessage('No capture result returned.')
       return
@@ -84,26 +66,20 @@ export default function App() {
     }
 
     setMessage('Capture saved to photos successfully.')
-  }
+  }, [])
 
-  const getModeLabel = () => {
-    switch (saveMode) {
-      case 'saving-enabled':
-        return 'saveToPhotos enabled'
-      case 'capture-only':
-        return 'degraded capture-only mode'
-      case 'capture-denied':
-        return 'capture blocked'
-      case 'undetermined':
-      default:
-        return 'status unknown'
+  const modeLabel = useMemo(() => {
+    if (saveMode === 'saving-enabled') {
+      return 'saveToPhotos enabled'
     }
-  }
+
+    return 'degraded capture-only mode'
+  }, [saveMode])
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Capture and Save Flow</Text>
-      <Text style={styles.state}>Mode: {getModeLabel()}</Text>
+      <Text style={styles.state}>Mode: {modeLabel}</Text>
 
       <Pressable onPress={capture} style={styles.button}>
         <Text style={styles.buttonText}>Capture photo</Text>
