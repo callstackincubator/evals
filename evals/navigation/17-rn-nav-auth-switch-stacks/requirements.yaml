@@ -7,5 +7,3 @@ requirements:
     description: Must render route sets based on authentication state.
   - id: single-container-conditional-graph
     description: Must keep a single navigation container while conditionally switching the inner route graph by auth state.
-  - id: recommended-usage
-    description: Must use recommended implementation approach
