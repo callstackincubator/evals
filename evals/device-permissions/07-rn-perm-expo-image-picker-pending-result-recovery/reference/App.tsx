@@ -1,58 +1,58 @@
-import * as ImagePicker from 'expo-image-picker'
+import {
+  getPendingResultAsync,
+  ImagePickerErrorResult,
+  ImagePickerResult,
+  launchImageLibraryAsync,
+} from 'expo-image-picker'
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 
 type PickerState = 'idle' | 'cancelled' | 'error' | 'success'
 
-function getResultKey(result: ImagePicker.ImagePickerResult | ImagePicker.ImagePickerSuccessResult): string {
-  if ('canceled' in result && result.canceled) {
-    return 'cancelled-result'
-  }
-
-  if (!('assets' in result) || result.assets.length === 0) {
-    return 'empty-result'
-  }
-
-  return result.assets.map((asset) => asset.assetId ?? asset.uri).join('|')
+function isImagePickerErrorResult(
+  result: ImagePickerResult | ImagePickerErrorResult
+): result is ImagePickerErrorResult {
+  return (result as ImagePickerErrorResult).code !== undefined
 }
 
 export default function App() {
   const [pickerState, setPickerState] = useState<PickerState>('idle')
   const [message, setMessage] = useState('')
   const [assetSummary, setAssetSummary] = useState('')
-  const lastHandledKey = useRef('')
+  const lastHandledKey = useRef<string | null>(null)
 
-  const handlePickerResult = useCallback(
-    (result: ImagePicker.ImagePickerResult | ImagePicker.ImagePickerSuccessResult, source: 'pending' | 'live') => {
-      const key = getResultKey(result)
-      if (key === lastHandledKey.current) {
-        setMessage(`Skipped duplicate ${source} result.`)
-        return
-      }
-      lastHandledKey.current = key
+  const handlePickerResult = (
+    result: ImagePickerResult,
+    source: 'pending' | 'live'
+  ) => {
+    if (result.canceled) {
+      setPickerState('cancelled')
+      setAssetSummary('')
+      setMessage(`${source} picker result was canceled.`)
+      return
+    }
 
-      if ('canceled' in result && result.canceled) {
-        setPickerState('cancelled')
-        setAssetSummary('')
-        setMessage(`${source} picker result was canceled.`)
-        return
-      }
+    if (result.assets.length === 0) {
+      setPickerState('error')
+      setAssetSummary('')
+      setMessage(`${source} picker result had no assets.`)
+      return
+    }
 
-      if (!('assets' in result) || result.assets.length === 0) {
-        setPickerState('error')
-        setAssetSummary('')
-        setMessage(`${source} picker result had no assets.`)
-        return
-      }
+    const first = result.assets[0]
+    if (pickerState === 'success' && first.uri === lastHandledKey.current) {
+      setMessage(`Skipped duplicate ${source} result.`)
+      return
+    }
 
-      const first = result.assets[0]
-      setPickerState('success')
-      setAssetSummary(`${first.fileName ?? 'unnamed'} | ${first.uri}`)
-      setMessage(`${source} picker result restored through shared success pipeline.`)
-    },
-    []
-  )
+    lastHandledKey.current = first.uri
+    setPickerState('success')
+    setAssetSummary(`${first.fileName ?? 'unnamed'} | ${first.uri}`)
+    setMessage(
+      `${source} picker result restored through shared success pipeline.`
+    )
+  }
 
   useEffect(() => {
     if (Platform.OS !== 'android') {
@@ -62,11 +62,17 @@ export default function App() {
     let active = true
 
     const restorePendingResult = async () => {
-      const pending = await ImagePicker.getPendingResultAsync()
-      if (!active || !pending) {
+      const pendingResult = await getPendingResultAsync()
+      if (!active || !pendingResult) {
         return
       }
-      handlePickerResult(pending, 'pending')
+
+      if (isImagePickerErrorResult(pendingResult)) {
+        setPickerState('error')
+        setMessage(pendingResult.message)
+      } else {
+        handlePickerResult(pendingResult, 'pending')
+      }
     }
 
     restorePendingResult()
@@ -76,21 +82,15 @@ export default function App() {
     }
   }, [handlePickerResult])
 
-  const openPicker = useCallback(async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
+  const openPicker = async () => {
+    const result = await launchImageLibraryAsync({
       mediaTypes: ['images'],
       selectionLimit: 1,
     })
     handlePickerResult(result, 'live')
-  }, [handlePickerResult])
+  }
 
-  const summary = useMemo(() => {
-    if (!assetSummary) {
-      return 'No selected asset.'
-    }
-
-    return assetSummary
-  }, [assetSummary])
+  const summary = assetSummary ?? 'No selected asset.'
 
   return (
     <View style={styles.container}>
