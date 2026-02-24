@@ -55,6 +55,7 @@ export default function App() {
     runRecoveryPath()
     setActiveKey('recovery')
     setStatus('recovered')
+    setSecret(readSecretValue().value)
   }
 
   const rotateKey = () => {
