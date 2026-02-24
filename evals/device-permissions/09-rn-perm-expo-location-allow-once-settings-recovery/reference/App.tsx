@@ -1,20 +1,3 @@
-/**
- * Changes aligned with 08 refactor:
- * 1. Renamed types and variables for clarity (flowState → currentStep, FlowState → Step, enableForeground → requestForegroundPermissions, readForegroundLocation → fetchForegroundLocation, upgradeToBackground → requestBackgroundPermissions, attemptedBackgroundUpgrade → hasAttemptedBackgroundThisSession).
- * 2. Removed StatusBar (unrelated to prompt/requirements).
- * 3. Open Settings Pressable uses Linking.openSettings directly — safe because the function ignores any arguments passed to it.
- * 4. Removed useCallback memoization.
- * 5. hasAttemptedBackgroundThisSession is a ref (not state) to avoid unnecessary rerenders when recording that background was already attempted this session.
- *
- * Note on requirement naming:
- * The requirement id `ios-allow-once-background-denial-branch` is misleading. "Allow Once" and
- * "When In Use" are options on the foreground permission dialog, not the background one. The branch
- * this requirement actually describes is when the user taps "Keep Only While Using" on the
- * background upgrade dialog — which is iOS's response when foreground was previously granted via
- * either of those two options. The message referencing "Allow Once / When In Use" in
- * requestBackgroundPermissions reflects this same naming imprecision from the original prompt.
- */
-
 import * as Location from 'expo-location'
 import React, { useRef, useState } from 'react'
 import { Linking, Pressable, StyleSheet, Text, View } from 'react-native'
