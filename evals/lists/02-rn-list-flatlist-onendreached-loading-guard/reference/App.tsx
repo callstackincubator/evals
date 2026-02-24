@@ -1,5 +1,11 @@
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native'
-import { useCallback, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 
 type Item = {
   id: string
@@ -19,13 +25,30 @@ function buildPage(page: number): Item[] {
   })
 }
 
+function ListItem({ item }: { item: Item }) {
+  return (
+    <View style={styles.row}>
+      <Text style={styles.rowText}>{item.title}</Text>
+    </View>
+  )
+}
+
+function LoadingIndicator() {
+  return (
+    <View style={styles.footer}>
+      <ActivityIndicator />
+      <Text style={styles.footerText}>Loading more...</Text>
+    </View>
+  )
+}
+
 export default function App() {
   const [items, setItems] = useState<Item[]>(() => buildPage(0))
   const [loading, setLoading] = useState(false)
   const loadingRef = useRef(false)
   const pageRef = useRef(0)
 
-  const loadNextPage = useCallback(() => {
+  const loadNextPage = () => {
     if (loadingRef.current || pageRef.current >= TOTAL_PAGES - 1) {
       return
     }
@@ -42,7 +65,7 @@ export default function App() {
       loadingRef.current = false
       setLoading(false)
     }, 500)
-  }, [])
+  }
 
   return (
     <View style={styles.container}>
@@ -51,19 +74,8 @@ export default function App() {
         keyExtractor={(item) => item.id}
         onEndReached={loadNextPage}
         onEndReachedThreshold={0.4}
-        renderItem={({ item }) => (
-          <View style={styles.row}>
-            <Text style={styles.rowText}>{item.title}</Text>
-          </View>
-        )}
-        ListFooterComponent={
-          loading ? (
-            <View style={styles.footer}>
-              <ActivityIndicator />
-              <Text style={styles.footerText}>Loading more...</Text>
-            </View>
-          ) : null
-        }
+        renderItem={({ item }) => <ListItem item={item} />}
+        ListFooterComponent={loading ? <LoadingIndicator /> : null}
       />
     </View>
   )

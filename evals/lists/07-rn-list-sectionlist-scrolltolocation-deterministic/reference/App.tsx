@@ -1,5 +1,5 @@
 import { Pressable, SectionList, StyleSheet, Text, View } from 'react-native'
-import { useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 type Topic = {
   id: string
@@ -9,6 +9,14 @@ type Topic = {
 type TopicSection = {
   data: Topic[]
   key: string
+  title: string
+}
+
+type TopicRowProps = {
+  title: string
+}
+
+type TopicHeaderProps = {
   title: string
 }
 
@@ -45,18 +53,36 @@ const SECTIONS: TopicSection[] = [
   },
 ]
 
+function TopicRow({ title }: TopicRowProps) {
+  return (
+    <View style={styles.row}>
+      <Text style={styles.rowText}>{title}</Text>
+    </View>
+  )
+}
+
+function TopicHeader({ title }: TopicHeaderProps) {
+  return (
+    <View style={styles.header}>
+      <Text style={styles.headerText}>{title}</Text>
+    </View>
+  )
+}
+
 export default function App() {
   const sectionListRef = useRef<SectionList<Topic>>(null)
   const [status, setStatus] = useState('Ready')
 
-  const sectionIndexByTitle = useMemo(() => {
-    return new Map(SECTIONS.map((section, index) => [section.title, index]))
-  }, [])
-
   const jumpTo = (sectionTitle: string, itemIndex: number) => {
-    const sectionIndex = sectionIndexByTitle.get(sectionTitle)
+    const sectionIndex = SECTIONS.findIndex(
+      (section) => section.title === sectionTitle
+    )
 
-    if (sectionIndex == null || itemIndex < 0 || itemIndex >= SECTIONS[sectionIndex].data.length) {
+    if (
+      sectionIndex < 0 ||
+      itemIndex < 0 ||
+      itemIndex >= SECTIONS[sectionIndex].data.length
+    ) {
       setStatus('Invalid jump target')
       return
     }
@@ -71,13 +97,29 @@ export default function App() {
     })
   }
 
+  const keyExtractor = (item: Topic) => item.id
+
+  const renderItem = ({ item }: { item: Topic }) => (
+    <TopicRow title={item.title} />
+  )
+
+  const renderSectionHeader = ({ section }: { section: TopicSection }) => (
+    <TopicHeader title={section.title} />
+  )
+
   return (
     <View style={styles.container}>
       <View style={styles.controls}>
-        <Pressable onPress={() => jumpTo('React Native', 1)} style={styles.button}>
+        <Pressable
+          onPress={() => jumpTo('React Native', 1)}
+          style={styles.button}
+        >
           <Text style={styles.buttonText}>Jump to React Native #2</Text>
         </Pressable>
-        <Pressable onPress={() => jumpTo('Unknown', 0)} style={styles.buttonMuted}>
+        <Pressable
+          onPress={() => jumpTo('Unknown', 0)}
+          style={styles.buttonMuted}
+        >
           <Text style={styles.buttonMutedText}>Try invalid jump</Text>
         </Pressable>
       </View>
@@ -86,19 +128,11 @@ export default function App() {
 
       <SectionList
         ref={sectionListRef}
-        keyExtractor={(item) => item.id}
+        keyExtractor={keyExtractor}
         sections={SECTIONS}
         stickySectionHeadersEnabled
-        renderItem={({ item }) => (
-          <View style={styles.row}>
-            <Text style={styles.rowText}>{item.title}</Text>
-          </View>
-        )}
-        renderSectionHeader={({ section }) => (
-          <View style={styles.header}>
-            <Text style={styles.headerText}>{section.title}</Text>
-          </View>
-        )}
+        renderItem={renderItem}
+        renderSectionHeader={renderSectionHeader}
       />
     </View>
   )

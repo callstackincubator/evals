@@ -1,8 +1,9 @@
-import { NavigationContainer } from '@react-navigation/native'
 import { createDrawerNavigator } from '@react-navigation/drawer'
+import {
+  createStaticNavigation,
+  StaticParamList,
+} from '@react-navigation/native'
 import { StyleSheet, Text, View } from 'react-native'
-
-const Drawer = createDrawerNavigator()
 
 function AccountScreen() {
   return (
@@ -20,15 +21,25 @@ function HelpScreen() {
   )
 }
 
+const Drawer = createDrawerNavigator({
+  screens: {
+    Account: AccountScreen,
+    Help: HelpScreen,
+  },
+})
+
+type DrawerParamList = StaticParamList<typeof Drawer>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends DrawerParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(Drawer)
+
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Drawer.Navigator initialRouteName='Account'>
-        <Drawer.Screen name='Account' component={AccountScreen} />
-        <Drawer.Screen name='Help' component={HelpScreen} />
-      </Drawer.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({

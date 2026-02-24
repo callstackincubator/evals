@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { MMKV } from 'react-native-mmkv'
+import { createMMKV } from 'react-native-mmkv'
 
 const ENCRYPTION_KEYS = {
   current: 'enc-key-v1',
@@ -8,7 +8,7 @@ const ENCRYPTION_KEYS = {
   recovery: 'enc-key-recovery',
 }
 
-const secureStorage = new MMKV({
+const secureStorage = createMMKV({
   encryptionKey: ENCRYPTION_KEYS.current,
   id: 'encrypted-user-data',
 })
@@ -35,6 +35,11 @@ function runRecoveryPath() {
   secureStorage.set(SECRET_KEY, '')
 }
 
+// Error handling helper function mock "imported" from another module
+function handleError(error: unknown) {
+  console.error('An error occurred while setting next draft value', error)
+}
+
 export default function App() {
   const [secret, setSecret] = useState(readSecretValue().value)
   const [activeKey, setActiveKey] = useState('v1')
@@ -45,26 +50,32 @@ export default function App() {
     setSecret(readSecretValue().value)
   }
 
+  const handleRotationError = (message?: string) => {
+    handleError(new Error(message || 'Unexpected error'))
+    runRecoveryPath()
+    setActiveKey('recovery')
+    setStatus('recovered')
+    setSecret(readSecretValue().value)
+  }
+
   const rotateKey = () => {
     try {
       setStatus('rotating')
       const snapshot = readSecretValue()
       if (!snapshot.ok) {
-        throw new Error('pre-rotation decrypt failure')
+        return handleRotationError('pre-rotation decrypt failure')
       }
 
       secureStorage.recrypt(ENCRYPTION_KEYS.next)
       const preserved = readSecretValue()
       if (!preserved.ok || preserved.value !== snapshot.value) {
-        throw new Error('post-rotation value mismatch')
+        return handleRotationError('post-rotation value mismatch')
       }
 
       setActiveKey('v2')
       setStatus('ready')
     } catch {
-      runRecoveryPath()
-      setActiveKey('recovery')
-      setStatus('recovered')
+      handleRotationError()
     }
 
     setSecret(readSecretValue().value)

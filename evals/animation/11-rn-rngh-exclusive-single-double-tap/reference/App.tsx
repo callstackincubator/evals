@@ -12,35 +12,42 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 
+const DOUBLE_TAP_MAX_DELAY_MS = 260
+const TAP_MAX_DURATION_MS = 220
+
 export default function App() {
   const [outcome, setOutcome] = useState('Waiting for tap')
   const scale = useSharedValue(1)
 
   const singleTap = Gesture.Tap()
     .numberOfTaps(1)
-    .maxDuration(220)
+    .maxDuration(TAP_MAX_DURATION_MS)
     .onEnd((_, success) => {
       if (!success) {
         return
       }
 
-      scale.value = withTiming(1.02, { duration: 80 }, () => {
-        scale.value = withTiming(1, { duration: 120 })
+      scale.value = withTiming(1.02, { duration: 80 }, (finished) => {
+        if (finished) {
+          scale.value = withTiming(1, { duration: 120 })
+        }
       })
       runOnJS(setOutcome)('Single tap action')
     })
 
   const doubleTap = Gesture.Tap()
     .numberOfTaps(2)
-    .maxDelay(260)
-    .maxDuration(220)
+    .maxDelay(DOUBLE_TAP_MAX_DELAY_MS)
+    .maxDuration(TAP_MAX_DURATION_MS)
     .onEnd((_, success) => {
       if (!success) {
         return
       }
 
-      scale.value = withTiming(1.08, { duration: 80 }, () => {
-        scale.value = withTiming(1, { duration: 120 })
+      scale.value = withTiming(1.08, { duration: 80 }, (finished) => {
+        if (finished) {
+          scale.value = withTiming(1, { duration: 120 })
+        }
       })
       runOnJS(setOutcome)('Double tap action')
     })

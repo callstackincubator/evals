@@ -1,65 +1,136 @@
-import { useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 
-import { CommonActions, NavigationContainer } from '@react-navigation/native'
+import { createStaticNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Button, Text, View } from 'react-native'
+import { Button, StyleSheet, Text, View } from 'react-native'
+import { StaticParamList, useNavigation } from '@react-navigation/core'
 
-const Stack = createNativeStackNavigator()
-
-function SignInScreen({ onSignIn }: { onSignIn: () => void }) {
+function SignInScreen() {
+  const { signIn } = useContext(AuthContext)
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button title='Sign in' onPress={onSignIn} />
+    <View style={styles.signInContainer}>
+      <Button title="Sign in" onPress={signIn} />
     </View>
   )
 }
 
-function PrivateHomeScreen({ navigation, onSignOut }: { navigation: any; onSignOut: () => void }) {
+function PrivateHomeScreen() {
+  const { navigate } = useNavigation()
+  const { signOut } = useAuthContext()
+
+  const onSignOut = () => {
+    signOut()
+  }
+
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+    <View style={styles.privateHomeScreenContainer}>
       <Text>Private Home</Text>
-      <Button title='Go to account details' onPress={() => navigation.navigate('AccountDetails')} />
       <Button
-        title='Sign out'
-        onPress={() => {
-          onSignOut()
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: 'SignIn' }],
-            }),
-          )
-        }}
+        title="Go to account details"
+        onPress={() => navigate('AccountDetailsScreen')}
       />
+      <Button title="Sign out" onPress={onSignOut} />
     </View>
   )
 }
 
 function AccountDetailsScreen() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={styles.accountDetailsContainer}>
       <Text>Account details</Text>
     </View>
   )
 }
 
+const AuthContext = createContext({
+  isSignedIn: false,
+  signIn: (_user: object) => {},
+  signOut: () => {},
+})
+
+function useAuthContext() {
+  const context = useContext(AuthContext)
+
+  if (!context) {
+    throw new Error('AuthContext is not attached to any provider')
+  }
+
+  return context
+}
+
+function useIsSignedIn() {
+  return useAuthContext().isSignedIn
+}
+
+function useIsSignedOut() {
+  return !useIsSignedIn()
+}
+
+const RootStack = createNativeStackNavigator({
+  groups: {
+    SignedIn: {
+      if: useIsSignedIn,
+      screens: {
+        PrivateHomeScreen: {
+          screen: PrivateHomeScreen,
+        },
+        AccountDetailsScreen: {
+          screen: AccountDetailsScreen,
+        },
+      },
+    },
+    SignedOut: {
+      if: useIsSignedOut,
+      screens: {
+        SignInScreen: {
+          screen: SignInScreen,
+        },
+      },
+    },
+  },
+})
+
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(RootStack)
+
 export default function App() {
   const [isSignedIn, setIsSignedIn] = useState(false)
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        {!isSignedIn ? (
-          <Stack.Screen name='SignIn'>{() => <SignInScreen onSignIn={() => setIsSignedIn(true)} />}</Stack.Screen>
-        ) : (
-          <>
-            <Stack.Screen name='PrivateHome'>
-              {(props) => <PrivateHomeScreen {...props} onSignOut={() => setIsSignedIn(false)} />}
-            </Stack.Screen>
-            <Stack.Screen name='AccountDetails' component={AccountDetailsScreen} />
-          </>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthContext.Provider
+      value={{
+        isSignedIn,
+        signIn: () => setIsSignedIn(true),
+        signOut: () => setIsSignedIn(false),
+      }}
+    >
+      <Navigation />
+    </AuthContext.Provider>
   )
 }
+
+const styles = StyleSheet.create({
+  accountDetailsContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  signInContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  privateHomeScreenContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+  },
+})

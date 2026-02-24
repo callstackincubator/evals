@@ -1,25 +1,50 @@
-import { useLayoutEffect } from 'react'
+import { useEffect } from 'react'
 
-import { NavigationContainer } from '@react-navigation/native'
+import {
+  createStaticNavigation,
+  StaticParamList,
+  StaticScreenProps,
+  useNavigation,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-type FeedFilter = 'all' | 'following' | 'mentions'
-const Stack = createNativeStackNavigator()
+const Stack = createNativeStackNavigator({
+  screens: {
+    Feed: {
+      screen: FeedScreen,
+      initialParams: { filter: 'all' },
+      options: { title: 'Feed' },
+    },
+  },
+})
 
-function FeedScreen({ navigation, route }: { navigation: any; route: any }) {
-  const filter: FeedFilter = route.params?.filter ?? 'all'
+type StackParamList = StaticParamList<typeof Stack>
 
-  useLayoutEffect(() => {
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends StackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(Stack)
+
+type FeedFilter = 'all' | 'following'
+type FeedScreenProps = StaticScreenProps<{ filter: FeedFilter }>
+
+function FeedScreen({ route }: FeedScreenProps) {
+  const navigation = useNavigation()
+  const filter = route.params.filter
+
+  useEffect(() => {
+    const onTogglePress = () => {
+      const nextFilter: FeedFilter = filter === 'all' ? 'following' : 'all'
+      navigation.setParams({ filter: nextFilter })
+    }
+
     navigation.setOptions({
       headerRight: () => (
-        <Button
-          title='Toggle filter'
-          onPress={() => {
-            const nextFilter: FeedFilter = filter === 'all' ? 'following' : 'all'
-            navigation.setParams({ filter: nextFilter })
-          }}
-        />
+        <Button title="Toggle filter" onPress={onTogglePress} />
       ),
     })
   }, [filter, navigation])
@@ -32,13 +57,7 @@ function FeedScreen({ navigation, route }: { navigation: any; route: any }) {
 }
 
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='Feed' component={FeedScreen} initialParams={{ filter: 'all' }} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({

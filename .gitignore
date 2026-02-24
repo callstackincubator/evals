@@ -17,4 +17,7 @@ results/*
 # macOS
 .DS_Store
 
+# IDE
+.idea/
+
 config.json

@@ -1,7 +1,16 @@
-import { useEffect, useRef, useState, useTransition } from 'react'
-import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native'
+import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
+import {
+  FlatList,
+  type ListRenderItem,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native'
 
-async function searchApi(query: string) {
+type NetworkStatus = 'idle' | 'loading'
+
+async function searchApi(query: string): Promise<string[]> {
   const simulatedDelay = query.length % 2 === 0 ? 700 : 220
 
   await new Promise<void>((resolve) => {
@@ -14,12 +23,25 @@ async function searchApi(query: string) {
 }
 
 export default function App() {
+  const latestRequestId = useRef(0)
+  
   const [input, setInput] = useState('')
   const [committedQuery, setCommittedQuery] = useState('')
   const [results, setResults] = useState<string[]>([])
-  const [networkStatus, setNetworkStatus] = useState<'idle' | 'loading'>('idle')
-  const latestRequestId = useRef(0)
+  const [networkStatus, setNetworkStatus] = useState<NetworkStatus>('idle')
   const [isPending, startTransition] = useTransition()
+
+  const handleInputChange = useCallback((nextInput: string) => {
+    setInput(nextInput)
+  }, [])
+  const keyExtractor = useCallback((item: string) => item, [])
+  const renderItem = useCallback<ListRenderItem<string>>(({ item }) => {
+    return (
+      <View style={styles.row}>
+        <Text>{item}</Text>
+      </View>
+    )
+  }, [])
 
   useEffect(() => {
     const nextQuery = input.trim()
@@ -65,27 +87,25 @@ export default function App() {
       <Text style={styles.title}>Race-safe transitions</Text>
 
       <TextInput
-        onChangeText={setInput}
-        placeholder='Type quickly to simulate overlapping searches'
-        placeholderTextColor='#94a3b8'
+        onChangeText={handleInputChange}
+        placeholder="Type quickly to simulate overlapping searches"
+        placeholderTextColor="#94a3b8"
         style={styles.input}
         value={input}
       />
 
       <Text style={styles.meta}>Network: {networkStatus}</Text>
-      <Text style={styles.meta}>Transition: {isPending ? 'pending' : 'idle'}</Text>
-      <Text style={styles.meta}>Committed query: {committedQuery || 'none'}</Text>
+      <Text style={styles.meta}>
+        Transition: {isPending ? 'pending' : 'idle'}
+      </Text>
+      <Text style={styles.meta}>
+        Committed query: {committedQuery || 'none'}
+      </Text>
 
       <FlatList
         data={results}
-        keyExtractor={(item) => item}
-        renderItem={({ item }) => {
-          return (
-            <View style={styles.row}>
-              <Text>{item}</Text>
-            </View>
-          )
-        }}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
       />
     </View>
   )

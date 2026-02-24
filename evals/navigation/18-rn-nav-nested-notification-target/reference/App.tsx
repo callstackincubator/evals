@@ -1,14 +1,18 @@
-import { NavigationContainer } from '@react-navigation/native'
+import { createStaticNavigation } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
+import {
+  StaticParamList,
+  StaticScreenProps,
+  useNavigation,
+} from '@react-navigation/core'
 
-const Tab = createBottomTabNavigator()
-const NotificationsStack = createNativeStackNavigator()
+function FeedScreen() {
+  const { navigate } = useNavigation()
 
-function FeedScreen({ navigation }: { navigation: any }) {
   const openNotification = () => {
-    navigation.navigate('NotificationsTab', {
+    navigate('NotificationsTab', {
       screen: 'NotificationDetails',
       params: { notificationId: 'n-900' },
     })
@@ -16,23 +20,34 @@ function FeedScreen({ navigation }: { navigation: any }) {
 
   return (
     <View style={styles.container}>
-      <Button title='Open notification n-900' onPress={openNotification} />
+      <Button title="Open notification n-900" onPress={openNotification} />
     </View>
   )
 }
 
-function NotificationsListScreen({ navigation }: { navigation: any }) {
+function NotificationsListScreen() {
+  const { navigate } = useNavigation()
+
   return (
     <View style={styles.container}>
       <Button
-        title='Open n-101'
-        onPress={() => navigation.navigate('NotificationDetails', { notificationId: 'n-101' })}
+        title="Open n-101"
+        onPress={() =>
+          navigate('NotificationsTab', {
+            screen: 'NotificationDetails',
+            params: {
+              notificationId: 'n-101',
+            },
+          })
+        }
       />
     </View>
   )
 }
 
-function NotificationDetailsScreen({ route }: { route: any }) {
+function NotificationDetailsScreen({
+  route,
+}: StaticScreenProps<{ notificationId: string }>) {
   return (
     <View style={styles.container}>
       <Text>Notification: {route.params?.notificationId}</Text>
@@ -40,25 +55,39 @@ function NotificationDetailsScreen({ route }: { route: any }) {
   )
 }
 
-function NotificationsNavigator() {
-  return (
-    <NotificationsStack.Navigator>
-      <NotificationsStack.Screen name='NotificationsList' component={NotificationsListScreen} />
-      <NotificationsStack.Screen name='NotificationDetails' component={NotificationDetailsScreen} />
-    </NotificationsStack.Navigator>
-  )
+export default function App() {
+  return <Navigation />
 }
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name='Feed' component={FeedScreen} />
-        <Tab.Screen name='NotificationsTab' component={NotificationsNavigator} options={{ title: 'Notifications' }} />
-      </Tab.Navigator>
-    </NavigationContainer>
-  )
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
 }
+
+const NotificationsNavigator = createNativeStackNavigator({
+  screens: {
+    NotificationsList: NotificationsListScreen,
+    NotificationDetails: NotificationDetailsScreen,
+  },
+})
+
+const RootStack = createBottomTabNavigator({
+  screenOptions: {
+    headerShown: false,
+  },
+  screens: {
+    FeedTab: {
+      screen: FeedScreen,
+      options: { headerShown: true },
+    },
+    NotificationsTab: NotificationsNavigator,
+  },
+})
+
+const Navigation = createStaticNavigation(RootStack)
 
 const styles = StyleSheet.create({
   container: {

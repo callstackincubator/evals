@@ -1,7 +1,13 @@
-import * as ImagePicker from 'expo-image-picker'
+import {
+  MediaLibraryPermissionResponse,
+  getMediaLibraryPermissionsAsync,
+  requestMediaLibraryPermissionsAsync,
+  launchImageLibraryAsync,
+} from 'expo-image-picker'
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useMemo, useState } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import React, { useState } from 'react'
+import { Linking, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Image } from 'expo-image'
 
 type LibraryState = 'unknown' | 'granted' | 'limited' | 'denied'
 
@@ -11,7 +17,9 @@ type SelectedMedia = {
   uri: string
 }
 
-function getLibraryState(permission: ImagePicker.MediaLibraryPermissionResponse): LibraryState {
+function getLibraryState(
+  permission: MediaLibraryPermissionResponse
+): LibraryState {
   if (!permission.granted) {
     return 'denied'
   }
@@ -28,31 +36,33 @@ export default function App() {
   const [selectedMedia, setSelectedMedia] = useState<SelectedMedia | null>(null)
   const [message, setMessage] = useState('')
 
-  const ensurePermission = useCallback(async () => {
-    const existing = await ImagePicker.getMediaLibraryPermissionsAsync()
-    if (existing.granted || existing.canAskAgain) {
-      const finalStatus = existing.granted
-        ? existing
-        : await ImagePicker.requestMediaLibraryPermissionsAsync()
-      const nextState = getLibraryState(finalStatus)
-      setLibraryState(nextState)
-      return nextState
+  const ensurePermission = async () => {
+    const existing = await getMediaLibraryPermissionsAsync()
+    if (!existing.granted && !existing.canAskAgain) {
+      setLibraryState('denied')
+      return 'denied' as const
     }
 
-    setLibraryState('denied')
-    return 'denied' as const
-  }, [])
+    const finalStatus = existing.granted
+      ? existing
+      : await requestMediaLibraryPermissionsAsync()
+    const nextState = getLibraryState(finalStatus)
+    setLibraryState(nextState)
+    return nextState
+  }
 
-  const pickImage = useCallback(async () => {
+  const pickImage = async () => {
     setMessage('')
     const state = await ensurePermission()
 
     if (state === 'denied') {
-      setMessage('Media access denied. Open settings or retry permission request.')
+      setMessage(
+        'Media access denied. Open settings or retry permission request.'
+      )
       return
     }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
+    const result = await launchImageLibraryAsync({
       mediaTypes: ['images'],
       quality: 0.85,
       selectionLimit: 1,
@@ -63,7 +73,7 @@ export default function App() {
       return
     }
 
-    const asset = result.assets[0]
+    const [asset] = result.assets
     if (!asset) {
       setMessage('No media returned. Please try again.')
       return
@@ -79,13 +89,16 @@ export default function App() {
     })
 
     if (state === 'limited') {
-      setMessage('Limited media access active. Showing deterministic fallback metadata.')
-    } else {
-      setMessage('Media selected with full access.')
+      setMessage(
+        'Limited media access active. Showing deterministic fallback metadata.'
+      )
+      return
     }
-  }, [ensurePermission])
 
-  const banner = useMemo(() => {
+    setMessage('Media selected with full access.')
+  }
+
+  const banner = (() => {
     switch (libraryState) {
       case 'granted':
         return 'Full media library access'
@@ -96,7 +109,7 @@ export default function App() {
       default:
         return 'Permission not checked yet'
     }
-  }, [libraryState])
+  })()
 
   return (
     <View style={styles.container}>
@@ -107,12 +120,19 @@ export default function App() {
         <Text style={styles.buttonText}>Pick image</Text>
       </Pressable>
 
+      {libraryState === 'denied' && (
+        <Pressable onPress={() => Linking.openSettings()} style={styles.button}>
+          <Text style={styles.buttonText}>Open settings</Text>
+        </Pressable>
+      )}
+
       {selectedMedia ? (
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Selected media</Text>
           <Text>ID: {selectedMedia.id}</Text>
           <Text>Label: {selectedMedia.label}</Text>
           <Text numberOfLines={1}>URI: {selectedMedia.uri}</Text>
+          <Image style={styles.image} source={{ uri: selectedMedia.uri }} />
         </View>
       ) : (
         <Text style={styles.fallback}>No image selected yet.</Text>
@@ -171,5 +191,9 @@ const styles = StyleSheet.create({
   message: {
     color: '#1f2937',
     textAlign: 'center',
+  },
+  image: {
+    borderRadius: 8,
+    height: 256,
   },
 })

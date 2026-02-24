@@ -49,7 +49,7 @@ async function loadShardedDocument(): Promise<string> {
 
   let manifest: DocManifest
   try {
-    manifest = JSON.parse(manifestRaw) as DocManifest
+    manifest = JSON.parse(manifestRaw)
   } catch {
     return ''
   }
@@ -97,7 +97,7 @@ export default function App() {
       setStatus(restored ? 'restored' : 'fallback-empty')
     }
 
-    restore()
+    void restore()
 
     return () => {
       cancelled = true

@@ -1,7 +1,12 @@
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native'
-import { launchCamera, launchImageLibrary, type Asset, type ImagePickerResponse } from 'react-native-image-picker'
+import {
+  launchCamera,
+  launchImageLibrary,
+  type Asset,
+  type ImagePickerResponse,
+} from 'react-native-image-picker'
 import {
   check,
   PERMISSIONS,
@@ -11,14 +16,21 @@ import {
   type PermissionStatus,
 } from 'react-native-permissions'
 
-type CaptureState = 'idle' | 'cancelled' | 'error' | 'success' | 'fallback-library'
+type CaptureState =
+  | 'idle'
+  | 'cancelled'
+  | 'error'
+  | 'success'
+  | 'fallback-library'
 
 type PermissionOutcome = 'granted' | 'denied' | 'blocked' | 'unavailable'
 
 const CAMERA_PERMISSION: Permission =
   Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA
 const MICROPHONE_PERMISSION: Permission =
-  Platform.OS === 'ios' ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO
+  Platform.OS === 'ios'
+    ? PERMISSIONS.IOS.MICROPHONE
+    : PERMISSIONS.ANDROID.RECORD_AUDIO
 
 function mapPermissionOutcome(status: PermissionStatus): PermissionOutcome {
   if (status === RESULTS.GRANTED || status === RESULTS.LIMITED) {
@@ -53,42 +65,66 @@ function mapPickerPermissionError(response: ImagePickerResponse): string {
   return 'camera-or-microphone-permission-error'
 }
 
+async function ensurePermission(permission: Permission) {
+  const current = await check(permission)
+  if (current === RESULTS.GRANTED || current === RESULTS.LIMITED) {
+    return 'granted'
+  }
+
+  return mapPermissionOutcome(await request(permission))
+}
+
 export default function App() {
   const [captureState, setCaptureState] = useState<CaptureState>('idle')
   const [asset, setAsset] = useState<Asset | null>(null)
   const [message, setMessage] = useState('')
 
-  const ensurePermission = useCallback(async (permission: Permission): Promise<PermissionOutcome> => {
-    const current = await check(permission)
-    if (current === RESULTS.GRANTED || current === RESULTS.LIMITED) {
-      return 'granted'
-    }
+  const fallbackToLibrary = async () => {
+    const result = await launchImageLibrary({
+      mediaType: 'video',
+      selectionLimit: 1,
+    })
 
-    return mapPermissionOutcome(await request(permission))
-  }, [])
-
-  const fallbackToLibrary = useCallback(async () => {
-    const result = await launchImageLibrary({ mediaType: 'video', selectionLimit: 1 })
-
-    if (result.didCancel || !result.assets?.[0]) {
+    const [asset] = result.assets ?? []
+    if (result.didCancel || !asset) {
       setCaptureState('fallback-library')
       setMessage('Fallback library flow did not return a video.')
       return
     }
 
     setCaptureState('fallback-library')
-    setAsset(result.assets[0])
+    setAsset(asset)
     setMessage('Fallback video selected from library.')
-  }, [])
+  }
 
-  const captureVideo = useCallback(async () => {
+  const handleCameraError = async (response: ImagePickerResponse) => {
+    if (response.errorCode === 'camera_unavailable') {
+      setMessage('Camera hardware unavailable. Switching to library fallback.')
+      await fallbackToLibrary()
+      return
+    }
+
+    setCaptureState('error')
+
+    const mappedError = mapPickerPermissionError(response)
+    if (mappedError !== 'non-permission-error') {
+      setMessage(`Permission issue: ${mappedError}.`)
+      return
+    }
+
+    setMessage(`Capture error: ${response.errorMessage ?? response.errorCode}`)
+  }
+
+  const captureVideo = async () => {
     setAsset(null)
     setMessage('')
 
     const cameraAccess = await ensurePermission(CAMERA_PERMISSION)
     if (cameraAccess === 'unavailable') {
       setCaptureState('error')
-      setMessage('Camera unavailable-hardware outcome detected. Switching to library fallback.')
+      setMessage(
+        'Camera unavailable-hardware outcome detected. Switching to library fallback.'
+      )
       await fallbackToLibrary()
       return
     }
@@ -118,25 +154,11 @@ export default function App() {
     }
 
     if (response.errorCode) {
-      setCaptureState('error')
-
-      if (response.errorCode === 'camera_unavailable') {
-        setMessage('Camera hardware unavailable. Switching to library fallback.')
-        await fallbackToLibrary()
-        return
-      }
-
-      const mappedError = mapPickerPermissionError(response)
-      if (mappedError !== 'non-permission-error') {
-        setMessage(`Permission issue: ${mappedError}.`)
-        return
-      }
-
-      setMessage(`Capture error: ${response.errorMessage ?? response.errorCode}`)
+      await handleCameraError(response)
       return
     }
 
-    const firstAsset = response.assets?.[0]
+    const [firstAsset] = response.assets ?? []
     if (!firstAsset) {
       setCaptureState('error')
       setMessage('No video asset returned.')
@@ -146,7 +168,7 @@ export default function App() {
     setCaptureState('success')
     setAsset(firstAsset)
     setMessage('Video capture succeeded.')
-  }, [ensurePermission, fallbackToLibrary])
+  }
 
   return (
     <View style={styles.container}>

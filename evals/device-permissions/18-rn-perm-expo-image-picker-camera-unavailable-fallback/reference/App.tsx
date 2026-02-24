@@ -1,23 +1,23 @@
 import * as ImagePicker from 'expo-image-picker'
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-type PickerState = 'idle' | 'camera-cancelled' | 'camera-error' | 'camera-success' | 'fallback-gallery'
+type PickerState = 'idle' | 'camera-cancelled' | 'camera-error' | 'camera-success' | 'fallback-gallery' | 'gallery-canceled'
 
 export default function App() {
   const [pickerState, setPickerState] = useState<PickerState>('idle')
   const [message, setMessage] = useState('')
   const [assetUri, setAssetUri] = useState('')
 
-  const fallbackToGallery = useCallback(async () => {
+  const fallbackToGallery = async () => {
     const libraryResult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       selectionLimit: 1,
     })
 
-    if (libraryResult.canceled || libraryResult.assets.length === 0) {
-      setPickerState('fallback-gallery')
+    if (libraryResult.canceled || !libraryResult.assets?.length) {
+      setPickerState('gallery-canceled')
       setMessage('Fallback to gallery was canceled or returned no assets.')
       return
     }
@@ -25,9 +25,9 @@ export default function App() {
     setPickerState('fallback-gallery')
     setAssetUri(libraryResult.assets[0].uri)
     setMessage('Camera unavailable. Fallback gallery selection succeeded.')
-  }, [])
+  }
 
-  const launchCameraWithGuard = useCallback(async () => {
+  const launchCameraWithGuard = async () => {
     setMessage('')
     setAssetUri('')
 
@@ -52,7 +52,7 @@ export default function App() {
         return
       }
 
-      if (result.assets.length === 0) {
+      if (!result.assets?.length) {
         setPickerState('camera-error')
         setMessage('No image returned from camera.')
         return
@@ -66,7 +66,7 @@ export default function App() {
       setMessage('Camera unavailable in this environment. Falling back to gallery.')
       await fallbackToGallery()
     }
-  }, [fallbackToGallery])
+  }
 
   return (
     <View style={styles.container}>

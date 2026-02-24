@@ -1,11 +1,12 @@
 import * as Notifications from 'expo-notifications'
-import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 type NotificationState = 'not-determined' | 'denied' | 'provisional' | 'granted'
 
-function mapPermissionState(permission: Notifications.NotificationPermissionsStatus): NotificationState {
+function mapPermissionState(
+  permission: Notifications.NotificationPermissionsStatus
+): NotificationState {
   const iosStatus = permission.ios?.status
 
   if (iosStatus === Notifications.IosAuthorizationStatus.PROVISIONAL) {
@@ -23,17 +24,43 @@ function mapPermissionState(permission: Notifications.NotificationPermissionsSta
   return 'not-determined'
 }
 
+function getStatusText(state: NotificationState): string {
+  switch (state) {
+    case 'granted':
+      return 'Full authorization'
+    case 'provisional':
+      return 'Provisional authorization (degraded but usable)'
+    case 'denied':
+      return 'Denied'
+    default:
+      return 'Not determined'
+  }
+}
+
+function getCardBody(state: NotificationState): string {
+  switch (state) {
+    case 'granted':
+      return 'All notification features enabled.'
+    case 'provisional':
+      return 'Only provisional-safe notification UX is enabled.'
+    default:
+      return 'Notification-dependent actions are disabled.'
+  }
+}
+
 export default function App() {
   const [state, setState] = useState<NotificationState>('not-determined')
-  const [message, setMessage] = useState('Request permissions to determine iOS auth level.')
+  const [message, setMessage] = useState(
+    'Request provisional access to get started without a system prompt.'
+  )
 
-  const refreshStatus = useCallback(async () => {
+  const refreshStatus = async () => {
     const permission = await Notifications.getPermissionsAsync()
     setState(mapPermissionState(permission))
-  }, [])
+  }
 
-  const requestPermission = useCallback(async () => {
-    const requested = await Notifications.requestPermissionsAsync({
+  const requestProvisionalNotificationsPermissions = async () => {
+    const permission = await Notifications.requestPermissionsAsync({
       ios: {
         allowAlert: true,
         allowBadge: true,
@@ -42,48 +69,68 @@ export default function App() {
       },
     })
 
-    const nextState = mapPermissionState(requested)
+    const nextState = mapPermissionState(permission)
     setState(nextState)
 
-    if (nextState === 'provisional') {
-      setMessage('Provisional notifications are usable with degraded delivery behavior.')
-      return
+    switch (nextState) {
+      case 'provisional':
+        setMessage(
+          'Notifications are delivered quietly for now. Upgrade for banners and sounds.'
+        )
+        break
+      case 'granted':
+        setMessage('Full notification authorization granted.')
+        break
+      case 'denied':
+        setMessage('Notifications denied. Open Settings to re-enable.')
+        break
+      default:
+        setMessage('Status still not determined.')
     }
+  }
+
+  const requestFullNotificationsPermissions = async () => {
+    const permission = await Notifications.requestPermissionsAsync({
+      ios: {
+        allowAlert: true,
+        allowBadge: true,
+        allowSound: true,
+      },
+    })
+
+    const nextState = mapPermissionState(permission)
+    setState(nextState)
 
     if (nextState === 'granted') {
       setMessage('Full notification authorization granted.')
-      return
+    } else {
+      setMessage('Upgrade declined. Provisional delivery remains active.')
     }
 
-    if (nextState === 'denied') {
-      setMessage('Notifications denied. User must recover from settings.')
-      return
-    }
-
-    setMessage('Permission still not determined. User can request again.')
-  }, [])
-
-  const statusText = useMemo(() => {
-    switch (state) {
-      case 'granted':
-        return 'Full authorization'
-      case 'provisional':
-        return 'Provisional authorization (degraded but usable)'
-      case 'denied':
-        return 'Denied'
-      default:
-        return 'Not determined'
-    }
-  }, [state])
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>iOS Notification Permission Gate</Text>
-      <Text style={styles.status}>{statusText}</Text>
+      <Text style={styles.status}>{getStatusText(state)}</Text>
 
-      <Pressable onPress={requestPermission} style={styles.button}>
-        <Text style={styles.buttonText}>Request permission</Text>
-      </Pressable>
+      {state === 'not-determined' && (
+        <Pressable
+          onPress={requestProvisionalNotificationsPermissions}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Enable notifications</Text>
+        </Pressable>
+      )}
+
+      {state === 'provisional' && (
+        <Pressable
+          onPress={requestFullNotificationsPermissions}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Upgrade to full notifications</Text>
+        </Pressable>
+      )}
 
       <Pressable onPress={refreshStatus} style={styles.secondaryButton}>
         <Text style={styles.secondaryButtonText}>Refresh status</Text>
@@ -91,17 +138,10 @@ export default function App() {
 
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Feature mode</Text>
-        <Text style={styles.cardBody}>
-          {state === 'granted'
-            ? 'All notification features enabled.'
-            : state === 'provisional'
-              ? 'Only provisional-safe notification UX is enabled.'
-              : 'Notification-dependent actions are disabled.'}
-        </Text>
+        <Text style={styles.cardBody}>{getCardBody(state)}</Text>
       </View>
 
       <Text style={styles.message}>{message}</Text>
-      <StatusBar style="auto" />
     </View>
   )
 }

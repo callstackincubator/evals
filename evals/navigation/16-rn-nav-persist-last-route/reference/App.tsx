@@ -1,69 +1,94 @@
 import { useEffect, useState } from 'react'
 
-import { NavigationContainer } from '@react-navigation/native'
+import {
+  createStaticNavigation,
+  NavigationState,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Button, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, Button, StyleSheet, View } from 'react-native'
+import { StaticParamList, useNavigation } from '@react-navigation/core'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
-const Stack = createNativeStackNavigator()
 const STATE_KEY = 'NAV_STATE_V1'
 
-const memoryStorage: Record<string, string | undefined> = {}
-
-function HomeScreen({ navigation }: { navigation: any }) {
+function HomeScreen() {
+  const { navigate } = useNavigation()
   return (
     <View style={styles.container}>
-      <Button title='Go to details' onPress={() => navigation.navigate('Details')} />
+      <Button title="Go to details" onPress={() => navigate('Details')} />
     </View>
   )
 }
 
-function DetailsScreen({ navigation }: { navigation: any }) {
+function DetailsScreen() {
+  const { goBack } = useNavigation()
   return (
     <View style={styles.container}>
-      <Button title='Back home' onPress={() => navigation.goBack()} />
+      <Button title="Back home" onPress={() => goBack()} />
     </View>
   )
 }
 
 export default function App() {
   const [isReady, setIsReady] = useState(false)
-  const [initialState, setInitialState] = useState<any>()
+  const [initialState, setInitialState] = useState<
+    Readonly<NavigationState> | undefined
+  >()
 
   useEffect(() => {
     const restoreState = async () => {
-      const raw = memoryStorage[STATE_KEY]
-      if (raw) {
-        try {
-          setInitialState(JSON.parse(raw))
-        } catch {
-          setInitialState(undefined)
+      try {
+        const persistedNav = await AsyncStorage.getItem(STATE_KEY)
+        if (!persistedNav) {
+          return
         }
+        setInitialState(JSON.parse(persistedNav))
+      } catch {
+        setInitialState(undefined)
+      } finally {
+        setIsReady(true)
       }
-      setIsReady(true)
     }
 
-    restoreState()
+    void restoreState()
   }, [])
 
+  const handleNavStateChange = (
+    state: Readonly<NavigationState> | undefined
+  ) => {
+    if (!state) {
+      return
+    }
+    void AsyncStorage.setItem(STATE_KEY, JSON.stringify(state))
+  }
+
   if (!isReady) {
-    return null
+    return <ActivityIndicator />
   }
 
   return (
-    <NavigationContainer
+    <Navigation
       initialState={initialState}
-      onStateChange={(state) => {
-        if (state) {
-          memoryStorage[STATE_KEY] = JSON.stringify(state)
-        }
-      }}
-    >
-      <Stack.Navigator>
-        <Stack.Screen name='Home' component={HomeScreen} />
-        <Stack.Screen name='Details' component={DetailsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+      onStateChange={handleNavStateChange}
+    />
   )
+}
+
+const RootStack = createNativeStackNavigator({
+  screens: {
+    Home: HomeScreen,
+    Details: DetailsScreen,
+  },
+})
+
+const Navigation = createStaticNavigation(RootStack)
+
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
 }
 
 const styles = StyleSheet.create({

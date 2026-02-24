@@ -1,41 +1,42 @@
-import { useCameraPermissions, useMicrophonePermissions } from 'expo-camera'
+import {
+  PermissionResponse,
+  useCameraPermissions,
+  useMicrophonePermissions,
+} from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 
 type PermissionState = 'granted' | 'denied' | 'blocked' | 'unknown'
 
-function toPermissionState(granted: boolean, canAskAgain: boolean | undefined): PermissionState {
-  if (granted) {
+function toPermissionState(
+  response: PermissionResponse | null
+): PermissionState {
+  if (!response) {
+    return 'unknown'
+  }
+
+  if (response.granted) {
     return 'granted'
   }
 
-  if (canAskAgain === false) {
+  if (!response.canAskAgain) {
     return 'blocked'
   }
 
-  if (canAskAgain === true) {
-    return 'denied'
-  }
-
-  return 'unknown'
+  return 'denied'
 }
 
 export default function App() {
   const [cameraPermission, requestCameraPermission] = useCameraPermissions()
-  const [microphonePermission, requestMicrophonePermission] = useMicrophonePermissions()
+  const [microphonePermission, requestMicrophonePermission] =
+    useMicrophonePermissions()
   const [message, setMessage] = useState('')
 
-  const cameraState = toPermissionState(
-    cameraPermission?.granted ?? false,
-    cameraPermission?.canAskAgain
-  )
-  const microphoneState = toPermissionState(
-    microphonePermission?.granted ?? false,
-    microphonePermission?.canAskAgain
-  )
+  const cameraState = toPermissionState(cameraPermission)
+  const microphoneState = toPermissionState(microphonePermission)
 
-  const requestBoth = useCallback(async () => {
+  const requestBoth = async () => {
     const [camera, microphone] = await Promise.all([
       requestCameraPermission(),
       requestMicrophonePermission(),
@@ -47,16 +48,18 @@ export default function App() {
     }
 
     if (camera.granted || microphone.granted) {
-      setMessage('Partial grant detected. Recording disabled, degraded guidance shown.')
+      setMessage(
+        'Partial grant detected. Recording disabled, degraded guidance shown.'
+      )
       return
     }
 
     setMessage('Permissions denied or blocked. Retry request or open settings.')
-  }, [requestCameraPermission, requestMicrophonePermission])
+  }
 
   const canRecord = cameraState === 'granted' && microphoneState === 'granted'
 
-  const degradedReason = useMemo(() => {
+  const degradedReason = (() => {
     if (canRecord) {
       return 'Ready to record video'
     }
@@ -70,7 +73,7 @@ export default function App() {
     }
 
     return 'Both camera and microphone are required for recording.'
-  }, [canRecord, cameraState, microphoneState])
+  })()
 
   return (
     <View style={styles.container}>
@@ -90,7 +93,10 @@ export default function App() {
         <Text style={styles.buttonText}>Start recording</Text>
       </Pressable>
 
-      <Pressable onPress={() => Linking.openSettings()} style={styles.secondaryButton}>
+      <Pressable
+        onPress={() => Linking.openSettings()}
+        style={styles.secondaryButton}
+      >
         <Text style={styles.secondaryButtonText}>Open settings</Text>
       </Pressable>
 

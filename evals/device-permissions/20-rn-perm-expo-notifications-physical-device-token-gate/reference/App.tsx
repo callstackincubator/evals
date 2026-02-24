@@ -6,6 +6,16 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 type RegistrationState = 'idle' | 'denied' | 'simulator' | 'registered' | 'token-error'
 
+class TokenError extends Error {
+  public code: string
+
+  constructor(message: string, code = 'TOKEN_ERROR') {
+    super(message)
+    this.name = 'TokenError'
+    this.code = code
+  }
+}
+
 export default function App() {
   const [registrationState, setRegistrationState] = useState<RegistrationState>('idle')
   const [token, setToken] = useState('')
@@ -39,7 +49,7 @@ export default function App() {
       const pushToken = await Notifications.getExpoPushTokenAsync()
       const tokenValue = pushToken?.data?.trim()
       if (!tokenValue) {
-        throw new Error('Token retrieval returned an empty token. Retry registration.')
+        throw new TokenError('Token retrieval returned an empty token. Retry registration.')
       }
 
       setToken(tokenValue)
@@ -47,7 +57,7 @@ export default function App() {
       setMessage('Registration succeeded on physical device with granted permission.')
     } catch (error) {
       setRegistrationState('token-error')
-      if (error instanceof Error) {
+      if (error instanceof TokenError) {
         setMessage(error.message)
       } else {
         setMessage('Permission/device checks passed, but token retrieval failed. Retry registration.')

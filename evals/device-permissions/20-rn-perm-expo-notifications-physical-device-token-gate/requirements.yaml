@@ -12,3 +12,5 @@ requirements:
     description: Must provide explicit degraded UX path for non-physical-device environments.
   - id: registration-path-guarded-by-grant-and-device
     description: Must require both granted permission and physical-device capability before registration success state.
+  - id: token-error-message-sanitization
+    description: Must surface explicit, domain-scoped token registration errors while mapping unknown failures to a generic fallback message (no raw unexpected error leakage to users).

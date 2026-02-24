@@ -1,61 +1,106 @@
 import { useCallback, useRef } from 'react'
 
-import { NavigationContainer, useFocusEffect } from '@react-navigation/native'
+import {
+  createStaticNavigation,
+  useFocusEffect,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Alert, BackHandler, Button, StyleSheet, Text, View } from 'react-native'
+import {
+  BackHandler,
+  Button,
+  Platform,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  View,
+} from 'react-native'
+import { StaticParamList, useNavigation } from '@react-navigation/core'
 
-const Stack = createNativeStackNavigator()
 const EXIT_WINDOW_MS = 2000
+const LONG_TOAST_ANDROID_MS = 3500
 
-function HomeScreen({ navigation }: { navigation: any }) {
+type DoubleBackExitProps = {
+  exitWindowMs?: number
+  onFirstTry?: () => void
+}
+
+function useDoubleBackToExit({
+  exitWindowMs = EXIT_WINDOW_MS,
+  onFirstTry,
+}: DoubleBackExitProps) {
   const lastBackPressRef = useRef(0)
-
   useFocusEffect(
     useCallback(() => {
-      const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
-        const now = Date.now()
+      if (Platform.OS !== 'android') {
+        return
+      }
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        () => {
+          const now = Date.now()
 
-        if (now - lastBackPressRef.current < EXIT_WINDOW_MS) {
-          BackHandler.exitApp()
+          if (now - lastBackPressRef.current < exitWindowMs) {
+            BackHandler.exitApp()
+            return true
+          }
+
+          lastBackPressRef.current = now
+          onFirstTry?.()
           return true
         }
-
-        lastBackPressRef.current = now
-        Alert.alert('Press back again to exit')
-        return true
-      })
+      )
 
       return () => subscription.remove()
-    }, []),
+    }, [exitWindowMs, onFirstTry])
   )
+}
+
+function HomeScreen() {
+  const { navigate } = useNavigation()
+  useDoubleBackToExit({
+    exitWindowMs: LONG_TOAST_ANDROID_MS,
+    onFirstTry: () =>
+      ToastAndroid.show('Press back again to exit', LONG_TOAST_ANDROID_MS),
+  })
 
   return (
     <View style={styles.container}>
       <Text>Root screen</Text>
-      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
+      <Button title="Open details" onPress={() => navigate('Details')} />
     </View>
   )
 }
 
-function DetailsScreen({ navigation }: { navigation: any }) {
+function DetailsScreen() {
+  const { goBack } = useNavigation()
   return (
     <View style={styles.container}>
       <Text>Details</Text>
-      <Button title='Back to root' onPress={() => navigation.goBack()} />
+      <Button title="Back to root" onPress={() => goBack()} />
     </View>
   )
 }
 
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='Home' component={HomeScreen} />
-        <Stack.Screen name='Details' component={DetailsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
+
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const RootStack = createNativeStackNavigator({
+  screens: {
+    Home: HomeScreen,
+    Details: DetailsScreen,
+  },
+})
+
+const Navigation = createStaticNavigation(RootStack)
 
 const styles = StyleSheet.create({
   container: {

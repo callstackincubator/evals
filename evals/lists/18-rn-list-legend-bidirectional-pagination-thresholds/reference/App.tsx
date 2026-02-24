@@ -7,84 +7,140 @@ type Row = {
   value: number
 }
 
-const PAGE_SIZE = 12
-const START_THRESHOLD = 0.15
-const END_THRESHOLD = 0.35
+type LoadingPhase = 'idle' | 'loading-start' | 'loading-end'
+type LoadingDirection = 'start' | 'end'
 
-function buildRows(start: number, count: number): Row[] {
+const LIST_CONFIG = {
+  estimatedItemSize: 30,
+  loadDelayMs: 420,
+  pagination: {
+    initialStartIndex: 0,
+    minStartIndex: 0,
+    pageSize: 24,
+    thresholds: {
+      endReached: 0.15,
+      startReached: 0.15,
+    },
+  },
+}
+
+const STATUS_TEXT: Record<LoadingPhase, string> = {
+  'idle': 'Idle',
+  'loading-start': 'Loading previous page...',
+  'loading-end': 'Loading next page...',
+}
+
+function buildRows(startIndex: number, count: number): Row[] {
   return Array.from({ length: count }, (_, index) => {
-    const value = start + index
+    const rowIndex = startIndex + index
     return {
-      id: `row-${value}`,
-      value,
+      id: `row-${rowIndex}`,
+      value: rowIndex + 1,
     }
   })
 }
 
-export default function App() {
-  const [rows, setRows] = useState<Row[]>(() => buildRows(1000, PAGE_SIZE))
-  const [loadingStart, setLoadingStart] = useState(false)
-  const [loadingEnd, setLoadingEnd] = useState(false)
-  const startCursorRef = useRef(1000)
-  const endCursorRef = useRef(1000 + PAGE_SIZE)
-  const loadingAnyDirectionRef = useRef(false)
+const INITIAL_ROWS = buildRows(
+  LIST_CONFIG.pagination.initialStartIndex,
+  LIST_CONFIG.pagination.pageSize
+)
 
-  const loadStart = () => {
-    if (loadingAnyDirectionRef.current || startCursorRef.current <= 1) {
+export default function App() {
+  const pagination = LIST_CONFIG.pagination
+  const [rows, setRows] = useState<Row[]>(INITIAL_ROWS)
+  const [loadingPhase, setLoadingPhase] = useState<LoadingPhase>('idle')
+  const loadingPhaseRef = useRef<LoadingPhase>('idle')
+  const startCursorRef = useRef(pagination.initialStartIndex)
+  const endCursorRef = useRef(
+    pagination.initialStartIndex + pagination.pageSize
+  )
+
+  const setPhase = (phase: LoadingPhase) => {
+    loadingPhaseRef.current = phase
+    setLoadingPhase(phase)
+  }
+
+  const runPagedLoad = (
+    direction: LoadingDirection,
+    fetchPageData: () => {
+      nextCursor: number
+      rows: Row[]
+    },
+    executePageUpdate: (data: { nextCursor: number; rows: Row[] }) => void
+  ) => {
+    if (loadingPhaseRef.current !== 'idle') {
       return
     }
 
-    loadingAnyDirectionRef.current = true
-    setLoadingStart(true)
+    setPhase(direction === 'start' ? 'loading-start' : 'loading-end')
 
     setTimeout(() => {
-      const nextStart = Math.max(1, startCursorRef.current - PAGE_SIZE)
-      const count = startCursorRef.current - nextStart
-      const older = buildRows(nextStart, count)
+      const data = fetchPageData()
+      executePageUpdate(data)
+      setPhase('idle')
+    }, LIST_CONFIG.loadDelayMs)
+  }
 
-      setRows((prev) => [...older, ...prev])
-      startCursorRef.current = nextStart
-      setLoadingStart(false)
-      loadingAnyDirectionRef.current = false
-    }, 420)
+  const loadStart = () => {
+    if (startCursorRef.current <= pagination.minStartIndex) {
+      return
+    }
+
+    runPagedLoad(
+      'start',
+      () => {
+        const nextStart = Math.max(
+          pagination.minStartIndex,
+          startCursorRef.current - pagination.pageSize
+        )
+        const count = startCursorRef.current - nextStart
+        const older = buildRows(nextStart, count)
+
+        return {
+          nextCursor: nextStart,
+          rows: older,
+        }
+      },
+      (data) => {
+        setRows((prev) => [...data.rows, ...prev])
+        startCursorRef.current = data.nextCursor
+      }
+    )
   }
 
   const loadEnd = () => {
-    if (loadingAnyDirectionRef.current) {
-      return
-    }
+    runPagedLoad(
+      'end',
+      () => {
+        const newer = buildRows(endCursorRef.current, pagination.pageSize)
+        const nextEndCursor = endCursorRef.current + pagination.pageSize
 
-    loadingAnyDirectionRef.current = true
-    setLoadingEnd(true)
-
-    setTimeout(() => {
-      const newer = buildRows(endCursorRef.current, PAGE_SIZE)
-      setRows((prev) => [...prev, ...newer])
-      const nextEndCursor = endCursorRef.current + PAGE_SIZE
-      endCursorRef.current = nextEndCursor
-      setLoadingEnd(false)
-      loadingAnyDirectionRef.current = false
-    }, 420)
+        return {
+          nextCursor: nextEndCursor,
+          rows: newer,
+        }
+      },
+      (data) => {
+        setRows((prev) => [...prev, ...data.rows])
+        endCursorRef.current = data.nextCursor
+      }
+    )
   }
+
+  const statusText = STATUS_TEXT[loadingPhase]
 
   return (
     <View style={styles.container}>
-      <Text style={styles.status}>
-        {loadingStart
-          ? 'Loading previous page...'
-          : loadingEnd
-            ? 'Loading next page...'
-            : 'Idle'}
-      </Text>
+      <Text style={styles.status}>{statusText}</Text>
 
       <LegendList
         data={rows}
-        getEstimatedItemSize={() => 54}
+        getEstimatedItemSize={() => LIST_CONFIG.estimatedItemSize}
         keyExtractor={(item) => item.id}
         onEndReached={loadEnd}
-        onEndReachedThreshold={END_THRESHOLD}
+        onEndReachedThreshold={pagination.thresholds.endReached}
         onStartReached={loadStart}
-        onStartReachedThreshold={START_THRESHOLD}
+        onStartReachedThreshold={pagination.thresholds.startReached}
         renderItem={({ item }) => (
           <View style={styles.row}>
             <Text style={styles.rowText}>Row {item.value}</Text>

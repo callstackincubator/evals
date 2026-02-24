@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import {
   check,
@@ -50,18 +50,21 @@ export default function App() {
   const [statuses, setStatuses] = useState<CapabilityStatusMap>(INITIAL_STATUSES)
   const [message, setMessage] = useState('')
 
-  const refreshCapability = useCallback(async (capability: Capability) => {
+  const refreshCapability = async (capability: Capability) => {
     if (capability === 'notifications') {
       const result = await checkNotifications()
-      setStatuses((prev) => ({ ...prev, notifications: toUiStatus(result.status) }))
-      return
+      const uiStatus = toUiStatus(result.status)
+      setStatuses((prev) => ({ ...prev, notifications: uiStatus }))
+      return uiStatus
     }
 
     const raw = await check(APP_PERMISSIONS[capability])
-    setStatuses((prev) => ({ ...prev, [capability]: toUiStatus(raw) }))
-  }, [])
+    const uiStatus = toUiStatus(raw)
+    setStatuses((prev) => ({ ...prev, [capability]: uiStatus }))
+    return uiStatus
+  }
 
-  const requestCapability = useCallback(async (capability: Capability) => {
+  const requestCapability = async (capability: Capability) => {
     if (capability === 'notifications') {
       const result = await requestNotifications(['alert', 'badge', 'sound'])
       setStatuses((prev) => ({ ...prev, notifications: toUiStatus(result.status) }))
@@ -70,23 +73,23 @@ export default function App() {
 
     const raw = await request(APP_PERMISSIONS[capability])
     setStatuses((prev) => ({ ...prev, [capability]: toUiStatus(raw) }))
-  }, [])
+  }
 
-  const runSequencedSetup = useCallback(async () => {
+  const runSequencedSetup = async () => {
     setMessage('')
 
     for (const capability of SEQUENCE) {
-      await refreshCapability(capability)
+      const current = await refreshCapability(capability)
+
+      if (current !== 'denied') continue
+
       await requestCapability(capability)
     }
 
     setMessage('Finished sequenced requests. Android blocked outcomes are detected via request path.')
-  }, [refreshCapability, requestCapability])
+  }
 
-  const allGranted = useMemo(
-    () => SEQUENCE.every((capability) => statuses[capability] === 'granted'),
-    [statuses]
-  )
+  const allGranted = SEQUENCE.every((capability) => statuses[capability] === 'granted')
 
   return (
     <View style={styles.container}>

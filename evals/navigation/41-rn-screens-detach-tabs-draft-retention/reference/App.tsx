@@ -1,40 +1,89 @@
-import { useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 
-import { NavigationContainer } from '@react-navigation/native'
+import { createStaticNavigation } from '@react-navigation/native'
+import type { StaticParamList } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { Text, TextInput, View } from 'react-native'
+import { StyleSheet, Text, TextInput, View } from 'react-native'
 
-const Tab = createBottomTabNavigator()
+const DraftContext = createContext<{
+  draft: string
+  onDraftChange: (value: string) => void
+}>({ draft: '', onDraftChange: () => {} })
 
 function InboxScreen() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={styles.centered}>
       <Text>Inbox</Text>
     </View>
   )
 }
 
-function ComposeScreen({ draft, onDraftChange }: { draft: string; onDraftChange: (value: string) => void }) {
+function ComposeScreen() {
+  const { draft, onDraftChange } = useContext(DraftContext)
+
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10, padding: 24 }}>
+    <View style={styles.compose}>
       <Text>Compose</Text>
-      <TextInput value={draft} onChangeText={onDraftChange} placeholder='Draft message' style={{ width: '100%', borderWidth: 1, padding: 10 }} />
+      <TextInput
+        value={draft}
+        onChangeText={onDraftChange}
+        placeholder="Draft message"
+        style={styles.input}
+      />
       <Text>Draft length: {draft.length}</Text>
     </View>
   )
 }
 
+const HomeTabs = createBottomTabNavigator({
+  screenOptions: { detachInactiveScreens: true },
+  screens: {
+    Inbox: InboxScreen,
+    Compose: ComposeScreen,
+  },
+})
+
+type HomeTabsParamList = StaticParamList<typeof HomeTabs>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends HomeTabsParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(HomeTabs)
+
 export default function App() {
   const [composeDraft, setComposeDraft] = useState('')
 
+  const draftContext = {
+    draft: composeDraft,
+    onDraftChange: setComposeDraft,
+  }
+
   return (
-    <NavigationContainer>
-      <Tab.Navigator screenOptions={{ detachInactiveScreens: true }}>
-        <Tab.Screen name='Inbox' component={InboxScreen} />
-        <Tab.Screen name='Compose'>
-          {() => <ComposeScreen draft={composeDraft} onDraftChange={setComposeDraft} />}
-        </Tab.Screen>
-      </Tab.Navigator>
-    </NavigationContainer>
+    <DraftContext.Provider value={draftContext}>
+      <Navigation />
+    </DraftContext.Provider>
   )
 }
+
+const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  compose: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    padding: 24,
+  },
+  input: {
+    width: '100%',
+    borderWidth: 1,
+    padding: 10,
+  },
+})

@@ -1,47 +1,59 @@
 import * as Location from 'expo-location'
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useState } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { AppState, Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 
-type PermissionState = 'granted' | 'denied' | 'blocked'
+type PermissionState = 'granted' | 'denied' | 'blocked' | 'unknown'
 type ServicesState = 'enabled' | 'disabled' | 'unknown'
 
+function toPermissionState(p: Location.PermissionResponse): PermissionState {
+  if (p.status === Location.PermissionStatus.UNDETERMINED) return 'unknown'
+  return p.granted ? 'granted': p.canAskAgain ? 'denied' : 'blocked'
+}
+
 export default function App() {
-  const [permissionState, setPermissionState] = useState<PermissionState>('denied')
+  const [permissionState, setPermissionState] = useState<PermissionState>('unknown')
   const [servicesState, setServicesState] = useState<ServicesState>('unknown')
   const [coords, setCoords] = useState('')
   const [message, setMessage] = useState('')
 
-  const refreshStatus = useCallback(async () => {
-    const [permission, servicesEnabled] = await Promise.all([
-      Location.getForegroundPermissionsAsync(),
-      Location.hasServicesEnabledAsync(),
-    ])
+  const checkServiceEnabledAsync = async () => {
+    const servicesEnabled = await Location.hasServicesEnabledAsync()
+    const serviceStateValue = servicesEnabled ? 'enabled' : 'disabled'
+    setServicesState(serviceStateValue)
+    return serviceStateValue
+  }
 
-    setPermissionState(permission.granted ? 'granted' : permission.canAskAgain ? 'denied' : 'blocked')
-    setServicesState(servicesEnabled ? 'enabled' : 'disabled')
-  }, [])
+  const checkLocationPermission = async () => {
+    const permission = await Location.getForegroundPermissionsAsync()
+    const permissionStateValue = toPermissionState(permission)
+    setPermissionState(permissionStateValue)
+    return permissionStateValue
+  }
 
-  const readLocation = useCallback(async () => {
+  const refreshStatus = async () => await Promise.all([
+    checkLocationPermission(),
+    checkServiceEnabledAsync(),
+  ])
+
+  const readLocation = async () => {
     setCoords('')
     setMessage('')
 
-    const servicesEnabled = await Location.hasServicesEnabledAsync()
-    setServicesState(servicesEnabled ? 'enabled' : 'disabled')
-    if (!servicesEnabled) {
+    const [currentPermissionState, currentServiceState] = await refreshStatus()
+
+    if (currentServiceState === 'disabled') {
       setMessage('Location services are disabled. Enable services to continue.')
       return
     }
 
-    const currentPermission = await Location.getForegroundPermissionsAsync()
-    const permission = currentPermission.granted
-      ? currentPermission
-      : await Location.requestForegroundPermissionsAsync()
-
-    setPermissionState(permission.granted ? 'granted' : permission.canAskAgain ? 'denied' : 'blocked')
-    if (!permission.granted) {
-      setMessage('Location permission not granted. Retry permission request.')
-      return
+    if(currentPermissionState !== 'granted') {
+      const permission = await Location.requestForegroundPermissionsAsync()
+      setPermissionState(toPermissionState(permission))
+      if (!permission.granted) {
+        setMessage('Location permission not granted. Retry permission request.')
+        return
+      }
     }
 
     try {
@@ -50,7 +62,29 @@ export default function App() {
     } catch {
       setMessage('Location read failed. Please retry.')
     }
+  }
+
+  const openSettings = () => {
+    if(Platform.OS === 'android' && 'sendIntent' in Linking) {
+      Linking.sendIntent('android.settings.LOCATION_SOURCE_SETTINGS')
+    } else {
+      Linking.openSettings()
+    }
+  }
+
+  useEffect(() => {
+    refreshStatus()
+
+    const subscription = AppState.addEventListener('change', (status) => {
+      if(status === 'active') refreshStatus()
+    })
+
+    return () => {
+      subscription.remove()
+    }
   }, [])
+
+  const readDisabled = servicesState === 'disabled' || permissionState === 'blocked'
 
   return (
     <View style={styles.container}>
@@ -62,9 +96,19 @@ export default function App() {
         <Text style={styles.secondaryButtonText}>Refresh permission + services</Text>
       </Pressable>
 
-      <Pressable onPress={readLocation} style={styles.button}>
+      <Pressable
+        disabled={readDisabled}
+        onPress={readLocation}
+        style={[styles.button, readDisabled && styles.disabledButton]}
+      >
         <Text style={styles.buttonText}>Read location</Text>
       </Pressable>
+
+      {servicesState === 'disabled' && (
+        <Pressable onPress={openSettings} style={styles.secondaryButton}>
+          <Text style={styles.secondaryButtonText}>Open Location Settings</Text>
+        </Pressable>
+      )}
 
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Recovery guidance</Text>
@@ -118,6 +162,9 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: '#111827',
     fontWeight: '600',
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
   card: {
     backgroundColor: '#f9fafb',

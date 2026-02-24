@@ -1,21 +1,23 @@
 import { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import * as SQLite from 'expo-sqlite'
+import { SQLiteDatabase, openDatabaseAsync } from 'expo-sqlite'
 
-let initializedDbPromise: Promise<SQLite.SQLiteDatabase> | null = null
+let initializedDbPromise: Promise<SQLiteDatabase> | null = null
 
 async function initializeDatabase() {
-  const db = await SQLite.openDatabaseAsync('wal-foreign-keys.db')
+  const db = await openDatabaseAsync('wal-foreign-keys')
 
   await db.execAsync('PRAGMA journal_mode = WAL')
   await db.execAsync('PRAGMA foreign_keys = ON')
 
-  await db.execAsync(
-    'CREATE TABLE IF NOT EXISTS projects (id TEXT PRIMARY KEY NOT NULL, name TEXT NOT NULL)',
-  )
-  await db.execAsync(
-    'CREATE TABLE IF NOT EXISTS tasks (id TEXT PRIMARY KEY NOT NULL, project_id TEXT NOT NULL REFERENCES projects(id), title TEXT NOT NULL)',
-  )
+  await db.withTransactionAsync(async () => {
+    await db.execAsync(
+      'CREATE TABLE IF NOT EXISTS projects (id TEXT PRIMARY KEY NOT NULL, name TEXT NOT NULL)'
+    )
+    await db.execAsync(
+      'CREATE TABLE IF NOT EXISTS tasks (id TEXT PRIMARY KEY NOT NULL, project_id TEXT NOT NULL REFERENCES projects(id), title TEXT NOT NULL)'
+    )
+  })
 
   return db
 }
@@ -45,8 +47,27 @@ export default function App() {
       await refresh()
     }
 
-    boot()
+    void boot()
   }, [])
+
+  const insertRelationalRow = async () => {
+    const db = await getInitializedDb()
+    const projectId = `p_${Date.now()}`
+
+    await db.runAsync(
+      'INSERT INTO projects (id, name) VALUES (?, ?)',
+      projectId,
+      'Storage'
+    )
+    await db.runAsync(
+      'INSERT INTO tasks (id, project_id, title) VALUES (?, ?, ?)',
+      `t_${Date.now()}`,
+      projectId,
+      'Write docs'
+    )
+
+    await refresh()
+  }
 
   return (
     <View style={styles.container}>
@@ -55,21 +76,9 @@ export default function App() {
       <Text style={styles.row}>Tasks: {taskCount}</Text>
 
       <Pressable
+        disabled={status !== 'ready'}
         style={styles.button}
-        onPress={async () => {
-          const db = await getInitializedDb()
-          const projectId = `p_${Date.now()}`
-
-          await db.runAsync('INSERT INTO projects (id, name) VALUES (?, ?)', projectId, 'Storage')
-          await db.runAsync(
-            'INSERT INTO tasks (id, project_id, title) VALUES (?, ?, ?)',
-            `t_${Date.now()}`,
-            projectId,
-            'Write docs',
-          )
-
-          await refresh()
-        }}
+        onPress={insertRelationalRow}
       >
         <Text style={styles.buttonText}>Insert Valid Relational Row</Text>
       </Pressable>

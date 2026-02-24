@@ -10,40 +10,53 @@ type SearchStore = {
   setQuery: (nextQuery: string) => void
 }
 
-const useSearchStore = create<SearchStore>((set, get) => {
-  return {
-    activeRequestId: 0,
-    query: '',
-    result: null,
-    status: 'idle',
-    runSearch: async (nextQuery: string) => {
-      const requestId = get().activeRequestId + 1
+type StoreApi = {
+  set: (partial: Partial<SearchStore>) => void
+  get: () => SearchStore
+}
 
-      set({ activeRequestId: requestId, query: nextQuery, status: 'loading' })
+const DELAY_DEFAULT_MS = 420
+const DELAY_SLOW_MS = 700
+const DELAY_FAST_MS = 220
 
-      const networkDelay = nextQuery.includes('-slow')
-        ? 700
-        : nextQuery.includes('-fast')
-          ? 220
-          : 420
-      await new Promise<void>((resolve) => {
-        setTimeout(resolve, networkDelay)
-      })
+const SUFFIX_SLOW = '-slow'
+const SUFFIX_FAST = '-fast'
 
-      if (get().activeRequestId !== requestId) {
-        return
-      }
+const sleep = (ms: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms))
 
-      set({
-        result: `Result for "${nextQuery}" returned in ${networkDelay}ms`,
-        status: 'ready',
-      })
-    },
-    setQuery: (nextQuery) => {
-      set({ query: nextQuery })
-    },
+const resolveDelay = (query: string) => {
+  if (query.includes(SUFFIX_SLOW)) return DELAY_SLOW_MS
+  if (query.includes(SUFFIX_FAST)) return DELAY_FAST_MS
+  return DELAY_DEFAULT_MS
+}
+
+const runSearch = async (nextQuery: string, { set, get }: StoreApi) => {
+  const requestId = get().activeRequestId + 1
+
+  set({ activeRequestId: requestId, query: nextQuery, status: 'loading' })
+
+  const networkDelay = resolveDelay(nextQuery)
+  await sleep(networkDelay)
+
+  if (get().activeRequestId !== requestId) {
+    return
   }
-})
+
+  set({
+    result: `Result for "${nextQuery}" returned in ${networkDelay}ms`,
+    status: 'ready',
+  })
+}
+
+const useSearchStore = create<SearchStore>((set, get) => ({
+  activeRequestId: 0,
+  query: '',
+  result: null,
+  status: 'idle',
+  runSearch: (nextQuery) => runSearch(nextQuery, { set, get }),
+  setQuery: (nextQuery) => set({ query: nextQuery }),
+}))
 
 export default function App() {
   const query = useSearchStore((state) => state.query)
@@ -51,6 +64,13 @@ export default function App() {
   const status = useSearchStore((state) => state.status)
   const setQuery = useSearchStore((state) => state.setQuery)
   const runSearch = useSearchStore((state) => state.runSearch)
+
+  const handleSearch = () => runSearch(query)
+
+  const handleTriggerRace = () => {
+    runSearch(`${query}${SUFFIX_SLOW}`)
+    runSearch(`${query}${SUFFIX_FAST}`)
+  }
 
   return (
     <View style={styles.screen}>
@@ -65,22 +85,11 @@ export default function App() {
       />
 
       <View style={styles.row}>
-        <Pressable
-          onPress={() => {
-            runSearch(query)
-          }}
-          style={styles.button}
-        >
+        <Pressable onPress={handleSearch} style={styles.button}>
           <Text style={styles.buttonText}>Search</Text>
         </Pressable>
 
-        <Pressable
-          onPress={() => {
-            runSearch(`${query}-slow`)
-            runSearch(`${query}-fast`)
-          }}
-          style={styles.button}
-        >
+        <Pressable onPress={handleTriggerRace} style={styles.button}>
           <Text style={styles.buttonText}>Trigger race</Text>
         </Pressable>
       </View>

@@ -27,16 +27,17 @@ const hydrationCompleteAtom = atom(false)
 const hydratePreferencesAtom = atom(null, async (_get, set) => {
   try {
     const raw = await AsyncStorage.getItem(STORAGE_KEY)
-    if (raw) {
-      try {
-        const parsed = JSON.parse(raw) as Partial<Preferences>
-        set(preferencesAtom, {
-          ...SAFE_DEFAULT_PREFERENCES,
-          ...parsed,
-        })
-      } catch {
-        set(preferencesAtom, SAFE_DEFAULT_PREFERENCES)
-      }
+    if (!raw) {
+      return
+    }
+    try {
+      const parsed = JSON.parse(raw) as Partial<Preferences>
+      await set(preferencesAtom, {
+        ...SAFE_DEFAULT_PREFERENCES,
+        ...parsed,
+      })
+    } catch {
+      await set(preferencesAtom, SAFE_DEFAULT_PREFERENCES)
     }
   } finally {
     set(hydrationCompleteAtom, true)
@@ -49,15 +50,36 @@ function PreferencesScreen() {
   const hydratePreferences = useSetAtom(hydratePreferencesAtom)
 
   useEffect(() => {
-    hydratePreferences()
+    void hydratePreferences()
   }, [hydratePreferences])
+
+  const toggleTheme = () => {
+    return setPreferences(async (previous) => {
+      const previousValue = await previous
+      return {
+        ...previous,
+        theme: previousValue.theme === 'light' ? 'dark' : 'light',
+      }
+    })
+  }
+
+  const toggleCompact = () => {
+    return setPreferences(async (previous) => {
+      const previousValue = await previous
+      return {
+        ...previous,
+        compact: !previousValue.compact,
+      }
+    })
+  }
 
   if (!hydrationComplete) {
     return (
       <View style={styles.screen}>
         <Text style={styles.title}>Loading preferences…</Text>
         <Text style={styles.meta}>
-          Safe default: {SAFE_DEFAULT_PREFERENCES.theme} theme until rehydration finishes.
+          Safe default: {SAFE_DEFAULT_PREFERENCES.theme} theme until rehydration
+          finishes.
         </Text>
       </View>
     )
@@ -67,30 +89,15 @@ function PreferencesScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Preferences</Text>
       <Text style={styles.meta}>Theme: {preferences.theme}</Text>
-      <Text style={styles.meta}>Compact mode: {preferences.compact ? 'on' : 'off'}</Text>
+      <Text style={styles.meta}>
+        Compact mode: {preferences.compact ? 'on' : 'off'}
+      </Text>
 
-      <Pressable
-        onPress={() => {
-          setPreferences((previous) => {
-            return {
-              ...previous,
-              theme: previous.theme === 'light' ? 'dark' : 'light',
-            }
-          })
-        }}
-        style={styles.button}
-      >
+      <Pressable onPress={toggleTheme} style={styles.button}>
         <Text style={styles.buttonText}>Toggle theme</Text>
       </Pressable>
 
-      <Pressable
-        onPress={() => {
-          setPreferences((previous) => {
-            return { ...previous, compact: !previous.compact }
-          })
-        }}
-        style={styles.button}
-      >
+      <Pressable onPress={toggleCompact} style={styles.button}>
         <Text style={styles.buttonText}>Toggle compact</Text>
       </Pressable>
     </View>

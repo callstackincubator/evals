@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import {
   launchCamera,
@@ -15,33 +15,23 @@ export default function App() {
   const [message, setMessage] = useState('')
   const [asset, setAsset] = useState<Asset | null>(null)
 
-  const handleResponse = useCallback((response: ImagePickerResponse) => {
-    setAsset(null)
+  const handleErrorResponse = ({
+    errorCode,
+    errorMessage,
+  }: ImagePickerResponse) => {
+    setPickerState('error')
 
-    if (response.didCancel) {
-      setPickerState('cancelled')
-      setMessage('Picker canceled by user.')
-      return
+    if (errorCode === 'camera_unavailable') {
+      setMessage('Camera is unavailable. Try gallery instead.')
+    } else if (errorCode === 'permission') {
+      setMessage('Permission denied. Grant access from settings.')
+    } else {
+      setMessage(`Picker error: ${errorMessage ?? errorCode}`)
     }
+  }
 
-    if (response.errorCode) {
-      setPickerState('error')
-
-      if (response.errorCode === 'camera_unavailable') {
-        setMessage('Camera is unavailable. Try gallery instead.')
-        return
-      }
-
-      if (response.errorCode === 'permission') {
-        setMessage('Permission denied. Grant access from settings.')
-        return
-      }
-
-      setMessage(`Picker error: ${response.errorMessage ?? response.errorCode}`)
-      return
-    }
-
-    const firstAsset = response.assets?.[0]
+  const handleSuccessResponse = ({ assets }: ImagePickerResponse) => {
+    const firstAsset = assets?.[0]
     if (!firstAsset) {
       setPickerState('error')
       setMessage('No assets returned from picker.')
@@ -51,30 +41,44 @@ export default function App() {
     setPickerState('success')
     setAsset(firstAsset)
     setMessage('Asset selected successfully.')
-  }, [])
+  }
+
+  const handleResponse = (response: ImagePickerResponse) => {
+    setAsset(null)
+
+    if (response.didCancel) {
+      setPickerState('cancelled')
+      setMessage('Picker canceled by user.')
+      return
+    }
+
+    if (response.errorCode) {
+      handleErrorResponse(response)
+    } else {
+      handleSuccessResponse(response)
+    }
+  }
+
+  const handleLaunchCamera = async () => {
+    const response = await launchCamera({ mediaType: 'photo' })
+    handleResponse(response)
+  }
+
+  const handleOpenGallery = async () => {
+    const response = await launchImageLibrary({ mediaType: 'photo' })
+    handleResponse(response)
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>react-native-image-picker</Text>
       <Text style={styles.status}>State: {pickerState}</Text>
 
-      <Pressable
-        onPress={async () => {
-          const response = await launchCamera({ mediaType: 'photo' })
-          handleResponse(response)
-        }}
-        style={styles.button}
-      >
+      <Pressable onPress={handleLaunchCamera} style={styles.button}>
         <Text style={styles.buttonText}>Open camera</Text>
       </Pressable>
 
-      <Pressable
-        onPress={async () => {
-          const response = await launchImageLibrary({ mediaType: 'photo' })
-          handleResponse(response)
-        }}
-        style={styles.button}
-      >
+      <Pressable onPress={handleOpenGallery} style={styles.button}>
         <Text style={styles.buttonText}>Open gallery</Text>
       </Pressable>
 
