@@ -1,9 +1,3 @@
-/**
- * Removed the additional spring configuration to use the default spring configuration. Added a comment to inform user about potential customization.
- * Removed the toggle text from the header as it is not mentioned in prompt nor requirements.
- * Even though that's technically unnecessary, I left interpolation for details opacity in case the spring animation causes overshooting.
-*/
-
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import Animated, {
   Extrapolation,
