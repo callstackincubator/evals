@@ -66,9 +66,9 @@ Apply these before implementation:
 - Every changed line must map directly to the request.
 - Prefer minimal diff over broad rewrites.
 - Keep edits local:
-  - runner change -> touch `runner/**` (+ docs only if behavior changes)
+  - runner change -> touch `runner/**` (+ whitepaper if framework behavior changes)
   - eval content change -> touch only that eval directory
-  - taxonomy/methodology/scoring change -> update `docs/**` in same PR
+  - taxonomy/methodology/scoring change -> update `paper/benchmark-methodology-whitepaper.tex` and `docs/**` in same PR
 
 ## Verification strategy
 
@@ -112,12 +112,15 @@ When adding or updating an eval:
 
 Use this order when deciding intent:
 
-1. `runner/**` source code (actual behavior)
-2. category research docs under `evals/<category>/README.md`
-3. `docs/**`
-4. root `README.md`
+1. `paper/benchmark-methodology-whitepaper.tex` (methodology source of truth)
+2. `runner/**` source code (actual behavior)
+3. category research docs under `evals/<category>/README.md`
+4. `docs/**`
+5. root `README.md`
 
-If behavior changes, update docs in same PR to keep this hierarchy coherent.
+The whitepaper is the authoritative specification for benchmark methodology, scoring, pipeline stages, and eval conventions. If runner behavior and the whitepaper disagree, the whitepaper defines intended behavior.
+
+**Mandatory sync rule:** any PR that changes eval framework behavior (pipeline stages, scoring logic, requirement parsing, judge methodology, static checks, artifact schema, or authoring conventions) **must** include a corresponding update to `paper/benchmark-methodology-whitepaper.tex` in the same PR. Do not merge framework changes without updating the whitepaper.
 
 ## Style and tooling
 
