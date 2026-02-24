@@ -1,7 +1,7 @@
 import { CameraView, useCameraPermissions } from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useMemo, useState } from 'react'
-import { Linking, Pressable, StyleSheet, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { AppState, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 
 type FlowState = 'idle' | 'granted' | 'denied' | 'blocked' | 'requesting'
 
@@ -9,8 +9,8 @@ export default function App() {
   const [permission, requestPermission] = useCameraPermissions()
   const [flowState, setFlowState] = useState<FlowState>('idle')
 
-  const refreshFromPermission = useCallback(() => {
-    if (!permission) {
+  const refreshFromPermission = () => {
+    if (!permission || permission.status === 'undetermined') {
       setFlowState('idle')
       return
     }
@@ -21,9 +21,23 @@ export default function App() {
     }
 
     setFlowState(permission.canAskAgain ? 'denied' : 'blocked')
-  }, [permission])
+  }
 
-  const requestCamera = useCallback(async () => {
+  const requestCamera = async () => {
+    if (permission?.granted) {
+      setFlowState('granted')
+      return
+    }
+
+    if (flowState === 'requesting') {
+      return
+    }
+
+    if (permission && !permission.granted && !permission.canAskAgain) {
+      setFlowState('blocked')
+      return
+    }
+
     setFlowState('requesting')
     const next = await requestPermission()
 
@@ -33,22 +47,47 @@ export default function App() {
     }
 
     setFlowState(next.canAskAgain ? 'denied' : 'blocked')
-  }, [requestPermission])
+  }
 
-  const statusText = useMemo(() => {
-    switch (flowState) {
-      case 'granted':
-        return 'Camera permission granted. Preview is enabled.'
-      case 'denied':
-        return 'Camera permission denied. You can retry the request.'
-      case 'blocked':
-        return 'Camera access is blocked. Enable it from system settings.'
-      case 'requesting':
-        return 'Requesting camera permission...'
-      default:
-        return 'Camera permission not requested yet.'
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (appState) => {
+      if (appState !== 'active') {
+        return
+      }
+
+      if (!permission || permission.status === 'undetermined') {
+        setFlowState('idle')
+        return
+      }
+
+      if (permission.granted) {
+        setFlowState('granted')
+        return
+      }
+
+      setFlowState(permission.canAskAgain ? 'denied' : 'blocked')
+    })
+
+    return () => {
+      subscription.remove()
     }
-  }, [flowState])
+  }, [permission])
+
+  let statusText = 'Camera permission not requested yet.'
+  switch (flowState) {
+    case 'granted':
+      statusText = 'Camera permission granted. Preview is enabled.'
+      break
+    case 'denied':
+      statusText = 'Camera permission denied. You can retry the request.'
+      break
+    case 'blocked':
+      statusText = 'Camera access is blocked. Enable it from system settings.'
+      break
+    case 'requesting':
+      statusText = 'Requesting camera permission...'
+      break
+  }
 
   return (
     <View style={styles.container}>
@@ -69,7 +108,11 @@ export default function App() {
       )}
 
       <View style={styles.actions}>
-        <Pressable onPress={requestCamera} style={styles.button}>
+        <Pressable
+          disabled={flowState === 'requesting'}
+          onPress={requestCamera}
+          style={[styles.button, flowState === 'requesting' && styles.disabledButton]}
+        >
           <Text style={styles.buttonText}>Request / Retry</Text>
         </Pressable>
 
@@ -155,5 +198,8 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: '#111827',
     fontWeight: '600',
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
 })
