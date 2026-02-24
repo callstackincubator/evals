@@ -19,10 +19,10 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
 }
 
-function maxOffsetForScale(scale: number) {
+function maxOffsetForScale(viewPortSize: number, scale: number) {
   'worklet'
 
-  return (VIEWPORT_SIZE * scale - VIEWPORT_SIZE) / 2
+  return (viewPortSize * scale - viewPortSize) / 2
 }
 
 export default function App() {
@@ -39,7 +39,10 @@ export default function App() {
       savedTranslateY.value = translateY.value
     })
     .onUpdate((event) => {
-      const maxOffset = Math.max(0, maxOffsetForScale(scale.value))
+      const maxOffset = Math.max(
+        0,
+        maxOffsetForScale(VIEWPORT_SIZE, scale.value)
+      )
       translateX.value = clamp(
         savedTranslateX.value + event.translationX,
         -maxOffset,
@@ -64,7 +67,7 @@ export default function App() {
       )
       scale.value = nextScale
 
-      const maxOffset = Math.max(0, maxOffsetForScale(nextScale))
+      const maxOffset = Math.max(0, maxOffsetForScale(VIEWPORT_SIZE, nextScale))
       translateX.value = clamp(translateX.value, -maxOffset, maxOffset)
       translateY.value = clamp(translateY.value, -maxOffset, maxOffset)
     })
