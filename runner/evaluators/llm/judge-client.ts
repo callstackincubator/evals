@@ -34,8 +34,10 @@ export async function runJudgeCall(
     port,
   })
 
+  const judgeModel = provider(model, { createNewSession: true })
+
   const response = await generateText({
-    model: provider(model, { createNewSession: true }),
+      model: judgeModel,
     prompt,
     abortSignal: AbortSignal.timeout(timeout),
     output: Output.object({

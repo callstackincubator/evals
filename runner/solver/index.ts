@@ -89,6 +89,7 @@ function buildSolverPrompt(prompt: string, inputFiles: LoadedFile[]) {
 export async function runSolver(params: {
   prompt: string,
   files: LoadedFile[],
+  workingDirectory: string,
   model: string
   timeout: number
   port?: number
@@ -101,9 +102,14 @@ export async function runSolver(params: {
   })
 
   const prompt = buildSolverPrompt(params.prompt, params.files)
+  const model = provider(params.model, {
+    createNewSession: true,
+    directory: params.workingDirectory,
+    cwd: params.workingDirectory,
+  })
 
   const { output } = await generateText({
-    model: provider(params.model, { createNewSession: true }),
+      model,
     prompt,
     system: SYSTEM_PROMPT,
     abortSignal: AbortSignal.timeout(params.timeout),
