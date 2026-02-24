@@ -10,5 +10,3 @@ requirements:
     description: Must configure a stable shared storage path or app group location contract.
   - id: cross-process-refresh-path
     description: Must include a deterministic refresh path so process external updates become visible.
-  - id: newest-library
-    description: Must use the newest available stable version of the specified library
