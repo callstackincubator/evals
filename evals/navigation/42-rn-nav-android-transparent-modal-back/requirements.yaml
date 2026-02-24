@@ -5,5 +5,3 @@ inputs:
 requirements:
   - id: transparent-modal-presentation
     description: Must configure a transparent-style modal route in stack navigation.
-  - id: android-modal-dismiss-handler
-    description: Must explicitly handle Android back behavior for modal dismissal.
