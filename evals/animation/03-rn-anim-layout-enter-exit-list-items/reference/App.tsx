@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react'
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useCallback, useRef, useState } from 'react'
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
 import Animated, {
   FadeInDown,
   FadeOutUp,
@@ -17,9 +17,24 @@ const INITIAL_ITEMS: RowItem[] = [
   { id: 'row-3', label: 'Review frame budget' },
 ]
 
+const keyExtractor = (item: RowItem) => item.id
+
 export default function App() {
   const [items, setItems] = useState<RowItem[]>(INITIAL_ITEMS)
-  const nextId = useRef(4)
+  const nextId = useRef(INITIAL_ITEMS.length + 1)
+
+  // Stable reference for renderItem to avoid re-creation on each render as FlatList is a PureComponent.
+  // Adjust the dependency array when needed or try React Compiler.
+  const renderItem = useCallback(({ item }: { item: RowItem }) => (
+    <Animated.View
+      entering={FadeInDown.duration(220)}
+      exiting={FadeOutUp.duration(180)}
+      layout={LinearTransition}
+      style={styles.row}
+    >
+      <Text style={styles.rowText}>{item.label}</Text>
+    </Animated.View>
+  ), [])
 
   return (
     <View style={styles.screen}>
@@ -44,21 +59,12 @@ export default function App() {
         </Pressable>
       </View>
 
-      <ScrollView contentContainerStyle={styles.listContent}>
-        {items.map((item) => {
-          return (
-            <Animated.View
-              entering={FadeInDown.duration(220)}
-              exiting={FadeOutUp.duration(180)}
-              key={item.id}
-              layout={LinearTransition.springify()}
-              style={styles.row}
-            >
-              <Text style={styles.rowText}>{item.label}</Text>
-            </Animated.View>
-          )
-        })}
-      </ScrollView>
+      <FlatList
+        contentContainerStyle={styles.listContent}
+        data={items}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+      />
     </View>
   )
 }

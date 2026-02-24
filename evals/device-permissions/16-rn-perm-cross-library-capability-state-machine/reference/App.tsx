@@ -3,12 +3,38 @@ import * as ImagePicker from 'expo-image-picker'
 import * as Location from 'expo-location'
 import * as Notifications from 'expo-notifications'
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { AppState, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { check, openSettings, PERMISSIONS, RESULTS, type PermissionStatus } from 'react-native-permissions'
+import React, { useCallback, useEffect, useState } from 'react'
+import {
+  AppState,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
+import {
+  check,
+  openSettings,
+  PERMISSIONS,
+  RESULTS,
+  type PermissionStatus,
+} from 'react-native-permissions'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-type CapabilityState = 'unavailable' | 'denied' | 'blocked' | 'granted' | 'limited' | 'provisional'
-type CapabilityKey = 'camera' | 'media' | 'location' | 'notifications' | 'microphone'
+type CapabilityState =
+  | 'unavailable'
+  | 'denied'
+  | 'blocked'
+  | 'granted'
+  | 'limited'
+  | 'provisional'
+type CapabilityKey =
+  | 'camera'
+  | 'media'
+  | 'location'
+  | 'notifications'
+  | 'microphone'
 
 type CapabilityModel = {
   state: CapabilityState
@@ -30,6 +56,10 @@ function mapExpoPermission(
   canAskAgain: boolean,
   options?: { limited?: boolean; provisional?: boolean }
 ): CapabilityState {
+  if (status === Notifications.PermissionStatus.DENIED) {
+    return canAskAgain ? 'denied' : 'blocked'
+  }
+
   if (status === Notifications.PermissionStatus.GRANTED) {
     if (options?.provisional) {
       return 'provisional'
@@ -40,10 +70,6 @@ function mapExpoPermission(
     }
 
     return 'granted'
-  }
-
-  if (status === Notifications.PermissionStatus.DENIED) {
-    return canAskAgain ? 'denied' : 'blocked'
   }
 
   return 'denied'
@@ -88,15 +114,23 @@ async function loadCameraCapability(): Promise<CapabilityModel> {
 async function loadMediaCapability(): Promise<CapabilityModel> {
   const permission = await ImagePicker.getMediaLibraryPermissionsAsync()
 
+  const limited = permission.accessPrivileges === 'limited'
+
+  const getDetails = () => {
+    if (limited) {
+      return 'Limited media access'
+    }
+
+    if (permission.granted) {
+      return 'Media library available'
+    }
+    return 'Media permission needed'
+  }
+
   return {
-    details:
-      permission.accessPrivileges === 'limited'
-        ? 'Limited media access'
-        : permission.granted
-          ? 'Media library available'
-          : 'Media permission needed',
+    details: getDetails(),
     state: mapExpoPermission(permission.status, permission.canAskAgain, {
-      limited: permission.accessPrivileges === 'limited',
+      limited,
     }),
   }
 }
@@ -112,7 +146,9 @@ async function loadLocationCapability(): Promise<CapabilityModel> {
   }
 
   return {
-    details: permission.granted ? 'Location ready' : 'Location permission needed',
+    details: permission.granted
+      ? 'Location ready'
+      : 'Location permission needed',
     state: mapExpoPermission(permission.status, permission.canAskAgain),
   }
 }
@@ -120,96 +156,167 @@ async function loadLocationCapability(): Promise<CapabilityModel> {
 async function loadNotificationCapability(): Promise<CapabilityModel> {
   const permission = await Notifications.getPermissionsAsync()
 
+  const provisional =
+    permission.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL
+
+  const getDetails = () => {
+    if (provisional) {
+      return 'Provisional notification auth'
+    }
+    if (permission.granted) {
+      return 'Notifications enabled'
+    }
+    return 'Notifications permission needed'
+  }
+
   return {
-    details:
-      permission.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL
-        ? 'Provisional notification auth'
-        : permission.granted
-          ? 'Notifications enabled'
-          : 'Notifications permission needed',
+    details: getDetails(),
     state: mapExpoPermission(permission.status, permission.canAskAgain, {
-      provisional: permission.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL,
+      provisional,
     }),
   }
 }
 
 async function loadMicrophoneCapability(): Promise<CapabilityModel> {
   const permission =
-    Platform.OS === 'ios' ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO
+    Platform.OS === 'ios'
+      ? PERMISSIONS.IOS.MICROPHONE
+      : PERMISSIONS.ANDROID.RECORD_AUDIO
   const status = await check(permission)
 
   return {
-    details: status === RESULTS.GRANTED ? 'Microphone ready' : 'Microphone permission needed',
+    details:
+      status === RESULTS.GRANTED
+        ? 'Microphone ready'
+        : 'Microphone permission needed',
     state: mapRnPermission(status),
   }
 }
 
+type CapabilityCardProps = CapabilityModel & {
+  title: string
+  onRefresh: () => void
+  isRefreshable: boolean
+}
+
+function CapabilityCard({
+  title,
+  onRefresh,
+  isRefreshable,
+  ...model
+}: CapabilityCardProps) {
+  const stateColorMap: Record<CapabilityState, string> = {
+    unavailable: '#6B7280',
+    denied: '#DC2626',
+    blocked: '#7C2D12',
+    granted: '#16A34A',
+    limited: '#D97706',
+    provisional: '#2563EB',
+  }
+
+  return (
+    <View style={styles.card}>
+      <Text style={styles.cardTitle}>{title}</Text>
+      <Text style={[styles.cardState, { color: stateColorMap[model.state] }]}>
+        State: {model.state}
+      </Text>
+      <Text style={styles.cardDetails}>{model.details}</Text>
+
+      <View style={styles.rowActions}>
+        <Pressable
+          disabled={!isRefreshable}
+          onPress={onRefresh}
+          style={[
+            styles.smallButton,
+            {
+              backgroundColor: isRefreshable ? '#111827' : '#1118274D',
+            },
+          ]}
+        >
+          <Text style={styles.smallButtonText}>Retry check</Text>
+        </Pressable>
+
+        {(model.state === 'denied' || model.state === 'blocked') && (
+          <Pressable
+            onPress={() => openSettings()}
+            style={styles.smallSecondaryButton}
+          >
+            <Text style={styles.smallSecondaryButtonText}>Open settings</Text>
+          </Pressable>
+        )}
+      </View>
+    </View>
+  )
+}
+
 export default function App() {
-  const [capabilities, setCapabilities] = useState<CapabilityMap>(INITIAL_CAPABILITIES)
+  const insets = useSafeAreaInsets()
+  const [capabilities, setCapabilities] =
+    useState<CapabilityMap>(INITIAL_CAPABILITIES)
+  const [refreshingCapabilities, setRefreshingCapabilities] = useState(false)
 
   const refreshAll = useCallback(async () => {
-    const [camera, media, location, notifications, microphone] = await Promise.all([
-      loadCameraCapability(),
-      loadMediaCapability(),
-      loadLocationCapability(),
-      loadNotificationCapability(),
-      loadMicrophoneCapability(),
-    ])
+    setRefreshingCapabilities(true)
+    try {
+      const [camera, media, location, notifications, microphone] =
+        await Promise.all([
+          loadCameraCapability(),
+          loadMediaCapability(),
+          loadLocationCapability(),
+          loadNotificationCapability(),
+          loadMicrophoneCapability(),
+        ])
 
-    setCapabilities({
-      camera,
-      location,
-      media,
-      microphone,
-      notifications,
-    })
+      setCapabilities({
+        camera,
+        location,
+        media,
+        microphone,
+        notifications,
+      })
+    } finally {
+      setRefreshingCapabilities(false)
+    }
   }, [])
 
   useEffect(() => {
-    refreshAll()
+    void refreshAll()
 
     const subscription = AppState.addEventListener('change', (nextState) => {
       if (nextState === 'active') {
-        refreshAll()
+        void refreshAll()
       }
     })
 
     return () => subscription.remove()
   }, [refreshAll])
 
-  const degradedCount = useMemo(() => {
-    return Object.values(capabilities).filter((item) => item.state !== 'granted').length
-  }, [capabilities])
+  const degradedCount = Object.values(capabilities).filter(
+    ({ state }) => state !== 'granted'
+  ).length
+
+  const containerInsets = {
+    paddingTop: insets.top,
+    paddingBottom: insets.bottom,
+  }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerInsets]}>
       <Text style={styles.title}>Device Access Center</Text>
-      <Text style={styles.subtitle}>Capabilities not fully granted: {degradedCount}</Text>
+      <Text style={styles.subtitle}>
+        Capabilities not fully granted: {degradedCount}
+      </Text>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {(Object.keys(capabilities) as CapabilityKey[]).map((key) => {
-          const model = capabilities[key]
-
-          return (
-            <View key={key} style={styles.card}>
-              <Text style={styles.cardTitle}>{key}</Text>
-              <Text style={styles.cardState}>State: {model.state}</Text>
-              <Text style={styles.cardDetails}>{model.details}</Text>
-
-              <View style={styles.rowActions}>
-                <Pressable onPress={refreshAll} style={styles.smallButton}>
-                  <Text style={styles.smallButtonText}>Retry check</Text>
-                </Pressable>
-
-                {(model.state === 'denied' || model.state === 'blocked') && (
-                  <Pressable onPress={() => openSettings()} style={styles.smallSecondaryButton}>
-                    <Text style={styles.smallSecondaryButtonText}>Open settings</Text>
-                  </Pressable>
-                )}
-              </View>
-            </View>
-          )
-        })}
+        {Object.entries(capabilities).map(([key, model]) => (
+          <CapabilityCard
+            key={key}
+            title={key}
+            onRefresh={refreshAll}
+            isRefreshable={!refreshingCapabilities}
+            {...model}
+          />
+        ))}
       </ScrollView>
 
       <StatusBar style="auto" />
@@ -221,7 +328,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     flex: 1,
-    paddingTop: 64,
   },
   title: {
     fontSize: 22,

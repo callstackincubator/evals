@@ -1,63 +1,70 @@
-import { useEffect, useState } from 'react'
-
-import { NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import {
+  createStaticNavigation,
+  StaticParamList,
+  StaticScreenProps,
+  useNavigation,
+} from '@react-navigation/native'
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-type RootStackParamList = {
-  Form: { color?: string } | undefined
-  ColorPicker: { selectedColor: string }
-}
+type SelectableColor = 'red' | 'green' | 'blue'
 
-const Stack = createNativeStackNavigator<RootStackParamList>()
+type FormScreenProps = StaticScreenProps<{ color: SelectableColor }>
 
-function FormScreen({ navigation, route }: { navigation: any; route: any }) {
-  const [color, setColor] = useState('blue')
+function FormScreen({ route }: FormScreenProps) {
+  const navigation = useNavigation()
+  const selectedColor = route.params.color
 
-  useEffect(() => {
-    if (route.params?.color) {
-      setColor(route.params.color)
-    }
-  }, [route.params?.color])
+  const pickColor = () => navigation.navigate('ColorPicker')
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Selected color: {color}</Text>
-      <Button
-        title='Choose color'
-        onPress={() => navigation.navigate('ColorPicker', { selectedColor: color })}
-      />
+      <Text style={styles.title}>Selected color: {selectedColor}</Text>
+      <Button title="Choose color" onPress={pickColor} />
     </View>
   )
 }
 
-function ColorPickerScreen({ navigation }: { navigation: any }) {
-  const selectColor = (color: string) => {
-    navigation.navigate('Form', { color })
+function ColorPickerScreen() {
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>()
+
+  const selectColor = (color: SelectableColor) =>
+    navigation.popTo('Form', { color })
+
+  return (
+    <View style={styles.container}>
+      <Button title="Red" onPress={() => selectColor('red')} />
+      <Button title="Green" onPress={() => selectColor('green')} />
+      <Button title="Blue" onPress={() => selectColor('blue')} />
+    </View>
+  )
+}
+
+const Stack = createNativeStackNavigator({
+  screens: {
+    Form: { screen: FormScreen, initialParams: { color: 'blue' } },
+    ColorPicker: {
+      screen: ColorPickerScreen,
+      options: { presentation: 'modal', title: 'Pick Color' },
+    },
+  },
+})
+
+type StackParamList = StaticParamList<typeof Stack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends StackParamList {}
   }
-
-  return (
-    <View style={styles.container}>
-      <Button title='Red' onPress={() => selectColor('red')} />
-      <Button title='Green' onPress={() => selectColor('green')} />
-      <Button title='Purple' onPress={() => selectColor('purple')} />
-    </View>
-  )
 }
+
+const Navigation = createStaticNavigation(Stack)
 
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='Form' component={FormScreen} />
-        <Stack.Screen
-          name='ColorPicker'
-          component={ColorPickerScreen}
-          options={{ presentation: 'modal', title: 'Pick Color' }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({

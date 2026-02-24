@@ -14,47 +14,55 @@ const INITIAL_TASKS: Task[] = [
   { id: 'task-4', title: 'Plan sprint' },
 ]
 
+const ESTIMATED_ITEM_SIZE = 58
+
+function TaskRow({ task }: { task: Task }) {
+  return (
+    <View style={styles.row}>
+      <Text style={styles.rowText}>{task.title}</Text>
+      <Text style={styles.rowId}>{task.id}</Text>
+    </View>
+  )
+}
+
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS)
-  const [nextId, setNextId] = useState(5)
+
+  const insertAtTop = () => {
+    setTasks((prev) => {
+      const nextIdValue = prev.length + 1
+
+      return [
+        {
+          id: `task-${nextIdValue}`,
+          title: `Inserted task ${nextIdValue}`,
+        },
+        ...prev,
+      ]
+    })
+  }
+
+  const reverseOrder = () => {
+    setTasks((prev) => [...prev].reverse())
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.controls}>
-        <Pressable
-          onPress={() => {
-            setTasks((prev) => [
-              {
-                id: `task-${nextId}`,
-                title: `Inserted task ${nextId}`,
-              },
-              ...prev,
-            ])
-            setNextId((prev) => prev + 1)
-          }}
-          style={styles.button}
-        >
+        <Pressable onPress={insertAtTop} style={styles.button}>
           <Text style={styles.buttonText}>Insert at top</Text>
         </Pressable>
 
-        <Pressable
-          onPress={() => setTasks((prev) => [...prev].reverse())}
-          style={styles.buttonMuted}
-        >
+        <Pressable onPress={reverseOrder} style={styles.buttonMuted}>
           <Text style={styles.buttonMutedText}>Reverse order</Text>
         </Pressable>
       </View>
 
       <LegendList
         data={tasks}
-        getEstimatedItemSize={() => 58}
+        getEstimatedItemSize={() => ESTIMATED_ITEM_SIZE}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.row}>
-            <Text style={styles.rowText}>{item.title}</Text>
-            <Text style={styles.rowId}>{item.id}</Text>
-          </View>
-        )}
+        renderItem={({ item }) => <TaskRow task={item} />}
       />
     </View>
   )

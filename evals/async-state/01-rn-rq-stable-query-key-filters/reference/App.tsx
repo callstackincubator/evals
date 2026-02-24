@@ -1,6 +1,11 @@
 import { useState } from 'react'
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
+import {
+  QueryClient,
+  QueryClientProvider,
+  QueryFunctionContext,
+  useQuery,
+} from '@tanstack/react-query'
 
 type TransactionType = 'income' | 'expense'
 type TransactionFilter = 'all' | TransactionType
@@ -27,6 +32,12 @@ type TransactionsQueryKey = readonly [
 
 const PAGE_SIZE = 4
 
+const FILTER_OPTIONS: readonly TransactionFilter[] = [
+  'all',
+  'income',
+  'expense',
+]
+
 const DATA: Transaction[] = [
   { amount: 4200, id: 't-1', title: 'Payroll', type: 'income' },
   { amount: 140, id: 't-2', title: 'Groceries', type: 'expense' },
@@ -42,9 +53,13 @@ const DATA: Transaction[] = [
 
 const queryClient = new QueryClient()
 
-function wait(ms: number) {
-  return new Promise<void>((resolve) => {
-    setTimeout(resolve, ms)
+function wait(ms: number, signal?: AbortSignal) {
+  return new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(resolve, ms)
+    signal?.addEventListener('abort', () => {
+      clearTimeout(timer)
+      reject(new DOMException('Aborted', 'AbortError'))
+    })
   })
 }
 
@@ -53,15 +68,16 @@ function buildTransactionsQueryKey(
   page: number,
   pageSize: number
 ): TransactionsQueryKey {
-  return ['transactions', filter, page, pageSize]
+  return ['transactions', filter, page, pageSize] as const
 }
 
 async function fetchTransactions(
   filter: TransactionFilter,
   page: number,
-  pageSize: number
+  pageSize: number,
+  signal?: AbortSignal
 ) {
-  await wait(220)
+  await wait(220, signal)
 
   const filtered =
     filter === 'all' ? DATA : DATA.filter((item) => item.type === filter)
@@ -83,10 +99,11 @@ function TransactionsScreen() {
 
   const { data, isFetching, isLoading } = useQuery({
     placeholderData: (previous) => previous,
-    queryFn: ({ queryKey }) => {
-      const [, activeFilter, activePage, activePageSize] =
-        queryKey as TransactionsQueryKey
-      return fetchTransactions(activeFilter, activePage, activePageSize)
+    queryFn: ({
+      queryKey: [, activeFilter, activePage, activePageSize],
+      signal,
+    }: QueryFunctionContext<TransactionsQueryKey>) => {
+      return fetchTransactions(activeFilter, activePage, activePageSize, signal)
     },
     queryKey: buildTransactionsQueryKey(filter, page, PAGE_SIZE),
   })
@@ -103,7 +120,7 @@ function TransactionsScreen() {
       <Text style={styles.title}>Transactions</Text>
 
       <View style={styles.filterRow}>
-        {(['all', 'income', 'expense'] as const).map((candidate) => {
+        {FILTER_OPTIONS.map((candidate) => {
           const isActive = filter === candidate
           return (
             <Pressable

@@ -1,17 +1,23 @@
-import { NavigationContainer } from '@react-navigation/native'
+import { createStaticNavigation } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
+import { StaticParamList, useNavigation } from '@react-navigation/core'
 
-const Tab = createBottomTabNavigator()
-const FeedStack = createNativeStackNavigator()
-const SettingsStack = createNativeStackNavigator()
+function FeedHome() {
+  const { navigate } = useNavigation()
 
-function FeedHome({ navigation }: { navigation: any }) {
   return (
     <View style={styles.container}>
       <Text>Feed root</Text>
-      <Button title='Open feed details' onPress={() => navigation.navigate('FeedDetails')} />
+      <Button
+        title="Open feed details"
+        onPress={() =>
+          navigate('FeedTab', {
+            screen: 'FeedDetails',
+          })
+        }
+      />
     </View>
   )
 }
@@ -24,11 +30,20 @@ function FeedDetails() {
   )
 }
 
-function SettingsHome({ navigation }: { navigation: any }) {
+function SettingsHome() {
+  const { navigate } = useNavigation()
+
   return (
     <View style={styles.container}>
       <Text>Settings root</Text>
-      <Button title='Open profile settings' onPress={() => navigation.navigate('ProfileSettings')} />
+      <Button
+        title="Open profile settings"
+        onPress={() =>
+          navigate('SettingsTab', {
+            screen: 'ProfileSettings',
+          })
+        }
+      />
     </View>
   )
 }
@@ -41,37 +56,49 @@ function ProfileSettings() {
   )
 }
 
-function FeedNavigator() {
-  return (
-    <FeedStack.Navigator>
-      <FeedStack.Screen name='FeedHome' component={FeedHome} />
-      <FeedStack.Screen name='FeedDetails' component={FeedDetails} />
-    </FeedStack.Navigator>
-  )
-}
-
-function SettingsNavigator() {
-  return (
-    <SettingsStack.Navigator>
-      <SettingsStack.Screen name='SettingsHome' component={SettingsHome} />
-      <SettingsStack.Screen name='ProfileSettings' component={ProfileSettings} />
-    </SettingsStack.Navigator>
-  )
-}
-
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name='FeedTab' component={FeedNavigator} options={{ headerShown: false, title: 'Feed' }} />
-        <Tab.Screen
-          name='SettingsTab'
-          component={SettingsNavigator}
-          options={{ headerShown: false, title: 'Settings' }}
-        />
-      </Tab.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
+}
+
+const FeedNavigator = createNativeStackNavigator({
+  screens: {
+    FeedHome,
+    FeedDetails,
+  },
+})
+
+const SettingsNavigator = createNativeStackNavigator({
+  screens: {
+    SettingsHome,
+    ProfileSettings,
+  },
+})
+
+const RootStack = createBottomTabNavigator({
+  screens: {
+    FeedTab: {
+      screen: FeedNavigator,
+      options: {
+        headerShown: false,
+      },
+    },
+    SettingsTab: {
+      screen: SettingsNavigator,
+      options: {
+        headerShown: false,
+      },
+    },
+  },
+})
+
+const Navigation = createStaticNavigation(RootStack)
+
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
 }
 
 const styles = StyleSheet.create({

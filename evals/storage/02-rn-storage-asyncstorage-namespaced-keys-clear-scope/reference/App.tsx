@@ -1,42 +1,45 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
+enum Theme {
+  System = 'system',
+  Dark = 'dark',
+}
+
 const GLOBAL_THEME_KEY = 'global:theme'
-const GLOBAL_LOCALE_KEY = 'global:locale'
-
-function userDraftKey(userId: string) {
-  return `user:${userId}:draft`
-}
-
-function userProfileKey(userId: string) {
-  return `user:${userId}:profile`
-}
-
-function getUserScopedKeys(userId: string) {
-  return [userDraftKey(userId), userProfileKey(userId)]
-}
+const USER_ID_KEY = 'user:id'
+const USER_DRAFT_KEY = 'user:draft'
 
 export default function App() {
-  const [userId, setUserId] = useState('u_42')
-  const [theme, setTheme] = useState('system')
-  const [draft, setDraft] = useState('')
+  const [theme, setTheme] = useState<string>(Theme.System)
+  const [userId, setUserId] = useState<string | null>(null)
+  const [draft, setDraft] = useState<string>('')
 
-  const isSignedIn = useMemo(() => userId.length > 0, [userId])
+  const isSignedIn = userId !== null
 
   useEffect(() => {
     let cancelled = false
 
     const bootstrap = async () => {
-      const keys = [GLOBAL_THEME_KEY, GLOBAL_LOCALE_KEY, userDraftKey('u_42')]
-      const result = await AsyncStorage.multiGet(keys)
-      if (cancelled) {
-        return
-      }
+      try {
+        const result = await AsyncStorage.multiGet([
+          GLOBAL_THEME_KEY,
+          USER_ID_KEY,
+          USER_DRAFT_KEY,
+        ])
 
-      const values = Object.fromEntries(result)
-      setTheme(values[GLOBAL_THEME_KEY] ?? 'system')
-      setDraft(values[userDraftKey('u_42')] ?? '')
+        if (cancelled) {
+          return
+        }
+
+        const values = Object.fromEntries(result)
+        setTheme(values[GLOBAL_THEME_KEY] ?? Theme.System)
+        setDraft(values[USER_DRAFT_KEY] ?? '')
+        setUserId(values[USER_ID_KEY])
+      } catch (e) {
+        console.log('Init error: ', e)
+      }
     }
 
     bootstrap()
@@ -47,13 +50,51 @@ export default function App() {
   }, [])
 
   const signOut = async () => {
+    try {
+      const storeKeys = await AsyncStorage.getAllKeys()
+      await AsyncStorage.multiRemove(
+        storeKeys.filter((key) => key.startsWith('user:'))
+      )
+      setUserId(null)
+      setDraft('')
+    } catch (e) {
+      console.log('Failed to sing out: ', e)
+    }
+  }
+
+  const signIn = async () => {
+    try {
+      const userId = Math.floor(Math.random() * 100).toString()
+      await AsyncStorage.setItem(USER_ID_KEY, userId)
+      setUserId(userId)
+      setDraft('')
+    } catch (e) {
+      console.log('Failed to sign in: ', e)
+    }
+  }
+
+  const changeTheme = async () => {
+    try {
+      const nextTheme = theme === Theme.System ? Theme.Dark : Theme.System
+      await AsyncStorage.setItem(GLOBAL_THEME_KEY, nextTheme)
+      setTheme(nextTheme)
+    } catch (e) {
+      console.log('Failed to change theme: ', e)
+    }
+  }
+
+  const updateDraft = async () => {
     if (!isSignedIn) {
       return
     }
 
-    await AsyncStorage.multiRemove(getUserScopedKeys(userId))
-    setUserId('')
-    setDraft('')
+    try {
+      const updatedDraft = `${draft}*`
+      await AsyncStorage.setItem(USER_DRAFT_KEY, updatedDraft)
+      setDraft(updatedDraft)
+    } catch (e) {
+      console.log('Failed to update draft: ', e)
+    }
   }
 
   return (
@@ -61,43 +102,29 @@ export default function App() {
       <Text style={styles.title}>Namespaced Keys</Text>
       <Text style={styles.row}>Theme (global): {theme}</Text>
       <Text style={styles.row}>Draft (user scoped): {draft || '(empty)'}</Text>
-      <Text style={styles.row}>Session: {isSignedIn ? userId : 'signed out'}</Text>
+      <Text style={styles.row}>
+        Session: {isSignedIn ? userId : 'signed out'}
+      </Text>
 
-      <Pressable
-        style={styles.button}
-        onPress={async () => {
-          const next = theme === 'system' ? 'dark' : 'system'
-          setTheme(next)
-          await AsyncStorage.multiSet([
-            [GLOBAL_THEME_KEY, next],
-            [GLOBAL_LOCALE_KEY, 'en-US'],
-          ])
-        }}
-      >
+      <Pressable style={styles.button} onPress={changeTheme}>
         <Text style={styles.buttonText}>Toggle Global Theme</Text>
       </Pressable>
 
-      <Pressable
-        style={styles.button}
-        onPress={async () => {
-          if (!isSignedIn) {
-            return
-          }
+      {isSignedIn ? (
+        <>
+          <Pressable style={styles.button} onPress={updateDraft}>
+            <Text style={styles.buttonText}>Update User Draft</Text>
+          </Pressable>
 
-          const next = `${draft}*`
-          setDraft(next)
-          await AsyncStorage.multiSet([
-            [userDraftKey(userId), next],
-            [userProfileKey(userId), JSON.stringify({ userId })],
-          ])
-        }}
-      >
-        <Text style={styles.buttonText}>Update User Draft</Text>
-      </Pressable>
-
-      <Pressable style={styles.dangerButton} onPress={signOut}>
-        <Text style={styles.buttonText}>Sign Out (Scoped Clear)</Text>
-      </Pressable>
+          <Pressable style={styles.signOutButton} onPress={signOut}>
+            <Text style={styles.buttonText}>Sign Out (Scoped Clear)</Text>
+          </Pressable>
+        </>
+      ) : (
+        <Pressable style={styles.signInButton} onPress={signIn}>
+          <Text style={styles.buttonText}>Sign In</Text>
+        </Pressable>
+      )}
     </View>
   )
 }
@@ -120,7 +147,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 24,
   },
-  dangerButton: {
+  signInButton: {
+    backgroundColor: '#25b461',
+    borderRadius: 10,
+    marginTop: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  signOutButton: {
     backgroundColor: '#b33333',
     borderRadius: 10,
     marginTop: 10,

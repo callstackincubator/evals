@@ -3,6 +3,9 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
+const STORE_NAME = 'session-store'
+const DEMO_TOKEN = 'demo-token'
+
 type SessionStore = {
   hasHydrated: boolean
   token: string | null
@@ -11,30 +14,27 @@ type SessionStore = {
   setHasHydrated: (value: boolean) => void
 }
 
+const onRehydrate = (state: SessionStore | undefined, error: unknown) => {
+  if (error || !state) {
+    useSessionStore.getState().setHasHydrated(true)
+    return
+  }
+
+  state.setHasHydrated(true)
+}
+
 const useSessionStore = create<SessionStore>()(
   persist(
-    (set) => {
-      return {
-        hasHydrated: false,
-        token: null,
-        login: () => {
-          set({ token: 'demo-token' })
-        },
-        logout: () => {
-          set({ token: null })
-        },
-        setHasHydrated: (value) => {
-          set({ hasHydrated: value })
-        },
-      }
-    },
+    (set) => ({
+      hasHydrated: false,
+      token: null,
+      login: () => set({ token: DEMO_TOKEN }),
+      logout: () => set({ token: null }),
+      setHasHydrated: (value) => set({ hasHydrated: value }),
+    }),
     {
-      name: 'session-store',
-      onRehydrateStorage: () => {
-        return (state) => {
-          state?.setHasHydrated(true)
-        }
-      },
+      name: STORE_NAME,
+      onRehydrateStorage: () => onRehydrate,
       partialize: (state) => ({ token: state.token }),
       storage: createJSONStorage(() => AsyncStorage),
     }
@@ -56,25 +56,20 @@ function HydrationGate() {
     )
   }
 
+  const card = token
+    ? { label: 'Authenticated content visible.', action: logout, button: 'Log out' }
+    : { label: 'Public content visible.', action: login, button: 'Log in' }
+
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Session gate</Text>
 
-      {token ? (
-        <View style={styles.card}>
-          <Text style={styles.meta}>Authenticated content visible.</Text>
-          <Pressable onPress={logout} style={styles.button}>
-            <Text style={styles.buttonText}>Log out</Text>
-          </Pressable>
-        </View>
-      ) : (
-        <View style={styles.card}>
-          <Text style={styles.meta}>Public content visible.</Text>
-          <Pressable onPress={login} style={styles.button}>
-            <Text style={styles.buttonText}>Log in</Text>
-          </Pressable>
-        </View>
-      )}
+      <View style={styles.card}>
+        <Text style={styles.meta}>{card.label}</Text>
+        <Pressable onPress={card.action} style={styles.button}>
+          <Text style={styles.buttonText}>{card.button}</Text>
+        </Pressable>
+      </View>
     </View>
   )
 }

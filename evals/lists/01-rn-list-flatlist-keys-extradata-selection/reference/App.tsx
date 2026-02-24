@@ -1,5 +1,5 @@
+import { useState } from 'react'
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
-import { useCallback, useMemo, useState } from 'react'
 
 type Row = {
   id: string
@@ -11,10 +11,32 @@ const DATA: Row[] = Array.from({ length: 24 }, (_, index) => ({
   title: `Row ${index + 1}`,
 }))
 
+function ListItem({
+  item,
+  selected,
+  onToggle,
+}: {
+  item: Row
+  selected: boolean
+  onToggle: (id: string) => void
+}) {
+  return (
+    <Pressable
+      onPress={() => onToggle(item.id)}
+      style={[styles.row, selected && styles.rowSelected]}
+    >
+      <Text style={[styles.rowText, selected && styles.rowTextSelected]}>
+        {item.title}
+      </Text>
+    </Pressable>
+  )
+}
+
 export default function App() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const selectedCount = selectedIds.size
 
-  const toggleSelection = useCallback((id: string) => {
+  const toggleSelection = (id: string) => {
     setSelectedIds((prev) => {
       const next = new Set(prev)
       if (next.has(id)) {
@@ -24,27 +46,15 @@ export default function App() {
       }
       return next
     })
-  }, [])
+  }
 
-  const selectedCount = useMemo(() => selectedIds.size, [selectedIds])
+  const renderItem = ({ item }: { item: Row }) => {
+    const selected = selectedIds.has(item.id)
 
-  const renderItem = useCallback(
-    ({ item }: { item: Row }) => {
-      const selected = selectedIds.has(item.id)
-
-      return (
-        <Pressable
-          onPress={() => toggleSelection(item.id)}
-          style={[styles.row, selected && styles.rowSelected]}
-        >
-          <Text style={[styles.rowText, selected && styles.rowTextSelected]}>
-            {item.title}
-          </Text>
-        </Pressable>
-      )
-    },
-    [selectedIds, toggleSelection],
-  )
+    return (
+      <ListItem item={item} selected={selected} onToggle={toggleSelection} />
+    )
+  }
 
   return (
     <View style={styles.container}>

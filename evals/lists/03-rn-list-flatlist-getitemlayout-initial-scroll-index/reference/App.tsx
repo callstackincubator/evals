@@ -1,5 +1,5 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useRef } from 'react'
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
 
 type Item = {
   id: string
@@ -14,21 +14,27 @@ const DATA: Item[] = Array.from({ length: 120 }, (_, index) => ({
   label: `Item ${index}`,
 }))
 
+function ListItem({ item }: { item: Item }) {
+  return (
+    <View style={styles.row}>
+      <Text style={styles.rowText}>{item.label}</Text>
+    </View>
+  )
+}
+
 export default function App() {
   const listRef = useRef<FlatList<Item>>(null)
 
+  const scrollToIndex = (index: number) =>
+    listRef.current?.scrollToIndex({
+      animated: true,
+      index,
+      viewPosition: 0.5,
+    })
+
   return (
     <View style={styles.container}>
-      <Pressable
-        onPress={() => {
-          listRef.current?.scrollToIndex({
-            animated: true,
-            index: 80,
-            viewPosition: 0.5,
-          })
-        }}
-        style={styles.button}
-      >
+      <Pressable onPress={() => scrollToIndex(80)} style={styles.button}>
         <Text style={styles.buttonText}>Jump to index 80</Text>
       </Pressable>
 
@@ -48,19 +54,9 @@ export default function App() {
             offset: ROW_HEIGHT * index,
           })
 
-          requestAnimationFrame(() => {
-            listRef.current?.scrollToIndex({
-              animated: true,
-              index,
-              viewPosition: 0.5,
-            })
-          })
+          requestAnimationFrame(() => scrollToIndex(index))
         }}
-        renderItem={({ item }) => (
-          <View style={styles.row}>
-            <Text style={styles.rowText}>{item.label}</Text>
-          </View>
-        )}
+        renderItem={({ item }) => <ListItem item={item} />}
       />
     </View>
   )

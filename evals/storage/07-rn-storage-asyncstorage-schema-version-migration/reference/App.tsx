@@ -13,15 +13,18 @@ type MigrationResult = {
   toVersion: number
 }
 
-function safeParseRecord(value: string | null, fallback: Record<string, unknown>) {
+function safeParseRecord(
+  value: string | null,
+  fallback: Record<string, unknown>
+): Record<string, unknown> {
   if (!value) {
     return fallback
   }
 
   try {
-    const parsed = JSON.parse(value) as unknown
+    const parsed = JSON.parse(value)
     if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-      return parsed as Record<string, unknown>
+      return parsed
     }
     return fallback
   } catch {
@@ -81,6 +84,12 @@ async function migrateToV3() {
   }
 }
 
+const MIGRATORS: Record<number, () => Promise<void> | undefined> = {
+  1: migrateToV1,
+  2: migrateToV2,
+  3: migrateToV3,
+}
+
 async function runMigrations(): Promise<MigrationResult> {
   const startVersion = await readVersion()
 
@@ -94,17 +103,13 @@ async function runMigrations(): Promise<MigrationResult> {
   while (workingVersion < CURRENT_SCHEMA_VERSION) {
     const nextVersion = workingVersion + 1
 
-    if (nextVersion === 1) {
-      await migrateToV1()
+    const migrate = MIGRATORS[nextVersion]
+
+    if (!migrate) {
+      throw new Error(`Missing migrator for version ${nextVersion}`)
     }
 
-    if (nextVersion === 2) {
-      await migrateToV2()
-    }
-
-    if (nextVersion === 3) {
-      await migrateToV3()
-    }
+    await migrate()
 
     await AsyncStorage.setItem(SCHEMA_VERSION_KEY, String(nextVersion))
     workingVersion = nextVersion
@@ -122,13 +127,18 @@ export default function App() {
 
   const migrate = async () => {
     setStatus('migrating')
-    const result = await runMigrations()
-    setVersionLabel(`${result.fromVersion} -> ${result.toVersion}`)
-    setStatus('done')
+    try {
+      const result = await runMigrations()
+      setVersionLabel(`${result.fromVersion} -> ${result.toVersion}`)
+      setStatus('done')
+    } catch (error) {
+      console.error('Migrations error:', error)
+      setStatus('error')
+    }
   }
 
   useEffect(() => {
-    migrate()
+    void migrate()
   }, [])
 
   return (

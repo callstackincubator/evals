@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import { launchImageLibrary, type Asset } from 'react-native-image-picker'
 import {
@@ -15,28 +15,27 @@ type PermissionLevel = 'denied' | 'limited' | 'granted'
 const PHOTO_PERMISSION: Permission =
   Platform.OS === 'ios'
     ? PERMISSIONS.IOS.PHOTO_LIBRARY
-    : Platform.Version >= 33
+    : Number(Platform.Version) >= 33
       ? PERMISSIONS.ANDROID.READ_MEDIA_IMAGES
       : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
 
 function mapPermission(status: PermissionStatus): PermissionLevel {
-  if (status === RESULTS.GRANTED) {
-    return 'granted'
+  if (Platform.OS === 'ios') {
+    if (status === RESULTS.LIMITED) return 'limited'
+    if (status === RESULTS.GRANTED) return 'granted'
+    return 'denied'
   }
-
-  if (status === RESULTS.LIMITED) {
-    return 'limited'
-  }
-
-  return 'denied'
+  return status === RESULTS.GRANTED ? 'granted' : 'denied'
 }
 
+
 export default function App() {
-  const [permissionLevel, setPermissionLevel] = useState<PermissionLevel>('denied')
+  const [permissionLevel, setPermissionLevel] =
+    useState<PermissionLevel>('denied')
   const [assetSummary, setAssetSummary] = useState('No image selected')
   const [message, setMessage] = useState('')
 
-  const pickWithExtra = useCallback(async () => {
+  const pickWithExtra = async () => {
     const permission = mapPermission(await request(PHOTO_PERMISSION))
     setPermissionLevel(permission)
 
@@ -68,18 +67,26 @@ export default function App() {
     }
 
     const coreFallback = asset.fileName ?? asset.uri ?? 'unknown-asset'
-    const timeLabel = asset.timestamp ? `timestamp:${asset.timestamp}` : 'timestamp:unavailable'
-    const locationLabel = asset.originalPath ? `path:${asset.originalPath}` : 'path:unavailable'
+    const timeLabel = asset.timestamp
+      ? `timestamp:${asset.timestamp}`
+      : 'timestamp:unavailable'
+    const locationLabel = asset.originalPath
+      ? `path:${asset.originalPath}`
+      : 'path:unavailable'
 
     setAssetSummary(`${coreFallback} | ${timeLabel} | ${locationLabel}`)
 
     if (permission === 'limited') {
-      setMessage('Limited permission: includeExtra requested, but core asset fallback keeps flow deterministic.')
+      setMessage(
+        'Limited permission: includeExtra requested, but core asset fallback keeps flow deterministic.'
+      )
       return
     }
 
-    setMessage('Full permission: includeExtra metadata used when available, with core-field fallback.')
-  }, [])
+    setMessage(
+      'Full permission: includeExtra metadata used when available, with core-field fallback.'
+    )
+  }
 
   return (
     <View style={styles.container}>

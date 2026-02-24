@@ -1,56 +1,89 @@
-import { useState } from 'react'
+import React, { useContext, useState } from 'react'
 
-import { CommonActions, NavigationContainer } from '@react-navigation/native'
+import {
+  createStaticNavigation,
+  StaticParamList,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-const Stack = createNativeStackNavigator()
+type AuthContextValue = {
+  isSignedIn: boolean
+  signIn: () => void
+  signOut: () => void
+}
 
-function LoginScreen({ navigation, onLogin }: { navigation: any; onLogin: () => void }) {
-  const handleLogin = () => {
-    onLogin()
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: 'Home' }],
-      }),
-    )
+const AuthContext = React.createContext<AuthContextValue | undefined>(undefined)
+
+const useAuthContext = (): AuthContextValue => {
+  const authContext = useContext(AuthContext)
+
+  if (authContext === undefined) {
+    throw new Error('Auth context not provided')
   }
+
+  return authContext
+}
+
+const useIsSignedIn = () => {
+  const { isSignedIn } = useAuthContext()
+  return isSignedIn
+}
+
+const useIsSignedOut = () => !useIsSignedIn()
+
+function LoginScreen() {
+  const { signIn } = useAuthContext()
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
-      <Button title='Sign in' onPress={handleLogin} />
+      <Button title="Sign in" onPress={signIn} />
     </View>
   )
 }
 
-function HomeScreen({ onLogout }: { onLogout: () => void }) {
+function HomeScreen() {
+  const { signOut } = useAuthContext()
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Home</Text>
-      <Button title='Sign out' onPress={onLogout} />
+      <Button title="Sign out" onPress={signOut} />
     </View>
   )
 }
 
+const Stack = createNativeStackNavigator({
+  screens: {
+    Login: {
+      if: useIsSignedOut,
+      screen: LoginScreen,
+    },
+    Home: { if: useIsSignedIn, screen: HomeScreen },
+  },
+})
+
+type StackParamList = StaticParamList<typeof Stack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends StackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(Stack)
+
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isSignedIn, setIsSignedIn] = useState(false)
+
+  const signIn = () => setIsSignedIn(true)
+  const signOut = () => setIsSignedIn(false)
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerBackVisible: false }}>
-        {!isAuthenticated ? (
-          <Stack.Screen name='Login'>
-            {(props) => <LoginScreen {...props} onLogin={() => setIsAuthenticated(true)} />}
-          </Stack.Screen>
-        ) : (
-          <Stack.Screen name='Home'>
-            {() => <HomeScreen onLogout={() => setIsAuthenticated(false)} />}
-          </Stack.Screen>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthContext value={{ isSignedIn, signIn, signOut }}>
+      <Navigation />
+    </AuthContext>
   )
 }
 

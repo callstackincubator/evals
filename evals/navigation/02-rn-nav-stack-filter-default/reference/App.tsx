@@ -1,27 +1,40 @@
-import { NavigationContainer } from '@react-navigation/native'
+import React from 'react'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import type {
+  StaticScreenProps,
+  StaticParamList,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-type RootStackParamList = {
-  Home: undefined
-  Notifications: { filter?: 'all' | 'mentions' | 'unread' }
-}
+function HomeScreen() {
+  const navigation = useNavigation()
 
-const Stack = createNativeStackNavigator<RootStackParamList>()
-
-function HomeScreen({ navigation }: { navigation: any }) {
+  const openNotificationsDefault = () => {
+    navigation.navigate('Notifications')
+  }
+  const openNotificationsMentions = () => {
+    navigation.navigate('Notifications', { filter: 'mentions' })
+  }
   return (
     <View style={styles.container}>
-      <Button title='Open notifications (default)' onPress={() => navigation.navigate('Notifications')} />
       <Button
-        title='Open notifications (mentions)'
-        onPress={() => navigation.navigate('Notifications', { filter: 'mentions' })}
+        title="Open notifications (default)"
+        onPress={openNotificationsDefault}
+      />
+      <Button
+        title="Open notifications (mentions)"
+        onPress={openNotificationsMentions}
       />
     </View>
   )
 }
 
-function NotificationsScreen({ route }: { route: any }) {
+type NotificationsScreenProps = StaticScreenProps<{
+  filter?: 'all' | 'mentions' | 'unread'
+}>
+
+function NotificationsScreen({ route }: NotificationsScreenProps) {
   const normalizedFilter = route.params?.filter ?? 'all'
 
   return (
@@ -32,15 +45,25 @@ function NotificationsScreen({ route }: { route: any }) {
   )
 }
 
+const Stack = createNativeStackNavigator({
+  screens: {
+    Home: HomeScreen,
+    Notifications: NotificationsScreen,
+  },
+})
+
+type RootStackParamList = StaticParamList<typeof Stack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(Stack)
+
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='Home' component={HomeScreen} />
-        <Stack.Screen name='Notifications' component={NotificationsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({

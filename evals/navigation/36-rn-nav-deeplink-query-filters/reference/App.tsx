@@ -1,18 +1,45 @@
-import { LinkingOptions, NavigationContainer } from '@react-navigation/native'
+import {
+  createStaticNavigation,
+  LinkingOptions,
+  StaticParamList,
+  StaticScreenProps,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 
-type RootParamList = {
-  Feed: { sort?: string; order?: string }
+type FeedParamList = {
+  sort?: string
+  order?: string
 }
 
-const Stack = createNativeStackNavigator<RootParamList>()
-
-const linking: LinkingOptions<RootParamList> = {
+const linking: LinkingOptions<RootStackParamList> = {
   prefixes: ['myapp://'],
-  config: {
-    screens: {
-      Feed: {
+}
+
+function FeedScreen({ route }: StaticScreenProps<FeedParamList>) {
+  const sort =
+    route.params?.sort === 'date' || route.params?.sort === 'likes'
+      ? route.params.sort
+      : 'date'
+  const order =
+    route.params?.order === 'asc' || route.params?.order === 'desc'
+      ? route.params.order
+      : 'desc'
+
+  return (
+    <View style={styles.container}>
+      <Text>Feed</Text>
+      <Text>sort: {sort}</Text>
+      <Text>order: {order}</Text>
+    </View>
+  )
+}
+
+const RootStack = createNativeStackNavigator({
+  screens: {
+    Feed: {
+      screen: FeedScreen,
+      linking: {
         path: 'feed',
         parse: {
           sort: (value: string) => value,
@@ -21,27 +48,27 @@ const linking: LinkingOptions<RootParamList> = {
       },
     },
   },
+})
+
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
 }
 
-function FeedScreen({ route }: { route: any }) {
-  const sort = route.params?.sort === 'date' || route.params?.sort === 'likes' ? route.params.sort : 'date'
-  const order = route.params?.order === 'asc' || route.params?.order === 'desc' ? route.params.order : 'desc'
-
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-      <Text>Feed</Text>
-      <Text>sort: {sort}</Text>
-      <Text>order: {order}</Text>
-    </View>
-  )
-}
+const Navigation = createStaticNavigation(RootStack)
 
 export default function App() {
-  return (
-    <NavigationContainer linking={linking}>
-      <Stack.Navigator>
-        <Stack.Screen name='Feed' component={FeedScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation linking={linking} />
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+})

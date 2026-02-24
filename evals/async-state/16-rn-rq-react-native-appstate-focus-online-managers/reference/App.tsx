@@ -1,6 +1,13 @@
 import NetInfo from '@react-native-community/netinfo'
 import { useEffect, useRef, useState } from 'react'
-import { AppState, AppStateStatus, Pressable, StyleSheet, Text, View } from 'react-native'
+import {
+  AppState,
+  AppStateStatus,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 import {
   QueryClient,
   QueryClientProvider,
@@ -19,10 +26,6 @@ const queryClient = new QueryClient({
     queries: {
       gcTime: 5 * 60 * 1000,
       refetchOnMount: false,
-      refetchOnReconnect: true,
-      refetchOnWindowFocus: true,
-      retry: 1,
-      staleTime: 30 * 1000,
     },
   },
 })
@@ -47,17 +50,15 @@ async function fetchInbox(): Promise<InboxPayload> {
 }
 
 function useReactQueryLifecycleBridge() {
-  const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState)
+  const [appState, setAppState] = useState<AppStateStatus>(
+    AppState.currentState
+  )
   const [isOnline, setIsOnline] = useState(true)
   const lastFocus = useRef<boolean | null>(null)
   const lastOnline = useRef<boolean | null>(null)
 
-  useEffect(() => {
-    const initialFocused = AppState.currentState === 'active'
-    focusManager.setFocused(initialFocused)
-    lastFocus.current = initialFocused
-
-    const appStateSubscription = AppState.addEventListener('change', (nextState) => {
+  const addOnAppStateChangeListener = () => {
+    return AppState.addEventListener('change', (nextState) => {
       setAppState(nextState)
       const focused = nextState === 'active'
 
@@ -66,8 +67,10 @@ function useReactQueryLifecycleBridge() {
         focusManager.setFocused(focused)
       }
     })
+  }
 
-    const unsubscribeNetInfo = NetInfo.addEventListener((state) => {
+  const addOnNetInfoChangeListener = () => {
+    return NetInfo.addEventListener((state) => {
       const nextOnline =
         Boolean(state.isConnected) && state.isInternetReachable !== false
 
@@ -78,6 +81,15 @@ function useReactQueryLifecycleBridge() {
         onlineManager.setOnline(nextOnline)
       }
     })
+  }
+
+  useEffect(() => {
+    const initialFocused = AppState.currentState === 'active'
+    focusManager.setFocused(initialFocused)
+    lastFocus.current = initialFocused
+
+    const appStateSubscription = addOnAppStateChangeListener()
+    const unsubscribeNetInfo = addOnNetInfoChangeListener()
 
     return () => {
       appStateSubscription.remove()
@@ -88,30 +100,39 @@ function useReactQueryLifecycleBridge() {
   return { appState, isOnline }
 }
 
+const inboxQueryKeys = {
+  all: ['inbox'] as const,
+}
+
+function useInboxQuery() {
+  return useQuery({
+    queryFn: fetchInbox,
+    queryKey: inboxQueryKeys.all,
+  })
+}
+
 function InboxScreen() {
   const { appState, isOnline } = useReactQueryLifecycleBridge()
-
-  const inboxQuery = useQuery({
-    queryFn: fetchInbox,
-    queryKey: ['inbox'] as const,
-  })
+  const { data, refetch, isFetching } = useInboxQuery()
 
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>RN lifecycle-aware query</Text>
 
       <Text style={styles.meta}>AppState: {appState}</Text>
-      <Text style={styles.meta}>Connectivity: {isOnline ? 'online' : 'offline'}</Text>
-      <Text style={styles.meta}>Fetching: {inboxQuery.isFetching ? 'yes' : 'no'}</Text>
+      <Text style={styles.meta}>
+        Connectivity: {isOnline ? 'online' : 'offline'}
+      </Text>
+      <Text style={styles.meta}>Fetching: {isFetching ? 'yes' : 'no'}</Text>
 
-      <Pressable onPress={() => inboxQuery.refetch()} style={styles.button}>
+      <Pressable onPress={() => refetch()} style={styles.button}>
         <Text style={styles.buttonText}>Manual refetch</Text>
       </Pressable>
 
       <View style={styles.card}>
-        <Text style={styles.meta}>Server version: {inboxQuery.data?.version ?? '-'}</Text>
+        <Text style={styles.meta}>Server version: {data?.version ?? '-'}</Text>
 
-        {inboxQuery.data?.items.map((item) => {
+        {data?.items.map((item) => {
           return (
             <Text key={item} style={styles.row}>
               • {item}

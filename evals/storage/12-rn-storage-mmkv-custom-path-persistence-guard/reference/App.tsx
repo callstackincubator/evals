@@ -1,44 +1,32 @@
 import { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { MMKV } from 'react-native-mmkv'
+import { createMMKV } from 'react-native-mmkv'
+import { Paths } from 'expo-file-system'
 
 const REGISTRY_STORAGE_ID = 'mmkv-path-registry'
 const REGISTRY_PATH_KEY = 'configured-path'
 const DATA_STORAGE_ID = 'custom-path-storage'
-const DATA_KEYS = ['draft', 'session'] as const
 
-function stableStoragePath(environment: 'dev' | 'prod') {
-  return environment === 'prod' ? '/app-storage/prod/mmkv' : '/app-storage/dev/mmkv'
+const environment: 'dev' | 'prod' = 'dev'
+
+function stripFileProtocol(uri: string) {
+  return uri.replace(/^file:\/\//, '')
 }
 
-const environment: 'dev' | 'prod' = 'prod'
-const configuredPath = stableStoragePath(environment)
+const basePath = stripFileProtocol(Paths.document.uri)
+const configuredPath = `${basePath}${environment}/mmkv`
 
-const registryStorage = new MMKV({ id: REGISTRY_STORAGE_ID })
-const dataStorage = new MMKV({
+const registryStorage = createMMKV({ id: REGISTRY_STORAGE_ID })
+const dataStorage = createMMKV({
   id: DATA_STORAGE_ID,
   path: configuredPath,
 })
 
 function recoverFromPathMismatch(previousPath: string, nextPath: string) {
-  const oldStorage = new MMKV({ id: DATA_STORAGE_ID, path: previousPath })
-  const newStorage = new MMKV({ id: DATA_STORAGE_ID, path: nextPath })
+  const oldStorage = createMMKV({ id: DATA_STORAGE_ID, path: previousPath })
+  const newStorage = createMMKV({ id: DATA_STORAGE_ID, path: nextPath })
 
-  for (const key of DATA_KEYS) {
-    const value = oldStorage.getString(key)
-    if (typeof value === 'string') {
-      newStorage.set(key, value)
-    }
-  }
-}
-
-function guardStablePath() {
-  const previousPath = registryStorage.getString(REGISTRY_PATH_KEY)
-  if (previousPath && previousPath !== configuredPath) {
-    recoverFromPathMismatch(previousPath, configuredPath)
-  }
-
-  registryStorage.set(REGISTRY_PATH_KEY, configuredPath)
+  newStorage.importAllFrom(oldStorage)
 }
 
 export default function App() {
@@ -46,7 +34,18 @@ export default function App() {
   const [draft, setDraft] = useState(dataStorage.getString('draft') ?? '')
 
   useEffect(() => {
-    guardStablePath()
+    const recoverLocalState = () => {
+      const draftValue = dataStorage.getString('draft')
+      setDraft(draftValue ?? '')
+    }
+
+    const currentPath = registryStorage.getString(REGISTRY_PATH_KEY)
+    const storagePathChanged = !!currentPath && currentPath !== configuredPath
+    if (storagePathChanged) {
+      recoverFromPathMismatch(currentPath, configuredPath)
+      recoverLocalState()
+    }
+    registryStorage.set(REGISTRY_PATH_KEY, configuredPath)
     setStatus('ready')
   }, [])
 

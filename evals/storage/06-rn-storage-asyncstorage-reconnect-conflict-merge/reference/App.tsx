@@ -20,15 +20,20 @@ type ConflictMarker = {
 const MERGED_ENTITIES_KEY = 'sync:entities:merged'
 const CONFLICT_MARKERS_KEY = 'sync:entities:conflicts'
 
+function mergeBody(local: Entity, remote: Entity) {
+  if (local.body === remote.body) {
+    return local.body
+  }
+  if (local.updatedAt >= remote.updatedAt) {
+    return local.body
+  }
+  return remote.body
+}
+
 function mergeEntity(local: Entity, remote: Entity) {
   const conflicts: string[] = []
 
-  const body =
-    local.body === remote.body
-      ? local.body
-      : local.updatedAt >= remote.updatedAt
-        ? local.body
-        : remote.body
+  const body = mergeBody(local, remote)
 
   if (local.body !== remote.body) {
     conflicts.push('body')
@@ -56,7 +61,9 @@ function reconcile(localEntities: Entity[], remoteEntities: Entity[]) {
   const localMap = new Map(localEntities.map((entity) => [entity.id, entity]))
   const remoteMap = new Map(remoteEntities.map((entity) => [entity.id, entity]))
 
-  const ids = Array.from(new Set([...localMap.keys(), ...remoteMap.keys()])).sort()
+  const ids = Array.from(
+    new Set([...localMap.keys(), ...remoteMap.keys()])
+  ).sort()
 
   const merged: Entity[] = []
   const markers: ConflictMarker[] = []
@@ -123,7 +130,8 @@ export default function App() {
       [CONFLICT_MARKERS_KEY, JSON.stringify(markers)],
     ])
 
-    setLastConflictCount(markers.filter((marker) => !marker.resolved).length)
+    const conflictedMarkers = markers.filter(({ resolved }) => !resolved)
+    setLastConflictCount(conflictedMarkers.length)
     setStatus('done')
   }
 

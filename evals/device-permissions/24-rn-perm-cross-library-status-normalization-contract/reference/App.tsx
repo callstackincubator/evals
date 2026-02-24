@@ -2,9 +2,9 @@ import { Camera } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
 import * as Notifications from 'expo-notifications'
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { check, PERMISSIONS, RESULTS, type PermissionStatus } from 'react-native-permissions'
+import { check, checkNotifications, PERMISSIONS, RESULTS, type PermissionStatus, type Permission } from 'react-native-permissions'
 
 export type NormalizedStatus =
   | 'unavailable'
@@ -20,64 +20,53 @@ type DiagnosticRow = {
   note: string
 }
 
+const PERMISSION_CAMERA: Permission = Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA
+
 function mapExpoPermission(params: {
   status: Notifications.PermissionStatus
   canAskAgain?: boolean
   limited?: boolean
   provisional?: boolean
 }): NormalizedStatus {
-  if (params.status === Notifications.PermissionStatus.GRANTED) {
-    if (params.provisional) {
-      return 'provisional'
-    }
+  const { status, provisional, limited, canAskAgain } = params
+  const { GRANTED, DENIED } = Notifications.PermissionStatus
 
-    if (params.limited) {
-      return 'limited'
-    }
-
-    return 'granted'
+  switch (status) {
+    case DENIED:
+      return canAskAgain ? 'denied' : 'blocked'
+    case GRANTED:
+      return provisional ? 'provisional' : limited ? 'limited' : 'granted'
+    default:
+      return 'unavailable'
   }
-
-  if (params.status === Notifications.PermissionStatus.DENIED) {
-    return params.canAskAgain === false ? 'blocked' : 'denied'
-  }
-
-  return 'unavailable'
 }
 
 function mapRnPermission(status: PermissionStatus): NormalizedStatus {
-  if (status === RESULTS.UNAVAILABLE) {
-    return 'unavailable'
+  switch (status) {
+    case RESULTS.BLOCKED:
+      return 'blocked'
+    case RESULTS.GRANTED:
+      return 'granted'
+    case RESULTS.LIMITED:
+      return 'limited'
+    case RESULTS.DENIED:
+      return 'denied'
+    case RESULTS.UNAVAILABLE:
+    default:
+      return 'unavailable'
   }
-
-  if (status === RESULTS.BLOCKED) {
-    return 'blocked'
-  }
-
-  if (status === RESULTS.GRANTED) {
-    return 'granted'
-  }
-
-  if (status === RESULTS.LIMITED) {
-    return 'limited'
-  }
-
-  if (status === RESULTS.DENIED) {
-    return 'denied'
-  }
-
-  return 'unavailable'
 }
 
 export default function App() {
   const [rows, setRows] = useState<DiagnosticRow[]>([])
 
-  const runDiagnostics = useCallback(async () => {
-    const [camera, media, notifications, rnCamera] = await Promise.all([
+  const runDiagnostics = async () => {
+    const [camera, media, notifications, rnCamera, rnNotifications] = await Promise.all([
       Camera.getCameraPermissionsAsync(),
       ImagePicker.getMediaLibraryPermissionsAsync(),
       Notifications.getPermissionsAsync(),
-      check(Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA),
+      check(PERMISSION_CAMERA),
+      checkNotifications()
     ])
 
     const nextRows: DiagnosticRow[] = [
@@ -115,12 +104,17 @@ export default function App() {
         normalized: mapRnPermission(rnCamera),
         note: 'Mapped from RESULTS enum',
       },
+      {
+        source: 'react-native-permissions(notifications)',
+        normalized: mapRnPermission(rnNotifications.status),
+        note: 'Mapped from RESULTS enum',
+      },
     ]
 
     setRows(nextRows)
-  }, [])
+  }
 
-  const summary = useMemo(() => {
+  const getSummary = () => {
     if (rows.length === 0) {
       return 'No diagnostics run yet.'
     }
@@ -129,12 +123,12 @@ export default function App() {
     const unavailableCount = rows.filter((row) => row.normalized === 'unavailable').length
 
     return `blocked: ${blockedCount}, unavailable: ${unavailableCount}, total: ${rows.length}`
-  }, [rows])
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Permissions Diagnostics</Text>
-      <Text style={styles.summary}>{summary}</Text>
+      <Text style={styles.summary}>{getSummary()}</Text>
 
       <Pressable onPress={runDiagnostics} style={styles.button}>
         <Text style={styles.buttonText}>Run normalized checks</Text>

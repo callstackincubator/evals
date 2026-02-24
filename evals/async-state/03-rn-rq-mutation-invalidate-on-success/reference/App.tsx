@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import {
   QueryClient,
   QueryClientProvider,
+  QueryFunctionContext,
   useMutation,
   useQuery,
   useQueryClient,
@@ -13,6 +14,10 @@ type TodoItem = {
   title: string
 }
 
+type ItemsQueryKey = readonly ['items']
+
+const ITEMS_QUERY_KEY: ItemsQueryKey = ['items'] as const
+
 const queryClient = new QueryClient()
 
 let itemsDb: TodoItem[] = [
@@ -20,14 +25,18 @@ let itemsDb: TodoItem[] = [
   { id: 'item-2', title: 'Prepare QA checklist' },
 ]
 
-function wait(ms: number) {
-  return new Promise<void>((resolve) => {
-    setTimeout(resolve, ms)
+function wait(ms: number, signal?: AbortSignal) {
+  return new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(resolve, ms)
+    signal?.addEventListener('abort', () => {
+      clearTimeout(timer)
+      reject(new DOMException('Aborted', 'AbortError'))
+    })
   })
 }
 
-async function fetchItems() {
-  await wait(180)
+async function fetchItems(signal?: AbortSignal) {
+  await wait(180, signal)
   return [...itemsDb]
 }
 
@@ -43,25 +52,30 @@ function ItemsScreen() {
   const reactQueryClient = useQueryClient()
 
   const itemsQuery = useQuery({
-    queryFn: fetchItems,
-    queryKey: ['items'] as const,
+    queryFn: ({ signal }: QueryFunctionContext<ItemsQueryKey>) =>
+      fetchItems(signal),
+    queryKey: ITEMS_QUERY_KEY,
   })
 
   const createItemMutation = useMutation({
     mutationFn: createItem,
-    onSuccess: () => {
-      reactQueryClient.invalidateQueries({ queryKey: ['items'] })
+    onError: () => {
+      setDraft(draft)
+    },
+    onSuccess: async () => {
+      await reactQueryClient.invalidateQueries({ queryKey: ITEMS_QUERY_KEY })
     },
   })
 
   const submit = () => {
     const nextTitle = draft.trim()
+    
     if (!nextTitle) {
       return
     }
 
-    createItemMutation.mutate(nextTitle)
     setDraft('')
+    createItemMutation.mutate(nextTitle)
   }
 
   return (
