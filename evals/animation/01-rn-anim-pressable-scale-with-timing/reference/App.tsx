@@ -30,13 +30,13 @@ export default function App() {
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
+      transform: [{ scale: scale.value }],
       height: interpolate(
         progress.value,
         [0, 1],
         [COLLAPSED_HEIGHT, EXPANDED_HEIGHT],
         Extrapolation.CLAMP,
       ),
-      transform: [{ scale: scale.value }],
     }
   })
 
