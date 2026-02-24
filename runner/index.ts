@@ -190,6 +190,33 @@ async function main() {
           4
         )
 
+  const perEvalMetrics = evalRuns
+    .slice()
+    .sort((left, right) => left.index - right.index)
+    .map((run) => {
+      if (run.kind === 'error') {
+        return {
+          evalId: run.result.evalId,
+          evalPath: run.result.evalPath,
+          status: 'error' as const,
+        }
+      }
+
+      const requirementCount = run.result.llmJudgeRequirements.length
+      const passedRequirements = run.result.llmJudgeRequirements.filter(
+        (requirement) => requirement.passed
+      ).length
+
+      return {
+        evalId: run.result.evalId,
+        evalPath: run.result.evalPath,
+        status: 'success' as const,
+        requirementsTotal: requirementCount,
+        requirementsPassed: passedRequirements,
+        scoreRatio: run.result.score.ratio,
+      }
+    })
+
   const summaryPayload = {
     runId,
     startedAt,
@@ -203,6 +230,7 @@ async function main() {
     requirementsTotal,
     requirementsPassed,
     weightedAverageScore,
+    perEvalMetrics,
   }
 
   const summaryPath = await writeSummary(outputDirs.runDirectory, summaryPayload)
