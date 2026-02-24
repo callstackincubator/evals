@@ -26,7 +26,7 @@ async function readOutbox(): Promise<OutboxMutation[]> {
   }
 
   try {
-    return JSON.parse(raw) as OutboxMutation[]
+    return JSON.parse(raw)
   } catch {
     return []
   }
@@ -43,7 +43,7 @@ async function readAppliedIds(): Promise<Set<string>> {
   }
 
   try {
-    return new Set(JSON.parse(raw) as string[])
+    return new Set(JSON.parse(raw))
   } catch {
     return new Set()
   }
@@ -83,42 +83,48 @@ export default function App() {
   }
 
   const replayOutbox = async (manualTrigger: boolean) => {
+    if (status !== 'idle') {
+      return
+    }
     if (!isOnline && !manualTrigger) {
       return
     }
 
     setStatus(manualTrigger ? 'manual-sync' : 'reconnect-sync')
 
-    const queue = await readOutbox()
-    const remaining: OutboxMutation[] = []
-    const appliedIds = await readAppliedIds()
+    try {
+      const queue = await readOutbox()
+      const remaining: OutboxMutation[] = []
+      const appliedIds = await readAppliedIds()
 
-    for (const mutation of queue) {
-      if (appliedIds.has(mutation.id)) {
-        continue
+      for (const mutation of queue) {
+        if (appliedIds.has(mutation.id)) {
+          continue
+        }
+
+        try {
+          await applyRemoteMutation(mutation)
+          appliedIds.add(mutation.id)
+        } catch {
+          const next = {
+            ...mutation,
+            attempts: mutation.attempts + 1,
+          }
+          if (next.attempts < MAX_ATTEMPTS) {
+            remaining.push(next)
+          }
+        }
       }
 
-      try {
-        await applyRemoteMutation(mutation)
-        appliedIds.add(mutation.id)
-      } catch {
-        const next = {
-          ...mutation,
-          attempts: mutation.attempts + 1,
-        }
-        if (next.attempts < MAX_ATTEMPTS) {
-          remaining.push(next)
-        }
-      }
+      await Promise.all([writeOutbox(remaining), writeAppliedIds(appliedIds)])
+      setQueueSize(remaining.length)
+    } finally {
+      setStatus('idle')
     }
-
-    await Promise.all([writeOutbox(remaining), writeAppliedIds(appliedIds)])
-    setQueueSize(remaining.length)
-    setStatus('idle')
   }
 
   useEffect(() => {
-    reloadQueueSize()
+    void reloadQueueSize()
   }, [])
 
   useEffect(() => {
@@ -126,7 +132,7 @@ export default function App() {
       return
     }
 
-    replayOutbox(false)
+    void replayOutbox(false)
   }, [isOnline])
 
   return (
@@ -149,7 +155,11 @@ export default function App() {
         <Text style={styles.buttonText}>Toggle Connectivity</Text>
       </Pressable>
 
-      <Pressable style={styles.button} onPress={() => replayOutbox(true)}>
+      <Pressable
+        disabled={status !== 'idle'}
+        style={[styles.button, status !== 'idle' && styles.buttonDisabled]}
+        onPress={() => replayOutbox(true)}
+      >
         <Text style={styles.buttonText}>Manual Sync</Text>
       </Pressable>
     </View>
@@ -163,6 +173,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
+  },
+  buttonDisabled: {
+    opacity: 0.5,
   },
   buttonText: {
     color: '#fff',
