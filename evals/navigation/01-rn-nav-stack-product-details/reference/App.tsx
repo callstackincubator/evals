@@ -12,10 +12,13 @@ function ProductsScreen() {
   const navigation = useNavigation()
 
   const handleNavigateToDetails = () => {
-    navigation.navigate('ProductDetails', { productId: '42' })
+    navigation.navigate('ProductDetails', {
+      productId: '42',
+      title: 'Product 42',
+    })
   }
   const handleNavigateToMissingProduct = () => {
-    navigation.navigate('ProductDetails')
+    navigation.navigate('ProductDetails', { title: 'Missing Product' })
   }
 
   return (
@@ -32,13 +35,12 @@ function ProductsScreen() {
 
 type ProductDetailsScreenProps = StaticScreenProps<{
   productId?: string
+  title: string
 }>
 
 function ProductDetailsScreen({ route }: ProductDetailsScreenProps) {
-  const {
-    params: { productId },
-  } = route
-  const title = productId ? `Product ${productId}` : 'Missing Product'
+  const productId = route.params?.productId
+  const title = route.params?.title ?? 'Details'
 
   return (
     <View style={styles.container}>
