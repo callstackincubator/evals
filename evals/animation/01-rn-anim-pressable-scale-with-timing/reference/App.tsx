@@ -1,11 +1,3 @@
-/**
- * - Flattening: single AnimatedPressable root (AnimatedPressable → Text) instead of
- *   View → Pressable → Animated.View → Text.
- * - Stable config references: PRESS_IN_CONFIG / PRESS_OUT_CONFIG at module scope so
- *   timing config objects are not recreated on each press.
- * - File size reduced ~0.5 kB.
- */
-
 import { Pressable, StyleSheet, Text } from 'react-native'
 import Animated, {
   Extrapolation,
