@@ -6,6 +6,11 @@ A benchmark suite for evaluating how coding models solve real React Native tasks
 
 To run and evaluate any model locally, install and configure OpenCode first; the benchmark will use your current OpenCode default model, so check the selected model and pricing before you start.
 
+Start OpenCode server:
+```bash
+opencode serve [--print-logs]
+```
+
 Then, run the CLI:
 ```bash
 bun runner/index.ts --model openai/gpt-5.3-codex --solver-model openai/gpt-4.1-mini
