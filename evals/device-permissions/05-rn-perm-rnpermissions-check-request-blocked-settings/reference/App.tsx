@@ -1,72 +1,45 @@
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native'
-import { check, openSettings, PERMISSIONS, request, RESULTS, type PermissionStatus } from 'react-native-permissions'
+import {
+  check,
+  openSettings,
+  PERMISSIONS,
+  request,
+  type PermissionStatus,
+} from 'react-native-permissions'
 
 const CAMERA_PERMISSION =
   Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA
 
-function normalizeStatus(status: PermissionStatus): 'unavailable' | 'denied' | 'blocked' | 'granted' {
-  switch (status) {
-    case RESULTS.UNAVAILABLE:
-      return 'unavailable'
-    case RESULTS.DENIED:
-      return 'denied'
-    case RESULTS.BLOCKED:
-      return 'blocked'
-    case RESULTS.GRANTED:
-    case RESULTS.LIMITED:
-      return 'granted'
-    default:
-      return 'denied'
-  }
-}
-
 export default function App() {
-  const [status, setStatus] = useState<'unavailable' | 'denied' | 'blocked' | 'granted'>('denied')
-  const [note, setNote] = useState('Run check first to initialize state.')
+  const [status, setStatus] = useState<PermissionStatus | undefined>()
 
-  const runCheck = useCallback(async () => {
-    const raw = await check(CAMERA_PERMISSION)
-    const normalized = normalizeStatus(raw)
-    setStatus(normalized)
+  const runCheck = async () => {
+    const currentStatus = await check(CAMERA_PERMISSION)
+    setStatus(currentStatus)
+  }
 
-    if (Platform.OS === 'android' && normalized === 'denied') {
-      setNote('Android caveat: blocked can require request() path, not check() alone.')
-      return
+  const runRequest = async () => {
+    const requestResult = await request(CAMERA_PERMISSION)
+    setStatus(requestResult)
+  }
+
+  const statusMessage = (() => {
+    switch (status) {
+      case 'granted':
+      case 'limited':
+        return 'Camera feature enabled'
+      case 'blocked':
+        return 'Camera blocked in system settings'
+      case 'unavailable':
+        return 'Camera unavailable on this device'
+      case 'denied':
+        return 'Camera permissions denied'
+      default:
+        return 'Camera permissions not requested'
     }
-
-    setNote(`Check result: ${normalized}`)
-  }, [])
-
-  const runRequest = useCallback(async () => {
-    const raw = await request(CAMERA_PERMISSION)
-    const normalized = normalizeStatus(raw)
-    setStatus(normalized)
-
-    if (normalized === 'blocked') {
-      setNote('Permission blocked. Use Open settings to recover.')
-      return
-    }
-
-    setNote(`Request result: ${normalized}`)
-  }, [])
-
-  const statusMessage = useMemo(() => {
-    if (status === 'granted') {
-      return 'Camera feature enabled'
-    }
-
-    if (status === 'blocked') {
-      return 'Camera blocked in system settings'
-    }
-
-    if (status === 'unavailable') {
-      return 'Camera unavailable on this device'
-    }
-
-    return 'Camera denied or not requested'
-  }, [status])
+  })()
 
   return (
     <View style={styles.container}>
@@ -78,19 +51,24 @@ export default function App() {
         <Text style={styles.buttonText}>Check permission</Text>
       </Pressable>
 
-      <Pressable onPress={runRequest} style={styles.button}>
-        <Text style={styles.buttonText}>Request permission</Text>
-      </Pressable>
+      {status === 'blocked' ? (
+        <>
+          <Pressable
+            onPress={() => openSettings()}
+            style={styles.secondaryButton}
+          >
+            <Text style={styles.secondaryButtonText}>Open settings</Text>
+          </Pressable>
+          <Text style={styles.note}>
+            Permission blocked. Use Open settings to recover.
+          </Text>
+        </>
+      ) : (
+        <Pressable onPress={runRequest} style={styles.button}>
+          <Text style={styles.buttonText}>Request permission</Text>
+        </Pressable>
+      )}
 
-      <Pressable
-        disabled={status !== 'blocked'}
-        onPress={() => openSettings()}
-        style={[styles.secondaryButton, status !== 'blocked' && styles.disabledButton]}
-      >
-        <Text style={styles.secondaryButtonText}>Open settings</Text>
-      </Pressable>
-
-      <Text style={styles.note}>{note}</Text>
       <StatusBar style="auto" />
     </View>
   )
@@ -140,9 +118,6 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: '#111827',
     fontWeight: '600',
-  },
-  disabledButton: {
-    opacity: 0.5,
   },
   note: {
     color: '#111827',

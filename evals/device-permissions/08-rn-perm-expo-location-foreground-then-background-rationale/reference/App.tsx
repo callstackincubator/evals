@@ -1,77 +1,98 @@
-import * as Location from 'expo-location'
-import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useState } from 'react'
-import { Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
+/**
+ * Renamed types, methods, and variables for clarity (e.g. flow → currentStep, BackgroundFlow → Step, startBackgroundSetup → requestForegroundPermissions).
+ * Added Android 11+ version check (Platform.OS === 'android' && Platform.Version >= 30) to show appropriate rationale.
+ * Updated rationale message to meet requirements: explain why background is needed and that tapping continue takes user to Settings with "Allow all the time" on Android 11+.
+ * Removed StatusBar (unrelated to prompt/requirements).
+ * Open Settings Pressable uses Linking.openSettings directly instead of () => Linking.openSettings() to avoid unnecessary anonymous function.
+ * Removed useCallback memoization.
+ */
 
-type BackgroundFlow = 'idle' | 'foreground-denied' | 'rationale' | 'background-granted' | 'foreground-only'
+import * as Location from 'expo-location'
+import React, { useState } from 'react'
+import {
+  Linking,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
+
+type Step =
+  | 'idle'
+  | 'foreground-denied'
+  | 'rationale'
+  | 'background-granted'
+  | 'foreground-only'
 
 export default function App() {
-  const [flow, setFlow] = useState<BackgroundFlow>('idle')
+  const [currentStep, setCurrentStep] = useState<Step>('idle')
   const [message, setMessage] = useState('')
 
-  const startBackgroundSetup = useCallback(async () => {
+  const requestForegroundPermissions = async () => {
     setMessage('')
 
     const foreground = await Location.requestForegroundPermissionsAsync()
-    if (!foreground.granted) {
-      setFlow('foreground-denied')
-      setMessage('Foreground location is required before background onboarding.')
-      return
+
+    if (foreground.granted) {
+      setCurrentStep('rationale')
+
+      const isAndroid11Plus =
+        Platform.OS === 'android' && (Platform.Version as number) >= 30
+
+      if (isAndroid11Plus) {
+        setMessage(
+          'Background location is needed for X and Y. Tapping continue will take you to Settings — select "Allow all the time" under Location.'
+        )
+      } else {
+        setMessage(
+          'Background location is needed for X and Y. A system dialog will appear asking for background access.'
+        )
+      }
+    } else {
+      setCurrentStep('foreground-denied')
+      setMessage(
+        'Foreground location is required before background onboarding.'
+      )
     }
+  }
 
-    setFlow('rationale')
-    setMessage('Foreground granted. Explain why background location is needed before continuing.')
-  }, [])
-
-  const continueToBackgroundRequest = useCallback(async () => {
+  const requestBackgroundPermissions = async () => {
     const background = await Location.requestBackgroundPermissionsAsync()
 
     if (background.granted) {
-      setFlow('background-granted')
+      setCurrentStep('background-granted')
       setMessage('Background location granted.')
-      return
+    } else {
+      setCurrentStep('foreground-only')
+      setMessage('Background denied. Foreground-only mode remains functional.')
     }
-
-    setFlow('foreground-only')
-
-    if (Platform.OS === 'android') {
-      setMessage('Background denied. Android may require settings redirection on Android 11+.')
-      return
-    }
-
-    setMessage('Background denied. Foreground-only mode remains functional.')
-  }, [])
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Background Location Onboarding</Text>
-      <Text style={styles.state}>Flow: {flow}</Text>
+      <Text style={styles.state}>Step: {currentStep}</Text>
+      <Text style={styles.message}>{message}</Text>
 
-      <Pressable onPress={startBackgroundSetup} style={styles.button}>
+      <Pressable onPress={requestForegroundPermissions} style={styles.button}>
         <Text style={styles.buttonText}>Request foreground first</Text>
       </Pressable>
 
       <Pressable
-        disabled={flow !== 'rationale'}
-        onPress={continueToBackgroundRequest}
-        style={[styles.button, flow !== 'rationale' && styles.disabledButton]}
+        disabled={currentStep !== 'rationale'}
+        onPress={requestBackgroundPermissions}
+        style={[
+          styles.button,
+          currentStep !== 'rationale' && styles.disabledButton,
+        ]}
       >
-        <Text style={styles.buttonText}>Continue to background request</Text>
+        <Text style={styles.buttonText}>Request background</Text>
       </Pressable>
 
-      <Pressable onPress={() => Linking.openSettings()} style={styles.secondaryButton}>
+      <Pressable onPress={Linking.openSettings} style={styles.secondaryButton}>
         <Text style={styles.secondaryButtonText}>Open settings</Text>
       </Pressable>
-
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Foreground-only fallback</Text>
-        <Text style={styles.cardBody}>
-          Location features that require only foreground access stay available when background is denied.
-        </Text>
-      </View>
-
-      <Text style={styles.message}>{message}</Text>
-      <StatusBar style="auto" />
     </View>
   )
 }

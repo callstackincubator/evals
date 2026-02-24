@@ -1,32 +1,44 @@
 import * as Device from 'expo-device'
 import * as Notifications from 'expo-notifications'
 import { StatusBar } from 'expo-status-bar'
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 type RegistrationState = 'idle' | 'denied' | 'simulator' | 'registered' | 'token-error'
+
+class TokenError extends Error {
+  public code: string
+
+  constructor(message: string, code = 'TOKEN_ERROR') {
+    super(message)
+    this.name = 'TokenError'
+    this.code = code
+  }
+}
 
 export default function App() {
   const [registrationState, setRegistrationState] = useState<RegistrationState>('idle')
   const [token, setToken] = useState('')
   const [message, setMessage] = useState('')
+  const [isRegistering, setIsRegistering] = useState(false)
 
-  const register = useCallback(async () => {
-    setToken('')
-    setMessage('')
-
+  const requestPermissions = async () => {
     const current = await Notifications.getPermissionsAsync()
     const permission =
       current.status === Notifications.PermissionStatus.GRANTED
         ? current
         : await Notifications.requestPermissionsAsync()
 
-    if (permission.status !== Notifications.PermissionStatus.GRANTED) {
+    const granted = permission.status === Notifications.PermissionStatus.GRANTED
+    if (!granted) {
       setRegistrationState('denied')
       setMessage('Notifications permission denied. Token request skipped.')
-      return
     }
 
+    return granted
+  }
+
+  const requestPushToken = async () => {
     if (!Device.isDevice) {
       setRegistrationState('simulator')
       setMessage('Push token retrieval is only supported on physical devices.')
@@ -35,14 +47,44 @@ export default function App() {
 
     try {
       const pushToken = await Notifications.getExpoPushTokenAsync()
-      setToken(pushToken.data)
+      const tokenValue = pushToken?.data?.trim()
+      if (!tokenValue) {
+        throw new TokenError('Token retrieval returned an empty token. Retry registration.')
+      }
+
+      setToken(tokenValue)
       setRegistrationState('registered')
       setMessage('Registration succeeded on physical device with granted permission.')
-    } catch {
+    } catch (error) {
       setRegistrationState('token-error')
-      setMessage('Permission/device checks passed, but token retrieval failed. Retry registration.')
+      if (error instanceof TokenError) {
+        setMessage(error.message)
+      } else {
+        setMessage('Permission/device checks passed, but token retrieval failed. Retry registration.')
+      }
     }
-  }, [])
+  }
+
+  const register = async () => {
+    if (isRegistering) {
+      return
+    }
+
+    setIsRegistering(true)
+    try {
+      setToken('')
+      setMessage('')
+
+      const granted = await requestPermissions()
+      if (!granted) {
+        return
+      }
+
+      await requestPushToken()
+    } finally {
+      setIsRegistering(false)
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -50,8 +92,12 @@ export default function App() {
       <Text style={styles.state}>State: {registrationState}</Text>
       <Text style={styles.device}>Environment: {Device.isDevice ? 'Physical' : 'Simulator/Emulator'}</Text>
 
-      <Pressable onPress={register} style={styles.button}>
-        <Text style={styles.buttonText}>Register push token</Text>
+      <Pressable
+        disabled={isRegistering}
+        onPress={register}
+        style={[styles.button, isRegistering && styles.buttonDisabled]}
+      >
+        <Text style={styles.buttonText}>{isRegistering ? 'Registering...' : 'Register push token'}</Text>
       </Pressable>
 
       {token ? <Text style={styles.token}>Token: {token}</Text> : <Text style={styles.fallback}>No token</Text>}
@@ -87,6 +133,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 12,
     width: '100%',
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
   buttonText: {
     color: '#fff',
