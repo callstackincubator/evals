@@ -9,4 +9,4 @@ requirements:
   - id: connectivity-onlinemanager-integration
     description: Must integrate connectivity state with TanStack Query onlineManager semantics.
   - id: controlled-refetch-behavior
-    description: Must define controlled refetch behavior across foreground background and reconnect transitions to avoid refetch storms.
+    description: Must control refetch behavior across foreground/background and reconnect transitions through focusManager and onlineManager state changes (including duplicate-transition guards) so refetch storms are avoided; explicit QueryClient refetch default overrides are optional.
