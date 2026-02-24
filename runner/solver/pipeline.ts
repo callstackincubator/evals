@@ -42,6 +42,7 @@ export async function runSolverStage(
     port: options.port,
     prompt,
     files,
+    workingDirectory: workingDir,
   })
 
   return {
