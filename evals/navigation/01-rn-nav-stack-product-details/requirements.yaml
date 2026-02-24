@@ -9,3 +9,15 @@ requirements:
     description: Must pass a title param when navigating from list to product details.
   - id: product-id-fallback
     description: Must handle missing productId with a deterministic fallback display instead of showing stale or undefined values.
+  - id: must-use-static-navigator
+    description: Must use createNativeStackNavigator to define the stack navigator with at least 2 screens defined.
+    weight: 2
+  - id: must-use-create-static-navigation
+    description: Must use createStaticNavigation to define the navigation wrapper component.
+    weight: 2
+  - id: must-import-native-stack-navigator
+    description: Must have imports from @react-navigation/native-stack and @react-navigation/native.
+    weight: 2
+  - id: must-use-use-navigation
+    description: Must use useNavigation to get the navigation object.
+    weight: 2

@@ -18,9 +18,16 @@ requirements:
   - id: uses-reanimated-library
     description: Must use react-native-reanimated for button animation.
     weight: 1
+  - id: must-use-specific-api
+    description: Must use a deterministic API usage pattern that can be judged from files.
+    weight: 2
 ```
 
 You can also provide `weight` parameter to prioritize certain requirements. By default, each requirement has same importance.
+
+### Deterministic `must-` convention
+
+Use the `must-` prefix for deterministic requirements that can be verified directly from source files (for example required imports, API usage, or specific wiring). Set these to `weight: 2` to emphasize them in scoring.
 
 ## Notes
 
