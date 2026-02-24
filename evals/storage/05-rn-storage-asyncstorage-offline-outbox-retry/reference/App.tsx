@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 type OutboxMutation = {
@@ -64,7 +64,6 @@ export default function App() {
   const [isOnline, setIsOnline] = useState(false)
   const [queueSize, setQueueSize] = useState(0)
   const [status, setStatus] = useState('idle')
-  const isReplayingRef = useRef(false)
 
   const reloadQueueSize = async () => {
     const queue = await readOutbox()
@@ -84,14 +83,13 @@ export default function App() {
   }
 
   const replayOutbox = async (manualTrigger: boolean) => {
-    if (isReplayingRef.current) {
+    if (status !== 'idle') {
       return
     }
     if (!isOnline && !manualTrigger) {
       return
     }
 
-    isReplayingRef.current = true
     setStatus(manualTrigger ? 'manual-sync' : 'reconnect-sync')
 
     try {
@@ -120,9 +118,8 @@ export default function App() {
 
       await Promise.all([writeOutbox(remaining), writeAppliedIds(appliedIds)])
       setQueueSize(remaining.length)
-      setStatus('idle')
     } finally {
-      isReplayingRef.current = false
+      setStatus('idle')
     }
   }
 
@@ -136,7 +133,7 @@ export default function App() {
     }
 
     void replayOutbox(false)
-  }, [isOnline, replayOutbox])
+  }, [isOnline])
 
   return (
     <View style={styles.container}>
@@ -158,7 +155,11 @@ export default function App() {
         <Text style={styles.buttonText}>Toggle Connectivity</Text>
       </Pressable>
 
-      <Pressable style={styles.button} onPress={() => replayOutbox(true)}>
+      <Pressable
+        disabled={status !== 'idle'}
+        style={[styles.button, status !== 'idle' && styles.buttonDisabled]}
+        onPress={() => replayOutbox(true)}
+      >
         <Text style={styles.buttonText}>Manual Sync</Text>
       </Pressable>
     </View>
@@ -172,6 +173,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
+  },
+  buttonDisabled: {
+    opacity: 0.5,
   },
   buttonText: {
     color: '#fff',
