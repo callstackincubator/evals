@@ -1,11 +1,3 @@
-/**
- * Prompt clearly states "Create a list". ScrollView is not a list. FlatList is a React Native core component that can be easily changed to LegendList or FlashList.
- * Above change introcuced ~0.8kB size increase.
- * Stable references for keyExtractor and renderItem to avoid re-creation on each render as FlatList is a PureComponent.
- * Prompt and requirements don't say anything about how new items or already existing items should be removed. We're adding at the top, removing from the bottom.
- * Two small closures per render for adding and removing items. For a small screen it's negligible, but it's an unnecessary allocation.
- * If the buttons were wrapped in React.memo, they'd re-render every time anyway because the prop reference changes.
- */
 import { useCallback, useRef, useState } from 'react'
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
 import Animated, {
