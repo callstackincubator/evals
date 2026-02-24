@@ -1,7 +1,3 @@
-/**
- * No translateY: requirements are satisfied by height + opacity; translateY was optional polish.
- * ScrollView (not FlatList): prompt asks for a "scrolling feed", not a list; ScrollView is sufficient and avoids recycling concerns here.
- */
 import { StyleSheet, Text } from 'react-native'
 import Animated, {
   Extrapolation,

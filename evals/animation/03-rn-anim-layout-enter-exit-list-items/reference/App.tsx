@@ -23,8 +23,6 @@ export default function App() {
   const [items, setItems] = useState<RowItem[]>(INITIAL_ITEMS)
   const nextId = useRef(INITIAL_ITEMS.length + 1)
 
-  // Stable reference for renderItem to avoid re-creation on each render as FlatList is a PureComponent.
-  // Adjust the dependency array when needed or try React Compiler.
   const renderItem = useCallback(({ item }: { item: RowItem }) => (
     <Animated.View
       entering={FadeInDown.duration(220)}
