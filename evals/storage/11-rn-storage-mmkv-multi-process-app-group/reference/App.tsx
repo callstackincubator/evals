@@ -1,29 +1,43 @@
 import { useEffect, useState } from 'react'
 import { AppState, Pressable, StyleSheet, Text, View } from 'react-native'
-import { MMKV, Mode } from 'react-native-mmkv'
+import { createMMKV } from 'react-native-mmkv'
+import { Paths } from 'expo-file-system'
 
-const SHARED_PATH = '/app-group/shared-mmkv'
+function stripFileProtocol(uri: string) {
+  return uri.replace(/^file:\/\//, '')
+}
+
+const basePath = stripFileProtocol(Paths.document.uri)
+
+const SHARED_PATH = `${basePath}app-group/shared-mmkv`
 const SHARED_KEY = 'shared-counter'
 
-const sharedStorage = new MMKV({
+const sharedStorage = createMMKV({
   id: 'shared-process-storage',
-  mode: Mode.MULTI_PROCESS,
+  mode: 'multi-process',
   path: SHARED_PATH,
 })
 
-export default function App() {
-  const [sharedValue, setSharedValue] = useState(sharedStorage.getNumber(SHARED_KEY) ?? 0)
+function getSharedValue() {
+  return sharedStorage.getNumber(SHARED_KEY) ?? 0
+}
 
-  const refreshFromSharedStorage = () => {
-    setSharedValue(sharedStorage.getNumber(SHARED_KEY) ?? 0)
+export default function App() {
+  const [sharedValue, setSharedValue] = useState(getSharedValue())
+
+  const refreshSharedValueFromSharedStorage = () => {
+    setSharedValue(getSharedValue())
   }
 
   useEffect(() => {
-    const appStateSubscription = AppState.addEventListener('change', (nextState) => {
-      if (nextState === 'active') {
-        refreshFromSharedStorage()
+    const appStateSubscription = AppState.addEventListener(
+      'change',
+      (nextState) => {
+        if (nextState === 'active') {
+          refreshSharedValueFromSharedStorage()
+        }
       }
-    })
+    )
 
     return () => {
       appStateSubscription.remove()
@@ -40,13 +54,16 @@ export default function App() {
         style={styles.button}
         onPress={() => {
           sharedStorage.set(SHARED_KEY, sharedValue + 1)
-          refreshFromSharedStorage()
+          refreshSharedValueFromSharedStorage()
         }}
       >
         <Text style={styles.buttonText}>Write Shared Value</Text>
       </Pressable>
 
-      <Pressable style={styles.button} onPress={refreshFromSharedStorage}>
+      <Pressable
+        style={styles.button}
+        onPress={refreshSharedValueFromSharedStorage}
+      >
         <Text style={styles.buttonText}>Refresh External Updates</Text>
       </Pressable>
     </View>
