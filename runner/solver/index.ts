@@ -13,6 +13,15 @@ const SYSTEM_PROMPT = `
   You must return all given files with applied modification.
 `
 
+const JSON_FALLBACK_SYSTEM_PROMPT = `
+  Return only valid JSON matching this shape:
+  {
+    "summary": "short summary",
+    "files": [{ "path": "relative/path.ext", "content": "full file contents" }]
+  }
+  Do not include markdown fences or any extra text.
+`
+
 const solverOutputSchema = z.object({
   summary: z.string().describe('Short summary of performed work'),
   files: z.array(
@@ -83,6 +92,38 @@ function buildSolverPrompt(prompt: string, inputFiles: LoadedFile[]) {
   `
 }
 
+function parseSolverOutputFromText(rawText: string) {
+  const normalized = rawText.trim()
+  const fencedMatch = normalized.match(/```(?:json)?\s*([\s\S]*?)\s*```/i)
+  const fencedCandidate = fencedMatch?.[1]?.trim()
+
+  const candidates = [fencedCandidate, normalized]
+    .filter((value): value is string => Boolean(value))
+    .flatMap((value) => {
+      const firstBrace = value.indexOf('{')
+      const lastBrace = value.lastIndexOf('}')
+      if (firstBrace === -1 || lastBrace === -1 || lastBrace <= firstBrace) {
+        return [value]
+      }
+
+      return [value, value.slice(firstBrace, lastBrace + 1)]
+    })
+
+  for (const candidate of candidates) {
+    try {
+      const parsedJson = JSON.parse(candidate)
+      const parsed = solverOutputSchema.safeParse(parsedJson)
+      if (parsed.success) {
+        return parsed
+      }
+    } catch {
+      continue
+    }
+  }
+
+  return solverOutputSchema.safeParse(null)
+}
+
 /*
   Runs an OpenCode-backed solver and materializes generated files for judges.
 */
@@ -108,16 +149,38 @@ export async function runSolver(params: {
     cwd: params.workingDirectory,
   })
 
-  const { output } = await generateText({
+  try {
+    const { output } = await generateText({
       model,
-    prompt,
-    system: SYSTEM_PROMPT,
-    abortSignal: AbortSignal.timeout(params.timeout),
-    output: Output.object({
-      schema: solverOutputSchema,
-      description: 'Generated files that satisfy the task',
+      prompt,
+      system: SYSTEM_PROMPT,
+      abortSignal: AbortSignal.timeout(params.timeout),
+      output: Output.object({
+        schema: solverOutputSchema,
+        description: 'Generated files that satisfy the task',
       }),
-  })
+    })
 
-  return output
+    return output
+  } catch (structuredOutputError) {
+    const { text } = await generateText({
+      model,
+      prompt,
+      system: `${SYSTEM_PROMPT}\n${JSON_FALLBACK_SYSTEM_PROMPT}`,
+      abortSignal: AbortSignal.timeout(params.timeout),
+    })
+
+    const parsedOutput = parseSolverOutputFromText(text)
+    if (!parsedOutput.success) {
+      const originalMessage =
+        structuredOutputError instanceof Error
+          ? structuredOutputError.message
+          : String(structuredOutputError)
+      throw new Error(
+        `solver did not return valid file output (structured output failed: ${originalMessage})`
+      )
+    }
+
+    return parsedOutput.data
+  }
 }
