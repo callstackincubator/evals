@@ -1,27 +1,3 @@
-/**
- * Two-step provisional notification upgrade flow:
- *
- * Step 1 — requestProvisional: calls requestPermissionsAsync with allowProvisional: true.
- *   iOS grants this silently without showing a system dialog. The user lands in 'provisional'
- *   state where notifications are delivered quietly to Notification Center only (no banners,
- *   no sounds). This is the iOS-recommended low-friction entry point.
- *
- * Step 2 — upgradeToFull: calls requestPermissionsAsync without allowProvisional. This surfaces
- *   the actual iOS system dialog ("Allow / Don't Allow"). Must only be called after the app has
- *   had a chance to demonstrate value in provisional mode — hence the separate button that only
- *   appears in 'provisional' state. Result is either 'granted' or 'denied'.
- *
- * Keeping the two requests separate is intentional: merging them into one would either skip
- * provisional entirely (if allowProvisional is omitted) or never show the system dialog
- * (if allowProvisional causes iOS to resolve silently every time).
- *
- * Conventions aligned with 08 and 09 refactor:
- * - No StatusBar (unrelated to prompt/requirements).
- * - No useCallback memoization; handlers are plain async functions.
- * - Use direct handler references (e.g. onPress={refreshStatus}) instead of arrow wrappers where applicable.
- * - requestProvisionalNotificationsPermissions uses switch (nextState) instead of if-else for state handling.
- */
-
 import * as Notifications from 'expo-notifications'
 import React, { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
