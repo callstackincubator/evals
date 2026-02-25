@@ -8,6 +8,8 @@ requirements:
     description: Must configure atomWithStorage with an asynchronous storage backend suitable for React Native.
   - id: rehydration-complete-guard
     description: Must guard dependent UI logic until stored value rehydration is complete.
+  - id: parse-failure-safe-default
+    description: Must fall back to a safe default preferences shape when persisted JSON is missing or invalid.
   - id: safe-default-before-hydration
     description: Must provide a deterministic safe default behavior before persisted values are available.
   - id: implementation-use-jotai

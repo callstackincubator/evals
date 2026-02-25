@@ -5,6 +5,8 @@ inputs:
 requirements:
   - id: deterministic-collapsed-expanded-states
     description: Must define deterministic collapsed and expanded visual states for the card.
+  - id: shared-progress-state-machine
+    description: Must drive expand and collapse from a shared progress state machine (for example 0/1) rather than ad hoc layout toggles.
   - id: spring-driven-transition
     description: Must animate the expand and collapse transition using withSpring from react-native-reanimated.
   - id: no-react-layout-jump

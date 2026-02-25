@@ -6,6 +6,8 @@ inputs:
 requirements:
   - id: custom-path-initialization
     description: Must initialize MMKV with explicit custom path configuration.
+  - id: registry-backed-path-contract
+    description: Must persist the configured MMKV path in a registry contract so path drift can be detected on startup.
   - id: path-stability-guard
     description: Must keep path derivation stable across restarts and avoid per-session path drift.
   - id: path-mismatch-recovery

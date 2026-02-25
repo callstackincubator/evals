@@ -8,6 +8,8 @@ requirements:
     description: Must implement mutation side effects inside an async write atom.
   - id: pending-and-error-state-atoms
     description: Must expose deterministic pending and error state for mutation lifecycle.
+  - id: submit-guard-while-pending
+    description: Must guard duplicate submits while mutation is pending to avoid overlapping writes for the same draft.
   - id: success-commits-to-target-atoms
     description: Must commit successful mutation results to the target atoms in a predictable way.
   - id: implementation-use-jotai

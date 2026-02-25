@@ -3,10 +3,14 @@ inputs:
   files:
     - app/App.tsx
 requirements:
+  - id: profile-linking-path-contract
+    description: Must declare a deep-link path contract for the profile screen (for example profile/:userId) in screen linking config.
   - id: invalid-link-guard
     description: Must render fallback UI for invalid deep-link userId values.
   - id: deterministic-parse-path
     description: Must include an explicit parse/normalization path for deep-link params.
+  - id: valid-link-renders-profile-state
+    description: Must render a normal profile state for valid userId deep links instead of routing all links to fallback.
   - id: implementation-use-react-navigation-static-api
     description: Must define navigation with React Navigation static APIs and createStaticNavigation.
   - id: implementation-use-native-navigation

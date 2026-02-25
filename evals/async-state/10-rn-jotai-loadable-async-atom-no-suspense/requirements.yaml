@@ -6,6 +6,8 @@ inputs:
 requirements:
   - id: loadable-wrapping-for-async-atom
     description: Must wrap async atom access with a loadable pattern that exposes explicit loading, hasData, and hasError branches.
+  - id: refresh-signal-recomputes-async-atom
+    description: Must provide a deterministic refresh signal that recomputes the async atom without relying on Suspense resets.
   - id: explicit-non-suspense-state-branches
     description: Must render explicit non-Suspense UI branches for loading success and failure paths.
   - id: no-unhandled-promise-throw

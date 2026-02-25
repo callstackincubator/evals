@@ -5,6 +5,8 @@ inputs:
 requirements:
   - id: sectionlist-scrolltolocation-usage
     description: Must use SectionList scrollToLocation for programmatic section navigation.
+  - id: section-target-index-resolution
+    description: Must resolve section and item indexes from deterministic source data before calling scrollToLocation.
   - id: deterministic-offset-strategy
     description: Must include deterministic viewOffset/getItemLayout strategy so target rows land predictably.
   - id: invalid-target-guard

@@ -6,10 +6,14 @@ inputs:
 requirements:
   - id: camera-availability-check
     description: Must perform camera availability checks for unsupported environments before preview usage.
+  - id: preview-gated-by-availability-and-permission
+    description: Must render CameraView only when both camera availability and granted permission checks pass.
   - id: camera-mount-error-handler
     description: Must handle camera mount errors through explicit fallback UI state.
   - id: permission-not-equal-capability
     description: Must not assume granted permission guarantees functional camera preview.
+  - id: appstate-return-recheck
+    description: Must re-check permission and availability when the app returns to active state after settings or interruptions.
   - id: fallback-action-exposed
     description: Must provide an alternate recovery action when preview cannot be mounted.
   - id: implementation-use-expo-permission-apis

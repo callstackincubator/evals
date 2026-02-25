@@ -5,8 +5,12 @@ inputs:
 requirements:
   - id: query-param-parsing
     description: Must parse feed query parameters from deep links.
+  - id: query-allowlist-normalization
+    description: Must normalize sort and order params through explicit allowlists instead of passing arbitrary query values through.
   - id: query-default-normalization
     description: Must normalize missing or invalid query params to deterministic defaults.
+  - id: normalized-query-drives-rendered-state
+    description: Must render or consume normalized query values for feed state, not raw unvalidated params.
   - id: implementation-use-react-navigation-static-api
     description: Must define navigation with React Navigation static APIs and createStaticNavigation.
   - id: implementation-use-native-navigation

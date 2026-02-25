@@ -5,6 +5,8 @@ inputs:
 requirements:
   - id: pressable-drives-animation
     description: Must render a Pressable interaction that triggers animation state changes on press-in and press-out.
+  - id: ui-thread-shared-value-driver
+    description: Must drive press feedback from Reanimated shared values and animated styles rather than per-frame React state updates.
   - id: reanimated-timing-scale
     description: Must use react-native-reanimated shared values and withTiming to animate a scale transform.
   - id: reset-to-rest-state

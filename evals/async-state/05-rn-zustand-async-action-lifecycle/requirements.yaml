@@ -8,6 +8,8 @@ requirements:
     description: Must model async fetch lifecycle explicitly in store state with idle loading success and error phases.
   - id: async-action-updates-store
     description: Must implement the fetch as a Zustand async action that updates store state via set.
+  - id: selector-scoped-subscriptions
+    description: Must consume store values through scoped selectors for individual fields or actions instead of subscribing to the full store object.
   - id: error-reset-or-retry-path
     description: Must provide deterministic error handling with a clear retry or reset path.
   - id: implementation-use-zustand

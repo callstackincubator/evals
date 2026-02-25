@@ -6,6 +6,8 @@ inputs:
 requirements:
   - id: persisted-schema-version-key
     description: Must persist and read an explicit schema version key for stored data.
+  - id: sequential-version-updates
+    description: Must advance schema version sequentially and persist each successful migration step exactly once.
   - id: idempotent-migration-steps
     description: Must run migrations idempotently so repeated startup does not reapply completed steps.
   - id: incompatible-version-fallback

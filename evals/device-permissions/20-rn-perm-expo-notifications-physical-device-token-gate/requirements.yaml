@@ -8,10 +8,14 @@ requirements:
     description: Must gate push token retrieval to physical devices and avoid blind token requests on simulators.
   - id: permission-check-before-token-request
     description: Must check or request notification permission before token retrieval.
+  - id: in-flight-registration-guard
+    description: Must prevent overlapping registration attempts while a token registration flow is already in progress.
   - id: simulator-degraded-ux
     description: Must provide explicit degraded UX path for non-physical-device environments.
   - id: registration-path-guarded-by-grant-and-device
     description: Must require both granted permission and physical-device capability before registration success state.
+  - id: nonempty-token-validation
+    description: Must validate that retrieved push token data is non-empty before reporting successful registration.
   - id: token-error-message-sanitization
     description: Must surface explicit, domain-scoped token registration errors while mapping unknown failures to a generic fallback message (no raw unexpected error leakage to users).
   - id: implementation-use-expo-permission-apis

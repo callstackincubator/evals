@@ -6,6 +6,8 @@ inputs:
 requirements:
   - id: sqlite-outbox-schema
     description: Must define SQLite outbox records with deterministic status fields such as pending sent and failed.
+  - id: replay-eligibility-query-contract
+    description: Must replay only rows eligible by status attempt count and retry-time gates, with deterministic ordering and bounded batch size.
   - id: atomic-replay-state-transitions
     description: Must transition replay status atomically with transaction protected updates.
   - id: bounded-retry-policy

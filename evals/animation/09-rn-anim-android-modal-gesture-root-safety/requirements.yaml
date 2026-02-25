@@ -7,6 +7,10 @@ requirements:
     description: Must configure GestureHandlerRootView or gestureHandlerRootHOC in the modal interaction path required for Android modal gesture handling.
   - id: gesture-control-inside-modal
     description: Must include at least one gesture-driven control inside the modal that uses RNGH APIs.
+  - id: gesture-shared-value-sheet-control
+    description: Must update modal sheet position from gesture events through Reanimated shared values and animated styles.
+  - id: dismiss-threshold-with-snapback
+    description: Must implement deterministic end-of-gesture behavior that either dismisses after a threshold or springs back to rest.
   - id: no-platform-specific-breakage-path
     description: Must avoid an implementation path that leaves Android modal gestures non-functional.
   - id: implementation-use-reanimated

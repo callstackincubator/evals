@@ -5,6 +5,8 @@ inputs:
 requirements:
   - id: filter-driven-section-derivation
     description: Must derive filtered sections deterministically from source data and query input.
+  - id: empty-sections-pruned-after-filter
+    description: Must exclude sections whose filtered data arrays are empty so stale section headers are not rendered.
   - id: extradata-or-immutable-update
     description: Must use extraData or immutable section updates so filtered output refreshes reliably.
   - id: empty-state-correctness

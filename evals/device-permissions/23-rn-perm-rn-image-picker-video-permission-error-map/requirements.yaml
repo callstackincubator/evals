@@ -6,11 +6,15 @@ inputs:
 requirements:
   - id: rn-image-picker-video-launch-path
     description: Must use react-native-image-picker launchCamera video capture path with explicit configuration.
+  - id: camera-and-mic-preflight-checks
+    description: Must perform explicit camera and microphone permission preflight checks before launching video capture.
   - id: cancel-error-success-state-branches
     description: Must branch cancellation, error, and success outcomes explicitly from picker response.
   - id: camera-microphone-permission-error-mapping
     description: Must map permission-related picker errors to deterministic degraded UX states.
   - id: unavailable-hardware-fallback
     description: Must provide fallback behavior when camera hardware is unavailable.
+  - id: fallback-library-result-handling
+    description: Must validate fallback library outcomes and handle missing assets without runtime failures.
   - id: implementation-use-react-native-image-picker-permissions
     description: Must implement media permission-aware behavior using react-native-image-picker APIs.

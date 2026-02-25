@@ -10,5 +10,7 @@ requirements:
     description: Must configure a stable shared storage path or app group location contract.
   - id: cross-process-refresh-path
     description: Must include a deterministic refresh path so process external updates become visible.
+  - id: appstate-active-refresh-hook
+    description: Must refresh shared values when the app returns to active state so external process writes are observed promptly.
   - id: implementation-use-mmkv
     description: Must implement persistence behavior using MMKV APIs.

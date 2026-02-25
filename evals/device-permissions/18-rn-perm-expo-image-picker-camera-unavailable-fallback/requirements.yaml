@@ -6,10 +6,14 @@ inputs:
 requirements:
   - id: camera-permission-before-launchcamera
     description: Must check or request camera permission before launchCameraAsync usage.
+  - id: camera-success-path-explicit
+    description: Must include an explicit successful camera-capture path when permission and hardware conditions are valid.
   - id: camera-unavailable-fallback-to-library
     description: Must handle camera-unavailable path with a deterministic fallback to launchImageLibraryAsync or equivalent alternate path.
   - id: launchcamera-error-branching
     description: Must branch explicit error or cancellation outcomes from launchCameraAsync.
+  - id: fallback-library-result-validation
+    description: Must validate fallback gallery results and handle canceled or empty asset responses without crashing.
   - id: no-hard-failure-on-unsupported-device
     description: Must avoid hard-failure behavior on simulator or unsupported camera environments.
   - id: implementation-use-expo-permission-apis

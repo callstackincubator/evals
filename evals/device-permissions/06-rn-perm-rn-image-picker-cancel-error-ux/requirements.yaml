@@ -4,10 +4,14 @@ inputs:
     - prompt.md
     - requirements.yaml
 requirements:
+  - id: shared-response-handler-for-entry-points
+    description: Must route camera and gallery launch results through a shared response-mapping path so state transitions stay consistent.
   - id: rn-image-picker-response-branches
     description: Must branch explicitly on didCancel, errorCode or success response states.
   - id: permission-or-hardware-error-fallback
     description: Must treat permission and camera-unavailable error codes as degraded UX paths.
+  - id: request-start-state-reset
+    description: Must reset stale selected asset or status state at request start before handling a new picker response.
   - id: empty-assets-safe-path
     description: Must handle empty or missing assets arrays without runtime failure.
   - id: success-assets-consumption

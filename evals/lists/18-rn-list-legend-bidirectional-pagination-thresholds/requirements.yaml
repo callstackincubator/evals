@@ -7,7 +7,11 @@ requirements:
     description: Must support both onStartReached and onEndReached pagination paths.
   - id: duplicate-trigger-guards
     description: Must prevent duplicate or overlapping page fetches on either direction while loading is active.
+  - id: directional-loading-phase-state
+    description: Must model start-loading and end-loading phases explicitly so each trigger path is observable and deterministic.
   - id: threshold-driven-determinism
     description: Must use explicit threshold-driven behavior so start/end pagination triggers are predictable.
+  - id: estimated-item-size-contract
+    description: Must provide LegendList estimated item size configuration to keep virtualization behavior stable during pagination.
   - id: implementation-use-legend-list
     description: Must implement list behavior using Legend List APIs.

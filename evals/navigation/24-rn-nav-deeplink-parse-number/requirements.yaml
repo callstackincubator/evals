@@ -5,6 +5,10 @@ inputs:
 requirements:
   - id: numeric-orderid-parse
     description: Must parse orderId from deep-link input into a numeric form before use.
+  - id: safe-orderid-validation
+    description: Must validate parsed orderId as a safe positive integer before rendering order details.
+  - id: valid-order-link-renders-details
+    description: Must render order-details UI for valid orderId links instead of treating all links as fallback.
   - id: invalid-orderid-fallback
     description: Must render a fallback route state for invalid numeric values.
   - id: implementation-use-react-navigation-static-api

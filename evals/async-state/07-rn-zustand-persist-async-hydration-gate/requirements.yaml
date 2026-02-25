@@ -6,6 +6,8 @@ inputs:
 requirements:
   - id: persist-middleware-with-async-storage
     description: Must configure Zustand persist middleware with asynchronous storage integration.
+  - id: persisted-subset-contract
+    description: Must persist only stable session data needed across launches and keep hydration flags out of persisted payload shape.
   - id: hydration-complete-gate
     description: Must gate protected UI decisions until persisted state hydration has completed.
   - id: deterministic-pre-hydration-fallback

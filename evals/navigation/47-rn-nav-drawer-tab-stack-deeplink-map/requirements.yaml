@@ -3,8 +3,12 @@ inputs:
   files:
     - app/App.tsx
 requirements:
+  - id: nested-drawer-tab-stack-contract
+    description: Must define Drawer > Tab > Stack nesting where deep links resolve through the nested navigator hierarchy.
   - id: deep-nested-linking-map
     description: Must define linking config across drawer, tab, stack nesting levels.
+  - id: deep-route-param-delivery
+    description: Must pass dynamic deep-link path params to the deep stack route screen that is opened.
   - id: unknown-path-fallback-route
     description: Must route unknown deep-link paths to a deterministic fallback screen.
   - id: implementation-use-react-navigation-static-api
