@@ -9,7 +9,5 @@ requirements:
     description: Must prevent recycled local state from leaking across different item identities.
   - id: identity-driven-row-behavior
     description: Must bind row state behavior to item identity, not container instance.
-  - id: implementation-legendlist-v2-keyextractor-contract
-    description: Must provide stable LegendList keyExtractor identity and MUST NOT use index-based keys for dynamic list data.
-  - id: implementation-legendlist-v2-mvcp-default
-    description: Must keep LegendList maintainVisibleContentPosition enabled (default or explicit true) in dynamic/prepend/bidirectional flows and MUST NOT disable it.
+  - id: implementation-legendlist-recycleitems-id-backed-state
+    description: Must store expandable/recycled row UI state in an id-keyed map outside recycled row containers.

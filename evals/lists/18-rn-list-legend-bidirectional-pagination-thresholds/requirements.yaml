@@ -9,7 +9,5 @@ requirements:
     description: Must prevent duplicate or overlapping page fetches on either direction while loading is active.
   - id: threshold-driven-determinism
     description: Must use explicit threshold-driven behavior so start/end pagination triggers are predictable.
-  - id: implementation-legendlist-v2-keyextractor-contract
-    description: Must provide stable LegendList keyExtractor identity and MUST NOT use index-based keys for dynamic list data.
-  - id: implementation-legendlist-v2-mvcp-default
-    description: Must keep LegendList maintainVisibleContentPosition enabled (default or explicit true) in dynamic/prepend/bidirectional flows and MUST NOT disable it.
+  - id: implementation-legendlist-bidirectional-cursor-contract
+    description: Must maintain independent start/end pagination cursors and apply updates to the correct edge during bidirectional loading.
