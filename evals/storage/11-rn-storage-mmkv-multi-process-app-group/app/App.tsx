@@ -10,8 +10,8 @@ async function configureMultiProcessAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Storage</Text>
-      <Text style={styles.subtitle}>Keys: {STORAGE_KEYS.join(', ')}</Text>
+      <Text style={styles.title}>Shared App Group Store</Text>
+      <Text style={styles.subtitle}>Shared keys: {STORAGE_KEYS.join(', ')}</Text>
       <Pressable style={styles.button} onPress={() => configureMultiProcessAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

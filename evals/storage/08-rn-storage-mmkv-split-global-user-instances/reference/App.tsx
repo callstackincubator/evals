@@ -27,7 +27,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Storage</Text>
+      <Text style={styles.title}>Global & User Stores</Text>
       <Text style={styles.row}>Global theme: {theme}</Text>
       <Text style={styles.row}>User draft chars: {draft.length}</Text>
 

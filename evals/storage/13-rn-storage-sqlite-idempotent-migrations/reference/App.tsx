@@ -83,7 +83,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Storage</Text>
+      <Text style={styles.title}>SQLite Migrations</Text>
       <Text style={styles.row}>Status: {status}</Text>
       <Text style={styles.row}>Schema version: {version}</Text>
       <Pressable style={styles.button} onPress={run}>

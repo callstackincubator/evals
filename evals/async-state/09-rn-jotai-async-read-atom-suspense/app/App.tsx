@@ -10,8 +10,8 @@ async function loadAtomValueAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async State </Text>
-      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Text style={styles.title}>Profile</Text>
+      <Text style={styles.subtitle}>Profile placeholders: {ITEMS.length}</Text>
       <Pressable style={styles.button} onPress={() => loadAtomValueAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

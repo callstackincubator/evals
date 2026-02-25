@@ -10,8 +10,8 @@ async function batchReadWriteAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Storage</Text>
-      <Text style={styles.subtitle}>Keys: {STORAGE_KEYS.join(', ')}</Text>
+      <Text style={styles.title}>Settings Batch Sync</Text>
+      <Text style={styles.subtitle}>Settings keys: {STORAGE_KEYS.join(', ')}</Text>
       <Pressable style={styles.button} onPress={() => batchReadWriteAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

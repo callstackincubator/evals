@@ -71,7 +71,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Storage</Text>
+      <Text style={styles.title}>SQLite Initialization</Text>
       <Text style={styles.row}>Status: {status}</Text>
       <Text style={styles.row}>Tasks: {taskCount}</Text>
 

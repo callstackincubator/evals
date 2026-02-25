@@ -10,8 +10,8 @@ async function replayOutboxAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Storage</Text>
-      <Text style={styles.subtitle}>Keys: {STORAGE_KEYS.join(', ')}</Text>
+      <Text style={styles.title}>Offline Outbox</Text>
+      <Text style={styles.subtitle}>Outbox keys: {STORAGE_KEYS.join(', ')}</Text>
       <Pressable style={styles.button} onPress={() => replayOutboxAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

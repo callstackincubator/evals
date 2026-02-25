@@ -69,7 +69,7 @@ function ProjectsScreen() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async State</Text>
+      <Text style={styles.title}>Profile & Projects</Text>
 
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Profile</Text>

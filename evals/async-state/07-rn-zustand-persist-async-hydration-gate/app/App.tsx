@@ -1,19 +1,19 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-const ITEMS = ['alpha', 'beta', 'gamma']
+const SESSION_STATE = 'signed-out'
 
 async function isHydrationReadyAction() {
   // No-op
-  return ITEMS.length
+  return SESSION_STATE
 }
 
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async State </Text>
-      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Text style={styles.title}>Session Gate</Text>
+      <Text style={styles.subtitle}>Restore session before showing account actions.</Text>
       <Pressable style={styles.button} onPress={() => isHydrationReadyAction()}>
-        <Text style={styles.buttonText}>Open</Text>
+        <Text style={styles.buttonText}>Restore Session</Text>
       </Pressable>
     </View>
   )

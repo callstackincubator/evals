@@ -10,8 +10,8 @@ async function applyOptimisticUpdateAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async State </Text>
-      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Text style={styles.title}>Todo List</Text>
+      <Text style={styles.subtitle}>Todo entries: {ITEMS.length}</Text>
       <Pressable style={styles.button} onPress={() => applyOptimisticUpdateAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

@@ -67,7 +67,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Storage</Text>
+      <Text style={styles.title}>Prepared Statements</Text>
       <Text style={styles.row}>Rows: {rows.length}</Text>
 
       <Pressable

@@ -10,8 +10,8 @@ async function rotateEncryptionKeyAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Storage</Text>
-      <Text style={styles.subtitle}>Keys: {STORAGE_KEYS.join(', ')}</Text>
+      <Text style={styles.title}>Encryption Rotation</Text>
+      <Text style={styles.subtitle}>Protected keys: {STORAGE_KEYS.join(', ')}</Text>
       <Pressable style={styles.button} onPress={() => rotateEncryptionKeyAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

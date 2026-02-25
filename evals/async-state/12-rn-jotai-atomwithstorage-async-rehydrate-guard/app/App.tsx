@@ -10,8 +10,8 @@ async function isHydrationReadyAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async State </Text>
-      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Text style={styles.title}>Preferences</Text>
+      <Text style={styles.subtitle}>Preference keys: {ITEMS.length}</Text>
       <Pressable style={styles.button} onPress={() => isHydrationReadyAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

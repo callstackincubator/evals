@@ -8,8 +8,8 @@ async function runCapabilityStateMachineAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Device Access Center</Text>
+      <Text style={styles.subtitle}>Coordinate camera, media, location, and notifications.</Text>
       <Pressable style={styles.button} onPress={() => runCapabilityStateMachineAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

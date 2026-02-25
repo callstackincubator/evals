@@ -127,7 +127,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Permissions</Text>
+      <Text style={styles.title}>Permission Diagnostics</Text>
       <Text style={styles.summary}>{getSummary()}</Text>
 
       <Pressable onPress={runDiagnostics} style={styles.button}>

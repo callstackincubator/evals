@@ -10,8 +10,8 @@ async function submitMutationAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async State </Text>
-      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Text style={styles.title}>Items</Text>
+      <Text style={styles.subtitle}>Draft items: {ITEMS.length}</Text>
       <Pressable style={styles.button} onPress={() => submitMutationAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

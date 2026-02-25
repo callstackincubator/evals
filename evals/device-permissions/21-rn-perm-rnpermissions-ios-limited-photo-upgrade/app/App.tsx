@@ -8,8 +8,8 @@ async function upgradeLimitedPhotoAccessAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Limited Photo Access</Text>
+      <Text style={styles.subtitle}>Support limited library access and upgrade flow.</Text>
       <Pressable style={styles.button} onPress={() => upgradeLimitedPhotoAccessAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

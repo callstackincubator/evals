@@ -10,8 +10,8 @@ async function resolveCustomPathAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Storage</Text>
-      <Text style={styles.subtitle}>Keys: {STORAGE_KEYS.join(', ')}</Text>
+      <Text style={styles.title}>Custom Path Persistence</Text>
+      <Text style={styles.subtitle}>Persisted keys: {STORAGE_KEYS.join(', ')}</Text>
       <Pressable style={styles.button} onPress={() => resolveCustomPathAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

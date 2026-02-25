@@ -8,8 +8,8 @@ async function checkLocationServicesEnabledAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Location Services Gate</Text>
+      <Text style={styles.subtitle}>Differentiate permission status from services availability.</Text>
       <Pressable style={styles.button} onPress={() => checkLocationServicesEnabledAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

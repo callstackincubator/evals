@@ -10,8 +10,8 @@ async function startTransitionAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async State </Text>
-      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Text style={styles.title}>Filtered Results</Text>
+      <Text style={styles.subtitle}>Filter presets: {ITEMS.length}</Text>
       <Pressable style={styles.button} onPress={() => startTransitionAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

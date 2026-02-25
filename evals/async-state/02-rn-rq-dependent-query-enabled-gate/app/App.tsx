@@ -10,8 +10,8 @@ async function resolveDependentRequestAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async State </Text>
-      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Text style={styles.title}>Profile & Projects</Text>
+      <Text style={styles.subtitle}>Project stubs: {ITEMS.length}</Text>
       <Pressable style={styles.button} onPress={() => resolveDependentRequestAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

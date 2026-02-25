@@ -113,7 +113,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Permissions</Text>
+      <Text style={styles.title}>Photo Library Access</Text>
       <Text style={styles.banner}>{banner}</Text>
 
       <Pressable onPress={pickImage} style={styles.button}>

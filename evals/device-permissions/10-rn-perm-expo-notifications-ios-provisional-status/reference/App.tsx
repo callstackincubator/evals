@@ -111,7 +111,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Permissions</Text>
+      <Text style={styles.title}>Provisional Notifications</Text>
       <Text style={styles.status}>{getStatusText(state)}</Text>
 
       {state === 'not-determined' && (

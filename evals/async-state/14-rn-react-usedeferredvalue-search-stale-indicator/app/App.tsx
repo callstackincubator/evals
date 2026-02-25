@@ -10,8 +10,8 @@ async function computeDeferredResultsAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async State </Text>
-      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Text style={styles.title}>Search Results</Text>
+      <Text style={styles.subtitle}>Search candidates: {ITEMS.length}</Text>
       <Pressable style={styles.button} onPress={() => computeDeferredResultsAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

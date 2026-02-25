@@ -8,8 +8,8 @@ async function resolveCameraAvailabilityAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Camera Availability</Text>
+      <Text style={styles.subtitle}>Handle unavailable camera and mount error fallback.</Text>
       <Pressable style={styles.button} onPress={() => resolveCameraAvailabilityAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

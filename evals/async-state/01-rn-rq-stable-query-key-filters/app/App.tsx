@@ -10,8 +10,8 @@ async function buildQueryKeyAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async State </Text>
-      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Text style={styles.title}>Transactions</Text>
+      <Text style={styles.subtitle}>Transactions queued: {ITEMS.length}</Text>
       <Pressable style={styles.button} onPress={() => buildQueryKeyAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

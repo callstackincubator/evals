@@ -302,7 +302,7 @@ export default function App() {
 
   return (
     <View style={[styles.container, containerInsets]}>
-      <Text style={styles.title}>Permissions</Text>
+      <Text style={styles.title}>Device Access Center</Text>
       <Text style={styles.subtitle}>
         Capabilities not fully granted: {degradedCount}
       </Text>

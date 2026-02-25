@@ -10,8 +10,8 @@ async function runExclusiveTransactionAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Storage</Text>
-      <Text style={styles.subtitle}>Keys: {STORAGE_KEYS.join(', ')}</Text>
+      <Text style={styles.title}>Exclusive Transactions</Text>
+      <Text style={styles.subtitle}>Write keys: {STORAGE_KEYS.join(', ')}</Text>
       <Pressable style={styles.button} onPress={() => runExclusiveTransactionAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

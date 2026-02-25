@@ -80,7 +80,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Permissions</Text>
+      <Text style={styles.title}>Android Push Setup</Text>
       <Text style={styles.state}>State: {registrationState}</Text>
 
       <Pressable onPress={register} style={styles.button}>

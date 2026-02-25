@@ -8,8 +8,8 @@ async function launchPickerWithMetadataAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Rich Photo Metadata</Text>
+      <Text style={styles.subtitle}>Request metadata and handle permission variability.</Text>
       <Pressable style={styles.button} onPress={() => launchPickerWithMetadataAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

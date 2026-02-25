@@ -10,8 +10,8 @@ async function resolveLatestResponseAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async State </Text>
-      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Text style={styles.title}>Search</Text>
+      <Text style={styles.subtitle}>Query samples: {ITEMS.length}</Text>
       <Pressable style={styles.button} onPress={() => resolveLatestResponseAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

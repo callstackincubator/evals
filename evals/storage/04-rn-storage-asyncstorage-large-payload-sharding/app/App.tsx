@@ -10,8 +10,8 @@ async function shardPayloadAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Storage</Text>
-      <Text style={styles.subtitle}>Keys: {STORAGE_KEYS.join(', ')}</Text>
+      <Text style={styles.title}>Document Sharding</Text>
+      <Text style={styles.subtitle}>Shard keys: {STORAGE_KEYS.join(', ')}</Text>
       <Pressable style={styles.button} onPress={() => shardPayloadAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

@@ -8,8 +8,8 @@ async function saveToPhotosGuardAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Save to Photos</Text>
+      <Text style={styles.subtitle}>Capture media and guard legacy Android storage behavior.</Text>
       <Pressable style={styles.button} onPress={() => saveToPhotosGuardAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

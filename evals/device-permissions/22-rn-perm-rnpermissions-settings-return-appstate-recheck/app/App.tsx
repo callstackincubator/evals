@@ -8,8 +8,8 @@ async function recheckAfterSettingsAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Settings Recheck</Text>
+      <Text style={styles.subtitle}>Recheck blocked permissions on app foreground.</Text>
       <Pressable style={styles.button} onPress={() => recheckAfterSettingsAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>
