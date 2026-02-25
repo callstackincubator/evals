@@ -6,7 +6,7 @@ requirements:
   - id: rnpermissions-photo-library-limited-branch
     description: Must model iOS limited photo-library status as a distinct permission state.
   - id: openphotopicker-upgrade-path
-    description: Must provide an openPhotoPicker-based upgrade path or equivalent settings recovery from limited state.
+    description: Must provide an openPhotoPicker-based upgrade path from limited state.
   - id: limited-state-remains-usable
     description: Must keep limited-access behavior usable when upgrade is declined.
   - id: no-full-access-assumption-from-limited

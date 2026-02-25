@@ -6,7 +6,7 @@ requirements:
   - id: flatlist-stable-keyextractor
     description: Must provide a stable keyExtractor based on item identity, not array index.
   - id: extra-data-selection-refresh
-    description: Must wire FlatList extraData (or equivalent immutable dependency path) so selected-row UI updates are deterministic.
+    description: Must wire FlatList extraData to selection state so selected-row UI updates when selection changes.
   - id: no-item-key-anti-pattern
     description: Must avoid forcing per-row remount via unstable key usage inside renderItem output.
   - id: implementation-rn-core-virtualizedlist-contract

@@ -12,6 +12,6 @@ requirements:
   - id: fallback-action-exposed
     description: Must provide an alternate recovery action when preview cannot be mounted.
   - id: implementation-expo-camera-cameraview-api
-    description: Must use modern expo-camera preview and permission APIs (CameraView with useCameraPermissions and/or get/request camera permission methods) instead of legacy camera-screen wiring.
+    description: Must use CameraView for preview and expo-camera permission APIs (useCameraPermissions or getCameraPermissionsAsync/requestCameraPermissionsAsync) instead of legacy camera-screen wiring.
   - id: implementation-expo-camera-grant-gated-preview
     description: Must gate camera preview and capture actions behind granted camera permission state, with deterministic denied fallback UI.
