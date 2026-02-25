@@ -7,3 +7,5 @@ requirements:
     description: Must parse orderId from deep-link input into a numeric form before use.
   - id: invalid-orderid-fallback
     description: Must render a fallback route state for invalid numeric values.
+  - id: implementation-static-navigation-api
+    description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.

@@ -1,1 +1,1 @@
-Build an interaction where a UI-thread worklet computes high-frequency animation state and then schedules a lightweight React-side update through the worklets bridge only at controlled points.
+Build an interaction where a UI-thread worklet computes high-frequency animation state, React-to-UI dispatch uses scheduleOnUI (not runOnUI), and React-side updates are bridged with scheduleOnRN only at controlled points.

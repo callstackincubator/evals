@@ -18,16 +18,54 @@ This document is the reference for the offline, storage, and sync resilience cat
 - [Known limits](https://react-native-async-storage.github.io/async-storage/docs/limits/)
 - [Where data is stored](https://react-native-async-storage.github.io/async-storage/docs/advanced/where_data_stored/)
 - [Next storage implementation](https://react-native-async-storage.github.io/async-storage/docs/advanced/next/)
+- [Async Storage releases](https://github.com/react-native-async-storage/async-storage/releases)
+- [React Native docs: AsyncStorage removed from core](https://reactnative.dev/docs/next/asyncstorage)
 
 ### react-native-mmkv
 
 - [MMKV README](https://github.com/mrousavy/react-native-mmkv)
 - [MMKV docs](https://mrousavy.com/react-native-mmkv/)
+- [MMKV releases](https://github.com/mrousavy/react-native-mmkv/releases)
 
 ### expo-sqlite
 
 - [Expo SQLite SDK docs](https://docs.expo.dev/versions/latest/sdk/sqlite/)
 - [SQLite with React and Expo Router](https://docs.expo.dev/router/reference/sqlite/)
+- [Expo SDK 51 changelog](https://expo.dev/changelog/2024-05-07-sdk-51)
+- [Expo SDK 52 changelog](https://expo.dev/changelog/2024-11-12-sdk-52)
+
+## recent api shifts to encode in eval requirements (as of 2026-02-25)
+
+### @react-native-async-storage/async-storage
+
+- `v3.0.0` (2026-02-23) introduced major breaking changes, including:
+  - callback API dropped
+  - scoped storages introduced
+  - batch method API renamed in v3 track
+- `v3.0.1` (2026-02-23) is the immediate patch after a `v3.0.0` artifact issue.
+- React Native core `AsyncStorage` remains removed; evals must require the community package import path.
+- Eval policy for this repo's storage set:
+  - enforce package import and promise-first usage
+  - do not force scoped-storage migration yet, because these evals still intentionally exercise `multi*` patterns in current references.
+
+### react-native-mmkv
+
+- `v4.0.0` (2025-10-20) is a major release (Nitro rewrite, API behavior updates).
+- `v4.1.1` (2026-01-07) is the latest listed release at audit time.
+- Current README examples use `createMMKV(...)` and explicit instance options (`id`, `path`, `encryptionKey`, `mode`).
+- Eval policy:
+  - require `createMMKV` style initialization with explicit instance IDs for scoped storage evals
+  - disallow legacy constructor-style patterns from older examples.
+
+### expo-sqlite
+
+- SDK 51 (2024-05-07) made the rewritten API the default and documented that legacy imports were transitional.
+- SDK 52 (2024-11-12) removed `expo-sqlite/legacy`.
+- Current docs explicitly note `withTransactionAsync` is not exclusive; ordering-sensitive flows should use `withExclusiveTransactionAsync`.
+- Eval policy:
+  - require modern `expo-sqlite` API path (no legacy imports)
+  - require parameterized SQL (`runAsync` / prepared statements) over dynamic SQL strings for user-controlled values
+  - for ordering-critical write evals, require `withExclusiveTransactionAsync` and disallow relying on `withTransactionAsync` for strict serialization.
 
 ## best-practice inventory
 

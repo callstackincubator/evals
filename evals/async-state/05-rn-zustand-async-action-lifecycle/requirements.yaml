@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: explicit-async-lifecycle-state
-    description: Must model async fetch lifecycle explicitly in store state with idle loading success and error phases.
+    description: Must model async lifecycle explicitly in store state with idle/loading/success/error phases.
   - id: async-action-updates-store
-    description: Must implement the fetch as a Zustand async action that updates store state via set.
+    description: Must implement async fetch action that updates Zustand state via set/get transitions through lifecycle phases.
   - id: error-reset-or-retry-path
-    description: Must provide deterministic error handling with a clear retry or reset path.
+    description: Must provide deterministic error recovery path (retry and/or reset) after failed async action.
+  - id: implementation-zustand-v5-named-create
+    description: Must use named create import from 'zustand' (v5 style) and MUST NOT rely on removed default-export create usage.
+  - id: implementation-zustand-v5-selector-equality
+    description: Must NOT pass a custom equality function as the second argument to create-based hook selectors in v5; use useShallow or createWithEqualityFn when equality control is needed.

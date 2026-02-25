@@ -1,12 +1,17 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: stable-serializable-query-key
-    description: Must build a stable and serializable TanStack Query key that includes the active filter and pagination inputs.
+    description: Must construct queryKey as a stable top-level array that includes filter, page, and pageSize as serializable members.
   - id: no-unstable-query-key-members
-    description: Must avoid unstable or non-serializable values in query keys such as functions or freshly-created object identities that change every render.
+    description: Must NOT include unstable members in query keys (for example functions or freshly-created non-stable references that change every render).
   - id: queryfn-derived-from-querykey
-    description: Must derive request parameters from query key inputs inside the query function instead of hidden mutable external state.
+    description: Must derive fetch parameters from QueryFunctionContext.queryKey in queryFn rather than from hidden mutable external state.
+  - id: implementation-rq-v5-object-signature
+    description: Must use TanStack Query v5 object-signature APIs (for hooks and queryClient methods) and MUST NOT use legacy positional overload calls.
+  - id: implementation-rq-no-query-callbacks
+    description: Must NOT pass onSuccess/onError/onSettled callbacks to useQuery options (removed in v5); mutation callbacks remain allowed.
+  - id: implementation-rq-placeholderdata-identity
+    description: Must preserve previous-page continuity with placeholderData identity function and MUST NOT use removed keepPreviousData option.

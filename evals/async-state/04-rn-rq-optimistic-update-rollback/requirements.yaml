@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: optimistic-update-with-snapshot
-    description: Must apply optimistic cache updates using a pre-mutation snapshot context.
+    description: Must implement optimistic cache update in onMutate with cancelQueries + snapshot capture + setQueryData optimistic write.
   - id: rollback-on-mutation-error
-    description: Must restore prior cached state when the optimistic mutation fails.
+    description: Must restore pre-mutation snapshot in onError when optimistic mutation fails.
   - id: settle-path-revalidation
-    description: Must revalidate affected queries after mutation settles to realign with authoritative server state.
+    description: Must revalidate affected query keys in onSettled to reconcile optimistic cache with authoritative server state.
+  - id: implementation-rq-v5-object-signature
+    description: Must use TanStack Query v5 object-signature APIs (for hooks and queryClient methods) and MUST NOT use legacy positional overload calls.
+  - id: implementation-rq-no-query-callbacks
+    description: Must NOT pass onSuccess/onError/onSettled callbacks to useQuery options (removed in v5); mutation callbacks remain allowed.

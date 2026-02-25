@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native'
+import { scheduleOnRN } from 'react-native-worklets'
 import {
   Gesture,
   GestureDetector,
   GestureHandlerRootView,
 } from 'react-native-gesture-handler'
 import Animated, {
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -15,6 +15,13 @@ import Animated, {
 
 const SHEET_HEIGHT = 320
 const CLOSE_THRESHOLD = 140
+
+type BridgeScheduler = (
+  callback: (...args: unknown[]) => void,
+  ...args: unknown[]
+) => void
+
+const scheduleOnReactRuntime = scheduleOnRN as unknown as BridgeScheduler
 
 export default function App() {
   const [visible, setVisible] = useState(false)
@@ -37,7 +44,7 @@ export default function App() {
           { duration: 160 },
           (finished) => {
             if (finished) {
-              runOnJS(setVisible)(false)
+              scheduleOnReactRuntime(setVisible, false)
             }
           }
         )

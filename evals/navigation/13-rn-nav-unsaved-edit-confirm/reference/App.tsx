@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
-import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import {
+  createStaticNavigation,
+  useNavigation,
+  usePreventRemove,
+} from '@react-navigation/native'
 import {
   createNativeStackNavigator,
   NativeStackNavigationProp,
@@ -36,25 +40,16 @@ function EditScreen() {
 
   const isDirty = name !== savedName
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', (event: any) => {
-      if (!isDirty) {
-        return
-      }
-
-      event.preventDefault()
-      Alert.alert('Discard changes?', 'You have unsaved edits.', [
-        { text: 'Stay', style: 'cancel' },
-        {
-          text: 'Leave',
-          style: 'destructive',
-          onPress: () => navigation.dispatch(event.data.action),
-        },
-      ])
-    })
-
-    return unsubscribe
-  }, [isDirty, navigation])
+  usePreventRemove(isDirty, ({ data }) => {
+    Alert.alert('Discard changes?', 'You have unsaved edits.', [
+      { text: 'Stay', style: 'cancel' },
+      {
+        text: 'Leave',
+        style: 'destructive',
+        onPress: () => navigation.dispatch(data.action),
+      },
+    ])
+  })
 
   function handleSave() {
     setSavedName(name)

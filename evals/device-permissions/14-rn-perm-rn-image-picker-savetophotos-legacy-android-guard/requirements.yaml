@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: save-to-photos-capture-path
     description: Must use saveToPhotos in a capture flow where saving behavior is explicit.
@@ -12,3 +11,7 @@ requirements:
     description: Must degrade gracefully when save permission is unavailable instead of failing capture flow.
   - id: capture-result-preserved-on-save-failure
     description: Must preserve usable capture result data even when save-to-photos write fails.
+  - id: implementation-rn-image-picker-response-contract
+    description: Must handle react-native-image-picker response contract with explicit didCancel/errorCode/success branches.
+  - id: implementation-rn-image-picker-permission-aware-options
+    description: Must apply permission-aware handling for options that require extra access (for example includeExtra/saveToPhotos) with deterministic degraded fallbacks.

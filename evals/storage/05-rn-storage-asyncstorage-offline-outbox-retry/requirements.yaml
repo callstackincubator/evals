@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: durable-offline-outbox
-    description: Must persist queued offline mutations durably in AsyncStorage.
+    description: Must persist outbox mutations at a stable key with id, payload, type, and attempts metadata per queued item.
   - id: connectivity-gated-replay
-    description: Must replay queued mutations only when reconnect conditions are met or manual sync is triggered.
+    description: Must gate automatic replay on connectivity state while still supporting explicit manual replay trigger flow.
   - id: idempotent-mutation-ids
-    description: Must include idempotent mutation identifiers so replay does not duplicate applied actions.
+    description: Must persist applied mutation IDs and skip already-applied IDs during replay to prevent duplicate effects.
+  - id: implementation-asyncstorage-package
+    description: Must use @react-native-async-storage/async-storage package APIs and MUST NOT use removed AsyncStorage from react-native core.
+  - id: implementation-promise-api-no-callback
+    description: Must implement AsyncStorage access through Promise-based calls and MUST NOT rely on callback-form APIs.

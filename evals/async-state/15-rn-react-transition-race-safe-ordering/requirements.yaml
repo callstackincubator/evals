@@ -1,12 +1,11 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: latest-intent-ordering-guard
-    description: Must guard async result commits so only the latest intended transition result is applied.
+    description: Must guard async commits with latest-intent identity tracking so only newest request can apply results.
   - id: post-await-transition-wrap
-    description: Must apply transition APIs to non-urgent result state updates instead of treating them as urgent updates.
+    description: After async completion, non-urgent result state commits must be wrapped in transition scheduling.
   - id: stale-completion-suppression
-    description: Must suppress stale async completions from replacing fresher UI state.
+    description: Must suppress stale async completions from committing over fresher UI state.

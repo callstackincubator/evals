@@ -7,3 +7,5 @@ requirements:
     description: Must guard async updates during rapid navigation so stale responses do not mutate inactive screens.
   - id: cleanup-on-blur-unmount
     description: Must perform cleanup on blur/unmount for async operations started by route focus.
+  - id: implementation-static-navigation-api
+    description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.

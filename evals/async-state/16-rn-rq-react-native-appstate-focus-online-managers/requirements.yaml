@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: appstate-focusmanager-integration
-    description: Must use TanStack Query focusManager by mapping React Native AppState changes to focusManager.setFocused, with active state treated as focused.
+    description: Must map React Native AppState active/inactive transitions to focusManager.setFocused with duplicate-transition guards.
   - id: connectivity-onlinemanager-integration
-    description: Must use TanStack Query onlineManager by deriving online/offline from React Native connectivity signals (for example NetInfo isConnected/isInternetReachable) and updating onlineManager.setOnline on connectivity transitions.
+    description: Must map React Native connectivity signals to onlineManager.setOnline using conservative online detection.
   - id: controlled-refetch-behavior
-    description: Must control refetch behavior across foreground/background and reconnect transitions through focusManager and onlineManager state changes (including duplicate-transition guards) so refetch storms are avoided; explicit QueryClient refetch default overrides are optional.
+    description: Must ensure foreground/reconnect transitions trigger controlled refetch behavior without refetch storms.
+  - id: implementation-rq-v5-object-signature
+    description: Must use TanStack Query v5 object-signature APIs (for hooks and queryClient methods) and MUST NOT use legacy positional overload calls.
+  - id: implementation-rq-no-query-callbacks
+    description: Must NOT pass onSuccess/onError/onSettled callbacks to useQuery options (removed in v5); mutation callbacks remain allowed.

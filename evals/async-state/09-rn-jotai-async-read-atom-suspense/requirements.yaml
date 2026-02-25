@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: async-read-atom-source
-    description: Must implement profile loading as an async read atom that resolves data via promise.
+    description: Must represent async data source as an async read atom (atom(async () => ...)) consumed via useAtomValue.
   - id: suspense-boundary-for-async-atom
-    description: Must consume the async atom under a React Suspense boundary with an explicit fallback UI.
+    description: Must consume async read atom under a Suspense boundary with explicit fallback UI.
   - id: no-duplicate-manual-loading-flag
-    description: Must avoid redundant component-level loading flags that duplicate the async atom plus Suspense contract.
+    description: Must avoid redundant component-level loading flags that duplicate async atom + Suspense behavior.
+  - id: implementation-jotai-v2-entrypoints
+    description: Must use Jotai v2 entrypoints from 'jotai' and 'jotai/utils' for core and utility APIs.
+  - id: implementation-jotai-no-v1-removed-utils
+    description: Must NOT rely on removed Jotai v1 APIs such as waitForAll, abortableAtom, or Provider initialValues/scope props.

@@ -9,3 +9,7 @@ requirements:
     description: Must configure maintainScrollAtEnd behavior for near-bottom new message handling.
   - id: deterministic-autoscroll-threshold
     description: Must define deterministic threshold behavior so users away from bottom are not forcibly snapped.
+  - id: implementation-legendlist-v2-keyextractor-contract
+    description: Must provide stable LegendList keyExtractor identity and MUST NOT use index-based keys for dynamic list data.
+  - id: implementation-legendlist-v2-mvcp-default
+    description: Must keep LegendList maintainVisibleContentPosition enabled (default or explicit true) in dynamic/prepend/bidirectional flows and MUST NOT disable it.

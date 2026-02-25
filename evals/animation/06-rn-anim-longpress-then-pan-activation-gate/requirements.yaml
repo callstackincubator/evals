@@ -5,6 +5,8 @@ inputs:
 requirements:
   - id: composed-gesture-sequence
     description: Must compose gestures so drag activation is gated by long-press completion.
+  - id: no-removed-useanimatedgesturehandler
+    description: Must use Gesture API callbacks and MUST NOT rely on removed useAnimatedGestureHandler from react-native-reanimated.
   - id: accidental-drag-prevention
     description: Must prevent translation updates before the activation gate is satisfied.
   - id: visual-activation-feedback

@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: rnpermissions-check-request-separation
     description: Must separate permission check and request flows rather than relying on request-only control.
@@ -12,3 +11,7 @@ requirements:
     description: Must route blocked outcomes to a settings recovery action using openSettings or equivalent.
   - id: android-check-blocked-caveat-aware
     description: Must avoid assuming Android check calls alone can determine blocked status for every permission type.
+  - id: implementation-rnpermissions-results-contract
+    description: Must branch permission logic using react-native-permissions RESULTS status contract (for example denied/blocked/granted/limited/unavailable).
+  - id: implementation-rnpermissions-request-for-blocked-detection
+    description: On Android permission flows, must not rely on check/checkMultiple alone for blocked detection; include request/requestMultiple path where blocked status is needed.

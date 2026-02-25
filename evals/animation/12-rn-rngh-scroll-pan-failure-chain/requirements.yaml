@@ -5,6 +5,8 @@ inputs:
 requirements:
   - id: explicit-gesture-failure-chain
     description: Must use Gesture Handler composition or external failure requirements to model scroll versus swipe precedence.
+  - id: no-removed-useanimatedgesturehandler
+    description: Must use Gesture API callbacks and MUST NOT rely on removed useAnimatedGestureHandler from react-native-reanimated.
   - id: no-dead-zone-interaction
     description: Must avoid dead-zone behavior where neither scroll nor swipe responds.
   - id: deterministic-axis-thresholds

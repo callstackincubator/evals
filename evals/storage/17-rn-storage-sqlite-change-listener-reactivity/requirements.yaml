@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: change-listener-enabled
-    description: Must open SQLite with database change listener support enabled when listener APIs are used.
+    description: Must open SQLite database with enableChangeListener: true when relying on addDatabaseChangeListener callbacks.
   - id: listener-driven-refresh
-    description: Must trigger deterministic UI refresh from database change events.
+    description: Must trigger list refresh from relevant database change events instead of stale one-time reads.
   - id: listener-unsubscribe-cleanup
-    description: Must remove change listeners during cleanup to avoid duplicate subscriptions.
+    description: Must remove SQLite change-listener subscription during cleanup to avoid duplicate callbacks.
+  - id: implementation-expo-sqlite-modern-api
+    description: Must use modern expo-sqlite APIs from expo-sqlite imports and MUST NOT rely on expo-sqlite/legacy paths.
+  - id: no-dynamic-input-via-execasync
+    description: Must avoid passing dynamic user-controlled values through execAsync SQL strings; use runAsync or prepared statements for bound parameters.

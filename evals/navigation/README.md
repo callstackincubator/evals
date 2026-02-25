@@ -20,9 +20,13 @@ This document is the reference for the navigation category eval pack under `eval
 - [React Navigation: navigating without the navigation prop](https://reactnavigation.org/docs/navigating-without-navigation-prop/)
 - [React Navigation: static and dynamic APIs](https://reactnavigation.org/docs/static-and-dynamic-apis/)
 - [React Navigation: TypeScript](https://reactnavigation.org/docs/typescript/)
+- [React Navigation: upgrading from 6.x](https://reactnavigation.org/docs/upgrading-from-6.x/)
+- [React Navigation: navigation object reference](https://reactnavigation.org/docs/navigation-object/)
+- [React Navigation blog: React Navigation 7.0](https://reactnavigation.org/blog/2024/11/06/react-navigation-7.0/)
 - [React Navigation: troubleshooting](https://reactnavigation.org/docs/troubleshooting/)
 - [React Navigation: native stack navigator](https://reactnavigation.org/docs/native-stack-navigator/)
 - [React Navigation: CommonActions.reset](https://reactnavigation.org/docs/navigation-actions/#reset)
+- [React Navigation GitHub releases](https://github.com/react-navigation/react-navigation/releases)
 - [react-native-screens README](https://github.com/software-mansion/react-native-screens#readme)
 - [Expo docs: react-native-screens](https://docs.expo.dev/versions/latest/sdk/screens/)
 
@@ -43,6 +47,11 @@ This document is the reference for the navigation category eval pack under `eval
 - `B13`: keep navigation state serializable and avoid passing callback functions in route params
 - `B14`: use a root navigation ref with readiness guards for out-of-screen navigation triggers
 - `B15`: use TypeScript param list contracts for route names and route param shapes
+- `B16`: prefer React Navigation static object API plus `createStaticNavigation` for predictable tree/config typing in v7+
+- `B17`: do not use deprecated `navigateDeprecated`; use `navigate`/`push`/`replace`/`popTo` semantics explicitly
+- `B18`: do not rely on legacy `navigationInChildEnabled`; nested navigation must use explicit parent-child targeting
+- `B19`: prefer `usePreventRemove` for unsaved-change interception in native-stack flows
+- `B20`: prefer `@react-navigation/native-stack` over deprecated `@react-navigation/stack` v5
 
 ## coverage against key React Navigation docs
 

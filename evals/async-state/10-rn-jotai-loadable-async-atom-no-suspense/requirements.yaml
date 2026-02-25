@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: loadable-wrapping-for-async-atom
-    description: Must wrap async atom access with a loadable pattern that exposes explicit loading, hasData, and hasError branches.
+    description: Must wrap async atom access with loadable(...) from jotai/utils for non-Suspense consumption.
   - id: explicit-non-suspense-state-branches
-    description: Must render explicit non-Suspense UI branches for loading success and failure paths.
+    description: Must render explicit hasData/loading/hasError UI branches from loadable atom state.
   - id: no-unhandled-promise-throw
-    description: Must avoid unhandled promise throws in render when no Suspense boundary is present.
+    description: Must avoid direct async-atom reads that throw promises when no Suspense boundary is used.
+  - id: implementation-jotai-v2-entrypoints
+    description: Must use Jotai v2 entrypoints from 'jotai' and 'jotai/utils' for core and utility APIs.
+  - id: implementation-jotai-no-v1-removed-utils
+    description: Must NOT rely on removed Jotai v1 APIs such as waitForAll, abortableAtom, or Provider initialValues/scope props.

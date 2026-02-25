@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: dual-permission-requests-camera-microphone
     description: Must request and track camera and microphone permissions through expo-camera permission APIs.
@@ -12,3 +11,7 @@ requirements:
     description: Must provide deterministic degraded UX when only one permission is granted.
   - id: blocked-or-denied-recovery-actions
     description: Must provide retry and settings-oriented recovery for denied or blocked outcomes.
+  - id: implementation-expo-camera-cameraview-api
+    description: Must use modern expo-camera preview and permission APIs (CameraView with useCameraPermissions and/or get/request camera permission methods) instead of legacy camera-screen wiring.
+  - id: implementation-expo-camera-grant-gated-preview
+    description: Must gate camera preview and capture actions behind granted camera permission state, with deterministic denied fallback UI.

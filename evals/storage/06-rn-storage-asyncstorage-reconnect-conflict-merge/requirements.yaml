@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: versioned-entity-metadata
-    description: Must track version or updatedAt metadata for local and remote entities used in reconciliation.
+    description: Must reconcile local/remote entities using explicit version and updatedAt metadata per entity.
   - id: deterministic-conflict-policy
-    description: Must apply an explicit deterministic conflict merge policy when local and remote edits diverge.
+    description: For overlapping IDs, must apply deterministic field merge rules and compute next merged version consistently.
   - id: conflict-result-persistence
-    description: Must persist merged outcomes and unresolved conflict markers consistently after reconciliation.
+    description: Must persist merged entities and conflict markers together via batched AsyncStorage writes, including unresolved markers.
+  - id: implementation-asyncstorage-package
+    description: Must use @react-native-async-storage/async-storage package APIs and MUST NOT use removed AsyncStorage from react-native core.
+  - id: implementation-promise-api-no-callback
+    description: Must implement AsyncStorage access through Promise-based calls and MUST NOT rely on callback-form APIs.

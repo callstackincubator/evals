@@ -1,43 +1,30 @@
 # Adding new category
 
-This document is the baseline for creating and reviewing React Native evals at scale.
+This document defines the research and design workflow for category-level eval authoring.
 
-## Rresearch
+## Workflow
 
-Use this workflow for every category before writing evals.
+1. Read official docs first.
+- Capture core APIs, recommended patterns, and explicit caveats.
+- Save source links used for design decisions.
 
-1. **Read official docs first**
+2. Run a recent API change audit.
+- Review official releases/changelogs for each core library in the category.
+- Record dated changes: new preferred APIs, deprecated/removed APIs, and behavior caveats.
+- Convert those findings into requirement policy (`MUST` and evidence-backed `MUST NOT`).
 
-- Collect core APIs, recommended patterns, and explicit caveats
-- Capture links to source sections used for task design
+3. Derive prompts from best practices.
+- Write prompts as normal implementation asks.
+- Avoid bug-report framing.
+- Map each prompt to one primary best-practice target.
 
-2. **Extract best-practice rules**
+4. Define deterministic requirements.
+- Express requirements as file-verifiable implementation checks.
+- Keep requirements atomic and concrete.
 
-- Turn docs into a concise list of do/don't implementation rules
-- Keep rules concrete enough to assert in requirement checks (and unit tests when present)
-
-3. **Dderive feature asks from best practices**
-
-- Write prompts as requests a regular developer would make
-- Avoid bug-report language in prompt text
-- Map each prompt to one primary best-practice rule
-
-4. **Define deterministic checks**
-
-- Express expected user-visible outcomes as deterministic assertions
-- Add minimal atomic requirement checks that enforce the target best practice
-
-5. **Mine common issues (secondary validation)**
-
-- Inspect top GitHub issues/discussions for main libraries in the category
-- Prioritize issues with high reactions, repeated duplicates, or recurring regressions
-- Tag each issue as: setup, API misuse, performance, platform parity, edge case, or tooling
-- Use issue clusters to stress-test coverage, not to define prompt language
-
-6. **Apply best-practice checks**
-
-- Verify task enforces recommended usage patterns from docs
-- Verify task avoids anti-patterns commonly seen in issue threads
+5. Validate coverage with issue intelligence (secondary input).
+- Review recurring GitHub issues/discussions for setup, API misuse, performance, platform parity, edge cases, and tooling.
+- Use issue clusters to test robustness coverage, not to define prompt wording.
 
 ## Required research artifact
 
@@ -47,3 +34,12 @@ Every new category should include a research note in the category root (for exam
 - Explicit best-practice inventory (with source links)
 - Issue links grouped by pain-point tags (`setup`, `API misuse`, `performance`, `platform parity`, `edge case`, `tooling`) used only to validate robustness coverage
 - Traceability from each task to at least one best-practice source
+
+## Similarity budget for technical eval sets
+
+To avoid low-signal duplicates in technical subgroups:
+
+1. Keep shared subgroup requirements to at most 2 IDs across sibling evals.
+2. Keep at least 3 implementation-specific requirements per eval that differ across siblings.
+3. Measure pairwise requirement ID overlap before finalizing the category.
+4. If overlap exceeds budget, split generic checks into subgroup baseline checks and eval-specific API flow checks.

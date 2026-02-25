@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: multi-process-mode-enabled
-    description: Must enable MMKV multi-process mode for cross-process read and write scenarios.
+    description: Must configure MMKV shared instance with mode: 'multi-process' for cross-process consistency.
   - id: shared-storage-path-contract
-    description: Must configure a stable shared storage path or app group location contract.
+    description: Must provide explicit shared storage path configuration for the shared MMKV instance.
   - id: cross-process-refresh-path
-    description: Must include a deterministic refresh path so process external updates become visible.
+    description: Must implement deterministic refresh path (for example app-foreground/manual refresh) that re-reads shared keys.
+  - id: implementation-mmkv-createmmkv
+    description: Must create MMKV instances with createMMKV from react-native-mmkv and keep instance IDs explicit for scope separation.
+  - id: implementation-mmkv-no-legacy-constructor
+    description: Must NOT use legacy constructor-style MMKV initialization patterns from older docs; use current react-native-mmkv v4 API style.

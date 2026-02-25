@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: blocked-status-opensettings-path
     description: Must route blocked permission outcomes to openSettings or equivalent recovery action.
@@ -12,3 +11,7 @@ requirements:
     description: Must avoid stale blocked-state UI when permission changed in system settings.
   - id: idempotent-resume-handling
     description: Must keep resume recheck logic idempotent without duplicate transition side effects.
+  - id: implementation-rnpermissions-results-contract
+    description: Must branch permission logic using react-native-permissions RESULTS status contract (for example denied/blocked/granted/limited/unavailable).
+  - id: implementation-rnpermissions-request-for-blocked-detection
+    description: On Android permission flows, must not rely on check/checkMultiple alone for blocked detection; include request/requestMultiple path where blocked status is needed.

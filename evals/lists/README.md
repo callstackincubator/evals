@@ -20,13 +20,49 @@ This document is the reference for the lists and performance-sensitive rendering
 - [FlashList docs: recycling](https://shopify.github.io/flash-list/docs/fundamentals/recycling)
 - [FlashList docs: known issues](https://shopify.github.io/flash-list/docs/known-issues)
 - [FlashList: section list guide](https://shopify.github.io/flash-list/docs/guides/section-list)
+- [FlashList: migrating to v2](https://shopify.github.io/flash-list/docs/v2-migration)
+- [FlashList: what's new in v2](https://shopify.github.io/flash-list/docs/v2-changes)
+- [FlashList releases](https://github.com/Shopify/flash-list/releases)
 
 ### legend-list
 
 - [Legend List docs](https://www.legendapp.com/open-source/list)
 - [Legend List v2 props](https://www.legendapp.com/open-source/list/v2/props)
+- [Legend List v2 overview](https://www.legendapp.com/open-source/list/api/version-2/)
 - [Legend List README](https://github.com/LegendApp/legend-list#readme)
 - [Legend List type contracts](https://github.com/LegendApp/legend-list/blob/main/src/types.ts)
+- [Legend List package](https://www.npmjs.com/package/@legendapp/list)
+
+## recent api shifts to encode in eval requirements (as of 2026-02-25)
+
+### React Native core lists
+
+- Current docs continue to position FlatList and SectionList as the primary virtualization APIs for long, changing lists.
+- VirtualizedList docs continue to highlight PureComponent semantics and data/identity requirements for deterministic rendering.
+- Eval policy:
+  - require virtualization-appropriate list primitives
+  - require stable identity keys and deterministic update signaling for mutable list data.
+
+### FlashList v2
+
+- v2 migration and change docs document major API shifts:
+  - old architecture support removed
+  - `maintainVisibleContentPosition` enabled by default
+  - `MasonryFlashList` deprecated in favor of `FlashList` with `masonry` prop
+  - deprecated props removed/unsupported (`estimatedItemSize`, `estimatedListSize`, `estimatedFirstItemOffset`, `inverted`, `onBlankArea`, `disableAutoLayout`, and others)
+- Eval policy:
+  - require FlashList v2 component patterns
+  - add explicit `MUST NOT` constraints for deprecated v2 props/components
+  - keep identity/recycling contracts strict for mapped nested children and heterogeneous rows.
+
+### Legend List v2
+
+- Legend List v2 introduces a rewritten `maintainVisibleContentPosition` algorithm and enables it by default.
+- v2 docs also emphasize improved accuracy for `initialScrollIndex`, `scrollToIndex`, and bidirectional infinite scroll behavior, with `estimatedItemSize` now optional.
+- Eval policy:
+  - require stable keyExtractor contracts for recycle/position correctness
+  - require intentional maintain-visible-position and end-maintenance behavior for chat and bidirectional flows
+  - keep recycled-row state reset semantics explicit when `recycleItems` is enabled.
 
 ## best-practice inventory
 

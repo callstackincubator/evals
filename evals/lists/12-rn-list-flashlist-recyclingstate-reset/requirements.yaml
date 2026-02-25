@@ -9,3 +9,7 @@ requirements:
     description: Must reset or rebind row-local state when recycled container receives a different logical item.
   - id: deterministic-expanded-state
     description: Must keep expanded/collapsed behavior deterministic per item identity.
+  - id: implementation-flashlist-v2-component-migration
+    description: Must use FlashList v2 component APIs and MUST NOT use deprecated MasonryFlashList component paths.
+  - id: implementation-flashlist-v2-no-deprecated-props
+    description: Must NOT rely on FlashList v2 deprecated props such as estimatedItemSize, estimatedListSize, estimatedFirstItemOffset, inverted, onBlankArea, or disableAutoLayout.

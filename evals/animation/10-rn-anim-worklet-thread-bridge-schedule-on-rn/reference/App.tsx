@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { scheduleOnRN } from 'react-native-worklets'
+import { scheduleOnRN, scheduleOnUI } from 'react-native-worklets'
 import Animated, {
   cancelAnimation,
   interpolate,
@@ -17,7 +17,13 @@ type BridgeScheduler = (
   ...args: unknown[]
 ) => void
 
+type UIScheduler = (
+  callback: (...args: unknown[]) => void,
+  ...args: unknown[]
+) => void
+
 const scheduleOnReactRuntime = scheduleOnRN as unknown as BridgeScheduler
+const scheduleOnUIRuntime = scheduleOnUI as unknown as UIScheduler
 
 export default function App() {
   const [checkpointLabel, setCheckpointLabel] = useState('Checkpoint: 0/8')
@@ -60,20 +66,30 @@ export default function App() {
     }
   })
 
+  const startLoop = () => {
+    'worklet'
+    phase.value = 0
+    lastPublishedBucket.value = -1
+    phase.value = withRepeat(withTiming(1, { duration: 1800 }), -1, true)
+  }
+
+  const resetLoop = () => {
+    'worklet'
+    cancelAnimation(phase)
+    phase.value = 0
+    lastPublishedBucket.value = -1
+  }
+
   const toggleAnimation = () => {
     if (running) {
-      cancelAnimation(phase)
-      phase.value = 0
-      lastPublishedBucket.value = -1
+      scheduleOnUIRuntime(resetLoop)
       setCheckpointLabel('Checkpoint: 0/8')
       setRunning(false)
       return
     }
 
     setRunning(true)
-    phase.value = 0
-    lastPublishedBucket.value = -1
-    phase.value = withRepeat(withTiming(1, { duration: 1800 }), -1, true)
+    scheduleOnUIRuntime(startLoop)
   }
 
   return (
