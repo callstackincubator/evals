@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['valid: 42', 'invalid: x']
 
-async function parseInvalidDeepLinkFallbackPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function parseInvalidDeepLinkFallbackAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function EntryScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Entry</Text>
       <Text style={styles.copy}>
-        Profile route shell is ready for invalid-link handling behavior.
+        Profile entry is ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => parseInvalidDeepLinkFallbackPlaceholder()}
+        title="Open"
+        onPress={() => parseInvalidDeepLinkFallbackAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function ProfileScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Profile</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

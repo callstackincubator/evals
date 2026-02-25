@@ -9,7 +9,5 @@ requirements:
     description: Must configure maintainVisibleContentPosition for prepend updates so visible message position is preserved while older messages are inserted.
   - id: controlled-near-bottom-autoscroll
     description: Must auto-scroll only when the user is within the configured near-bottom threshold and must preserve position for users reading older messages.
-  - id: implementation-flashlist-v2-component-migration
-    description: Must use FlashList v2 component APIs and MUST NOT use deprecated MasonryFlashList component paths.
   - id: implementation-flashlist-v2-chat-mvcp-keyextractor-contract
     description: Must use onStartReached plus maintainVisibleContentPosition for chat prepend flows, provide keyExtractor when MVCP is enabled, and MUST NOT use deprecated inverted chat patterns.

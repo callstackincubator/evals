@@ -3,7 +3,7 @@ import { createStaticNavigation } from '@react-navigation/native'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
 async function loadDraft() {
-  // TODO: implement navigation behavior for this eval
+  // No-op
   return 'pending'
 }
 
@@ -12,9 +12,9 @@ function InboxScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Inbox</Text>
       <Text style={styles.copy}>
-        Inbox/Compose tabs are scaffolded for detach+draft behavior.
+        Inbox and compose tabs are ready.
       </Text>
-      <Button title="Call placeholder" onPress={() => loadDraft()} />
+      <Button title="Inbox" onPress={() => loadDraft()} />
     </View>
   )
 }
@@ -23,7 +23,7 @@ function ComposeScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Compose</Text>
-      <Text style={styles.copy}>Draft retention tabs scaffold route</Text>
+      <Text style={styles.copy}>Drafts</Text>
     </View>
   )
 }

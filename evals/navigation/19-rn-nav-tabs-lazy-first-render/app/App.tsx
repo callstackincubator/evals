@@ -2,8 +2,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStaticNavigation } from '@react-navigation/native'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function markTabRenderPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function markTabRenderAction() {
+  // No-op
   return 'pending'
 }
 
@@ -12,11 +12,11 @@ function HomeScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Home</Text>
       <Text style={styles.copy}>
-        Tab routes are scaffolded for lazy-first-render behavior.
+        Tabs are ready.
       </Text>
       <Button
-        title="Call placeholder"
-        onPress={() => markTabRenderPlaceholder()}
+        title="Home"
+        onPress={() => markTabRenderAction()}
       />
     </View>
   )
@@ -26,7 +26,7 @@ function SearchScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Search</Text>
-      <Text style={styles.copy}>Lazy tab shell scaffold route</Text>
+      <Text style={styles.copy}>Tab content</Text>
     </View>
   )
 }
@@ -35,7 +35,7 @@ function ProfileScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Profile</Text>
-      <Text style={styles.copy}>Lazy tab shell scaffold route</Text>
+      <Text style={styles.copy}>Tab content</Text>
     </View>
   )
 }

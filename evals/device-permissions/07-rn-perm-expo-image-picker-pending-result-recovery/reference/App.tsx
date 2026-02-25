@@ -94,7 +94,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Android Pending Picker Recovery</Text>
+      <Text style={styles.title}>Permissions</Text>
       <Text style={styles.status}>State: {pickerState}</Text>
 
       <Pressable onPress={openPicker} style={styles.button}>

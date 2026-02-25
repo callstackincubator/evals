@@ -44,7 +44,7 @@ function HomeScreen() {
   return (
     <View style={styles.container}>
       <Button
-        title="Open article 1001"
+        title="Open"
         onPress={handleNavigateToArticleDetails}
       />
     </View>

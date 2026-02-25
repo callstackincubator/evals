@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['main-group', 'modal-group']
 
-async function buildRouteGroupsPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function buildRouteGroupsAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function MainBoardScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>MainBoard</Text>
       <Text style={styles.copy}>
-        Main and modal route shells are scaffolded for grouping behavior.
+        Main and modal screens are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => buildRouteGroupsPlaceholder()}
+        title="Open"
+        onPress={() => buildRouteGroupsAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function MainDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>MainDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )
@@ -41,7 +41,7 @@ function ComposeModalScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>ComposeModal</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

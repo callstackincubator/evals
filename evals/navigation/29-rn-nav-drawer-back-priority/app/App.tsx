@@ -3,8 +3,8 @@ import { createStaticNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function prioritizeDrawerBackPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function prioritizeDrawerBackAction() {
+  // No-op
   return 'pending'
 }
 
@@ -13,12 +13,11 @@ function DashboardScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Dashboard</Text>
       <Text style={styles.copy}>
-        Drawer and stack shells are scaffolded for Android back-priority
-        behavior.
+        Drawer and detail routes are ready.
       </Text>
       <Button
-        title="Call placeholder"
-        onPress={() => prioritizeDrawerBackPlaceholder()}
+        title="Open"
+        onPress={() => prioritizeDrawerBackAction()}
       />
     </View>
   )
@@ -29,7 +28,7 @@ function ConversationDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>ConversationDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )
@@ -39,7 +38,7 @@ function HelpScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Help</Text>
-      <Text style={styles.copy}>Drawer route scaffold.</Text>
+      <Text style={styles.copy}>Help and support</Text>
     </View>
   )
 }

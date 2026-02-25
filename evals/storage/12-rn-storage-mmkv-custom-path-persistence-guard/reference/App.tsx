@@ -51,7 +51,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>MMKV Custom Path Guard</Text>
+      <Text style={styles.title}>Storage</Text>
       <Text style={styles.row}>Configured path: {configuredPath}</Text>
       <Text style={styles.row}>Status: {status}</Text>
       <Text style={styles.row}>Draft length: {draft.length}</Text>

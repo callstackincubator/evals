@@ -5,7 +5,7 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 const SEED_ITEMS = ['status: idle']
 
 async function fetchFeedSnapshot() {
-  // TODO: implement navigation behavior for this eval
+  // No-op
   return 'pending'
 }
 
@@ -14,10 +14,10 @@ function FeedScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Feed</Text>
       <Text style={styles.copy}>
-        Feed route shell is ready for focus/blur fetch behavior.
+        Feed list is ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
-      <Button title="Call placeholder" onPress={() => fetchFeedSnapshot()} />
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
+      <Button title="Open" onPress={() => fetchFeedSnapshot()} />
     </View>
   )
 }
@@ -27,7 +27,7 @@ function RequestStatusScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>RequestStatus</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

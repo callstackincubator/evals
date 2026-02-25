@@ -25,8 +25,8 @@ const TIMELINE_ROWS: Row[] = [
   },
 ]
 
-function resolveTimelineTypePlaceholder() {
-  // TODO: implement list behavior for this eval
+function resolveTimelineTypeAction() {
+  // No-op
 }
 
 export default function App() {
@@ -34,10 +34,10 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Timeline Feed</Text>
       <Text style={styles.helper}>
-        Heterogeneous row seed is ready. Add row-type behavior for this eval.
+        Heterogeneous row items is available. Browse list items.
       </Text>
-      <Pressable style={styles.button} onPress={resolveTimelineTypePlaceholder}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Pressable style={styles.button} onPress={resolveTimelineTypeAction}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <FlashList
         data={TIMELINE_ROWS}

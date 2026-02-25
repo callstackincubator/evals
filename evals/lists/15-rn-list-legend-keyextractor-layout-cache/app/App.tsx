@@ -25,8 +25,8 @@ const TASK_ROWS: Row[] = [
   },
 ]
 
-function insertTaskAtTopPlaceholder() {
-  // TODO: implement list behavior for this eval
+function insertTaskAtTopAction() {
+  // No-op
 }
 
 export default function App() {
@@ -34,10 +34,10 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Task Board</Text>
       <Text style={styles.helper}>
-        Task rows are seeded. Add reorder/insert layout behavior for this eval.
+        Task rows are loaded. Browse list items.
       </Text>
-      <Pressable style={styles.button} onPress={insertTaskAtTopPlaceholder}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Pressable style={styles.button} onPress={insertTaskAtTopAction}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <LegendList
         data={TASK_ROWS}

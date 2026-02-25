@@ -2,18 +2,18 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 const STORAGE_KEYS = ['session', 'draft', 'outbox']
 
-async function createScopedStoresPlaceholder() {
-  // TODO: implement persistence behavior for this eval
+async function createScopedStoresAction() {
+  // No-op
   return STORAGE_KEYS.length
 }
 
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Storage Starter</Text>
+      <Text style={styles.title}>Storage</Text>
       <Text style={styles.subtitle}>Keys: {STORAGE_KEYS.join(', ')}</Text>
-      <Pressable style={styles.button} onPress={() => createScopedStoresPlaceholder()}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Pressable style={styles.button} onPress={() => createScopedStoresAction()}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
     </View>
   )

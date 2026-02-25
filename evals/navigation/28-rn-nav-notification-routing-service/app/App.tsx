@@ -3,8 +3,8 @@ import { createStaticNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function resolveNotificationPayloadPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function resolveNotificationPayloadAction() {
+  // No-op
   return 'pending'
 }
 
@@ -13,12 +13,11 @@ function FeedScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Feed</Text>
       <Text style={styles.copy}>
-        Main tabs and root stack shell are scaffolded for payload routing
-        behavior.
+        Main tabs and root routes are ready.
       </Text>
       <Button
-        title="Call placeholder"
-        onPress={() => resolveNotificationPayloadPlaceholder()}
+        title="Open"
+        onPress={() => resolveNotificationPayloadAction()}
       />
     </View>
   )
@@ -28,7 +27,7 @@ function MessagesScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Messages</Text>
-      <Text style={styles.copy}>Notification routing scaffold route</Text>
+      <Text style={styles.copy}>Notifications</Text>
     </View>
   )
 }
@@ -37,7 +36,7 @@ function ProfileScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Profile</Text>
-      <Text style={styles.copy}>Notification routing scaffold route</Text>
+      <Text style={styles.copy}>Notifications</Text>
     </View>
   )
 }
@@ -47,7 +46,7 @@ function NotificationTargetScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>NotificationTarget</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this modal route shell.
+        More details appear here.
       </Text>
     </View>
   )

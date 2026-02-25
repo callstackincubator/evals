@@ -38,7 +38,7 @@ function FeedScreen() {
   return (
     <View style={styles.feed}>
       <Text>Fetch status: {status}</Text>
-      <Button title="Open details" onPress={handleOpenDetails} />
+      <Button title="Open" onPress={handleOpenDetails} />
     </View>
   )
 }

@@ -143,7 +143,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Schema Migration</Text>
+      <Text style={styles.title}>Storage</Text>
       <Text style={styles.row}>Status: {status}</Text>
       <Text style={styles.row}>Version transition: {versionLabel}</Text>
       <Pressable style={styles.button} onPress={migrate}>

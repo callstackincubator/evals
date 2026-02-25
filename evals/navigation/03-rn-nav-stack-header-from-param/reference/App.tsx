@@ -18,7 +18,7 @@ function HomeScreen() {
   }
   return (
     <View style={styles.container}>
-      <Button title="Open Alice" onPress={openAlice} />
+      <Button title="Open" onPress={openAlice} />
       <Button title="Open Bob" onPress={openBob} />
     </View>
   )

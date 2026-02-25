@@ -39,8 +39,8 @@ const TOPIC_SECTIONS: SectionData[] = [
   },
 ]
 
-function jumpToSectionPlaceholder() {
-  // TODO: implement list behavior for this eval
+function jumpToSectionAction() {
+  // No-op
 }
 
 export default function App() {
@@ -48,10 +48,10 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Topic Sections</Text>
       <Text style={styles.helper}>
-        Topic sections are ready. Add jump-to-section behavior.
+        Topic sections are available. Browse list items.
       </Text>
-      <Pressable style={styles.button} onPress={jumpToSectionPlaceholder}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Pressable style={styles.button} onPress={jumpToSectionAction}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <SectionList
         sections={TOPIC_SECTIONS}

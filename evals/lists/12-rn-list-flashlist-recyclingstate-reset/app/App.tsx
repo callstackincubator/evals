@@ -11,8 +11,8 @@ const ARTICLE_ROWS: Row[] = Array.from({ length: 24 }, (_, index) => ({
   title: 'Headline ' + String(index + 1),
 }))
 
-function toggleExpandedArticlePlaceholder() {
-  // TODO: implement list behavior for this eval
+function toggleExpandedArticleAction() {
+  // No-op
 }
 
 export default function App() {
@@ -20,13 +20,13 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Expandable Articles</Text>
       <Text style={styles.helper}>
-        Article rows are seeded. Add recycling-safe transient state behavior.
+        Article rows are loaded. Browse list items.
       </Text>
       <Pressable
         style={styles.button}
-        onPress={toggleExpandedArticlePlaceholder}
+        onPress={toggleExpandedArticleAction}
       >
-        <Text style={styles.buttonText}>Call placeholder</Text>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <FlashList
         data={ARTICLE_ROWS}

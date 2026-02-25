@@ -4,7 +4,7 @@ inputs:
     - app/App.tsx
 requirements:
   - id: mutation-success-invalidates-list
-    description: Must invalidate the affected list query via queryClient.invalidateQueries({ queryKey: ITEMS_QUERY_KEY }) after successful mutation.
+    description: "Must invalidate the affected list query via queryClient.invalidateQueries({ queryKey: ITEMS_QUERY_KEY }) after successful mutation."
   - id: targeted-invalidation-scope
     description: Must target invalidation to the affected list key family and avoid broad unrelated cache resets.
   - id: post-mutation-consistency

@@ -3,8 +3,8 @@ import { createStaticNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function openThreadFromLinkPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function openThreadFromLinkAction() {
+  // No-op
   return 'pending'
 }
 
@@ -13,11 +13,11 @@ function FeedScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Feed</Text>
       <Text style={styles.copy}>
-        Messages routes are scaffolded for nested thread deep-link behavior.
+        Messages are ready.
       </Text>
       <Button
-        title="Call placeholder"
-        onPress={() => openThreadFromLinkPlaceholder()}
+        title="Feed"
+        onPress={() => openThreadFromLinkAction()}
       />
     </View>
   )
@@ -28,7 +28,7 @@ function FeedDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>FeedDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )
@@ -38,7 +38,7 @@ function MessagesScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Messages</Text>
-      <Text style={styles.copy}>Nested thread scaffold route.</Text>
+      <Text style={styles.copy}>Thread list</Text>
     </View>
   )
 }
@@ -48,7 +48,7 @@ function ThreadScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Thread</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

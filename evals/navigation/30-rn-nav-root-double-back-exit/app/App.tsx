@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['exit window']
 
-async function handleDoubleBackExitPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function handleDoubleBackExitAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function RootEntryScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>RootEntry</Text>
       <Text style={styles.copy}>
-        Root route shell is ready for double-back exit behavior.
+        Home screen is ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => handleDoubleBackExitPlaceholder()}
+        title="Open"
+        onPress={() => handleDoubleBackExitAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function ExitPreviewScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>ExitPreview</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

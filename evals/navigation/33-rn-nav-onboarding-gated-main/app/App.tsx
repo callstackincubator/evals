@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['completed: false']
 
-async function completeOnboardingPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function completeOnboardingAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function OnboardingScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Onboarding</Text>
       <Text style={styles.copy}>
-        Onboarding and main routes are scaffolded for graph gating behavior.
+        Onboarding and main routes are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => completeOnboardingPlaceholder()}
+        title="Open"
+        onPress={() => completeOnboardingAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function MainHomeScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>MainHome</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

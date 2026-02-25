@@ -2,18 +2,18 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 const ITEMS = ['alpha', 'beta', 'gamma']
 
-async function computeDeferredResultsPlaceholder() {
-  // TODO: implement async/state-management behavior for this eval
+async function computeDeferredResultsAction() {
+  // No-op
   return ITEMS.length
 }
 
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async State Starter</Text>
+      <Text style={styles.title}>Async State </Text>
       <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
-      <Pressable style={styles.button} onPress={() => computeDeferredResultsPlaceholder()}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Pressable style={styles.button} onPress={() => computeDeferredResultsAction()}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
     </View>
   )

@@ -18,8 +18,8 @@ function RowItem({ item }: { item: Row }) {
   )
 }
 
-function tuneListWindowPlaceholder() {
-  // TODO: implement list behavior for this eval
+function tuneListWindowAction() {
+  // No-op
 }
 
 export default function App() {
@@ -27,10 +27,10 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Large Feed</Text>
       <Text style={styles.helper}>
-        Large dataset is seeded. Add virtualization tuning behavior.
+        Large dataset is loaded. Browse list items.
       </Text>
-      <Pressable style={styles.button} onPress={tuneListWindowPlaceholder}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Pressable style={styles.button} onPress={tuneListWindowAction}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <FlatList
         data={LARGE_ROWS}

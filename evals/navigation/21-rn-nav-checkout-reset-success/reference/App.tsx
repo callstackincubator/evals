@@ -9,7 +9,7 @@ function CartScreen() {
   return (
     <View style={styles.container}>
       <Text>Cart</Text>
-      <Button title="Start checkout" onPress={() => navigate('Shipping')} />
+      <Button title="Open" onPress={() => navigate('Shipping')} />
     </View>
   )
 }

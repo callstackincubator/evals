@@ -55,7 +55,7 @@ export default function App() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async write atom</Text>
+      <Text style={styles.title}>Async State</Text>
 
       <View style={styles.row}>
         <TextInput

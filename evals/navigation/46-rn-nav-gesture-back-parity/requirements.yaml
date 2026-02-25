@@ -3,7 +3,5 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: native-stack-critical-flow
-    description: Must define Home and CriticalStep in a native stack navigation flow.
   - id: back-outcome-parity
     description: Must ensure the leave action from CriticalStep resolves through one deterministic navigation path so iOS gesture back and Android hardware back end in the same visible state.

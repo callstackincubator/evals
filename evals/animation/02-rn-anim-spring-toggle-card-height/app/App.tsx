@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
 type DetailRow = {
   label: string
@@ -13,19 +13,11 @@ const SHIPMENT_DETAILS: DetailRow[] = [
   { label: 'Tracking', value: 'EX-329-1192' },
 ]
 
-function toggleDetailsPlaceholder() {
-  // TODO: implement spring-based collapsed/expanded animation
-}
-
 export default function App() {
   return (
     <View style={styles.screen}>
       <View style={styles.card}>
-        <Pressable style={styles.header} onPress={toggleDetailsPlaceholder}>
-          <Text style={styles.title}>{CARD_TITLE}</Text>
-          <Text style={styles.action}>Toggle</Text>
-        </Pressable>
-
+        <Text style={styles.title}>{CARD_TITLE}</Text>
         <ScrollView style={styles.details}>
           {SHIPMENT_DETAILS.map((row) => (
             <Text key={row.label} style={styles.copy}>
@@ -39,11 +31,6 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  action: {
-    color: '#1d4ed8',
-    fontSize: 14,
-    fontWeight: '600',
-  },
   card: {
     backgroundColor: '#fff',
     borderRadius: 16,
@@ -59,13 +46,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingTop: 4,
   },
-  header: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 18,
-    paddingTop: 18,
-  },
   screen: {
     backgroundColor: '#eef2ff',
     flex: 1,
@@ -76,5 +56,7 @@ const styles = StyleSheet.create({
     color: '#0f172a',
     fontSize: 16,
     fontWeight: '600',
+    paddingHorizontal: 18,
+    paddingTop: 18,
   },
 })

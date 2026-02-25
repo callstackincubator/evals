@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['orderId: 101']
 
-async function parseOrderIdPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function parseOrderIdAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function OrdersScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Orders</Text>
       <Text style={styles.copy}>
-        Order route shell is ready for numeric parsing behavior.
+        Orders are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => parseOrderIdPlaceholder()}
+        title="Orders"
+        onPress={() => parseOrderIdAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function OrderDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>OrderDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

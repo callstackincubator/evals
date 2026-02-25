@@ -15,8 +15,8 @@ const FEED_ROWS: FeedRow[] = Array.from({ length: 12 }, (_, index) => ({
   ],
 }))
 
-function migrateToFlashListPlaceholder() {
-  // TODO: implement list behavior for this eval
+function migrateToFlashListAction() {
+  // No-op
 }
 
 export default function App() {
@@ -24,10 +24,10 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Feed Migration Scaffold</Text>
       <Text style={styles.helper}>
-        FlatList feed is seeded. Implement FlashList migration behavior.
+        Feed items are loaded. Browse list items.
       </Text>
-      <Pressable style={styles.button} onPress={migrateToFlashListPlaceholder}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Pressable style={styles.button} onPress={migrateToFlashListAction}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <FlatList
         data={FEED_ROWS}

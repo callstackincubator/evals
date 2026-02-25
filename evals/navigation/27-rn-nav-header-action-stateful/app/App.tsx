@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['bookmark state']
 
-async function toggleBookmarkPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function toggleBookmarkAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function ItemsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Items</Text>
       <Text style={styles.copy}>
-        Detail route shell is ready for stateful header-action behavior.
+        Item details are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => toggleBookmarkPlaceholder()}
+        title="Items"
+        onPress={() => toggleBookmarkAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function ItemDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>ItemDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

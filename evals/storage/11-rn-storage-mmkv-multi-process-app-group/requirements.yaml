@@ -4,7 +4,7 @@ inputs:
     - app/App.tsx
 requirements:
   - id: multi-process-mode-enabled
-    description: Must configure MMKV shared instance with mode: 'multi-process' for cross-process consistency.
+    description: "Must configure MMKV shared instance with mode: 'multi-process' for cross-process consistency."
   - id: shared-storage-path-contract
     description: Must provide explicit shared storage path configuration for the shared MMKV instance.
   - id: cross-process-refresh-path

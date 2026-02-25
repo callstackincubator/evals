@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['Alice', 'Bob']
 
-async function resolveHeaderTitlePlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function resolveHeaderTitleAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function PeopleScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>People</Text>
       <Text style={styles.copy}>
-        People seed is ready for param-driven header behavior.
+        Contacts are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => resolveHeaderTitlePlaceholder()}
+        title="Open"
+        onPress={() => resolveHeaderTitleAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function PersonDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>PersonDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

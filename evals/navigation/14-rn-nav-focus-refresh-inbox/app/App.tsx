@@ -5,7 +5,7 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 const SEED_ITEMS = ['Unread', 'Starred']
 
 async function refreshInboxItems() {
-  // TODO: implement navigation behavior for this eval
+  // No-op
   return 'pending'
 }
 
@@ -14,10 +14,10 @@ function InboxScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Inbox</Text>
       <Text style={styles.copy}>
-        Inbox route shell is ready for focus refresh behavior.
+        Inbox is ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
-      <Button title="Call placeholder" onPress={() => refreshInboxItems()} />
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
+      <Button title="Open" onPress={() => refreshInboxItems()} />
     </View>
   )
 }
@@ -27,7 +27,7 @@ function MessageDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>MessageDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

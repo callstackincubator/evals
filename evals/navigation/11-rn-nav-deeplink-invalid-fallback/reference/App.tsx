@@ -30,7 +30,7 @@ function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Button title="Valid profile 42" onPress={handleOpenValidProfile} />
+      <Button title="Open" onPress={handleOpenValidProfile} />
       <Button title="Invalid profile x" onPress={handleOpenInvalidProfile} />
     </View>
   )

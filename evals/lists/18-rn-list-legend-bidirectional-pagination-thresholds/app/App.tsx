@@ -11,8 +11,8 @@ const PAGED_ROWS: Row[] = Array.from({ length: 32 }, (_, index) => ({
   title: 'Timeline row ' + String(index + 1),
 }))
 
-function loadPagedDirectionPlaceholder() {
-  // TODO: implement list behavior for this eval
+function loadPagedDirectionAction() {
+  // No-op
 }
 
 export default function App() {
@@ -20,10 +20,10 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Bidirectional Feed</Text>
       <Text style={styles.helper}>
-        Rows are seeded. Add start/end pagination behavior for this eval.
+        Rows are loaded. Browse list items.
       </Text>
-      <Pressable style={styles.button} onPress={loadPagedDirectionPlaceholder}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Pressable style={styles.button} onPress={loadPagedDirectionAction}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <LegendList
         data={PAGED_ROWS}

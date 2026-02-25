@@ -18,8 +18,8 @@ function RowItem({ item }: { item: Row }) {
   )
 }
 
-function togglePostLikePlaceholder() {
-  // TODO: implement list behavior for this eval
+function togglePostLikeAction() {
+  // No-op
 }
 
 export default function App() {
@@ -27,10 +27,10 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Post Feed</Text>
       <Text style={styles.helper}>
-        Post rows are seeded. Add row update performance behavior.
+        Post rows are loaded. Browse list items.
       </Text>
-      <Pressable style={styles.button} onPress={togglePostLikePlaceholder}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Pressable style={styles.button} onPress={togglePostLikeAction}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <FlatList
         data={POST_ROWS}

@@ -8,8 +8,8 @@ const STEP_FIELDS = {
   stepThree: 'City',
 }
 
-async function submitStepPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function submitStepAction() {
+  // No-op
   return 'pending'
 }
 
@@ -19,8 +19,8 @@ function StepOneScreen() {
       <Text style={styles.title}>StepOne</Text>
       <TextInput placeholder={STEP_FIELDS.stepOne} style={styles.input} />
       <Button
-        title="Call placeholder"
-        onPress={() => submitStepPlaceholder()}
+        title="Open"
+        onPress={() => submitStepAction()}
       />
     </View>
   )
@@ -49,7 +49,7 @@ function SummaryScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Summary</Text>
       <Text style={styles.copy}>
-        Implement step data propagation behavior from this shell.
+        Step data summary.
       </Text>
     </View>
   )

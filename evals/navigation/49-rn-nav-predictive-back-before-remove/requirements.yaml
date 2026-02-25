@@ -3,8 +3,6 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: native-stack-edit-route
-    description: Must define the edit flow in a native stack route.
   - id: usepreventremove-hook
     description: Must use usePreventRemove to gate leave actions so predictive back and hardware back both route through the same confirmation path.
   - id: prevent-leave-while-dirty

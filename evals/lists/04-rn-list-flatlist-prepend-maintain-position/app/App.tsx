@@ -18,8 +18,8 @@ function RowItem({ item }: { item: Row }) {
   )
 }
 
-function prependOlderMessagesPlaceholder() {
-  // TODO: implement list behavior for this eval
+function prependOlderMessagesAction() {
+  // No-op
 }
 
 export default function App() {
@@ -27,13 +27,13 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Chat Timeline</Text>
       <Text style={styles.helper}>
-        Message seed is ready. Add prepend-with-position behavior.
+        Message items is available. Browse list items.
       </Text>
       <Pressable
         style={styles.button}
-        onPress={prependOlderMessagesPlaceholder}
+        onPress={prependOlderMessagesAction}
       >
-        <Text style={styles.buttonText}>Call placeholder</Text>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <FlatList
         data={CHAT_MESSAGES}

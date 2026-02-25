@@ -43,7 +43,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>react-native-permissions Camera</Text>
+      <Text style={styles.title}>Permissions</Text>
       <Text style={styles.status}>Status: {status}</Text>
       <Text style={styles.statusMessage}>{statusMessage}</Text>
 

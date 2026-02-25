@@ -88,7 +88,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Physical Device Push Gate</Text>
+      <Text style={styles.title}>Permissions</Text>
       <Text style={styles.state}>State: {registrationState}</Text>
       <Text style={styles.device}>Environment: {Device.isDevice ? 'Physical' : 'Simulator/Emulator'}</Text>
 

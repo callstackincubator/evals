@@ -77,7 +77,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Dual Permission Video Flow</Text>
+      <Text style={styles.title}>Permissions</Text>
       <Text style={styles.state}>Camera: {cameraState}</Text>
       <Text style={styles.state}>Microphone: {microphoneState}</Text>
 

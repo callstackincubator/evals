@@ -18,7 +18,7 @@ function HomeScreen() {
   const goToCriticalStep = () => navigation.navigate('CriticalStep')
   return (
     <View style={styles.container}>
-      <Button title='Start critical flow' onPress={goToCriticalStep} />
+      <Button title='Open' onPress={goToCriticalStep} />
     </View>
   )
 }

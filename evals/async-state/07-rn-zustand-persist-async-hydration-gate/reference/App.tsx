@@ -50,7 +50,7 @@ function HydrationGate() {
   if (!hasHydrated) {
     return (
       <View style={styles.screen}>
-        <Text style={styles.title}>Restoring session…</Text>
+        <Text style={styles.title}>Async State</Text>
         <Text style={styles.meta}>Protected UI is gated until hydration completes.</Text>
       </View>
     )

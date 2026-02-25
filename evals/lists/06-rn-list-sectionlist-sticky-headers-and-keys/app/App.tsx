@@ -39,8 +39,8 @@ const CONTACT_SECTIONS: SectionData[] = [
   },
 ]
 
-function refreshSectionsPlaceholder() {
-  // TODO: implement list behavior for this eval
+function refreshSectionsAction() {
+  // No-op
 }
 
 export default function App() {
@@ -48,10 +48,10 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Section Contacts</Text>
       <Text style={styles.helper}>
-        Sections are scaffolded. Add sticky header/key behavior.
+        Sections are available. Browse list items.
       </Text>
-      <Pressable style={styles.button} onPress={refreshSectionsPlaceholder}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Pressable style={styles.button} onPress={refreshSectionsAction}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <SectionList
         sections={CONTACT_SECTIONS}

@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['signed-out', 'signed-in']
 
-async function completeSignInPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function completeSignInAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function LoginScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Login</Text>
       <Text style={styles.copy}>
-        Auth route shell is ready for login transition behavior.
+        Sign-in screen is ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => completeSignInPlaceholder()}
+        title="Open"
+        onPress={() => completeSignInAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function HomeScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Home</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

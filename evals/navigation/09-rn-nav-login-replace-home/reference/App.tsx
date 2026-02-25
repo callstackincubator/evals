@@ -38,7 +38,7 @@ function LoginScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
-      <Button title="Sign in" onPress={signIn} />
+      <Button title="Open" onPress={signIn} />
     </View>
   )
 }

@@ -32,8 +32,8 @@ function RowItem({ item }: { item: Row }) {
   )
 }
 
-function toggleSelectionPlaceholder() {
-  // TODO: implement list behavior for this eval
+function toggleSelectionAction() {
+  // No-op
 }
 
 export default function App() {
@@ -41,10 +41,10 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Selectable Contacts</Text>
       <Text style={styles.helper}>
-        Contact rows are scaffolded. Add selection behavior for this eval.
+        Contact rows are available. Browse list items.
       </Text>
-      <Pressable style={styles.button} onPress={toggleSelectionPlaceholder}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Pressable style={styles.button} onPress={toggleSelectionAction}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <FlatList
         data={CONTACT_ROWS}

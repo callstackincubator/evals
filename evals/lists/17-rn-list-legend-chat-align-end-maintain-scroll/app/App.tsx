@@ -21,8 +21,8 @@ const THREAD_ROWS: Row[] = [
   },
 ]
 
-function appendMessagePlaceholder() {
-  // TODO: implement list behavior for this eval
+function appendMessageAction() {
+  // No-op
 }
 
 export default function App() {
@@ -30,10 +30,10 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Chat Thread</Text>
       <Text style={styles.helper}>
-        Short chat seed is ready. Add align-end and follow-scroll behavior.
+        Short chat items is available. Browse list items.
       </Text>
-      <Pressable style={styles.button} onPress={appendMessagePlaceholder}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Pressable style={styles.button} onPress={appendMessageAction}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <LegendList
         data={THREAD_ROWS}
