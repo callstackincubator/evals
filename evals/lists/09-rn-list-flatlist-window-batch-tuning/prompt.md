@@ -1,1 +1,1 @@
-Tune a large FlatList for responsiveness under scroll.
+Tune a large list for responsiveness under scroll.
