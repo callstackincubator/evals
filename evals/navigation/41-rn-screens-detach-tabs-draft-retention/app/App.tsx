@@ -1,5 +1,5 @@
-import { createStaticNavigation, useNavigation } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createStaticNavigation } from '@react-navigation/native'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
 async function loadDraft() {
@@ -7,53 +7,52 @@ async function loadDraft() {
   return 'pending'
 }
 
-function HomeScreen() {
-  const navigation = useNavigation()
-
+function InboxScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Home</Text>
-      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
-      <Button title='Call placeholder' onPress={() => loadDraft()} />
-      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
+      <Text style={styles.title}>Inbox</Text>
+      <Text style={styles.copy}>
+        Inbox/Compose tabs are scaffolded for detach+draft behavior.
+      </Text>
+      <Button title="Call placeholder" onPress={() => loadDraft()} />
     </View>
   )
 }
 
-function DetailsScreen() {
+function ComposeScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Details</Text>
-      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
+      <Text style={styles.title}>Compose</Text>
+      <Text style={styles.copy}>Draft retention tabs scaffold route</Text>
     </View>
   )
 }
 
-const Stack = createNativeStackNavigator({
+const Tabs = createBottomTabNavigator({
   screens: {
-    Home: HomeScreen,
-    Details: DetailsScreen,
+    Inbox: InboxScreen,
+    Compose: ComposeScreen,
   },
 })
 
-const Navigation = createStaticNavigation(Stack)
+const Navigation = createStaticNavigation(Tabs)
 
 export default function App() {
   return <Navigation />
 }
 
 const styles = StyleSheet.create({
+  copy: {
+    color: '#6b7280',
+    textAlign: 'center',
+  },
   screen: {
     alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
-    rowGap: 8,
-  },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+    rowGap: 10,
   },
   title: {
     color: '#111827',

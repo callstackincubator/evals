@@ -1,59 +1,80 @@
-import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createStaticNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function runNavigationPlaceholder() {
+async function toggleTabBarVisibilityPlaceholder() {
   // TODO: implement navigation behavior for this eval
   return 'pending'
 }
 
-function HomeScreen() {
-  const navigation = useNavigation()
-
+function FeedScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Home</Text>
-      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
-      <Button title='Call placeholder' onPress={() => runNavigationPlaceholder()} />
-      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
+      <Text style={styles.title}>Feed</Text>
+      <Text style={styles.copy}>
+        Feed stack/tab routes are scaffolded for tab-bar visibility behavior.
+      </Text>
+      <Button
+        title="Call placeholder"
+        onPress={() => toggleTabBarVisibilityPlaceholder()}
+      />
     </View>
   )
 }
 
-function DetailsScreen() {
+function FullScreenDetailsScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Details</Text>
-      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
+      <Text style={styles.title}>FullScreenDetails</Text>
+      <Text style={styles.copy}>
+        Implement eval behavior from this nested route shell.
+      </Text>
     </View>
   )
 }
 
-const Stack = createNativeStackNavigator({
+function SettingsScreen() {
+  return (
+    <View style={styles.screen}>
+      <Text style={styles.title}>Settings</Text>
+      <Text style={styles.copy}>Tab bar visibility scaffold route</Text>
+    </View>
+  )
+}
+
+const FeedStack = createNativeStackNavigator({
   screens: {
-    Home: HomeScreen,
-    Details: DetailsScreen,
+    Feed: FeedScreen,
+    FullScreenDetails: FullScreenDetailsScreen,
   },
 })
 
-const Navigation = createStaticNavigation(Stack)
+const Tabs = createBottomTabNavigator({
+  screens: {
+    FeedTab: FeedStack,
+    Settings: SettingsScreen,
+  },
+})
+
+const Navigation = createStaticNavigation(Tabs)
 
 export default function App() {
   return <Navigation />
 }
 
 const styles = StyleSheet.create({
+  copy: {
+    color: '#6b7280',
+    textAlign: 'center',
+  },
   screen: {
     alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
-    rowGap: 8,
-  },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+    rowGap: 10,
   },
   title: {
     color: '#111827',

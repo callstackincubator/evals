@@ -1,4 +1,6 @@
-import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createDrawerNavigator } from '@react-navigation/drawer'
+import { createStaticNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
@@ -7,53 +9,96 @@ async function resolveNestedDeepLinkTargetPlaceholder() {
   return 'pending'
 }
 
-function HomeScreen() {
-  const navigation = useNavigation()
-
+function HomeFeedScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Home</Text>
-      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
-      <Button title='Call placeholder' onPress={() => resolveNestedDeepLinkTargetPlaceholder()} />
-      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
+      <Text style={styles.title}>HomeFeed</Text>
+      <Text style={styles.copy}>
+        Nested navigator shells are scaffolded for deep-link mapping behavior.
+      </Text>
+      <Button
+        title="Call placeholder"
+        onPress={() => resolveNestedDeepLinkTargetPlaceholder()}
+      />
     </View>
   )
 }
 
-function DetailsScreen() {
+function HomeDetailsScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Details</Text>
-      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
+      <Text style={styles.title}>HomeDetails</Text>
+      <Text style={styles.copy}>
+        Implement eval behavior from this route shell.
+      </Text>
     </View>
   )
 }
 
-const Stack = createNativeStackNavigator({
+function SettingsScreen() {
+  return (
+    <View style={styles.screen}>
+      <Text style={styles.title}>Settings</Text>
+      <Text style={styles.copy}>Drawer/Tab/Stack map scaffold route</Text>
+    </View>
+  )
+}
+
+function NotFoundScreen() {
+  return (
+    <View style={styles.screen}>
+      <Text style={styles.title}>NotFound</Text>
+      <Text style={styles.copy}>Unknown path fallback shell.</Text>
+    </View>
+  )
+}
+
+const HomeStack = createNativeStackNavigator({
   screens: {
-    Home: HomeScreen,
-    Details: DetailsScreen,
+    HomeFeed: HomeFeedScreen,
+    HomeDetails: HomeDetailsScreen,
   },
 })
 
-const Navigation = createStaticNavigation(Stack)
+const MainTabs = createBottomTabNavigator({
+  screens: {
+    HomeTab: HomeStack,
+    SettingsTab: SettingsScreen,
+  },
+})
+
+const MainDrawer = createDrawerNavigator({
+  screens: {
+    Main: MainTabs,
+    Help: SettingsScreen,
+  },
+})
+
+const RootStack = createNativeStackNavigator({
+  screens: {
+    MainDrawer,
+    NotFound: NotFoundScreen,
+  },
+})
+
+const Navigation = createStaticNavigation(RootStack)
 
 export default function App() {
   return <Navigation />
 }
 
 const styles = StyleSheet.create({
+  copy: {
+    color: '#6b7280',
+    textAlign: 'center',
+  },
   screen: {
     alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
-    rowGap: 8,
-  },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+    rowGap: 10,
   },
   title: {
     color: '#111827',

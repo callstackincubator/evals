@@ -1,59 +1,80 @@
-import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createStaticNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function runNavigationPlaceholder() {
+async function openNotificationTargetPlaceholder() {
   // TODO: implement navigation behavior for this eval
   return 'pending'
 }
 
-function HomeScreen() {
-  const navigation = useNavigation()
-
+function NotificationsListScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Home</Text>
-      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
-      <Button title='Call placeholder' onPress={() => runNavigationPlaceholder()} />
-      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
+      <Text style={styles.title}>NotificationsList</Text>
+      <Text style={styles.copy}>
+        Notification seed is ready for nested target behavior.
+      </Text>
+      <Button
+        title="Call placeholder"
+        onPress={() => openNotificationTargetPlaceholder()}
+      />
     </View>
   )
 }
 
-function DetailsScreen() {
+function NotificationDetailsScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Details</Text>
-      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
+      <Text style={styles.title}>NotificationDetails</Text>
+      <Text style={styles.copy}>
+        Implement eval behavior from this nested route shell.
+      </Text>
     </View>
   )
 }
 
-const Stack = createNativeStackNavigator({
+function FeedScreen() {
+  return (
+    <View style={styles.screen}>
+      <Text style={styles.title}>Feed</Text>
+      <Text style={styles.copy}>Nested notification target scaffold route</Text>
+    </View>
+  )
+}
+
+const NotificationsStack = createNativeStackNavigator({
   screens: {
-    Home: HomeScreen,
-    Details: DetailsScreen,
+    NotificationsList: NotificationsListScreen,
+    NotificationDetails: NotificationDetailsScreen,
   },
 })
 
-const Navigation = createStaticNavigation(Stack)
+const Tabs = createBottomTabNavigator({
+  screens: {
+    NotificationsTab: NotificationsStack,
+    Feed: FeedScreen,
+  },
+})
+
+const Navigation = createStaticNavigation(Tabs)
 
 export default function App() {
   return <Navigation />
 }
 
 const styles = StyleSheet.create({
+  copy: {
+    color: '#6b7280',
+    textAlign: 'center',
+  },
   screen: {
     alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
-    rowGap: 8,
-  },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+    rowGap: 10,
   },
   title: {
     color: '#111827',

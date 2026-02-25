@@ -5,10 +5,24 @@ type Row = {
   title: string
 }
 
-const ROWS: Row[] = Array.from({ length: 30 }, (_, index) => ({
-  id: `item-${index + 1}`,
-  title: `Row ${index + 1}`,
-}))
+const CONTACT_ROWS: Row[] = [
+  {
+    id: 'c-1',
+    title: 'Ada Lovelace',
+  },
+  {
+    id: 'c-2',
+    title: 'Grace Hopper',
+  },
+  {
+    id: 'c-3',
+    title: 'Margaret Hamilton',
+  },
+  {
+    id: 'c-4',
+    title: 'Katherine Johnson',
+  },
+]
 
 function RowItem({ item }: { item: Row }) {
   return (
@@ -18,19 +32,24 @@ function RowItem({ item }: { item: Row }) {
   )
 }
 
-function runListBehaviorPlaceholder() {
-  // TODO: implement list behavior required by this eval
+function toggleSelectionPlaceholder() {
+  // TODO: implement list behavior for this eval
 }
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>List Scaffold</Text>
-      <Text style={styles.helper}>Seed data is ready; implement required list behavior.</Text>
-      <Pressable style={styles.button} onPress={runListBehaviorPlaceholder}>
-        <Text style={styles.buttonText}>Run placeholder</Text>
+      <Text style={styles.header}>Selectable Contacts</Text>
+      <Text style={styles.helper}>
+        Contact rows are scaffolded. Add selection behavior for this eval.
+      </Text>
+      <Pressable style={styles.button} onPress={toggleSelectionPlaceholder}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
       </Pressable>
-      <FlatList data={ROWS} renderItem={({ item }) => <RowItem item={item} />} />
+      <FlatList
+        data={CONTACT_ROWS}
+        renderItem={({ item }) => <RowItem item={item} />}
+      />
     </View>
   )
 }

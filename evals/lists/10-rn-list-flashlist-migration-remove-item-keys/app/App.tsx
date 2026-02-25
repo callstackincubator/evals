@@ -1,36 +1,49 @@
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
 
-type Row = {
+type FeedRow = {
   id: string
-  title: string
+  body: string
+  tags: { id: string; label: string }[]
 }
 
-const ROWS: Row[] = Array.from({ length: 30 }, (_, index) => ({
-  id: `item-${index + 1}`,
-  title: `Row ${index + 1}`,
+const FEED_ROWS: FeedRow[] = Array.from({ length: 12 }, (_, index) => ({
+  id: `post-${index + 1}`,
+  body: `Post content ${index + 1}`,
+  tags: [
+    { id: `tag-a-${index + 1}`, label: 'React Native' },
+    { id: `tag-b-${index + 1}`, label: 'Performance' },
+  ],
 }))
 
-function RowItem({ item }: { item: Row }) {
-  return (
-    <View style={styles.row}>
-      <Text style={styles.rowTitle}>{item.title}</Text>
-    </View>
-  )
-}
-
-function runListBehaviorPlaceholder() {
-  // TODO: implement list behavior required by this eval
+function migrateToFlashListPlaceholder() {
+  // TODO: implement list behavior for this eval
 }
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>List Scaffold</Text>
-      <Text style={styles.helper}>Seed data is ready; implement required list behavior.</Text>
-      <Pressable style={styles.button} onPress={runListBehaviorPlaceholder}>
-        <Text style={styles.buttonText}>Run placeholder</Text>
+      <Text style={styles.header}>Feed Migration Scaffold</Text>
+      <Text style={styles.helper}>
+        FlatList feed is seeded. Implement FlashList migration behavior.
+      </Text>
+      <Pressable style={styles.button} onPress={migrateToFlashListPlaceholder}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
       </Pressable>
-      <FlatList data={ROWS} renderItem={({ item }) => <RowItem item={item} />} />
+      <FlatList
+        data={FEED_ROWS}
+        renderItem={({ item }) => (
+          <View style={styles.row}>
+            <Text style={styles.rowTitle}>{item.body}</Text>
+            <View style={styles.tagRow}>
+              {item.tags.map((tag) => (
+                <Text key={tag.id} style={styles.tag}>
+                  {tag.label}
+                </Text>
+              ))}
+            </View>
+          </View>
+        )}
+      />
     </View>
   )
 }
@@ -71,9 +84,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     paddingHorizontal: 12,
     paddingVertical: 12,
+    rowGap: 6,
   },
   rowTitle: {
     color: '#111827',
     fontSize: 15,
+  },
+  tag: {
+    color: '#1d4ed8',
+    fontSize: 12,
+    marginRight: 8,
+  },
+  tagRow: {
+    flexDirection: 'row',
   },
 })
