@@ -7,6 +7,10 @@ requirements:
     description: Must require two back presses within a deterministic time window before exiting from root.
   - id: root-only-handler
     description: Must scope this behavior to root navigation context rather than all screens.
+  - id: state-driven-navigation-architecture
+    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state.
+  - id: back-behavior-scoped-to-active-route
+    description: Must scope back handling to the active navigator route so back behavior remains deterministic across nested stacks.
   - id: implementation-use-react-navigation-static-api
     description: Must define navigation with React Navigation static APIs and createStaticNavigation.
   - id: implementation-use-native-navigation

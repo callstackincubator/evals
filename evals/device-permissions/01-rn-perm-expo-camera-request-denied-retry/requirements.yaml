@@ -12,5 +12,9 @@ requirements:
     description: Must provide explicit denied or cannot-ask-again recovery actions (retry and settings guidance/action).
   - id: degraded-path-no-crash
     description: Must include a degraded UX path when camera permission is unavailable instead of failing silently.
+  - id: permission-capability-state-separation
+    description: Must model permission status separately from feature capability and action outcome so granted permission is not treated as automatic operation success.
+  - id: media-result-validation-contract
+    description: Must validate media picker or camera results before success state transitions and keep cancellation/error outcomes explicit.
   - id: implementation-use-expo-permission-apis
     description: Must implement permission handling using Expo permission APIs.

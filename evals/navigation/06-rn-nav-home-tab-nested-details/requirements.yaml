@@ -7,6 +7,8 @@ requirements:
     description: Must implement a nested stack navigator inside the Home tab with a details route.
   - id: article-param-passing
     description: Must pass articleId params when navigating to ArticleDetails.
+  - id: state-driven-navigation-architecture
+    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state.
   - id: implementation-use-react-navigation-static-api
     description: Must define navigation with React Navigation static APIs and createStaticNavigation.
   - id: implementation-use-native-navigation

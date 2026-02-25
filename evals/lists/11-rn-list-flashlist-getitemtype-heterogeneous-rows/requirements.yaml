@@ -9,5 +9,9 @@ requirements:
     description: Must provide getItemType for heterogeneous item categories.
   - id: type-safe-row-identity
     description: Must keep keys and item type mapping consistent across updates.
+  - id: stable-row-identity-contract
+    description: Must preserve stable row identity with deterministic keys so virtualization and row state reuse remain correct across updates.
+  - id: virtualization-tuning-contract
+    description: Must provide library-specific virtualization tuning inputs such as estimated item size or item typing for deterministic rendering behavior.
   - id: implementation-use-flashlist
     description: Must implement list behavior using FlashList APIs.

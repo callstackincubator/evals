@@ -9,5 +9,7 @@ requirements:
     description: Must provide stable keys for sections and section items.
   - id: reorder-safe-rendering
     description: Must maintain correct header-to-items mapping after section reorder/update operations.
+  - id: stable-row-identity-contract
+    description: Must preserve stable row identity with deterministic keys so virtualization and row state reuse remain correct across updates.
   - id: implementation-use-sectionlist
     description: Must implement list behavior using SectionList APIs.

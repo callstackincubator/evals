@@ -7,6 +7,8 @@ requirements:
     description: Must enable inactive tab detaching behavior through tab or screen configuration.
   - id: draft-state-outside-detached-instance
     description: Must persist draft state outside detached screen instance so returning to tab restores draft content.
+  - id: state-driven-navigation-architecture
+    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state.
   - id: implementation-use-react-navigation-static-api
     description: Must define navigation with React Navigation static APIs and createStaticNavigation.
   - id: implementation-use-native-navigation

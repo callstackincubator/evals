@@ -9,5 +9,11 @@ requirements:
     description: Must configure maintainVisibleContentPosition behavior intentionally for prepend updates.
   - id: controlled-near-bottom-autoscroll
     description: Must define deterministic near-bottom auto-scroll behavior without forcing jumps for users reading older messages.
+  - id: stable-row-identity-contract
+    description: Must preserve stable row identity with deterministic keys so virtualization and row state reuse remain correct across updates.
+  - id: list-pagination-overlap-guard
+    description: Must guard against overlapping pagination triggers so concurrent list fetches do not duplicate rows or corrupt ordering.
+  - id: virtualization-tuning-contract
+    description: Must provide library-specific virtualization tuning inputs such as estimated item size or item typing for deterministic rendering behavior.
   - id: implementation-use-flashlist
     description: Must implement list behavior using FlashList APIs.

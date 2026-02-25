@@ -10,5 +10,9 @@ requirements:
     description: Must finalize prepared statements in deterministic cleanup paths.
   - id: no-sql-string-interpolation
     description: Must avoid interpolation based SQL for user supplied values.
+  - id: durable-parse-and-shape-guard
+    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values.
+  - id: sqlite-transaction-boundary-contract
+    description: Must scope multi-step SQLite state transitions to explicit transaction boundaries for atomicity under failure.
   - id: implementation-use-sqlite
     description: Must implement persistence behavior using SQLite APIs.

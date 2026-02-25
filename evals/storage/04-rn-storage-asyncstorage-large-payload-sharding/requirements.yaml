@@ -10,5 +10,7 @@ requirements:
     description: Must persist a manifest that includes chunk ordering and schema version metadata.
   - id: missing-chunk-recovery
     description: Must detect missing or corrupted chunks and recover with a safe fallback path.
+  - id: durable-parse-and-shape-guard
+    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values.
   - id: implementation-use-asyncstorage
     description: Must implement persistence behavior using AsyncStorage APIs.

@@ -12,5 +12,9 @@ requirements:
     description: Must avoid blind token registration attempts when notification permission is denied.
   - id: denied-recovery-action
     description: Must provide a deterministic denied fallback or recovery action for notification setup.
+  - id: permission-capability-state-separation
+    description: Must model permission status separately from feature capability and action outcome so granted permission is not treated as automatic operation success.
+  - id: notification-registration-precondition-order
+    description: Must gate notification registration and token/channel setup behind explicit granted-permission and capability checks in correct order.
   - id: implementation-use-expo-permission-apis
     description: Must implement permission handling using Expo permission APIs.

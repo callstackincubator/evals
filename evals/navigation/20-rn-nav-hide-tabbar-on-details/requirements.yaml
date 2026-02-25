@@ -7,6 +7,8 @@ requirements:
     description: Must conditionally hide the bottom tab bar when a nested details route is focused.
   - id: tabbar-restored-on-back
     description: Must restore normal tab bar visibility when navigating back from details routes.
+  - id: state-driven-navigation-architecture
+    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state.
   - id: implementation-use-react-navigation-static-api
     description: Must define navigation with React Navigation static APIs and createStaticNavigation.
   - id: implementation-use-native-navigation

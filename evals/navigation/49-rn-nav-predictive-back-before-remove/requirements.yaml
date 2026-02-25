@@ -13,6 +13,10 @@ requirements:
     description: Must apply the confirmation flow for Android predictive back.
   - id: android-hardware-back-covered
     description: Must apply the confirmation flow for Android hardware back.
+  - id: state-driven-navigation-architecture
+    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state.
+  - id: back-behavior-scoped-to-active-route
+    description: Must scope back handling to the active navigator route so back behavior remains deterministic across nested stacks.
   - id: implementation-use-react-navigation-static-api
     description: Must define navigation with React Navigation static APIs and createStaticNavigation.
   - id: implementation-use-native-navigation

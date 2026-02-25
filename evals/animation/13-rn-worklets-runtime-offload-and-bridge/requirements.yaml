@@ -9,5 +9,7 @@ requirements:
     description: Must bridge results back to React runtime via worklets APIs such as scheduleOnRN or runOnRN.
   - id: bounded-bridge-frequency
     description: Must avoid unbounded per-frame bridging and enforce controlled update cadence.
+  - id: ui-thread-animation-driver
+    description: Must run high-frequency animation state on Reanimated shared values and worklets instead of per-frame React state updates.
   - id: implementation-use-reanimated
     description: Must implement animation behavior with react-native-reanimated primitives.

@@ -9,5 +9,9 @@ requirements:
     description: Must prevent recycled local state from leaking across different item identities.
   - id: identity-driven-row-behavior
     description: Must bind row state behavior to item identity, not container instance.
+  - id: stable-row-identity-contract
+    description: Must preserve stable row identity with deterministic keys so virtualization and row state reuse remain correct across updates.
+  - id: virtualization-tuning-contract
+    description: Must provide library-specific virtualization tuning inputs such as estimated item size or item typing for deterministic rendering behavior.
   - id: implementation-use-legend-list
     description: Must implement list behavior using Legend List APIs.

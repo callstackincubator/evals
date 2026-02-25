@@ -10,5 +10,9 @@ requirements:
     description: Must update UI state from listener events instead of periodic polling.
   - id: listener-cleanup
     description: Must unsubscribe listeners during cleanup to avoid leaks and duplicate handlers.
+  - id: durable-parse-and-shape-guard
+    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values.
+  - id: listener-lifecycle-cleanup-contract
+    description: Must subscribe and unsubscribe storage listeners in component lifecycle to avoid duplicate updates and leaks.
   - id: implementation-use-mmkv
     description: Must implement persistence behavior using MMKV APIs.

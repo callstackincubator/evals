@@ -9,5 +9,9 @@ requirements:
     description: Must store zoom scale and translation in Reanimated shared values.
   - id: bounded-pan-while-zoomed
     description: Must clamp translation bounds based on current zoom so content remains partially visible.
+  - id: ui-thread-animation-driver
+    description: Must run high-frequency animation state on Reanimated shared values and worklets instead of per-frame React state updates.
+  - id: gesture-lifecycle-determinism
+    description: Must implement deterministic begin, update, and end gesture transitions so interactive animation always resolves to a valid resting state.
   - id: implementation-use-reanimated
     description: Must implement animation behavior with react-native-reanimated primitives.

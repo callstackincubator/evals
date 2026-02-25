@@ -7,6 +7,10 @@ requirements:
     description: Must render route sets based on authentication state.
   - id: single-container-conditional-graph
     description: Must keep a single navigation container while conditionally switching the inner route graph by auth state.
+  - id: state-driven-navigation-architecture
+    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state.
+  - id: auth-flow-history-isolation
+    description: Must isolate authenticated and unauthenticated navigation histories so protected routes are not reachable after auth-state switches.
   - id: implementation-use-react-navigation-static-api
     description: Must define navigation with React Navigation static APIs and createStaticNavigation.
   - id: implementation-use-native-navigation

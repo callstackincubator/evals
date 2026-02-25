@@ -10,5 +10,7 @@ requirements:
     description: Must clear only user-scoped MMKV instance data during sign-out.
   - id: global-instance-retained
     description: Must keep global MMKV preferences intact across user session resets.
+  - id: durable-parse-and-shape-guard
+    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values.
   - id: implementation-use-mmkv
     description: Must implement persistence behavior using MMKV APIs.

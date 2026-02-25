@@ -10,5 +10,7 @@ requirements:
     description: Must commit async results only when they belong to the latest active request.
   - id: stale-response-ignored
     description: Must ignore or drop out-of-date async responses so stale data cannot overwrite newer state.
+  - id: async-stale-result-guard
+    description: Must prevent stale async completions from overwriting newer state by using cancellation, request identity guards, or equivalent ordering control.
   - id: implementation-use-zustand
     description: Must implement state behavior using Zustand stores, actions, and selectors.

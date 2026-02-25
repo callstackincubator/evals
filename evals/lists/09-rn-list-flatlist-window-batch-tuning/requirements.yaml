@@ -9,5 +9,7 @@ requirements:
     description: Must reflect explicit responsiveness vs fill-rate tradeoff in list configuration choices.
   - id: lightweight-row-path
     description: Must keep row render path lightweight enough to avoid avoidable interaction delays.
+  - id: stable-row-identity-contract
+    description: Must preserve stable row identity with deterministic keys so virtualization and row state reuse remain correct across updates.
   - id: implementation-use-flatlist
     description: Must implement list behavior using FlatList APIs.

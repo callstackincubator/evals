@@ -7,6 +7,8 @@ requirements:
     description: Must trigger inbox refresh from focus lifecycle rather than only from mount lifecycle.
   - id: focus-effect-structure
     description: Must implement focus logic using useFocusEffect with callback structure suitable for cleanup.
+  - id: state-driven-navigation-architecture
+    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state.
   - id: implementation-use-react-navigation-static-api
     description: Must define navigation with React Navigation static APIs and createStaticNavigation.
   - id: implementation-use-native-navigation

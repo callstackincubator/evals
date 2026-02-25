@@ -7,6 +7,8 @@ requirements:
     description: Must reset navigation state after checkout completion to a deterministic post-checkout route graph.
   - id: no-back-to-checkout
     description: Must avoid leaving checkout routes in back history after success navigation.
+  - id: state-driven-navigation-architecture
+    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state.
   - id: implementation-use-react-navigation-static-api
     description: Must define navigation with React Navigation static APIs and createStaticNavigation.
   - id: implementation-use-native-navigation

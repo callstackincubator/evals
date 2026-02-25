@@ -10,5 +10,7 @@ requirements:
     description: Must apply an explicit deterministic conflict merge policy when local and remote edits diverge.
   - id: conflict-result-persistence
     description: Must persist merged outcomes and unresolved conflict markers consistently after reconciliation.
+  - id: durable-parse-and-shape-guard
+    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values.
   - id: implementation-use-asyncstorage
     description: Must implement persistence behavior using AsyncStorage APIs.
