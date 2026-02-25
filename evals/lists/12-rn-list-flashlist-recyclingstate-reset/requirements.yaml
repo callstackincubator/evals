@@ -12,4 +12,4 @@ requirements:
   - id: implementation-flashlist-v2-component-migration
     description: Must use FlashList v2 component APIs and MUST NOT use deprecated MasonryFlashList component paths.
   - id: implementation-flashlist-v2-userecyclingstate-contract
-    description: Must use FlashList v2 recycling-aware row-state APIs (for example useRecyclingState) or equivalent id-rebind logic when recycled containers switch items.
+    description: Must use FlashList v2 useRecyclingState to keep row-local transient state bound to item identity when recycled containers switch items.

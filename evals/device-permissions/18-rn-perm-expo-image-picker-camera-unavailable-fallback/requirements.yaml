@@ -6,7 +6,7 @@ requirements:
   - id: camera-permission-before-launchcamera
     description: Must check or request camera permission before launchCameraAsync usage.
   - id: camera-unavailable-fallback-to-library
-    description: Must handle camera-unavailable path with a deterministic fallback to launchImageLibraryAsync or equivalent alternate path.
+    description: Must handle camera-unavailable path by falling back to launchImageLibraryAsync.
   - id: launchcamera-error-branching
     description: Must branch explicit error or cancellation outcomes from launchCameraAsync.
   - id: no-hard-failure-on-unsupported-device

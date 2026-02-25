@@ -10,7 +10,7 @@ requirements:
   - id: denied-and-not-determined-separation
     description: Must separate denied and not-determined notification states with distinct actions.
   - id: ios-permission-options-explicit
-    description: Must call requestPermissionsAsync with explicit iOS options or equivalent granularity.
+    description: Must call requestPermissionsAsync with explicit iOS options.
   - id: implementation-expo-notifications-permission-flow
     description: Must use expo-notifications getPermissionsAsync/requestPermissionsAsync flow and branch on explicit permission status outcomes.
   - id: implementation-expo-notifications-ios-provisional-contract

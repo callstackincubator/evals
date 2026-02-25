@@ -5,8 +5,8 @@ inputs:
 requirements:
   - id: narrow-selector-subscriptions
     description: Must subscribe components to narrow store slices instead of selecting the full store object.
-  - id: shallow-or-equivalent-equality
-    description: For object-like selector outputs, must use useShallow (or equivalent stable-equality strategy) to prevent avoidable rerenders.
+  - id: use-shallow-for-object-selectors
+    description: For object-like selector outputs, must use useShallow to prevent avoidable rerenders.
   - id: immutable-untouched-branch-preservation
     description: Must update store immutably while preserving references for untouched branches.
   - id: implementation-zustand-v5-named-create

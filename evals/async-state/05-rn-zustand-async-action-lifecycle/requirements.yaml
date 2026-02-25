@@ -8,7 +8,7 @@ requirements:
   - id: async-action-updates-store
     description: Must implement async fetch action that updates Zustand state via set/get transitions through lifecycle phases.
   - id: error-reset-or-retry-path
-    description: Must provide deterministic error recovery path (retry and/or reset) after failed async action.
+    description: Must provide an explicit retry action after a failed async action.
   - id: implementation-zustand-v5-named-create
     description: Must use named create import from 'zustand' (v5 style) and MUST NOT rely on removed default-export create usage.
   - id: implementation-zustand-v5-selector-equality

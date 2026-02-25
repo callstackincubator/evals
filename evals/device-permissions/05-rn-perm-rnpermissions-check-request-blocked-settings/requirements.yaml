@@ -8,7 +8,7 @@ requirements:
   - id: rnpermissions-explicit-status-map
     description: Must model permission statuses with explicit handling for unavailable, denied, blocked, and granted states.
   - id: blocked-settings-recovery
-    description: Must route blocked outcomes to a settings recovery action using openSettings or equivalent.
+    description: Must route blocked outcomes to a settings recovery action using openSettings.
   - id: android-check-blocked-caveat-aware
     description: Must avoid assuming Android check calls alone can determine blocked status for every permission type.
   - id: implementation-rnpermissions-results-contract

@@ -4,7 +4,7 @@ inputs:
     - app/App.tsx
 requirements:
   - id: blocked-status-opensettings-path
-    description: Must route blocked permission outcomes to openSettings or equivalent recovery action.
+    description: Must route blocked permission outcomes to openSettings.
   - id: appstate-active-recheck
     description: Must re-check permission status when app returns to active state after settings navigation.
   - id: stale-blocked-state-avoidance

@@ -6,7 +6,7 @@ requirements:
   - id: multi-permission-status-map
     description: Must maintain per-permission status results rather than collapsing to one boolean.
   - id: requestmultiple-or-sequenced-requests
-    description: Must use requestMultiple or equivalent explicit sequencing for the multi-permission flow.
+    description: Must use requestMultiple for the multi-permission flow.
   - id: android-blocked-detection-via-request
     description: Must include request-path handling for Android blocked detection limitations in check-only APIs.
   - id: per-permission-recovery-actions

@@ -10,4 +10,4 @@ requirements:
   - id: translation-shared-value
     description: Must update card translation through Reanimated shared values during gesture updates.
   - id: deterministic-snap-on-release
-    description: Must resolve release to a deterministic snap point based on velocity and or position thresholds.
+    description: Must resolve release to a deterministic snap point using velocity and position threshold logic.
