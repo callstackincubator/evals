@@ -11,5 +11,5 @@ requirements:
     description: Must revalidate affected query keys in onSettled to reconcile optimistic cache with authoritative server state.
   - id: implementation-rq-v5-object-signature
     description: Must use TanStack Query v5 object-signature APIs (for hooks and queryClient methods) and MUST NOT use legacy positional overload calls.
-  - id: implementation-rq-no-query-callbacks
-    description: Must NOT pass onSuccess/onError/onSettled callbacks to useQuery options (removed in v5); mutation callbacks remain allowed.
+  - id: implementation-rq-optimistic-context-rollback-contract
+    description: Must return snapshot rollback context from onMutate and consume that context in onError to deterministically restore optimistic cache state.

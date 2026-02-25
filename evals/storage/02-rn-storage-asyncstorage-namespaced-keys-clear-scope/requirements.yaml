@@ -11,5 +11,5 @@ requirements:
     description: Must NOT use AsyncStorage.clear for sign-out and must preserve global preference keys across user resets.
   - id: implementation-asyncstorage-package
     description: Must use @react-native-async-storage/async-storage package APIs and MUST NOT use removed AsyncStorage from react-native core.
-  - id: implementation-promise-api-no-callback
-    description: Must implement AsyncStorage access through Promise-based calls and MUST NOT rely on callback-form APIs.
+  - id: implementation-asyncstorage-prefix-filtered-signout-contract
+    description: Must implement scoped sign-out cleanup via getAllKeys prefix filtering and multiRemove (no global clear) to preserve non-user namespaces.

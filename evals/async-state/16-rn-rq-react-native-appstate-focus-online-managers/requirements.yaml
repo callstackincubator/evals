@@ -11,5 +11,5 @@ requirements:
     description: Must ensure foreground/reconnect transitions trigger controlled refetch behavior without refetch storms.
   - id: implementation-rq-v5-object-signature
     description: Must use TanStack Query v5 object-signature APIs (for hooks and queryClient methods) and MUST NOT use legacy positional overload calls.
-  - id: implementation-rq-no-query-callbacks
-    description: Must NOT pass onSuccess/onError/onSettled callbacks to useQuery options (removed in v5); mutation callbacks remain allowed.
+  - id: implementation-rq-rn-focus-online-subscription-contract
+    description: Must register React Native lifecycle/connectivity listeners through focusManager/onlineManager event hooks with explicit subscription cleanup.

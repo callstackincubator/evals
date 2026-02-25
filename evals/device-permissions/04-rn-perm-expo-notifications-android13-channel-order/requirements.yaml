@@ -13,5 +13,5 @@ requirements:
     description: Must provide a deterministic denied fallback or recovery action for notification setup.
   - id: implementation-expo-notifications-permission-flow
     description: Must use expo-notifications getPermissionsAsync/requestPermissionsAsync flow and branch on explicit permission status outcomes.
-  - id: implementation-expo-notifications-channel-before-token
-    description: On Android registration paths, must configure notification channel before Expo/device push token retrieval to satisfy Android 13 prompt behavior.
+  - id: implementation-expo-notifications-android-channel-order-contract
+    description: Must call Notifications.setNotificationChannelAsync on Android before getExpoPushTokenAsync/getDevicePushTokenAsync and avoid token requests on denied status.

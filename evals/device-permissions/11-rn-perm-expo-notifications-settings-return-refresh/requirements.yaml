@@ -13,5 +13,5 @@ requirements:
     description: Must keep notification-only actions disabled until refreshed permission state is resolved.
   - id: implementation-expo-notifications-permission-flow
     description: Must use expo-notifications getPermissionsAsync/requestPermissionsAsync flow and branch on explicit permission status outcomes.
-  - id: implementation-expo-notifications-channel-before-token
-    description: On Android registration paths, must configure notification channel before Expo/device push token retrieval to satisfy Android 13 prompt behavior.
+  - id: implementation-expo-notifications-settings-return-contract
+    description: Must re-check Notifications.getPermissionsAsync on app foreground/resume after settings navigation and refresh gated feature state from that result.

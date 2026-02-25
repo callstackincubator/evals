@@ -51,7 +51,7 @@ This document is the reference for the offline, storage, and sync resilience cat
 ### react-native-mmkv
 
 - `v4.0.0` (2025-10-20) is a major release (Nitro rewrite, API behavior updates).
-- `v4.1.1` (2026-01-07) is the latest listed release at audit time.
+- `v4.1.2` (2026-01-28) is the latest listed release at audit time.
 - Current README examples use `createMMKV(...)` and explicit instance options (`id`, `path`, `encryptionKey`, `mode`).
 - Eval policy:
   - require `createMMKV` style initialization with explicit instance IDs for scoped storage evals

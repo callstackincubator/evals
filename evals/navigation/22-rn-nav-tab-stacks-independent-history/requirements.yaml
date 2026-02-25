@@ -9,5 +9,5 @@ requirements:
     description: Must preserve independent navigation history for tab flows when switching tabs.
   - id: implementation-static-navigation-api
     description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.
-  - id: explicit-nested-navigation-contract
-    description: Must target nested routes with explicit parent-child contracts (screen and params or equivalent static linking config) and MUST NOT rely on legacy navigationInChildEnabled behavior.
+  - id: implementation-nav-per-tab-nested-stack-contract
+    description: Must keep each tab wired to its own nested stack contract so per-tab history remains independent without legacy navigationInChildEnabled behavior.

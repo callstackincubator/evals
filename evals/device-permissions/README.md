@@ -39,7 +39,7 @@ This document is the reference for the device capabilities and permissions categ
 ### react-native-permissions
 
 - README documents Android caveats where `check`/`checkMultiple` (and notification checks) cannot fully determine blocked states without request flow.
-- Latest `5.5.0` release (2025-09-27) updates one-time permission behavior documentation and tests, reinforcing request-path handling.
+- Latest `5.5.0` release (2026-02-20) updates one-time permission behavior documentation and tests, reinforcing request-path handling.
 - Eval policy:
   - require `RESULTS`-driven state handling
   - require request-path logic for blocked detection on Android-sensitive flows.

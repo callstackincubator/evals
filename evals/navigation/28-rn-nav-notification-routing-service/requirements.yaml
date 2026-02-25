@@ -11,5 +11,5 @@ requirements:
     description: Must dispatch notification navigation through a root navigation reference only after readiness is confirmed.
   - id: implementation-static-navigation-api
     description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.
-  - id: explicit-nested-navigation-contract
-    description: Must target nested routes with explicit parent-child contracts (screen and params or equivalent static linking config) and MUST NOT rely on legacy navigationInChildEnabled behavior.
+  - id: implementation-nav-ref-nested-dispatch-contract
+    description: Must dispatch nested route targets through a ready-checked root navigation ref using explicit parent-child screen/params objects, without legacy navigationInChildEnabled behavior.

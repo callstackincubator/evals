@@ -11,7 +11,7 @@ requirements:
     description: Must derive fetch parameters from QueryFunctionContext.queryKey in queryFn rather than from hidden mutable external state.
   - id: implementation-rq-v5-object-signature
     description: Must use TanStack Query v5 object-signature APIs (for hooks and queryClient methods) and MUST NOT use legacy positional overload calls.
-  - id: implementation-rq-no-query-callbacks
-    description: Must NOT pass onSuccess/onError/onSettled callbacks to useQuery options (removed in v5); mutation callbacks remain allowed.
+  - id: implementation-rq-queryfncontext-querykey-contract
+    description: Must consume QueryFunctionContext.queryKey directly in queryFn for filter/page/pageSize extraction (no hidden closure-derived fetch params).
   - id: implementation-rq-placeholderdata-identity
     description: Must preserve previous-page continuity with placeholderData identity function and MUST NOT use removed keepPreviousData option.

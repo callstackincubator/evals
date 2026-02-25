@@ -11,5 +11,5 @@ requirements:
     description: Must include a bounded per-key AsyncStorage.setItem fallback/retry path when multiSet fails.
   - id: implementation-asyncstorage-package
     description: Must use @react-native-async-storage/async-storage package APIs and MUST NOT use removed AsyncStorage from react-native core.
-  - id: implementation-promise-api-no-callback
-    description: Must implement AsyncStorage access through Promise-based calls and MUST NOT rely on callback-form APIs.
+  - id: implementation-asyncstorage-multiset-fallback-contract
+    description: Must use batched AsyncStorage.multiSet/multiGet for related keys and provide bounded per-key setItem fallback when batch writes fail.

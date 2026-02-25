@@ -13,5 +13,5 @@ requirements:
     description: Must call requestPermissionsAsync with explicit iOS options or equivalent granularity.
   - id: implementation-expo-notifications-permission-flow
     description: Must use expo-notifications getPermissionsAsync/requestPermissionsAsync flow and branch on explicit permission status outcomes.
-  - id: implementation-expo-notifications-channel-before-token
-    description: On Android registration paths, must configure notification channel before Expo/device push token retrieval to satisfy Android 13 prompt behavior.
+  - id: implementation-expo-notifications-ios-provisional-contract
+    description: Must branch on iOS granular permission fields (for example ios.status/provisional) and treat provisional as usable degraded state instead of full-grant equivalence.

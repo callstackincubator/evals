@@ -15,5 +15,5 @@ requirements:
     description: Must surface explicit, domain-scoped token registration errors while mapping unknown failures to a generic fallback message (no raw unexpected error leakage to users).
   - id: implementation-expo-notifications-permission-flow
     description: Must use expo-notifications getPermissionsAsync/requestPermissionsAsync flow and branch on explicit permission status outcomes.
-  - id: implementation-expo-notifications-channel-before-token
-    description: On Android registration paths, must configure notification channel before Expo/device push token retrieval to satisfy Android 13 prompt behavior.
+  - id: implementation-expo-notifications-physical-device-gate-contract
+    description: Must gate push token APIs with Device.isDevice and granted notification status, returning deterministic degraded UX for simulator/non-device paths.

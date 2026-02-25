@@ -9,5 +9,5 @@ requirements:
     description: Must dismiss modal back to previously active tab context.
   - id: implementation-static-navigation-api
     description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.
-  - id: explicit-nested-navigation-contract
-    description: Must target nested routes with explicit parent-child contracts (screen and params or equivalent static linking config) and MUST NOT rely on legacy navigationInChildEnabled behavior.
+  - id: implementation-nav-modal-over-tab-layer-contract
+    description: Must keep modal-group routes above nested tab routes in the static navigation tree while preserving explicit parent-child targeting semantics.

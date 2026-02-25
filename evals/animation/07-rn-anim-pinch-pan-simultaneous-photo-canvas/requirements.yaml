@@ -5,8 +5,8 @@ inputs:
 requirements:
   - id: simultaneous-pinch-and-pan
     description: Must compose pinch and pan gestures to run simultaneously using Gesture Handler composition primitives.
-  - id: no-removed-useanimatedgesturehandler
-    description: Must use Gesture API callbacks and MUST NOT rely on removed useAnimatedGestureHandler from react-native-reanimated.
+  - id: implementation-rngh-pinch-pan-simultaneous-contract
+    description: Must use Gesture.Simultaneous (or equivalent RNGH composition) for pinch + pan updates and MUST NOT rely on legacy useAnimatedGestureHandler paths.
   - id: scale-and-translation-shared-values
     description: Must store zoom scale and translation in Reanimated shared values.
   - id: bounded-pan-while-zoomed

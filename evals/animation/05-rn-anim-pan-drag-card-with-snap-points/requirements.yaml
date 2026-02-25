@@ -5,8 +5,8 @@ inputs:
 requirements:
   - id: gesture-handler-pan-api
     description: Must use react-native-gesture-handler gesture APIs to drive drag updates.
-  - id: no-removed-useanimatedgesturehandler
-    description: Must use Gesture API callbacks and MUST NOT rely on removed useAnimatedGestureHandler from react-native-reanimated.
+  - id: implementation-rngh-pan-gesturebuilder-contract
+    description: Must implement drag with Gesture.Pan builder callbacks (onBegin/onUpdate/onEnd or equivalent) and MUST NOT use legacy useAnimatedGestureHandler paths.
   - id: translation-shared-value
     description: Must update card translation through Reanimated shared values during gesture updates.
   - id: deterministic-snap-on-release
