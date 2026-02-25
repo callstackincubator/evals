@@ -1,36 +1,69 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, SectionList, StyleSheet, Text, View } from 'react-native'
 
-type Row = {
+type SectionRow = {
   id: string
   title: string
 }
 
-const ROWS: Row[] = Array.from({ length: 30 }, (_, index) => ({
-  id: `item-${index + 1}`,
-  title: `Row ${index + 1}`,
-}))
-
-function RowItem({ item }: { item: Row }) {
-  return (
-    <View style={styles.row}>
-      <Text style={styles.rowTitle}>{item.title}</Text>
-    </View>
-  )
+type SectionData = {
+  data: SectionRow[]
+  title: string
 }
 
-function runListBehaviorPlaceholder() {
-  // TODO: implement list behavior required by this eval
+const TOPIC_SECTIONS: SectionData[] = [
+  {
+    title: 'JavaScript',
+    data: [
+      {
+        id: 'js-1',
+        title: 'Closures',
+      },
+      {
+        id: 'js-2',
+        title: 'Event loop',
+      },
+    ],
+  },
+  {
+    title: 'React Native',
+    data: [
+      {
+        id: 'rn-1',
+        title: 'Fabric',
+      },
+      {
+        id: 'rn-2',
+        title: 'TurboModules',
+      },
+    ],
+  },
+]
+
+function jumpToSectionPlaceholder() {
+  // TODO: implement list behavior for this eval
 }
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>List Scaffold</Text>
-      <Text style={styles.helper}>Seed data is ready; implement required list behavior.</Text>
-      <Pressable style={styles.button} onPress={runListBehaviorPlaceholder}>
-        <Text style={styles.buttonText}>Run placeholder</Text>
+      <Text style={styles.header}>Topic Sections</Text>
+      <Text style={styles.helper}>
+        Topic sections are ready. Add jump-to-section behavior.
+      </Text>
+      <Pressable style={styles.button} onPress={jumpToSectionPlaceholder}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
       </Pressable>
-      <FlatList data={ROWS} renderItem={({ item }) => <RowItem item={item} />} />
+      <SectionList
+        sections={TOPIC_SECTIONS}
+        renderSectionHeader={({ section }) => (
+          <Text style={styles.section}>{section.title}</Text>
+        )}
+        renderItem={({ item }) => (
+          <View style={styles.row}>
+            <Text style={styles.rowTitle}>{item.title}</Text>
+          </View>
+        )}
+      />
     </View>
   )
 }
@@ -75,5 +108,13 @@ const styles = StyleSheet.create({
   rowTitle: {
     color: '#111827',
     fontSize: 15,
+  },
+  section: {
+    backgroundColor: '#f3f4f6',
+    color: '#374151',
+    fontSize: 13,
+    fontWeight: '700',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
 })

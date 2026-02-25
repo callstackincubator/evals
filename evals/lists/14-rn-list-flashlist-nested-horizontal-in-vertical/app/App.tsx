@@ -1,36 +1,53 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { FlashList } from '@shopify/flash-list'
 
 type Row = {
   id: string
   title: string
 }
 
-const ROWS: Row[] = Array.from({ length: 30 }, (_, index) => ({
-  id: `item-${index + 1}`,
-  title: `Row ${index + 1}`,
-}))
+const MIXED_ROWS: Row[] = [
+  {
+    id: 'story-1',
+    title: 'Story: Top headline',
+  },
+  {
+    id: 'carousel-1',
+    title: 'Carousel: Mountains, Beach, City',
+  },
+  {
+    id: 'story-2',
+    title: 'Story: Daily recap',
+  },
+]
 
-function RowItem({ item }: { item: Row }) {
-  return (
-    <View style={styles.row}>
-      <Text style={styles.rowTitle}>{item.title}</Text>
-    </View>
-  )
-}
-
-function runListBehaviorPlaceholder() {
-  // TODO: implement list behavior required by this eval
+function renderNestedCarouselPlaceholder() {
+  // TODO: implement list behavior for this eval
 }
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>List Scaffold</Text>
-      <Text style={styles.helper}>Seed data is ready; implement required list behavior.</Text>
-      <Pressable style={styles.button} onPress={runListBehaviorPlaceholder}>
-        <Text style={styles.buttonText}>Run placeholder</Text>
+      <Text style={styles.header}>Mixed Feed</Text>
+      <Text style={styles.helper}>
+        Story and carousel data are seeded. Add nested list behavior for this
+        eval.
+      </Text>
+      <Pressable
+        style={styles.button}
+        onPress={renderNestedCarouselPlaceholder}
+      >
+        <Text style={styles.buttonText}>Call placeholder</Text>
       </Pressable>
-      <FlatList data={ROWS} renderItem={({ item }) => <RowItem item={item} />} />
+      <FlashList
+        data={MIXED_ROWS}
+        estimatedItemSize={56}
+        renderItem={({ item }) => (
+          <View style={styles.row}>
+            <Text style={styles.rowTitle}>{item.title}</Text>
+          </View>
+        )}
+      />
     </View>
   )
 }

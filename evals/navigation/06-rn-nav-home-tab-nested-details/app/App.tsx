@@ -1,59 +1,80 @@
-import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createStaticNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function runNavigationPlaceholder() {
+async function openArticlePlaceholder() {
   // TODO: implement navigation behavior for this eval
   return 'pending'
 }
 
-function HomeScreen() {
-  const navigation = useNavigation()
-
+function HomeFeedScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Home</Text>
-      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
-      <Button title='Call placeholder' onPress={() => runNavigationPlaceholder()} />
-      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
+      <Text style={styles.title}>HomeFeed</Text>
+      <Text style={styles.copy}>
+        Article seed is ready for nested Home flow behavior.
+      </Text>
+      <Button
+        title="Call placeholder"
+        onPress={() => openArticlePlaceholder()}
+      />
     </View>
   )
 }
 
-function DetailsScreen() {
+function ArticleDetailsScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Details</Text>
-      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
+      <Text style={styles.title}>ArticleDetails</Text>
+      <Text style={styles.copy}>
+        Implement eval behavior from this nested route shell.
+      </Text>
     </View>
   )
 }
 
-const Stack = createNativeStackNavigator({
+function SettingsScreen() {
+  return (
+    <View style={styles.screen}>
+      <Text style={styles.title}>Settings</Text>
+      <Text style={styles.copy}>Nested Home tab scaffold route</Text>
+    </View>
+  )
+}
+
+const HomeStack = createNativeStackNavigator({
   screens: {
-    Home: HomeScreen,
-    Details: DetailsScreen,
+    HomeFeed: HomeFeedScreen,
+    ArticleDetails: ArticleDetailsScreen,
   },
 })
 
-const Navigation = createStaticNavigation(Stack)
+const Tabs = createBottomTabNavigator({
+  screens: {
+    HomeTab: HomeStack,
+    Settings: SettingsScreen,
+  },
+})
+
+const Navigation = createStaticNavigation(Tabs)
 
 export default function App() {
   return <Navigation />
 }
 
 const styles = StyleSheet.create({
+  copy: {
+    color: '#6b7280',
+    textAlign: 'center',
+  },
   screen: {
     alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
-    rowGap: 8,
-  },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+    rowGap: 10,
   },
   title: {
     color: '#111827',

@@ -1,36 +1,39 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { LegendList } from '@legendapp/list'
 
 type Row = {
   id: string
   title: string
 }
 
-const ROWS: Row[] = Array.from({ length: 30 }, (_, index) => ({
-  id: `item-${index + 1}`,
-  title: `Row ${index + 1}`,
+const PAGED_ROWS: Row[] = Array.from({ length: 32 }, (_, index) => ({
+  id: 'row-' + String(index + 1),
+  title: 'Timeline row ' + String(index + 1),
 }))
 
-function RowItem({ item }: { item: Row }) {
-  return (
-    <View style={styles.row}>
-      <Text style={styles.rowTitle}>{item.title}</Text>
-    </View>
-  )
-}
-
-function runListBehaviorPlaceholder() {
-  // TODO: implement list behavior required by this eval
+function loadPagedDirectionPlaceholder() {
+  // TODO: implement list behavior for this eval
 }
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>List Scaffold</Text>
-      <Text style={styles.helper}>Seed data is ready; implement required list behavior.</Text>
-      <Pressable style={styles.button} onPress={runListBehaviorPlaceholder}>
-        <Text style={styles.buttonText}>Run placeholder</Text>
+      <Text style={styles.header}>Bidirectional Feed</Text>
+      <Text style={styles.helper}>
+        Rows are seeded. Add start/end pagination behavior for this eval.
+      </Text>
+      <Pressable style={styles.button} onPress={loadPagedDirectionPlaceholder}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
       </Pressable>
-      <FlatList data={ROWS} renderItem={({ item }) => <RowItem item={item} />} />
+      <LegendList
+        data={PAGED_ROWS}
+        estimatedItemSize={56}
+        renderItem={({ item }) => (
+          <View style={styles.row}>
+            <Text style={styles.rowTitle}>{item.title}</Text>
+          </View>
+        )}
+      />
     </View>
   )
 }

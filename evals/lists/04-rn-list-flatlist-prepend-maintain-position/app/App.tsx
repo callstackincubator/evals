@@ -5,9 +5,9 @@ type Row = {
   title: string
 }
 
-const ROWS: Row[] = Array.from({ length: 30 }, (_, index) => ({
-  id: `item-${index + 1}`,
-  title: `Row ${index + 1}`,
+const CHAT_MESSAGES: Row[] = Array.from({ length: 16 }, (_, index) => ({
+  id: 'msg-' + String(index + 1),
+  title: 'Conversation message ' + String(index + 1),
 }))
 
 function RowItem({ item }: { item: Row }) {
@@ -18,19 +18,27 @@ function RowItem({ item }: { item: Row }) {
   )
 }
 
-function runListBehaviorPlaceholder() {
-  // TODO: implement list behavior required by this eval
+function prependOlderMessagesPlaceholder() {
+  // TODO: implement list behavior for this eval
 }
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>List Scaffold</Text>
-      <Text style={styles.helper}>Seed data is ready; implement required list behavior.</Text>
-      <Pressable style={styles.button} onPress={runListBehaviorPlaceholder}>
-        <Text style={styles.buttonText}>Run placeholder</Text>
+      <Text style={styles.header}>Chat Timeline</Text>
+      <Text style={styles.helper}>
+        Message seed is ready. Add prepend-with-position behavior.
+      </Text>
+      <Pressable
+        style={styles.button}
+        onPress={prependOlderMessagesPlaceholder}
+      >
+        <Text style={styles.buttonText}>Call placeholder</Text>
       </Pressable>
-      <FlatList data={ROWS} renderItem={({ item }) => <RowItem item={item} />} />
+      <FlatList
+        data={CHAT_MESSAGES}
+        renderItem={({ item }) => <RowItem item={item} />}
+      />
     </View>
   )
 }

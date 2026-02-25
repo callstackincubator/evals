@@ -1,59 +1,66 @@
-import { createStaticNavigation, useNavigation } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createStaticNavigation } from '@react-navigation/native'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function runNavigationPlaceholder() {
+async function selectTabPlaceholder() {
   // TODO: implement navigation behavior for this eval
   return 'pending'
 }
 
 function HomeScreen() {
-  const navigation = useNavigation()
-
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Home</Text>
-      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
-      <Button title='Call placeholder' onPress={() => runNavigationPlaceholder()} />
-      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
+      <Text style={styles.copy}>Tab routes are scaffolded for this eval.</Text>
+      <Button title="Call placeholder" onPress={() => selectTabPlaceholder()} />
     </View>
   )
 }
 
-function DetailsScreen() {
+function SearchScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Details</Text>
-      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
+      <Text style={styles.title}>Search</Text>
+      <Text style={styles.copy}>Three tab shell scaffold route</Text>
     </View>
   )
 }
 
-const Stack = createNativeStackNavigator({
+function ProfileScreen() {
+  return (
+    <View style={styles.screen}>
+      <Text style={styles.title}>Profile</Text>
+      <Text style={styles.copy}>Three tab shell scaffold route</Text>
+    </View>
+  )
+}
+
+const Tabs = createBottomTabNavigator({
   screens: {
     Home: HomeScreen,
-    Details: DetailsScreen,
+    Search: SearchScreen,
+    Profile: ProfileScreen,
   },
 })
 
-const Navigation = createStaticNavigation(Stack)
+const Navigation = createStaticNavigation(Tabs)
 
 export default function App() {
   return <Navigation />
 }
 
 const styles = StyleSheet.create({
+  copy: {
+    color: '#6b7280',
+    textAlign: 'center',
+  },
   screen: {
     alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
-    rowGap: 8,
-  },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+    rowGap: 10,
   },
   title: {
     color: '#111827',

@@ -1,36 +1,69 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, SectionList, StyleSheet, Text, View } from 'react-native'
 
-type Row = {
+type SectionRow = {
   id: string
   title: string
 }
 
-const ROWS: Row[] = Array.from({ length: 30 }, (_, index) => ({
-  id: `item-${index + 1}`,
-  title: `Row ${index + 1}`,
-}))
-
-function RowItem({ item }: { item: Row }) {
-  return (
-    <View style={styles.row}>
-      <Text style={styles.rowTitle}>{item.title}</Text>
-    </View>
-  )
+type SectionData = {
+  data: SectionRow[]
+  title: string
 }
 
-function runListBehaviorPlaceholder() {
-  // TODO: implement list behavior required by this eval
+const CONTACT_SECTIONS: SectionData[] = [
+  {
+    title: 'Favorites',
+    data: [
+      {
+        id: 'f-1',
+        title: 'Ada Lovelace',
+      },
+      {
+        id: 'f-2',
+        title: 'Alan Turing',
+      },
+    ],
+  },
+  {
+    title: 'Engineering',
+    data: [
+      {
+        id: 'e-1',
+        title: 'Grace Hopper',
+      },
+      {
+        id: 'e-2',
+        title: 'Margaret Hamilton',
+      },
+    ],
+  },
+]
+
+function refreshSectionsPlaceholder() {
+  // TODO: implement list behavior for this eval
 }
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>List Scaffold</Text>
-      <Text style={styles.helper}>Seed data is ready; implement required list behavior.</Text>
-      <Pressable style={styles.button} onPress={runListBehaviorPlaceholder}>
-        <Text style={styles.buttonText}>Run placeholder</Text>
+      <Text style={styles.header}>Section Contacts</Text>
+      <Text style={styles.helper}>
+        Sections are scaffolded. Add sticky header/key behavior.
+      </Text>
+      <Pressable style={styles.button} onPress={refreshSectionsPlaceholder}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
       </Pressable>
-      <FlatList data={ROWS} renderItem={({ item }) => <RowItem item={item} />} />
+      <SectionList
+        sections={CONTACT_SECTIONS}
+        renderSectionHeader={({ section }) => (
+          <Text style={styles.section}>{section.title}</Text>
+        )}
+        renderItem={({ item }) => (
+          <View style={styles.row}>
+            <Text style={styles.rowTitle}>{item.title}</Text>
+          </View>
+        )}
+      />
     </View>
   )
 }
@@ -75,5 +108,13 @@ const styles = StyleSheet.create({
   rowTitle: {
     color: '#111827',
     fontSize: 15,
+  },
+  section: {
+    backgroundColor: '#f3f4f6',
+    color: '#374151',
+    fontSize: 13,
+    fontWeight: '700',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
 })

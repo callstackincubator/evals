@@ -1,36 +1,42 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { FlashList } from '@shopify/flash-list'
 
 type Row = {
   id: string
   title: string
 }
 
-const ROWS: Row[] = Array.from({ length: 30 }, (_, index) => ({
-  id: `item-${index + 1}`,
-  title: `Row ${index + 1}`,
+const ARTICLE_ROWS: Row[] = Array.from({ length: 24 }, (_, index) => ({
+  id: 'article-' + String(index + 1),
+  title: 'Headline ' + String(index + 1),
 }))
 
-function RowItem({ item }: { item: Row }) {
-  return (
-    <View style={styles.row}>
-      <Text style={styles.rowTitle}>{item.title}</Text>
-    </View>
-  )
-}
-
-function runListBehaviorPlaceholder() {
-  // TODO: implement list behavior required by this eval
+function toggleExpandedArticlePlaceholder() {
+  // TODO: implement list behavior for this eval
 }
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>List Scaffold</Text>
-      <Text style={styles.helper}>Seed data is ready; implement required list behavior.</Text>
-      <Pressable style={styles.button} onPress={runListBehaviorPlaceholder}>
-        <Text style={styles.buttonText}>Run placeholder</Text>
+      <Text style={styles.header}>Expandable Articles</Text>
+      <Text style={styles.helper}>
+        Article rows are seeded. Add recycling-safe transient state behavior.
+      </Text>
+      <Pressable
+        style={styles.button}
+        onPress={toggleExpandedArticlePlaceholder}
+      >
+        <Text style={styles.buttonText}>Call placeholder</Text>
       </Pressable>
-      <FlatList data={ROWS} renderItem={({ item }) => <RowItem item={item} />} />
+      <FlashList
+        data={ARTICLE_ROWS}
+        estimatedItemSize={56}
+        renderItem={({ item }) => (
+          <View style={styles.row}>
+            <Text style={styles.rowTitle}>{item.title}</Text>
+          </View>
+        )}
+      />
     </View>
   )
 }

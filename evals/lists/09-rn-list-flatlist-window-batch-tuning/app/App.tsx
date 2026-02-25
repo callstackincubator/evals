@@ -5,9 +5,9 @@ type Row = {
   title: string
 }
 
-const ROWS: Row[] = Array.from({ length: 30 }, (_, index) => ({
-  id: `item-${index + 1}`,
-  title: `Row ${index + 1}`,
+const LARGE_ROWS: Row[] = Array.from({ length: 240 }, (_, index) => ({
+  id: 'large-' + String(index + 1),
+  title: 'Performance row ' + String(index + 1),
 }))
 
 function RowItem({ item }: { item: Row }) {
@@ -18,19 +18,24 @@ function RowItem({ item }: { item: Row }) {
   )
 }
 
-function runListBehaviorPlaceholder() {
-  // TODO: implement list behavior required by this eval
+function tuneListWindowPlaceholder() {
+  // TODO: implement list behavior for this eval
 }
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>List Scaffold</Text>
-      <Text style={styles.helper}>Seed data is ready; implement required list behavior.</Text>
-      <Pressable style={styles.button} onPress={runListBehaviorPlaceholder}>
-        <Text style={styles.buttonText}>Run placeholder</Text>
+      <Text style={styles.header}>Large Feed</Text>
+      <Text style={styles.helper}>
+        Large dataset is seeded. Add virtualization tuning behavior.
+      </Text>
+      <Pressable style={styles.button} onPress={tuneListWindowPlaceholder}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
       </Pressable>
-      <FlatList data={ROWS} renderItem={({ item }) => <RowItem item={item} />} />
+      <FlatList
+        data={LARGE_ROWS}
+        renderItem={({ item }) => <RowItem item={item} />}
+      />
     </View>
   )
 }

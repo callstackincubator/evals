@@ -1,59 +1,61 @@
-import { createStaticNavigation, useNavigation } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { createDrawerNavigator } from '@react-navigation/drawer'
+import { createStaticNavigation } from '@react-navigation/native'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function runNavigationPlaceholder() {
+async function openDrawerRoutePlaceholder() {
   // TODO: implement navigation behavior for this eval
   return 'pending'
 }
 
-function HomeScreen() {
-  const navigation = useNavigation()
-
+function AccountScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Home</Text>
-      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
-      <Button title='Call placeholder' onPress={() => runNavigationPlaceholder()} />
-      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
+      <Text style={styles.title}>Account</Text>
+      <Text style={styles.copy}>
+        Drawer routes are scaffolded for Account/Help behavior.
+      </Text>
+      <Button
+        title="Call placeholder"
+        onPress={() => openDrawerRoutePlaceholder()}
+      />
     </View>
   )
 }
 
-function DetailsScreen() {
+function HelpScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Details</Text>
-      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
+      <Text style={styles.title}>Help</Text>
+      <Text style={styles.copy}>Drawer shell scaffold route</Text>
     </View>
   )
 }
 
-const Stack = createNativeStackNavigator({
+const Drawer = createDrawerNavigator({
   screens: {
-    Home: HomeScreen,
-    Details: DetailsScreen,
+    Account: AccountScreen,
+    Help: HelpScreen,
   },
 })
 
-const Navigation = createStaticNavigation(Stack)
+const Navigation = createStaticNavigation(Drawer)
 
 export default function App() {
   return <Navigation />
 }
 
 const styles = StyleSheet.create({
+  copy: {
+    color: '#6b7280',
+    textAlign: 'center',
+  },
   screen: {
     alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
-    rowGap: 8,
-  },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+    rowGap: 10,
   },
   title: {
     color: '#111827',
