@@ -12,4 +12,4 @@ requirements:
   - id: exclusive-tap-composition
     description: Must compose single and double tap gestures with explicit exclusivity so both handlers do not fire for the same interaction.
   - id: deterministic-tap-outcomes
-    description: Must implement deterministic single versus double tap outcome timing semantics.
+    description: Must trigger single-tap only after the double-tap window expires, and MUST NOT trigger single-tap when a valid double-tap is recognized.
