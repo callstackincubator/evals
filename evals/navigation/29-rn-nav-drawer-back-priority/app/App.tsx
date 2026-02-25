@@ -1,31 +1,42 @@
-import { createDrawerNavigator } from '@react-navigation/drawer'
-import { createStaticNavigation } from '@react-navigation/native'
-import { StyleSheet, Text, View } from 'react-native'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { Button, StyleSheet, Text, View } from 'react-native'
 
-function AccountScreen() {
+async function runNavigationPlaceholder() {
+  // TODO: implement navigation behavior for this eval
+  return 'pending'
+}
+
+function HomeScreen() {
+  const navigation = useNavigation()
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Account</Text>
+      <Text style={styles.title}>Home</Text>
+      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
+      <Button title='Call placeholder' onPress={() => runNavigationPlaceholder()} />
+      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
     </View>
   )
 }
 
-function HelpScreen() {
+function DetailsScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Help</Text>
+      <Text style={styles.title}>Details</Text>
+      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
     </View>
   )
 }
 
-const Drawer = createDrawerNavigator({
+const Stack = createNativeStackNavigator({
   screens: {
-    Account: AccountScreen,
-    Help: HelpScreen,
+    Home: HomeScreen,
+    Details: DetailsScreen,
   },
 })
 
-const Navigation = createStaticNavigation(Drawer)
+const Navigation = createStaticNavigation(Stack)
 
 export default function App() {
   return <Navigation />

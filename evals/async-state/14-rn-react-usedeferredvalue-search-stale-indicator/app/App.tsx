@@ -1,35 +1,34 @@
-import { useDeferredValue, useState } from 'react'
-import { StyleSheet, Text, TextInput, View } from 'react-native'
-
-function filterPlaceholder(items: string[], query: string) {
-  // TODO: implement deterministic deferred filtering
-  return items.filter((item) => item.toLowerCase().includes(query.toLowerCase()))
-}
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 const ITEMS = ['alpha', 'beta', 'gamma']
 
-export default function App() {
-  const [query, setQuery] = useState('')
-  const deferredQuery = useDeferredValue(query)
-  const visible = filterPlaceholder(ITEMS, deferredQuery)
+async function computeDeferredResultsPlaceholder() {
+  // TODO: implement async/state-management behavior for this eval
+  return ITEMS.length
+}
 
+export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Deferred Value Starter</Text>
-      <TextInput style={styles.input} value={query} onChangeText={setQuery} placeholder='Search' />
-      <Text style={styles.subtitle}>Visible: {visible.length}</Text>
+      <Text style={styles.title}>Async State Starter</Text>
+      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Pressable style={styles.button} onPress={() => computeDeferredResultsPlaceholder()}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
+      </Pressable>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  input: {
-    borderColor: '#d1d5db',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    width: '80%',
+  button: {
+    backgroundColor: '#111827',
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
   },
   screen: {
     alignItems: 'center',
@@ -40,6 +39,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: '#6b7280',
+    textAlign: 'center',
   },
   title: {
     color: '#111827',

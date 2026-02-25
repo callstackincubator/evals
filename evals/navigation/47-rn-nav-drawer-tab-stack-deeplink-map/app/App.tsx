@@ -1,13 +1,21 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { createDrawerNavigator } from '@react-navigation/drawer'
-import { createStaticNavigation } from '@react-navigation/native'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { StyleSheet, Text, View } from 'react-native'
+import { Button, StyleSheet, Text, View } from 'react-native'
+
+async function resolveNestedDeepLinkTargetPlaceholder() {
+  // TODO: implement navigation behavior for this eval
+  return 'pending'
+}
 
 function HomeScreen() {
+  const navigation = useNavigation()
+
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Home</Text>
+      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
+      <Button title='Call placeholder' onPress={() => resolveNestedDeepLinkTargetPlaceholder()} />
+      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
     </View>
   )
 }
@@ -16,39 +24,19 @@ function DetailsScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Details</Text>
+      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
     </View>
   )
 }
 
-function SettingsScreen() {
-  return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Settings</Text>
-    </View>
-  )
-}
-
-const HomeStack = createNativeStackNavigator({
+const Stack = createNativeStackNavigator({
   screens: {
     Home: HomeScreen,
     Details: DetailsScreen,
   },
 })
 
-const Tabs = createBottomTabNavigator({
-  screens: {
-    HomeTab: HomeStack,
-    SettingsTab: SettingsScreen,
-  },
-})
-
-const Drawer = createDrawerNavigator({
-  screens: {
-    MainTabs: Tabs,
-  },
-})
-
-const Navigation = createStaticNavigation(Drawer)
+const Navigation = createStaticNavigation(Stack)
 
 export default function App() {
   return <Navigation />

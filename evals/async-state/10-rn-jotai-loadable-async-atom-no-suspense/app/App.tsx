@@ -1,37 +1,41 @@
-import { StyleSheet, Text, View } from 'react-native'
-import { atom, useAtomValue } from 'jotai'
-import { loadable } from 'jotai/utils'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-const asyncValueAtom = atom(async () => {
-  // TODO: implement async atom read behavior
-  return 'placeholder'
-})
+const ITEMS = ['alpha', 'beta', 'gamma']
 
-const loadableAtom = loadable(asyncValueAtom)
+async function loadWithoutSuspensePlaceholder() {
+  // TODO: implement async/state-management behavior for this eval
+  return ITEMS.length
+}
 
-function Screen() {
-  const state = useAtomValue(loadableAtom)
-
+export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Jotai Loadable Starter</Text>
-      <Text style={styles.subtitle}>State: {state.state}</Text>
+      <Text style={styles.title}>Async State Starter</Text>
+      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Pressable style={styles.button} onPress={() => loadWithoutSuspensePlaceholder()}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
+      </Pressable>
     </View>
   )
 }
 
-export default function App() {
-  return <Screen />
-}
-
 const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#111827',
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
   screen: {
     alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 24,
-    rowGap: 8,
+    rowGap: 10,
   },
   subtitle: {
     color: '#6b7280',

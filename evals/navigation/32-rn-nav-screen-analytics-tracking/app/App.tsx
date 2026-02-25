@@ -2,11 +2,9 @@ import { createStaticNavigation, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-const analytics = {
-  trackScreenView(routeName: string) {
-    // TODO: wire to analytics provider from root navigation state changes
-    void routeName
-  },
+async function trackScreenView() {
+  // TODO: implement navigation behavior for this eval
+  return 'pending'
 }
 
 function HomeScreen() {
@@ -15,8 +13,9 @@ function HomeScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Home</Text>
-      <Button title="Call analytics placeholder" onPress={() => analytics.trackScreenView('Home')} />
-      <Button title="Open details" onPress={() => navigation.navigate('Details')} />
+      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
+      <Button title='Call placeholder' onPress={() => trackScreenView()} />
+      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
     </View>
   )
 }
@@ -25,6 +24,7 @@ function DetailsScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Details</Text>
+      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
     </View>
   )
 }
@@ -50,6 +50,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 24,
     rowGap: 8,
+  },
+  subtitle: {
+    color: '#6b7280',
+    textAlign: 'center',
   },
   title: {
     color: '#111827',

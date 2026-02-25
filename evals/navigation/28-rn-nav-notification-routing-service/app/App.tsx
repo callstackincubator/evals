@@ -1,99 +1,45 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import {
-  createNavigationContainerRef,
-  createStaticNavigation,
-} from '@react-navigation/native'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-type NotificationPayload =
-  | { type: 'thread'; threadId: string }
-  | { type: 'profile'; userId: string }
-
-const navRef = createNavigationContainerRef()
-
-function routeNotificationFromService(payload: NotificationPayload) {
-  // TODO: map payload type to nested route and navigate via root ref
-  void payload
-
-  if (!navRef.isReady()) {
-    return 'nav-not-ready'
-  }
-
-  return 'not-implemented'
+async function routeNotificationFromService() {
+  // TODO: implement navigation behavior for this eval
+  return 'pending'
 }
 
-function MessagesHomeScreen() {
+function HomeScreen() {
+  const navigation = useNavigation()
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Messages</Text>
+      <Text style={styles.title}>Home</Text>
+      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
+      <Button title='Call placeholder' onPress={() => routeNotificationFromService()} />
+      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
     </View>
   )
 }
 
-function ThreadScreen() {
+function DetailsScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Thread</Text>
+      <Text style={styles.title}>Details</Text>
+      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
     </View>
   )
 }
 
-function ProfileHomeScreen() {
-  return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Profile</Text>
-    </View>
-  )
-}
-
-function ServiceControlsScreen() {
-  return (
-    <View style={styles.screen}>
-      <Text style={styles.subtitle}>Notification routing service scaffold</Text>
-      <Button
-        title="Call thread routing placeholder"
-        onPress={() => routeNotificationFromService({ type: 'thread', threadId: 't-1' })}
-      />
-      <Button
-        title="Call profile routing placeholder"
-        onPress={() => routeNotificationFromService({ type: 'profile', userId: 'u-2' })}
-      />
-    </View>
-  )
-}
-
-const MessagesStack = createNativeStackNavigator({
+const Stack = createNativeStackNavigator({
   screens: {
-    Inbox: MessagesHomeScreen,
-    Thread: ThreadScreen,
+    Home: HomeScreen,
+    Details: DetailsScreen,
   },
 })
 
-const ProfileStack = createNativeStackNavigator({
-  screens: {
-    ProfileHome: ProfileHomeScreen,
-  },
-})
-
-const MainTabs = createBottomTabNavigator({
-  screens: {
-    Messages: MessagesStack,
-    Profile: ProfileStack,
-    ServiceControls: ServiceControlsScreen,
-  },
-})
-
-const RootStack = createNativeStackNavigator({
-  screens: {
-    MainTabs,
-  },
-})
-
-const Navigation = createStaticNavigation(RootStack)
+const Navigation = createStaticNavigation(Stack)
 
 export default function App() {
-  return <Navigation ref={navRef} />
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({

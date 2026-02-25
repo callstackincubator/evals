@@ -1,49 +1,41 @@
-import { Suspense, useState, useTransition } from 'react'
-import { Button, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-async function loadResultPlaceholder(input: string) {
-  // TODO: implement transition-safe async result behavior
-  return `result-${input}`
+const ITEMS = ['alpha', 'beta', 'gamma']
+
+async function resolveRaceSafeResultPlaceholder() {
+  // TODO: implement async/state-management behavior for this eval
+  return ITEMS.length
 }
 
-function Content({ value }: { value: string }) {
+export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Transition Starter</Text>
-      <Text style={styles.subtitle}>Value: {value}</Text>
+      <Text style={styles.title}>Async State Starter</Text>
+      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Pressable style={styles.button} onPress={() => resolveRaceSafeResultPlaceholder()}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
+      </Pressable>
     </View>
   )
 }
 
-export default function App() {
-  const [value, setValue] = useState('idle')
-  const [isPending, startTransition] = useTransition()
-
-  const runPlaceholder = () => {
-    startTransition(() => {
-      void loadResultPlaceholder('next').then((next) => setValue(next))
-    })
-  }
-
-  return (
-    <Suspense fallback={<Text>Loading…</Text>}>
-      <View style={styles.screen}>
-        <Content value={value} />
-        <Button title='Run transition placeholder' onPress={runPlaceholder} />
-        <Text style={styles.subtitle}>Pending: {String(isPending)}</Text>
-      </View>
-    </Suspense>
-  )
-}
-
 const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#111827',
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
   screen: {
     alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 24,
-    rowGap: 8,
+    rowGap: 10,
   },
   subtitle: {
     color: '#6b7280',

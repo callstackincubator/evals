@@ -1,29 +1,21 @@
-import { useState } from 'react'
-
 import { createStaticNavigation, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
 async function performSignOut() {
-  // TODO: clear auth state and secure data
-  return { signedOut: false }
+  // TODO: implement navigation behavior for this eval
+  return 'pending'
 }
 
 function HomeScreen() {
   const navigation = useNavigation()
-  const [status, setStatus] = useState('signed-in')
-
-  const runSignOutPlaceholder = async () => {
-    await performSignOut()
-    setStatus('signout-placeholder-called')
-  }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>App Home</Text>
-      <Text style={styles.subtitle}>Auth status: {status}</Text>
-      <Button title="Call sign-out placeholder" onPress={runSignOutPlaceholder} />
-      <Button title="Open details" onPress={() => navigation.navigate('Details')} />
+      <Text style={styles.title}>Home</Text>
+      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
+      <Button title='Call placeholder' onPress={() => performSignOut()} />
+      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
     </View>
   )
 }
@@ -31,7 +23,8 @@ function HomeScreen() {
 function DetailsScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Auth Screen</Text>
+      <Text style={styles.title}>Details</Text>
+      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
     </View>
   )
 }

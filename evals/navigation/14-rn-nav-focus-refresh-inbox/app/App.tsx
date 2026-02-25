@@ -1,34 +1,21 @@
-import { useState } from 'react'
-
 import { createStaticNavigation, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-type InboxItem = {
-  id: string
-  title: string
+async function refreshInboxItems() {
+  // TODO: implement navigation behavior for this eval
+  return 'pending'
 }
 
-async function refreshInboxItems(): Promise<InboxItem[]> {
-  // TODO: implement deterministic focus refresh behavior
-  return []
-}
-
-function InboxScreen() {
+function HomeScreen() {
   const navigation = useNavigation()
-  const [status, setStatus] = useState('idle')
-
-  const runRefreshPlaceholder = async () => {
-    await refreshInboxItems()
-    setStatus('refresh-placeholder-called')
-  }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Inbox</Text>
-      <Text style={styles.subtitle}>Refresh status: {status}</Text>
-      <Button title="Call refresh placeholder" onPress={runRefreshPlaceholder} />
-      <Button title="Open details" onPress={() => navigation.navigate('Details')} />
+      <Text style={styles.title}>Home</Text>
+      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
+      <Button title='Call placeholder' onPress={() => refreshInboxItems()} />
+      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
     </View>
   )
 }
@@ -37,13 +24,14 @@ function DetailsScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Details</Text>
+      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
     </View>
   )
 }
 
 const Stack = createNativeStackNavigator({
   screens: {
-    Inbox: InboxScreen,
+    Home: HomeScreen,
     Details: DetailsScreen,
   },
 })

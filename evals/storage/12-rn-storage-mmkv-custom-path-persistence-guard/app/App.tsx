@@ -1,29 +1,19 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { MMKV } from 'react-native-mmkv'
-import * as FileSystem from 'expo-file-system'
 
-const storage = new MMKV({ id: 'app-storage' })
+const STORAGE_KEYS = ['session', 'draft', 'outbox']
 
-function readMmkvPlaceholder() {
-  // TODO: implement MMKV read/listener behavior for this eval
-  return storage.getString('value')
-}
-
-function writeMmkvPlaceholder(value: string) {
-  // TODO: implement MMKV write/encryption/path behavior for this eval
-  storage.set('value', value)
+async function resolveCustomPathPlaceholder() {
+  // TODO: implement persistence behavior for this eval
+  return STORAGE_KEYS.length
 }
 
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>MMKV Starter</Text>
-      <Text style={styles.subtitle}>{FileSystem.documentDirectory ?? 'no-doc-dir'}</Text>
-      <Pressable style={styles.button} onPress={() => readMmkvPlaceholder()}>
-        <Text style={styles.buttonText}>Read placeholder</Text>
-      </Pressable>
-      <Pressable style={styles.button} onPress={() => writeMmkvPlaceholder('next')}>
-        <Text style={styles.buttonText}>Write placeholder</Text>
+      <Text style={styles.title}>Storage Starter</Text>
+      <Text style={styles.subtitle}>Keys: {STORAGE_KEYS.join(', ')}</Text>
+      <Pressable style={styles.button} onPress={() => resolveCustomPathPlaceholder()}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
       </Pressable>
     </View>
   )
@@ -49,6 +39,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: '#6b7280',
+    textAlign: 'center',
   },
   title: {
     color: '#111827',

@@ -1,63 +1,41 @@
-import { useState } from 'react'
-import { Button, StyleSheet, Text, View } from 'react-native'
-import {
-  QueryClient,
-  QueryClientProvider,
-  useMutation,
-  useQuery,
-} from '@tanstack/react-query'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-const queryClient = new QueryClient()
+const ITEMS = ['alpha', 'beta', 'gamma']
 
-function buildPlaceholderQueryKey(filter: string, page: number) {
-  return ['items', filter, page] as const
-}
-
-async function fetchPlaceholderItems() {
-  // TODO: implement deterministic query behavior for this eval
-  return [] as string[]
-}
-
-async function submitPlaceholderMutation() {
-  // TODO: implement mutation behavior for this eval
-  return { ok: false }
-}
-
-function Screen() {
-  const [filter] = useState('all')
-  const query = useQuery({
-    queryFn: fetchPlaceholderItems,
-    queryKey: buildPlaceholderQueryKey(filter, 1),
-  })
-  const mutation = useMutation({ mutationFn: submitPlaceholderMutation })
-
-  
-
-  return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>TanStack Query Starter</Text>
-      <Text style={styles.subtitle}>Items: {query.data?.length ?? 0}</Text>
-      <Button title='Call mutation placeholder' onPress={() => mutation.mutate()} />
-    </View>
-  )
+async function buildQueryKeyPlaceholder() {
+  // TODO: implement async/state-management behavior for this eval
+  return ITEMS.length
 }
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Screen />
-    </QueryClientProvider>
+    <View style={styles.screen}>
+      <Text style={styles.title}>Async State Starter</Text>
+      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Pressable style={styles.button} onPress={() => buildQueryKeyPlaceholder()}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
+      </Pressable>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#111827',
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
   screen: {
     alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 24,
-    rowGap: 8,
+    rowGap: 10,
   },
   subtitle: {
     color: '#6b7280',

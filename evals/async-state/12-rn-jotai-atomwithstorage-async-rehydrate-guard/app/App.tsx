@@ -1,37 +1,41 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { StyleSheet, Text, View } from 'react-native'
-import { useAtomValue } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-const preferenceAtom = atomWithStorage('pref:placeholder', 'default', {
-  getItem: (key, initialValue) => AsyncStorage.getItem(key).then((value) => value ?? initialValue),
-  setItem: (key, value) => AsyncStorage.setItem(key, String(value)),
-  removeItem: (key) => AsyncStorage.removeItem(key),
-})
+const ITEMS = ['alpha', 'beta', 'gamma']
 
-function Screen() {
-  const value = useAtomValue(preferenceAtom)
+async function isHydrationReadyPlaceholder() {
+  // TODO: implement async/state-management behavior for this eval
+  return ITEMS.length
+}
 
+export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Jotai Storage Starter</Text>
-      <Text style={styles.subtitle}>Stored value: {value}</Text>
+      <Text style={styles.title}>Async State Starter</Text>
+      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Pressable style={styles.button} onPress={() => isHydrationReadyPlaceholder()}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
+      </Pressable>
     </View>
   )
 }
 
-export default function App() {
-  return <Screen />
-}
-
 const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#111827',
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
   screen: {
     alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 24,
-    rowGap: 8,
+    rowGap: 10,
   },
   subtitle: {
     color: '#6b7280',

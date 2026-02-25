@@ -1,52 +1,80 @@
-import { StyleSheet, Text, View } from 'react-native'
-import {
-  Gesture,
-  GestureDetector,
-  GestureHandlerRootView,
-} from 'react-native-gesture-handler'
-import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-function createGesturePlaceholder(translateX: Animated.SharedValue<number>) {
-  return Gesture.Pan().onUpdate((event) => {
-    translateX.value = event.translationX
-  })
+type DetailRow = {
+  label: string
+  value: string
+}
+
+const CARD_TITLE = 'Interaction details'
+
+const DETAILS: DetailRow[] = [
+  { label: 'State', value: 'idle' },
+  { label: 'Target', value: 'not implemented' },
+  { label: 'Notes', value: 'fill behavior using requirement specs' },
+]
+
+function runAnimationPlaceholder() {
+  // TODO: implement animation behavior for this eval
 }
 
 export default function App() {
-  const translateX = useSharedValue(0)
-  const gesture = createGesturePlaceholder(translateX)
-
-  const cardStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
-  }))
-
   return (
-    <GestureHandlerRootView style={styles.root}>
-      <GestureDetector gesture={gesture}>
-        <Animated.View style={[styles.card, cardStyle]}>
-          <Text style={styles.title}>Gesture Starter</Text>
-        </Animated.View>
-      </GestureDetector>
-    </GestureHandlerRootView>
+    <View style={styles.screen}>
+      <View style={styles.card}>
+        <Pressable style={styles.header} onPress={runAnimationPlaceholder}>
+          <Text style={styles.title}>{CARD_TITLE}</Text>
+          <Text style={styles.action}>Run</Text>
+        </Pressable>
+
+        <View style={styles.details}>
+          {DETAILS.map((row) => (
+            <Text key={row.label} style={styles.copy}>
+              {row.label}: {row.value}
+            </Text>
+          ))}
+        </View>
+      </View>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  card: {
-    alignItems: 'center',
-    backgroundColor: '#dbeafe',
-    borderRadius: 12,
-    padding: 18,
+  action: {
+    color: '#1d4ed8',
+    fontSize: 14,
+    fontWeight: '600',
   },
-  root: {
-    alignItems: 'center',
+  card: {
     backgroundColor: '#fff',
+    borderRadius: 16,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  copy: {
+    color: '#334155',
+    fontSize: 14,
+    marginBottom: 6,
+  },
+  details: {
+    paddingHorizontal: 18,
+    paddingTop: 4,
+  },
+  header: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 18,
+    paddingTop: 18,
+  },
+  screen: {
+    backgroundColor: '#eef2ff',
     flex: 1,
     justifyContent: 'center',
+    padding: 20,
   },
   title: {
     color: '#0f172a',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
   },
 })

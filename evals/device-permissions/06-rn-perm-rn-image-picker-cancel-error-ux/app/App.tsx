@@ -1,29 +1,18 @@
-import { StatusBar } from 'expo-status-bar'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
 
-async function launchCameraPlaceholder() {
-  // TODO: implement picker camera flow and error mapping for this eval
-  return launchCamera({ mediaType: 'photo' })
-}
-
-async function launchLibraryPlaceholder() {
-  // TODO: implement picker gallery flow for this eval
-  return launchImageLibrary({ mediaType: 'photo' })
+async function launchPickerPlaceholder() {
+  // TODO: implement permission behavior for this eval
+  return 'pending'
 }
 
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>RN Image Picker Starter</Text>
-      
-      <Pressable style={styles.button} onPress={() => void launchCameraPlaceholder()}>
-        <Text style={styles.buttonText}>Launch camera placeholder</Text>
+      <Text style={styles.title}>Permissions Starter</Text>
+      <Text style={styles.subtitle}>Implement platform permission flow from this shell.</Text>
+      <Pressable style={styles.button} onPress={() => launchPickerPlaceholder()}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
       </Pressable>
-      <Pressable style={styles.button} onPress={() => void launchLibraryPlaceholder()}>
-        <Text style={styles.buttonText}>Launch library placeholder</Text>
-      </Pressable>
-      <StatusBar style='auto' />
     </View>
   )
 }
@@ -45,6 +34,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     rowGap: 10,
+  },
+  subtitle: {
+    color: '#6b7280',
+    textAlign: 'center',
   },
   title: {
     color: '#111827',

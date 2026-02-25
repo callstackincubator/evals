@@ -1,27 +1,18 @@
-import { CameraView, useCameraPermissions } from 'expo-camera'
-import { StatusBar } from 'expo-status-bar'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-async function requestCameraAccessPlaceholder(requestPermission: () => Promise<any>) {
-  // TODO: implement camera permission flow for this eval
-  return requestPermission()
+async function requestCameraPermissionPlaceholder() {
+  // TODO: implement permission behavior for this eval
+  return 'pending'
 }
 
 export default function App() {
-  const [permission, requestPermission] = useCameraPermissions()
-
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Expo Camera Starter</Text>
-      <Text style={styles.subtitle}>Granted: {String(Boolean(permission?.granted))}</Text>
-      <Pressable
-        style={styles.button}
-        onPress={() => void requestCameraAccessPlaceholder(requestPermission)}
-      >
-        <Text style={styles.buttonText}>Call camera permission placeholder</Text>
+      <Text style={styles.title}>Permissions Starter</Text>
+      <Text style={styles.subtitle}>Implement platform permission flow from this shell.</Text>
+      <Pressable style={styles.button} onPress={() => requestCameraPermissionPlaceholder()}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
       </Pressable>
-      <CameraView style={styles.preview} facing='back' />
-      <StatusBar style='auto' />
     </View>
   )
 }
@@ -37,12 +28,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
   },
-  preview: {
-    borderRadius: 10,
-    height: 120,
-    overflow: 'hidden',
-    width: '80%',
-  },
   screen: {
     alignItems: 'center',
     backgroundColor: '#fff',
@@ -52,6 +37,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: '#6b7280',
+    textAlign: 'center',
   },
   title: {
     color: '#111827',

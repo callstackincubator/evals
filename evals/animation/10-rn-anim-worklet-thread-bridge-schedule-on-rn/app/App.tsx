@@ -1,52 +1,80 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { createWorkletRuntime, scheduleOnRN, scheduleOnRuntime } from 'react-native-worklets'
 
-const runtime = createWorkletRuntime('eval-runtime')
+type DetailRow = {
+  label: string
+  value: string
+}
 
-function runWorkletPlaceholder(onCommit: (message: string) => void) {
-  const worker = () => {
-    'worklet'
-    scheduleOnRN(onCommit, 'worklet-placeholder-called')
-  }
+const CARD_TITLE = 'Interaction details'
 
-  scheduleOnRuntime(runtime, worker)
+const DETAILS: DetailRow[] = [
+  { label: 'State', value: 'idle' },
+  { label: 'Target', value: 'not implemented' },
+  { label: 'Notes', value: 'fill behavior using requirement specs' },
+]
+
+function runAnimationPlaceholder() {
+  // TODO: implement animation behavior for this eval
 }
 
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Worklets Starter</Text>
-      <Pressable
-        style={styles.button}
-        onPress={() => runWorkletPlaceholder((message) => console.log(message))}
-      >
-        <Text style={styles.buttonText}>Run worklet placeholder</Text>
-      </Pressable>
+      <View style={styles.card}>
+        <Pressable style={styles.header} onPress={runAnimationPlaceholder}>
+          <Text style={styles.title}>{CARD_TITLE}</Text>
+          <Text style={styles.action}>Run</Text>
+        </Pressable>
+
+        <View style={styles.details}>
+          {DETAILS.map((row) => (
+            <Text key={row.label} style={styles.copy}>
+              {row.label}: {row.value}
+            </Text>
+          ))}
+        </View>
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-  },
-  buttonText: {
-    color: '#fff',
+  action: {
+    color: '#1d4ed8',
+    fontSize: 14,
     fontWeight: '600',
   },
-  screen: {
-    alignItems: 'center',
+  card: {
     backgroundColor: '#fff',
+    borderRadius: 16,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  copy: {
+    color: '#334155',
+    fontSize: 14,
+    marginBottom: 6,
+  },
+  details: {
+    paddingHorizontal: 18,
+    paddingTop: 4,
+  },
+  header: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 18,
+    paddingTop: 18,
+  },
+  screen: {
+    backgroundColor: '#eef2ff',
     flex: 1,
     justifyContent: 'center',
-    rowGap: 12,
+    padding: 20,
   },
   title: {
     color: '#0f172a',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
   },
 })

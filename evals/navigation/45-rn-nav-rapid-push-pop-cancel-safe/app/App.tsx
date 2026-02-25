@@ -1,20 +1,10 @@
-import { useState } from 'react'
-
 import { createStaticNavigation, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-type DetailsSnapshot = {
-  id: string
-  summary: string
-}
-
-async function loadDetailsSnapshot(id: string): Promise<DetailsSnapshot> {
-  // TODO: implement cancellable async details work
-  return {
-    id,
-    summary: 'placeholder',
-  }
+async function loadDetailsSnapshot() {
+  // TODO: implement navigation behavior for this eval
+  return 'pending'
 }
 
 function HomeScreen() {
@@ -23,24 +13,18 @@ function HomeScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Home</Text>
-      <Button title="Open details" onPress={() => navigation.navigate('Details')} />
+      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
+      <Button title='Call placeholder' onPress={() => loadDetailsSnapshot()} />
+      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
     </View>
   )
 }
 
 function DetailsScreen() {
-  const [status, setStatus] = useState('idle')
-
-  const runPlaceholderRequest = async () => {
-    await loadDetailsSnapshot('seed')
-    setStatus('details-placeholder-called')
-  }
-
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Details</Text>
-      <Text style={styles.subtitle}>Async status: {status}</Text>
-      <Button title="Call async placeholder" onPress={runPlaceholderRequest} />
+      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
     </View>
   )
 }
