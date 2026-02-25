@@ -11,4 +11,4 @@ requirements:
   - id: partial-failure-handling
     description: Must handle partial batch failure paths with explicit fallback or retry behavior.
   - id: implementation-use-asyncstorage
-    description: Must implement persistence behavior using AsyncStorage APIs relevant to this task.
+    description: Must implement persistence behavior using AsyncStorage APIs.

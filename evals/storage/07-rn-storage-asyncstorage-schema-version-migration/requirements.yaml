@@ -11,4 +11,4 @@ requirements:
   - id: incompatible-version-fallback
     description: Must provide a deterministic fallback path for incompatible or unknown versions.
   - id: implementation-use-asyncstorage
-    description: Must implement persistence behavior using AsyncStorage APIs relevant to this task.
+    description: Must implement persistence behavior using AsyncStorage APIs.

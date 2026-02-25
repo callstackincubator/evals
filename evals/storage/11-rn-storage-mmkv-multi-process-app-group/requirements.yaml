@@ -11,4 +11,4 @@ requirements:
   - id: cross-process-refresh-path
     description: Must include a deterministic refresh path so process external updates become visible.
   - id: implementation-use-mmkv
-    description: Must implement persistence behavior using MMKV APIs relevant to this task.
+    description: Must implement persistence behavior using MMKV APIs.

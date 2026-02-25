@@ -10,4 +10,4 @@ requirements:
   - id: deterministic-axis-thresholds
     description: Must define explicit axis thresholds or activation offsets for resolving competing gestures.
   - id: implementation-use-rngh-gestures
-    description: Must implement gesture behavior with react-native-gesture-handler primitives relevant to this task.
+    description: Must implement gesture behavior with react-native-gesture-handler primitives.

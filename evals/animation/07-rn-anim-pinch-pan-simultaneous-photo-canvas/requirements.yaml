@@ -10,4 +10,4 @@ requirements:
   - id: bounded-pan-while-zoomed
     description: Must clamp translation bounds based on current zoom so content remains partially visible.
   - id: implementation-use-reanimated
-    description: Must implement animation behavior with react-native-reanimated primitives relevant to this task.
+    description: Must implement animation behavior with react-native-reanimated primitives.

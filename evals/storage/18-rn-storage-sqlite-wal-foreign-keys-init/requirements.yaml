@@ -11,4 +11,4 @@ requirements:
   - id: init-once-contract
     description: Must apply initialization pragmas in a predictable startup path that avoids repeated inconsistent setup.
   - id: implementation-use-sqlite
-    description: Must implement persistence behavior using SQLite APIs relevant to this task.
+    description: Must implement persistence behavior using SQLite APIs.

@@ -10,4 +10,4 @@ requirements:
   - id: mapping-helper-when-needed
     description: Must use FlashList mapping-safe strategy when rendering mapped nested children in row content.
   - id: implementation-use-flashlist
-    description: Must implement list behavior using FlashList APIs relevant to this task.
+    description: Must implement list behavior using FlashList APIs.

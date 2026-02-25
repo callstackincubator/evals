@@ -11,4 +11,4 @@ requirements:
   - id: no-reapply-completed-migrations
     description: Must not reapply already completed migration versions on later startups.
   - id: implementation-use-sqlite
-    description: Must implement persistence behavior using SQLite APIs relevant to this task.
+    description: Must implement persistence behavior using SQLite APIs.

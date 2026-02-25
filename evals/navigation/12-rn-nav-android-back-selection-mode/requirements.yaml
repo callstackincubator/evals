@@ -8,6 +8,6 @@ requirements:
   - id: scoped-backhandler-cleanup
     description: Must clean up BackHandler listeners when the screen blurs.
   - id: implementation-use-react-navigation-static-api
-    description: Must define navigation with React Navigation static APIs (object-based create*Navigator({ screens: ... })) and createStaticNavigation.
+    description: Must define navigation with React Navigation static APIs and createStaticNavigation.
   - id: implementation-use-native-navigation
-    description: Must implement this flow with React Navigation native navigation primitives and route contracts in React Native.
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts.

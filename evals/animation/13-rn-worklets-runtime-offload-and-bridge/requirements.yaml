@@ -10,4 +10,4 @@ requirements:
   - id: bounded-bridge-frequency
     description: Must avoid unbounded per-frame bridging and enforce controlled update cadence.
   - id: implementation-use-reanimated
-    description: Must implement animation behavior with react-native-reanimated primitives relevant to this task.
+    description: Must implement animation behavior with react-native-reanimated primitives.

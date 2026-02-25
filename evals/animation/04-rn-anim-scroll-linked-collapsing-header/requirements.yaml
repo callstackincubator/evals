@@ -10,4 +10,4 @@ requirements:
   - id: clamped-header-range
     description: Must clamp the header animation to defined min and max bounds to avoid runaway values.
   - id: implementation-use-reanimated
-    description: Must implement animation behavior with react-native-reanimated primitives relevant to this task.
+    description: Must implement animation behavior with react-native-reanimated primitives.

@@ -13,4 +13,4 @@ requirements:
   - id: gated-feature-disabled-until-refresh
     description: Must keep notification-only actions disabled until refreshed permission state is resolved.
   - id: implementation-use-expo-permission-apis
-    description: Must implement permission handling using Expo permission APIs relevant to this task.
+    description: Must implement permission handling using Expo permission APIs.

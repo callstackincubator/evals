@@ -10,4 +10,4 @@ requirements:
   - id: cross-platform-keyboard-follow
     description: Must provide deterministic keyboard-follow behavior on both iOS and Android paths.
   - id: implementation-use-keyboard-controller
-    description: Must implement the keyboard interaction using react-native-keyboard-controller APIs relevant to this task.
+    description: Must implement keyboard interaction with react-native-keyboard-controller APIs.

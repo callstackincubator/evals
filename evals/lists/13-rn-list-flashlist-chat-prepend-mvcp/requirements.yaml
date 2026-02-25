@@ -10,4 +10,4 @@ requirements:
   - id: controlled-near-bottom-autoscroll
     description: Must define deterministic near-bottom auto-scroll behavior without forcing jumps for users reading older messages.
   - id: implementation-use-flashlist
-    description: Must implement list behavior using FlashList APIs relevant to this task.
+    description: Must implement list behavior using FlashList APIs.

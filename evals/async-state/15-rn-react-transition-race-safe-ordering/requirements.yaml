@@ -11,4 +11,4 @@ requirements:
   - id: stale-completion-suppression
     description: Must suppress stale async completions from replacing fresher UI state.
   - id: implementation-use-react-concurrent-primitives
-    description: Must implement this behavior with React concurrent primitives relevant to this task.
+    description: Must implement this behavior with React concurrent primitives.

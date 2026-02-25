@@ -11,4 +11,4 @@ requirements:
   - id: listener-unsubscribe-cleanup
     description: Must remove change listeners during cleanup to avoid duplicate subscriptions.
   - id: implementation-use-sqlite
-    description: Must implement persistence behavior using SQLite APIs relevant to this task.
+    description: Must implement persistence behavior using SQLite APIs.

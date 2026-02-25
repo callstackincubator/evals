@@ -11,4 +11,4 @@ requirements:
   - id: conflict-result-persistence
     description: Must persist merged outcomes and unresolved conflict markers consistently after reconciliation.
   - id: implementation-use-asyncstorage
-    description: Must implement persistence behavior using AsyncStorage APIs relevant to this task.
+    description: Must implement persistence behavior using AsyncStorage APIs.

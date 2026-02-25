@@ -13,4 +13,4 @@ requirements:
   - id: partial-grant-foreground-fallback
     description: Must keep foreground-only mode functional when background permission is denied.
   - id: implementation-use-expo-permission-apis
-    description: Must implement permission handling using Expo permission APIs relevant to this task.
+    description: Must implement permission handling using Expo permission APIs.

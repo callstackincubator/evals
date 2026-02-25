@@ -10,4 +10,4 @@ requirements:
   - id: deterministic-expanded-state
     description: Must keep expanded/collapsed behavior deterministic per item identity.
   - id: implementation-use-flashlist
-    description: Must implement list behavior using FlashList APIs relevant to this task.
+    description: Must implement list behavior using FlashList APIs.

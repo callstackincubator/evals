@@ -10,4 +10,4 @@ requirements:
   - id: type-safe-row-identity
     description: Must keep keys and item type mapping consistent across updates.
   - id: implementation-use-flashlist
-    description: Must implement list behavior using FlashList APIs relevant to this task.
+    description: Must implement list behavior using FlashList APIs.

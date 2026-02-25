@@ -11,4 +11,4 @@ requirements:
   - id: idempotent-mutation-ids
     description: Must include idempotent mutation identifiers so replay does not duplicate applied actions.
   - id: implementation-use-asyncstorage
-    description: Must implement persistence behavior using AsyncStorage APIs relevant to this task.
+    description: Must implement persistence behavior using AsyncStorage APIs.

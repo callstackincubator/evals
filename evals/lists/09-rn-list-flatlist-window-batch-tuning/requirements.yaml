@@ -10,4 +10,4 @@ requirements:
   - id: lightweight-row-path
     description: Must keep row render path lightweight enough to avoid avoidable interaction delays.
   - id: implementation-use-flatlist
-    description: Must implement list behavior using FlatList APIs relevant to this task.
+    description: Must implement list behavior using FlatList APIs.

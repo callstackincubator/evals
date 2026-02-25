@@ -13,4 +13,4 @@ requirements:
   - id: blocked-or-denied-recovery-actions
     description: Must provide retry and settings-oriented recovery for denied or blocked outcomes.
   - id: implementation-use-expo-permission-apis
-    description: Must implement permission handling using Expo permission APIs relevant to this task.
+    description: Must implement permission handling using Expo permission APIs.

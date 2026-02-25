@@ -10,4 +10,4 @@ requirements:
   - id: targeted-row-update
     description: Must update row state using item identity so only intended rows change.
   - id: implementation-use-flatlist
-    description: Must implement list behavior using FlatList APIs relevant to this task.
+    description: Must implement list behavior using FlatList APIs.

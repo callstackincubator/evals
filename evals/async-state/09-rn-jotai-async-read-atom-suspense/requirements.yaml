@@ -11,4 +11,4 @@ requirements:
   - id: no-duplicate-manual-loading-flag
     description: Must avoid redundant component-level loading flags that duplicate the async atom plus Suspense contract.
   - id: implementation-use-jotai
-    description: Must implement state behavior using Jotai atoms/utilities relevant to this task.
+    description: Must implement state behavior using Jotai atoms and utilities.

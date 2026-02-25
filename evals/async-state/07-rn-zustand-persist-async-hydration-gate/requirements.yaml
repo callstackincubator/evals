@@ -11,4 +11,4 @@ requirements:
   - id: deterministic-pre-hydration-fallback
     description: Must provide deterministic pre-hydration fallback behavior that avoids incorrect logged-in or logged-out flashes.
   - id: implementation-use-zustand
-    description: Must implement state behavior using Zustand store/actions/selectors relevant to this task.
+    description: Must implement state behavior using Zustand stores, actions, and selectors.

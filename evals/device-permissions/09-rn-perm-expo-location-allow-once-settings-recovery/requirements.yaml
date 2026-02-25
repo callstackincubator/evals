@@ -13,4 +13,4 @@ requirements:
   - id: foreground-mode-remains-usable
     description: Must preserve foreground location functionality when background access is unavailable.
   - id: implementation-use-expo-permission-apis
-    description: Must implement permission handling using Expo permission APIs relevant to this task.
+    description: Must implement permission handling using Expo permission APIs.

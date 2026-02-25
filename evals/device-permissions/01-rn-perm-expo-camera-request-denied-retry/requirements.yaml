@@ -13,4 +13,4 @@ requirements:
   - id: degraded-path-no-crash
     description: Must include a degraded UX path when camera permission is unavailable instead of failing silently.
   - id: implementation-use-expo-permission-apis
-    description: Must implement permission handling using Expo permission APIs relevant to this task.
+    description: Must implement permission handling using Expo permission APIs.

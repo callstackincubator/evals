@@ -10,4 +10,4 @@ requirements:
   - id: index-scroll-safety
     description: Must handle index-based scrolling without relying on runtime measurement side effects.
   - id: implementation-use-flatlist
-    description: Must implement list behavior using FlatList APIs relevant to this task.
+    description: Must implement list behavior using FlatList APIs.

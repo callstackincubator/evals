@@ -11,4 +11,4 @@ requirements:
   - id: queryfn-derived-from-querykey
     description: Must derive request parameters from query key inputs inside the query function instead of hidden mutable external state.
   - id: implementation-use-react-query
-    description: Must implement async state behavior using @tanstack/react-query primitives relevant to this task.
+    description: Must implement async state behavior using @tanstack/react-query primitives.

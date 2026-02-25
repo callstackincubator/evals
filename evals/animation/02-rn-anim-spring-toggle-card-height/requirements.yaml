@@ -10,4 +10,4 @@ requirements:
   - id: no-react-layout-jump
     description: Must avoid abrupt non-animated jumps when toggling between states.
   - id: implementation-use-reanimated
-    description: Must implement animation behavior with react-native-reanimated primitives relevant to this task.
+    description: Must implement animation behavior with react-native-reanimated primitives.

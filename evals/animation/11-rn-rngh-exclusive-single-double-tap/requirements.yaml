@@ -10,4 +10,4 @@ requirements:
   - id: deterministic-tap-outcomes
     description: Must implement deterministic single versus double tap outcome timing semantics.
   - id: implementation-use-rngh-gestures
-    description: Must implement gesture behavior with react-native-gesture-handler primitives relevant to this task.
+    description: Must implement gesture behavior with react-native-gesture-handler primitives.

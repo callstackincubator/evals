@@ -10,4 +10,4 @@ requirements:
   - id: visual-activation-feedback
     description: Must provide deterministic visual feedback for pre-activation versus active-drag states.
   - id: implementation-use-reanimated
-    description: Must implement animation behavior with react-native-reanimated primitives relevant to this task.
+    description: Must implement animation behavior with react-native-reanimated primitives.

@@ -13,4 +13,4 @@ requirements:
   - id: no-hard-failure-on-unsupported-device
     description: Must avoid hard-failure behavior on simulator or unsupported camera environments.
   - id: implementation-use-expo-permission-apis
-    description: Must implement permission handling using Expo permission APIs relevant to this task.
+    description: Must implement permission handling using Expo permission APIs.

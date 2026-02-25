@@ -10,4 +10,4 @@ requirements:
   - id: stable-carousel-identity
     description: Must keep carousel item identity stable so nested list updates do not cause render artifacts.
   - id: implementation-use-flashlist
-    description: Must implement list behavior using FlashList APIs relevant to this task.
+    description: Must implement list behavior using FlashList APIs.

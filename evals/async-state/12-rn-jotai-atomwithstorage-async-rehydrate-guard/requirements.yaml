@@ -11,4 +11,4 @@ requirements:
   - id: safe-default-before-hydration
     description: Must provide a deterministic safe default behavior before persisted values are available.
   - id: implementation-use-jotai
-    description: Must implement state behavior using Jotai atoms/utilities relevant to this task.
+    description: Must implement state behavior using Jotai atoms and utilities.

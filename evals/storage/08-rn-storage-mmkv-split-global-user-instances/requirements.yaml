@@ -11,4 +11,4 @@ requirements:
   - id: global-instance-retained
     description: Must keep global MMKV preferences intact across user session resets.
   - id: implementation-use-mmkv
-    description: Must implement persistence behavior using MMKV APIs relevant to this task.
+    description: Must implement persistence behavior using MMKV APIs.

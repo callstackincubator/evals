@@ -11,4 +11,4 @@ requirements:
   - id: no-global-clear-anti-pattern
     description: Must avoid blanket clear operations that remove unrelated persisted data.
   - id: implementation-use-asyncstorage
-    description: Must implement persistence behavior using AsyncStorage APIs relevant to this task.
+    description: Must implement persistence behavior using AsyncStorage APIs.

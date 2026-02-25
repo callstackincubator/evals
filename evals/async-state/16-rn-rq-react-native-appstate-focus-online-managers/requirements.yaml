@@ -11,4 +11,4 @@ requirements:
   - id: controlled-refetch-behavior
     description: Must control refetch behavior across foreground/background and reconnect transitions through focusManager and onlineManager state changes (including duplicate-transition guards) so refetch storms are avoided; explicit QueryClient refetch default overrides are optional.
   - id: implementation-use-react-query
-    description: Must implement async state behavior using @tanstack/react-query primitives relevant to this task.
+    description: Must implement async state behavior using @tanstack/react-query primitives.

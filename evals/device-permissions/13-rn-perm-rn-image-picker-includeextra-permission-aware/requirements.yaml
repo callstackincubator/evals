@@ -13,4 +13,4 @@ requirements:
   - id: fallback-to-core-asset-fields
     description: Must fall back to core asset fields when extra metadata is unavailable.
   - id: implementation-use-react-native-image-picker-permissions
-    description: Must implement media permission-aware behavior using react-native-image-picker APIs relevant to this task.
+    description: Must implement media permission-aware behavior using react-native-image-picker APIs.
