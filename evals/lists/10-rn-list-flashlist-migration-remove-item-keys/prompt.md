@@ -1,1 +1,1 @@
-Migrate a FlatList-style feed to FlashList.
+Migrate the feed to FlashList.
