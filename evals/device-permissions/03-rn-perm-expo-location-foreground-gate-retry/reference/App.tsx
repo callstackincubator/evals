@@ -62,7 +62,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Foreground Location Flow</Text>
+      <Text style={styles.title}>Permissions</Text>
       <Text style={styles.state}>State: {locationState}</Text>
 
       <Pressable

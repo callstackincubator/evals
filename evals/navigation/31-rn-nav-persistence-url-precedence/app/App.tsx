@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['myapp://promo/7']
 
-async function resolveStartupRoutePrecedencePlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function resolveStartupRoutePrecedenceAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function LandingScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Landing</Text>
       <Text style={styles.copy}>
-        Landing and promo routes are scaffolded for precedence behavior.
+        Landing and promo routes are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => resolveStartupRoutePrecedencePlaceholder()}
+        title="Open"
+        onPress={() => resolveStartupRoutePrecedenceAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function PromoScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Promo</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

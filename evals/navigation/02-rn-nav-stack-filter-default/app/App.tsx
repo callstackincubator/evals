@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['all', 'mentions', 'unread']
 
-async function resolveFilterParamPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function resolveFilterParamAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function NotificationsHomeScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>NotificationsHome</Text>
       <Text style={styles.copy}>
-        Filter options are seeded for default-param behavior.
+        Filter options are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => resolveFilterParamPlaceholder()}
+        title="Open"
+        onPress={() => resolveFilterParamAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function NotificationsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Notifications</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

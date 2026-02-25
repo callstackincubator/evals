@@ -18,8 +18,8 @@ function RowItem({ item }: { item: Row }) {
   )
 }
 
-function jumpToTargetIndexPlaceholder() {
-  // TODO: implement list behavior for this eval
+function jumpToTargetIndexAction() {
+  // No-op
 }
 
 export default function App() {
@@ -27,10 +27,10 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Index Jump List</Text>
       <Text style={styles.helper}>
-        Rows are seeded. Add deterministic initial/jump scroll behavior.
+        Rows are loaded. Browse list items.
       </Text>
-      <Pressable style={styles.button} onPress={jumpToTargetIndexPlaceholder}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Pressable style={styles.button} onPress={jumpToTargetIndexAction}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <FlatList
         data={INDEX_ROWS}

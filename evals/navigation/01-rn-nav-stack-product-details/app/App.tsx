@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['Product 42', 'Product 84']
 
-async function openProductDetailsPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function openProductDetailsAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function ProductsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Products</Text>
       <Text style={styles.copy}>
-        Product list seed is ready for details navigation behavior.
+        Product list is ready. Choose an item to continue.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => openProductDetailsPlaceholder()}
+        title="Open"
+        onPress={() => openProductDetailsAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function ProductDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>ProductDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

@@ -172,7 +172,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Video Capture Error Map</Text>
+      <Text style={styles.title}>Permissions</Text>
       <Text style={styles.state}>State: {captureState}</Text>
 
       <Pressable onPress={captureVideo} style={styles.button}>

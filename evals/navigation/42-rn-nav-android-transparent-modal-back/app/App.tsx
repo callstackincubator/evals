@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['android-back']
 
-async function shouldDismissTransparentModalPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function shouldDismissTransparentModalAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function OverlayEntryScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>OverlayEntry</Text>
       <Text style={styles.copy}>
-        Entry and transparent modal routes are scaffolded.
+        Entry and transparent modal routes are available.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => shouldDismissTransparentModalPlaceholder()}
+        title="Open"
+        onPress={() => shouldDismissTransparentModalAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function TransparentModalScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>TransparentModal</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

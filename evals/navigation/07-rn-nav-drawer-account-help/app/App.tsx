@@ -2,8 +2,8 @@ import { createDrawerNavigator } from '@react-navigation/drawer'
 import { createStaticNavigation } from '@react-navigation/native'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function openDrawerRoutePlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function openDrawerRouteAction() {
+  // No-op
   return 'pending'
 }
 
@@ -12,11 +12,11 @@ function AccountScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Account</Text>
       <Text style={styles.copy}>
-        Drawer routes are scaffolded for Account/Help behavior.
+        Account and help screens are ready.
       </Text>
       <Button
-        title="Call placeholder"
-        onPress={() => openDrawerRoutePlaceholder()}
+        title="Account"
+        onPress={() => openDrawerRouteAction()}
       />
     </View>
   )
@@ -26,7 +26,7 @@ function HelpScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Help</Text>
-      <Text style={styles.copy}>Drawer shell scaffold route</Text>
+      <Text style={styles.copy}>Drawer content</Text>
     </View>
   )
 }

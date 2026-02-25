@@ -76,7 +76,7 @@ function PreferencesScreen() {
   if (!hydrationComplete) {
     return (
       <View style={styles.screen}>
-        <Text style={styles.title}>Loading preferences…</Text>
+        <Text style={styles.title}>Async State</Text>
         <Text style={styles.meta}>
           Safe default: {SAFE_DEFAULT_PREFERENCES.theme} theme until rehydration
           finishes.

@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['item-1', 'item-2']
 
-async function shouldNavigateToTargetPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function shouldNavigateToTargetAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function ItemListScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>ItemList</Text>
       <Text style={styles.copy}>
-        List and details shells are ready for duplicate-target behavior.
+        List and detail routes are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => shouldNavigateToTargetPlaceholder()}
+        title="Open"
+        onPress={() => shouldNavigateToTargetAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function ItemDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>ItemDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

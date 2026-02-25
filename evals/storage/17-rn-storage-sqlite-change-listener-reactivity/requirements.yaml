@@ -4,7 +4,7 @@ inputs:
     - app/App.tsx
 requirements:
   - id: change-listener-enabled
-    description: Must open SQLite database with enableChangeListener: true when relying on addDatabaseChangeListener callbacks.
+    description: "Must open SQLite database with enableChangeListener: true when relying on addDatabaseChangeListener callbacks."
   - id: listener-driven-refresh
     description: Must trigger list refresh from relevant database change events instead of stale one-time reads.
   - id: listener-unsubscribe-cleanup

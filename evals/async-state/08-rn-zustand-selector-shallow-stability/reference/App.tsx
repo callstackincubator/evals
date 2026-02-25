@@ -68,7 +68,7 @@ function Panel({ side }: { side: Side }) {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Selector stability</Text>
+      <Text style={styles.title}>Async State</Text>
       <View style={styles.row}>
         <Panel side='left' />
         <Panel side='right' />

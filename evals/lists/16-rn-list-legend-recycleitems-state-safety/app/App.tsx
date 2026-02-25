@@ -11,8 +11,8 @@ const NOTE_ROWS: Row[] = Array.from({ length: 36 }, (_, index) => ({
   title: 'Note draft ' + String(index + 1),
 }))
 
-function toggleExpandedNotePlaceholder() {
-  // TODO: implement list behavior for this eval
+function toggleExpandedNoteAction() {
+  // No-op
 }
 
 export default function App() {
@@ -20,10 +20,10 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Notes Feed</Text>
       <Text style={styles.helper}>
-        Note rows are seeded. Add recycle-safe row state behavior.
+        Note rows are loaded. Browse list items.
       </Text>
-      <Pressable style={styles.button} onPress={toggleExpandedNotePlaceholder}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Pressable style={styles.button} onPress={toggleExpandedNoteAction}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <LegendList
         data={NOTE_ROWS}

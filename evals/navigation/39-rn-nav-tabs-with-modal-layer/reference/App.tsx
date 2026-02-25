@@ -13,7 +13,7 @@ function FeedScreen() {
 
   return (
     <View style={styles.centered}>
-      <Button title="Compose" onPress={handleCompose} />
+      <Button title="Open" onPress={handleCompose} />
     </View>
   )
 }

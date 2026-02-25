@@ -2,18 +2,18 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 const STORAGE_KEYS = ['session', 'draft', 'outbox']
 
-async function runMigrationsPlaceholder() {
-  // TODO: implement persistence behavior for this eval
+async function runMigrationsAction() {
+  // No-op
   return STORAGE_KEYS.length
 }
 
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Storage Starter</Text>
+      <Text style={styles.title}>Storage</Text>
       <Text style={styles.subtitle}>Keys: {STORAGE_KEYS.join(', ')}</Text>
-      <Pressable style={styles.button} onPress={() => runMigrationsPlaceholder()}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Pressable style={styles.button} onPress={() => runMigrationsAction()}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
     </View>
   )

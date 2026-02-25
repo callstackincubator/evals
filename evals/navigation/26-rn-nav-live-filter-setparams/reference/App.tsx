@@ -44,7 +44,7 @@ function FeedScreen({ route }: FeedScreenProps) {
 
     navigation.setOptions({
       headerRight: () => (
-        <Button title="Toggle filter" onPress={onTogglePress} />
+        <Button title="Open" onPress={onTogglePress} />
       ),
     })
   }, [filter, navigation])

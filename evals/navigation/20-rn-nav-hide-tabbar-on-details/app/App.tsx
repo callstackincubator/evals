@@ -3,8 +3,8 @@ import { createStaticNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function toggleTabBarVisibilityPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function toggleTabBarVisibilityAction() {
+  // No-op
   return 'pending'
 }
 
@@ -13,11 +13,11 @@ function FeedScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Feed</Text>
       <Text style={styles.copy}>
-        Feed stack/tab routes are scaffolded for tab-bar visibility behavior.
+        Feed tabs are ready.
       </Text>
       <Button
-        title="Call placeholder"
-        onPress={() => toggleTabBarVisibilityPlaceholder()}
+        title="Open"
+        onPress={() => toggleTabBarVisibilityAction()}
       />
     </View>
   )
@@ -28,7 +28,7 @@ function FullScreenDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>FullScreenDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this nested route shell.
+        More details appear here.
       </Text>
     </View>
   )
@@ -38,7 +38,7 @@ function SettingsScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Settings</Text>
-      <Text style={styles.copy}>Tab bar visibility scaffold route</Text>
+      <Text style={styles.copy}>Display settings</Text>
     </View>
   )
 }

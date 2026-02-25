@@ -5,7 +5,7 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 const SEED_ITEMS = ['id: A', 'id: B']
 
 async function loadDetailsSnapshot() {
-  // TODO: implement navigation behavior for this eval
+  // No-op
   return 'pending'
 }
 
@@ -14,10 +14,10 @@ function RequestQueueScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>RequestQueue</Text>
       <Text style={styles.copy}>
-        Detail flow shell is ready for async cancellation behavior.
+        Details screen is ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
-      <Button title="Call placeholder" onPress={() => loadDetailsSnapshot()} />
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
+      <Button title="Open" onPress={() => loadDetailsSnapshot()} />
     </View>
   )
 }
@@ -27,7 +27,7 @@ function RequestDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>RequestDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

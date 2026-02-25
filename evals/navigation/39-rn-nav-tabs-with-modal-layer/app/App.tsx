@@ -3,8 +3,8 @@ import { createStaticNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function openComposeModalPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function openComposeModalAction() {
+  // No-op
   return 'pending'
 }
 
@@ -13,11 +13,11 @@ function FeedScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Feed</Text>
       <Text style={styles.copy}>
-        Tabs and modal route shells are scaffolded for this eval.
+        Tabs and modal screens are available.
       </Text>
       <Button
-        title="Call placeholder"
-        onPress={() => openComposeModalPlaceholder()}
+        title="Open"
+        onPress={() => openComposeModalAction()}
       />
     </View>
   )
@@ -27,7 +27,7 @@ function ProfileScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Profile</Text>
-      <Text style={styles.copy}>Tabs with modal layer scaffold route</Text>
+      <Text style={styles.copy}>Compose area</Text>
     </View>
   )
 }
@@ -37,7 +37,7 @@ function ComposeModalScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>ComposeModal</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this modal route shell.
+        More details appear here.
       </Text>
     </View>
   )

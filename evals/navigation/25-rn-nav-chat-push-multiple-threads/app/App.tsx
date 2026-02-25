@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['thread-a', 'thread-b']
 
-async function pushThreadPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function pushThreadAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function ThreadsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Threads</Text>
       <Text style={styles.copy}>
-        Thread route shell is ready for multi-instance push behavior.
+        Thread list is ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => pushThreadPlaceholder()}
+        title="Open"
+        onPress={() => pushThreadAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function ThreadDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>ThreadDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['cart items']
 
-async function completeCheckoutPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function completeCheckoutAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function CartScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Cart</Text>
       <Text style={styles.copy}>
-        Checkout routes are scaffolded for reset-to-success behavior.
+        Checkout steps are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => completeCheckoutPlaceholder()}
+        title="Open"
+        onPress={() => completeCheckoutAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function ShippingScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Shipping</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )
@@ -41,7 +41,7 @@ function SuccessScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Success</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

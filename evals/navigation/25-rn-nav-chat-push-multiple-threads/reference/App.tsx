@@ -18,7 +18,7 @@ function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Button title="Open thread a1" onPress={() => navigateToThread('a1')} />
+      <Button title="Open" onPress={() => navigateToThread('a1')} />
       <Button title="Open thread b2" onPress={() => navigateToThread('b2')} />
     </View>
   )

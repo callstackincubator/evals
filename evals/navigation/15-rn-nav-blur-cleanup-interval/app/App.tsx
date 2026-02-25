@@ -5,7 +5,7 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 const SEED_ITEMS = ['tick stream']
 
 async function startPolling() {
-  // TODO: implement navigation behavior for this eval
+  // No-op
   return 'pending'
 }
 
@@ -14,10 +14,10 @@ function PollingScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Polling</Text>
       <Text style={styles.copy}>
-        Polling route shell is ready for focus/blur cleanup behavior.
+        Live status view is ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
-      <Button title="Call placeholder" onPress={() => startPolling()} />
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
+      <Button title="Open" onPress={() => startPolling()} />
     </View>
   )
 }
@@ -27,7 +27,7 @@ function OtherScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Other</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

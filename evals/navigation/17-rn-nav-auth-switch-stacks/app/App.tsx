@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['auth', 'app']
 
-async function switchAuthGraphPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function switchAuthGraphAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function SignInScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>SignIn</Text>
       <Text style={styles.copy}>
-        Auth route shell is ready for stack switching behavior.
+        Sign-in screen is ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => switchAuthGraphPlaceholder()}
+        title="Open"
+        onPress={() => switchAuthGraphAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function AppHomeScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>AppHome</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

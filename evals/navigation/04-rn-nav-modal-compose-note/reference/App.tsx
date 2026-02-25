@@ -48,7 +48,7 @@ function NotesScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Notes</Text>
-      <Button title="Compose Note" onPress={handleAddNote} />
+      <Button title="Open" onPress={handleAddNote} />
       {notes.length === 0 ? (
         <Text>No notes yet</Text>
       ) : (

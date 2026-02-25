@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['NAV_STATE_V1']
 
-async function persistLastRoutePlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function persistLastRouteAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function LibraryHomeScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>LibraryHome</Text>
       <Text style={styles.copy}>
-        State key seed is ready for restore behavior.
+        Saved route keys are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => persistLastRoutePlaceholder()}
+        title="Open"
+        onPress={() => persistLastRouteAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function LibraryDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>LibraryDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

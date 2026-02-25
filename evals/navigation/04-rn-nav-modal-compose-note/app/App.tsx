@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['Standup notes', 'Release checklist']
 
-async function openComposeModalPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function openComposeModalAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function NotesScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Notes</Text>
       <Text style={styles.copy}>
-        Notes seed is ready for modal compose behavior.
+        Recent notes are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => openComposeModalPlaceholder()}
+        title="Open"
+        onPress={() => openComposeModalAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function ComposeNoteScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>ComposeNote</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

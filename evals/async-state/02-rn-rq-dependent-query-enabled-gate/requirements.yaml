@@ -4,7 +4,7 @@ inputs:
     - app/App.tsx
 requirements:
   - id: dependency-gated-query
-    description: Must gate the dependent projects query with enabled: !!profileId so it does not execute before upstream identity exists.
+    description: "Must gate the dependent projects query with enabled: !!profileId so it does not execute before upstream identity exists."
   - id: explicit-upstream-and-downstream-keys
     description: Must define distinct query keys for upstream profile and downstream projects queries.
   - id: safe-initial-dependent-state

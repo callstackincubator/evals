@@ -12,7 +12,7 @@ function HomeScreen() {
 
   return (
     <View style={styles.centered}>
-      <Button title="Open transparent modal" onPress={handleOpenModal} />
+      <Button title="Open" onPress={handleOpenModal} />
     </View>
   )
 }

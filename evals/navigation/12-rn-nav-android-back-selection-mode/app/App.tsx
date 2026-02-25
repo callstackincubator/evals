@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['selection-mode']
 
-async function exitSelectionModePlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function exitSelectionModeAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function SelectionEntryScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>SelectionEntry</Text>
       <Text style={styles.copy}>
-        List route shell is ready for Android back-priority behavior.
+        Message list is ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => exitSelectionModePlaceholder()}
+        title="Open"
+        onPress={() => exitSelectionModeAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function SelectableListScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>SelectableList</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

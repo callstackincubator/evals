@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['signed-in']
 
-async function signOutAndResetPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function signOutAndResetAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function SignInScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>SignIn</Text>
       <Text style={styles.copy}>
-        Auth and private routes are scaffolded for history-clear behavior.
+        Public and private routes are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => signOutAndResetPlaceholder()}
+        title="Open"
+        onPress={() => signOutAndResetAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function PrivateHomeScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>PrivateHome</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )
@@ -41,7 +41,7 @@ function AccountDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>AccountDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

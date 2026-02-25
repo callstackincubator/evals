@@ -4,8 +4,8 @@ import { createStaticNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function resolveNestedDeepLinkTargetPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function resolveNestedDeepLinkTargetAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,11 +14,11 @@ function HomeFeedScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>HomeFeed</Text>
       <Text style={styles.copy}>
-        Nested navigator shells are scaffolded for deep-link mapping behavior.
+        Nested routes are ready.
       </Text>
       <Button
-        title="Call placeholder"
-        onPress={() => resolveNestedDeepLinkTargetPlaceholder()}
+        title="HomeFeed"
+        onPress={() => resolveNestedDeepLinkTargetAction()}
       />
     </View>
   )
@@ -29,7 +29,7 @@ function HomeDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>HomeDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )
@@ -39,7 +39,7 @@ function SettingsScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Settings</Text>
-      <Text style={styles.copy}>Drawer/Tab/Stack map scaffold route</Text>
+      <Text style={styles.copy}>Navigation map</Text>
     </View>
   )
 }
@@ -48,7 +48,7 @@ function NotFoundScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>NotFound</Text>
-      <Text style={styles.copy}>Unknown path fallback shell.</Text>
+      <Text style={styles.copy}>Unknown path fallback screen.</Text>
     </View>
   )
 }

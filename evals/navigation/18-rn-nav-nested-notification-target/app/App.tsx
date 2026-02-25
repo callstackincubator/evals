@@ -3,8 +3,8 @@ import { createStaticNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function openNotificationTargetPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function openNotificationTargetAction() {
+  // No-op
   return 'pending'
 }
 
@@ -13,11 +13,11 @@ function NotificationsListScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>NotificationsList</Text>
       <Text style={styles.copy}>
-        Notification seed is ready for nested target behavior.
+        Notifications are ready.
       </Text>
       <Button
-        title="Call placeholder"
-        onPress={() => openNotificationTargetPlaceholder()}
+        title="Open"
+        onPress={() => openNotificationTargetAction()}
       />
     </View>
   )
@@ -28,7 +28,7 @@ function NotificationDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>NotificationDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this nested route shell.
+        More details appear here.
       </Text>
     </View>
   )
@@ -38,7 +38,7 @@ function FeedScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Feed</Text>
-      <Text style={styles.copy}>Nested notification target scaffold route</Text>
+      <Text style={styles.copy}>Notification center</Text>
     </View>
   )
 }

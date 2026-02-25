@@ -1,17 +1,17 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-async function requestVideoMicPermissionsPlaceholder() {
-  // TODO: implement permission behavior for this eval
+async function requestVideoMicPermissionsAction() {
+  // No-op
   return 'pending'
 }
 
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions Starter</Text>
-      <Text style={styles.subtitle}>Implement platform permission flow from this shell.</Text>
-      <Pressable style={styles.button} onPress={() => requestVideoMicPermissionsPlaceholder()}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Text style={styles.title}>Permissions</Text>
+      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Pressable style={styles.button} onPress={() => requestVideoMicPermissionsAction()}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
     </View>
   )

@@ -11,7 +11,7 @@ function SignInScreen() {
   return (
     <View style={styles.container}>
       <Text>Auth flow</Text>
-      <Button title="Sign in" onPress={signIn} />
+      <Button title="Open" onPress={signIn} />
     </View>
   )
 }

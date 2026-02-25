@@ -24,7 +24,7 @@ function HomeScreen({ navigation }: HomeScreenProps) {
 
   return (
     <View style={styles.centered}>
-      <Button title="Go to details" onPress={handleGoToDetails} />
+      <Button title="Open" onPress={handleGoToDetails} />
     </View>
   )
 }

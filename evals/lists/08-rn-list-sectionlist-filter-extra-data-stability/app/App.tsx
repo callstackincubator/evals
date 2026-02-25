@@ -39,8 +39,8 @@ const CATALOG_SECTIONS: SectionData[] = [
   },
 ]
 
-function applyFilterPlaceholder() {
-  // TODO: implement list behavior for this eval
+function applyFilterAction() {
+  // No-op
 }
 
 export default function App() {
@@ -48,10 +48,10 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Catalog Sections</Text>
       <Text style={styles.helper}>
-        Catalog sections are seeded. Add live filter behavior.
+        Catalog sections are loaded. Browse list items.
       </Text>
-      <Pressable style={styles.button} onPress={applyFilterPlaceholder}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Pressable style={styles.button} onPress={applyFilterAction}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <SectionList
         sections={CATALOG_SECTIONS}

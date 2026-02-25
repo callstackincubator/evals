@@ -117,7 +117,7 @@ function TransactionsScreen() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Transactions</Text>
+      <Text style={styles.title}>Async State</Text>
 
       <View style={styles.filterRow}>
         {FILTER_OPTIONS.map((candidate) => {

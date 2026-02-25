@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['critical-step']
 
-async function completeCriticalStepPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function completeCriticalStepAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function FlowStartScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>FlowStart</Text>
       <Text style={styles.copy}>
-        Critical flow routes are scaffolded for back-parity behavior.
+        Critical routes are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => completeCriticalStepPlaceholder()}
+        title="Open"
+        onPress={() => completeCriticalStepAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function CriticalStepScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>CriticalStep</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

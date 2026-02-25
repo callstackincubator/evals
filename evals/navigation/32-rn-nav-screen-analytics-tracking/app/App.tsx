@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['last tracked route']
 
-async function trackScreenTransitionPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function trackScreenTransitionAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function FeedScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Feed</Text>
       <Text style={styles.copy}>
-        Root routes are scaffolded for transition tracking behavior.
+        Root routes are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => trackScreenTransitionPlaceholder()}
+        title="Open"
+        onPress={() => trackScreenTransitionAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function FeedDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>FeedDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

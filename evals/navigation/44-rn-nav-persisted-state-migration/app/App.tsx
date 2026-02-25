@@ -5,7 +5,7 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 const SEED_ITEMS = ['NAV_VERSION: 2']
 
 async function migratePersistedNavigationState() {
-  // TODO: implement navigation behavior for this eval
+  // No-op
   return 'pending'
 }
 
@@ -14,11 +14,11 @@ function StateHomeScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>StateHome</Text>
       <Text style={styles.copy}>
-        State routes are scaffolded for state-version migration behavior.
+        Stored navigation state is ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
+        title="Open"
         onPress={() => migratePersistedNavigationState()}
       />
     </View>
@@ -30,7 +30,7 @@ function StateDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>StateDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

@@ -9,7 +9,7 @@ function SignInScreen() {
   const { signIn } = useContext(AuthContext)
   return (
     <View style={styles.signInContainer}>
-      <Button title="Sign in" onPress={signIn} />
+      <Button title="Open" onPress={signIn} />
     </View>
   )
 }

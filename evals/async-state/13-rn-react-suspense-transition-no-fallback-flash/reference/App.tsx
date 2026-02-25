@@ -131,7 +131,7 @@ export default function App() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Filter transition</Text>
+      <Text style={styles.title}>Async State</Text>
 
       <View style={styles.filterRow}>
         {(['all', 'open', 'done'] as const).map((filter) => {

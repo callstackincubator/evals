@@ -80,7 +80,7 @@ function ItemsScreen() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Items</Text>
+      <Text style={styles.title}>Async State</Text>
 
       <View style={styles.composer}>
         <TextInput

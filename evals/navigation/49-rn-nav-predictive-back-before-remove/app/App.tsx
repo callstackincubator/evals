@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['unsaved draft']
 
-async function confirmBeforeRemovePlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function confirmBeforeRemoveAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function DraftListScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>DraftList</Text>
       <Text style={styles.copy}>
-        Edit flow shell is ready for predictive-back confirm behavior.
+        Edit form is ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => confirmBeforeRemovePlaceholder()}
+        title="Open"
+        onPress={() => confirmBeforeRemoveAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function EditDraftScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>EditDraft</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

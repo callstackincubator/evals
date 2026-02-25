@@ -18,8 +18,8 @@ function RowItem({ item }: { item: Row }) {
   )
 }
 
-function loadNextPagePlaceholder() {
-  // TODO: implement list behavior for this eval
+function loadNextPageAction() {
+  // No-op
 }
 
 export default function App() {
@@ -27,10 +27,10 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Feed Pagination</Text>
       <Text style={styles.helper}>
-        Feed items are seeded. Add load-more behavior for this eval.
+        Feed items are loaded. Browse list items.
       </Text>
-      <Pressable style={styles.button} onPress={loadNextPagePlaceholder}>
-        <Text style={styles.buttonText}>Call placeholder</Text>
+      <Pressable style={styles.button} onPress={loadNextPageAction}>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <FlatList
         data={FEED_ROWS}

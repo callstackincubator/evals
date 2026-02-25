@@ -5,7 +5,7 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 const SEED_ITEMS = ['target: item-7']
 
 async function captureDeferredTarget() {
-  // TODO: implement navigation behavior for this eval
+  // No-op
   return 'pending'
 }
 
@@ -14,11 +14,11 @@ function LandingScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Landing</Text>
       <Text style={styles.copy}>
-        Public/private route shells are ready for deferred-target behavior.
+        Public and private screens are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
+        title="Open"
         onPress={() => captureDeferredTarget()}
       />
     </View>
@@ -30,7 +30,7 @@ function SignInScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>SignIn</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )
@@ -41,7 +41,7 @@ function ProtectedDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>ProtectedDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

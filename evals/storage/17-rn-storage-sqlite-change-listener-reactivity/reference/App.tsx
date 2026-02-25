@@ -100,7 +100,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>SQLite Change Listener</Text>
+      <Text style={styles.title}>Storage</Text>
       <Text style={styles.row}>Items: {items.length}</Text>
       <Pressable style={styles.button} onPress={insertRow}>
         <Text style={styles.buttonText}>Insert Row</Text>

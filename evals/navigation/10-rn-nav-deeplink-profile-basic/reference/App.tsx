@@ -16,7 +16,7 @@ function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Button title="Open profile 123" onPress={handleOpenProfile} />
+      <Button title="Open" onPress={handleOpenProfile} />
     </View>
   )
 }

@@ -3,8 +3,8 @@ import { createStaticNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function openArticlePlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function openArticleAction() {
+  // No-op
   return 'pending'
 }
 
@@ -12,12 +12,10 @@ function HomeFeedScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>HomeFeed</Text>
-      <Text style={styles.copy}>
-        Article seed is ready for nested Home flow behavior.
-      </Text>
+      <Text style={styles.copy}>Latest stories</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => openArticlePlaceholder()}
+        title="Open"
+        onPress={() => openArticleAction()}
       />
     </View>
   )
@@ -28,7 +26,7 @@ function ArticleDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>ArticleDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this nested route shell.
+        More details appear here.
       </Text>
     </View>
   )
@@ -38,7 +36,7 @@ function SettingsScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Settings</Text>
-      <Text style={styles.copy}>Nested Home tab scaffold route</Text>
+      <Text style={styles.copy}>Account settings</Text>
     </View>
   )
 }

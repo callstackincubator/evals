@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['Red', 'Green', 'Blue']
 
-async function setPickedColorPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function setPickedColorAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function FormScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Form</Text>
       <Text style={styles.copy}>
-        Color options are seeded for picker return behavior.
+        Color choices are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => setPickedColorPlaceholder()}
+        title="Open"
+        onPress={() => setPickedColorAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function ColorPickerScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>ColorPicker</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

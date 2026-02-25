@@ -35,7 +35,7 @@ function ReportsScreen() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Reports</Text>
+      <Text style={styles.title}>Async State</Text>
 
       <Pressable
         onPress={() => {

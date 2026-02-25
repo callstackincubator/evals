@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['sort=date', 'order=desc']
 
-async function parseFeedQueryFiltersPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function parseFeedQueryFiltersAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function FeedScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Feed</Text>
       <Text style={styles.copy}>
-        Feed route shell is ready for query-param parsing behavior.
+        Feed with filters is ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => parseFeedQueryFiltersPlaceholder()}
+        title="Feed"
+        onPress={() => parseFeedQueryFiltersAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function FilterPreviewScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>FilterPreview</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

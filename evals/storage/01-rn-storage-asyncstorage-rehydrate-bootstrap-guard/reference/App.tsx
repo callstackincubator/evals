@@ -143,7 +143,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Hydration Complete</Text>
+      <Text style={styles.title}>Storage</Text>
       <Text style={styles.row}>
         Session: {session ? session.userId : 'Guest'}
       </Text>

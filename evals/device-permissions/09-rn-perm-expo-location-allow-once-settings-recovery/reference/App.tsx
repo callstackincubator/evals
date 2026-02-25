@@ -74,7 +74,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>iOS Location Upgrade Flow</Text>
+      <Text style={styles.title}>Permissions</Text>
       <Text style={styles.state}>Step: {currentStep}</Text>
       <Text style={styles.message}>{message}</Text>
 

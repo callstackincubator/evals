@@ -1,1 +1,1 @@
-Build an interaction where high-frequency animation state is computed off the JavaScript thread, and React state is updated only at controlled points.
+Build an interaction where high-frequency animation state is computed off the JavaScript thread, and React state is updated only at controlled checkpoints (for example at each 20% progress step, not every frame).

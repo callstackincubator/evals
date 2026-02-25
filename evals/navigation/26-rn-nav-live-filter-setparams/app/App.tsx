@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['all', 'recent', 'saved']
 
-async function setFeedFilterPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function setFeedFilterAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function FeedScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Feed</Text>
       <Text style={styles.copy}>
-        Feed route shell is ready for live filter-param behavior.
+        Feed filters are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => setFeedFilterPlaceholder()}
+        title="Open"
+        onPress={() => setFeedFilterAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function FeedDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>FeedDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

@@ -3,8 +3,8 @@ import { createStaticNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function preserveTabStackHistoryPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function preserveTabStackHistoryAction() {
+  // No-op
   return 'pending'
 }
 
@@ -12,12 +12,10 @@ function FeedScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Feed</Text>
-      <Text style={styles.copy}>
-        Per-tab stacks are scaffolded for independent history behavior.
-      </Text>
+      <Text style={styles.copy}>Recent activity</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => preserveTabStackHistoryPlaceholder()}
+        title="Open"
+        onPress={() => preserveTabStackHistoryAction()}
       />
     </View>
   )
@@ -28,7 +26,7 @@ function FeedDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>FeedDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )
@@ -45,7 +43,7 @@ function SettingsScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Settings</Text>
-      <Text style={styles.copy}>Independent tab stacks scaffold route</Text>
+      <Text style={styles.copy}>Preferences</Text>
     </View>
   )
 }
@@ -55,7 +53,7 @@ function SettingsDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>SettingsDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

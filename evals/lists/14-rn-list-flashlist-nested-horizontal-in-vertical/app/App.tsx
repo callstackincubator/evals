@@ -21,8 +21,8 @@ const MIXED_ROWS: Row[] = [
   },
 ]
 
-function renderNestedCarouselPlaceholder() {
-  // TODO: implement list behavior for this eval
+function renderNestedCarouselAction() {
+  // No-op
 }
 
 export default function App() {
@@ -30,14 +30,13 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Mixed Feed</Text>
       <Text style={styles.helper}>
-        Story and carousel data are seeded. Add nested list behavior for this
-        eval.
+        Story and carousel data are loaded. Browse list items.
       </Text>
       <Pressable
         style={styles.button}
-        onPress={renderNestedCarouselPlaceholder}
+        onPress={renderNestedCarouselAction}
       >
-        <Text style={styles.buttonText}>Call placeholder</Text>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <FlashList
         data={MIXED_ROWS}

@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['userId: 123']
 
-async function parseProfileDeepLinkPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function parseProfileDeepLinkAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function EntryScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Entry</Text>
       <Text style={styles.copy}>
-        Profile route shell is ready for basic deep link behavior.
+        Profile entry is ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => parseProfileDeepLinkPlaceholder()}
+        title="Open"
+        onPress={() => parseProfileDeepLinkAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function ProfileScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Profile</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['itemId: 123']
 
-async function buildDetailsParamsPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function buildDetailsParamsAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function CatalogScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Catalog</Text>
       <Text style={styles.copy}>
-        Catalog routes are scaffolded for typed param contract behavior.
+        Catalog routes are ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => buildDetailsParamsPlaceholder()}
+        title="Open"
+        onPress={() => buildDetailsParamsAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function CatalogDetailsScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>CatalogDetails</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

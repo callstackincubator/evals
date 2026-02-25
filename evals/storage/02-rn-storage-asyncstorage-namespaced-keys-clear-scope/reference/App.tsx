@@ -99,7 +99,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Namespaced Keys</Text>
+      <Text style={styles.title}>Storage</Text>
       <Text style={styles.row}>Theme (global): {theme}</Text>
       <Text style={styles.row}>Draft (user scoped): {draft || '(empty)'}</Text>
       <Text style={styles.row}>

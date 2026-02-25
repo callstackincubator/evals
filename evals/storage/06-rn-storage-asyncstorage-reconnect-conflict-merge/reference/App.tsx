@@ -137,7 +137,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Reconnect Reconcile</Text>
+      <Text style={styles.title}>Storage</Text>
       <Text style={styles.row}>Status: {status}</Text>
       <Text style={styles.row}>Unresolved conflicts: {lastConflictCount}</Text>
       <Pressable style={styles.button} onPress={runReconnectSync}>

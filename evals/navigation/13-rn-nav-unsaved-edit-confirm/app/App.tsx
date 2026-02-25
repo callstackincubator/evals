@@ -4,8 +4,8 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 
 const SEED_ITEMS = ['draft name']
 
-async function confirmDiscardChangesPlaceholder() {
-  // TODO: implement navigation behavior for this eval
+async function confirmDiscardChangesAction() {
+  // No-op
   return 'pending'
 }
 
@@ -14,12 +14,12 @@ function ProfileOverviewScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>ProfileOverview</Text>
       <Text style={styles.copy}>
-        Edit route shell is ready for unsaved-change behavior.
+        Edit form is ready.
       </Text>
-      <Text style={styles.copy}>Seed: {SEED_ITEMS.join(', ')}</Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
       <Button
-        title="Call placeholder"
-        onPress={() => confirmDiscardChangesPlaceholder()}
+        title="Open"
+        onPress={() => confirmDiscardChangesAction()}
       />
     </View>
   )
@@ -30,7 +30,7 @@ function EditProfileScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>EditProfile</Text>
       <Text style={styles.copy}>
-        Implement eval behavior from this route shell.
+        More details appear here.
       </Text>
     </View>
   )

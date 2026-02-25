@@ -11,8 +11,8 @@ const CHAT_ROWS: Row[] = Array.from({ length: 16 }, (_, index) => ({
   title: 'Chat message ' + String(index + 1),
 }))
 
-function prependOlderChatPagePlaceholder() {
-  // TODO: implement list behavior for this eval
+function prependOlderChatPageAction() {
+  // No-op
 }
 
 export default function App() {
@@ -20,13 +20,13 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Chat Messages</Text>
       <Text style={styles.helper}>
-        Chat rows are seeded. Add prepend and viewport behavior for this eval.
+        Chat rows are loaded. Browse list items.
       </Text>
       <Pressable
         style={styles.button}
-        onPress={prependOlderChatPagePlaceholder}
+        onPress={prependOlderChatPageAction}
       >
-        <Text style={styles.buttonText}>Call placeholder</Text>
+        <Text style={styles.buttonText}>Open</Text>
       </Pressable>
       <FlashList
         data={CHAT_ROWS}
