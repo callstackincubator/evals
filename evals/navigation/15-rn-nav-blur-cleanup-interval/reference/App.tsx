@@ -46,7 +46,7 @@ function PollingScreen() {
   return (
     <View style={styles.container}>
       <Text>Polling ticks while focused: {ticks}</Text>
-      <Button title='Open other screen' onPress={handleOpenOtherScreen} />
+      <Button title='Open' onPress={handleOpenOtherScreen} />
     </View>
   )
 }

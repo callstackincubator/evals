@@ -10,7 +10,7 @@ function WelcomeScreen() {
   return (
     <View style={styles.welcomeScreenContainer}>
       <Text>Onboarding step</Text>
-      <Button title="Finish onboarding" onPress={completeOnboarding} />
+      <Button title="Open" onPress={completeOnboarding} />
     </View>
   )
 }

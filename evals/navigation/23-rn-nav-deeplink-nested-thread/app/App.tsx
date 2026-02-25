@@ -1,21 +1,102 @@
-import { StatusBar } from 'expo-status-bar'
-import { StyleSheet, Text, View } from 'react-native'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createStaticNavigation } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { Button, StyleSheet, Text, View } from 'react-native'
 
-export default function App() {
+async function openThreadFromLinkAction() {
+  // No-op
+  return 'pending'
+}
+
+function FeedScreen() {
   return (
-    <View style={styles.container}>
-      <Text>Implement: Deep link to nested thread route</Text>
-      <StatusBar style="auto" />
+    <View style={styles.screen}>
+      <Text style={styles.title}>Feed</Text>
+      <Text style={styles.copy}>
+        Messages are ready.
+      </Text>
+      <Button
+        title="Feed"
+        onPress={() => openThreadFromLinkAction()}
+      />
     </View>
   )
 }
 
+function FeedDetailsScreen() {
+  return (
+    <View style={styles.screen}>
+      <Text style={styles.title}>FeedDetails</Text>
+      <Text style={styles.copy}>
+        More details appear here.
+      </Text>
+    </View>
+  )
+}
+
+function MessagesScreen() {
+  return (
+    <View style={styles.screen}>
+      <Text style={styles.title}>Messages</Text>
+      <Text style={styles.copy}>Thread list</Text>
+    </View>
+  )
+}
+
+function ThreadScreen() {
+  return (
+    <View style={styles.screen}>
+      <Text style={styles.title}>Thread</Text>
+      <Text style={styles.copy}>
+        More details appear here.
+      </Text>
+    </View>
+  )
+}
+
+const HomeStack = createNativeStackNavigator({
+  screens: {
+    Feed: FeedScreen,
+    FeedDetails: FeedDetailsScreen,
+  },
+})
+
+const MessagesStack = createNativeStackNavigator({
+  screens: {
+    Messages: MessagesScreen,
+    Thread: ThreadScreen,
+  },
+})
+
+const Tabs = createBottomTabNavigator({
+  screens: {
+    HomeTab: HomeStack,
+    MessagesTab: MessagesStack,
+  },
+})
+
+const Navigation = createStaticNavigation(Tabs)
+
+export default function App() {
+  return <Navigation />
+}
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
+  copy: {
+    color: '#6b7280',
+    textAlign: 'center',
+  },
+  screen: {
     alignItems: 'center',
+    backgroundColor: '#fff',
+    flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
+    rowGap: 10,
+  },
+  title: {
+    color: '#111827',
+    fontSize: 20,
+    fontWeight: '600',
   },
 })

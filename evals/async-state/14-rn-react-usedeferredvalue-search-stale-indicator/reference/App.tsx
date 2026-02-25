@@ -71,7 +71,7 @@ export default function App() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Deferred search</Text>
+      <Text style={styles.title}>Search Results</Text>
 
       <TextInput
         onChangeText={handleQueryChange}

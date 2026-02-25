@@ -1,19 +1,60 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Hello World</Text>
+    <View style={styles.screen}>
+      <Text style={styles.title}>Offload compute to worklets runtime</Text>
+      <Text style={styles.status}>Idle</Text>
+      <View style={styles.progressTrack}>
+        <View style={styles.progressFill} />
+      </View>
+      <Pressable style={styles.button}>
+        <Text style={styles.buttonText}>Run compute</Text>
+      </Pressable>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
+  button: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#2563eb',
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  progressFill: {
+    backgroundColor: '#2563eb',
+    borderRadius: 999,
+    height: '100%',
+    width: '25%',
+  },
+  progressTrack: {
+    backgroundColor: '#cbd5e1',
+    borderRadius: 999,
+    height: 10,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  screen: {
+    backgroundColor: '#dbeafe',
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 24,
+    padding: 20,
+    rowGap: 12,
+  },
+  status: {
+    color: '#334155',
+    fontSize: 14,
+  },
+  title: {
+    color: '#0f172a',
+    fontSize: 18,
+    fontWeight: '600',
   },
 })

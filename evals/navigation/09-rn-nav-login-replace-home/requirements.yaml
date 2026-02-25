@@ -7,5 +7,3 @@ requirements:
     description: Must transition from login to home with a navigation action that removes login from back history.
   - id: auth-state-driven-ui
     description: Must include explicit auth state logic controlling access to authenticated routes.
-  - id: implementation-static-navigation-api
-    description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.

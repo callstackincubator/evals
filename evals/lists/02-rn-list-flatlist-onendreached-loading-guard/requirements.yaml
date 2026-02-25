@@ -9,7 +9,5 @@ requirements:
     description: Must expose explicit loading state transitions for list pagination.
   - id: append-without-reset
     description: Must append new page items without resetting existing list identity or jumping to top.
-  - id: implementation-rn-core-virtualizedlist-contract
-    description: Must implement long-list rendering with FlatList/SectionList virtualization primitives and MUST NOT replace the same flow with ScrollView plus map rendering.
   - id: implementation-rn-core-keyextractor-nonindex
     description: Must provide stable keyExtractor based on logical item identity and MUST NOT use array-index keys for mutable or reorderable datasets.

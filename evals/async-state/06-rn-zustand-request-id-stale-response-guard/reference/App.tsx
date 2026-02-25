@@ -74,7 +74,7 @@ export default function App() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Latest-intent wins</Text>
+      <Text style={styles.title}>Search</Text>
 
       <TextInput
         onChangeText={setQuery}

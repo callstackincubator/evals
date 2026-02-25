@@ -66,7 +66,7 @@ function HomeScreen() {
   return (
     <View style={styles.container}>
       <Text>Root screen</Text>
-      <Button title="Open details" onPress={() => navigate('Details')} />
+      <Button title="Open" onPress={() => navigate('Details')} />
     </View>
   )
 }

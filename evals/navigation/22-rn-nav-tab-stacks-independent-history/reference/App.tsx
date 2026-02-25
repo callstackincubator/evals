@@ -11,7 +11,7 @@ function FeedHome() {
     <View style={styles.container}>
       <Text>Feed root</Text>
       <Button
-        title="Open feed details"
+        title="Open"
         onPress={() =>
           navigate('FeedTab', {
             screen: 'FeedDetails',

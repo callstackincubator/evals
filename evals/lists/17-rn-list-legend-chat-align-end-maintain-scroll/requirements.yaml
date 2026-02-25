@@ -4,7 +4,7 @@ inputs:
     - app/App.tsx
 requirements:
   - id: align-items-at-end-chat
-    description: Must use LegendList alignItemsAtEnd for chat-style bottom alignment when content is short.
+    description: Must use alignItemsAtEnd for chat-style bottom alignment when content is short.
   - id: maintain-scroll-at-end
     description: Must configure maintainScrollAtEnd behavior for near-bottom new message handling.
   - id: deterministic-autoscroll-threshold

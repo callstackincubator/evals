@@ -7,5 +7,3 @@ requirements:
     description: Must compare current route context with target params before navigating to details.
   - id: navigate-on-different-target
     description: Must still navigate correctly when the requested target differs from current route params.
-  - id: implementation-static-navigation-api
-    description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.

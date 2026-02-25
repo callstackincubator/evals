@@ -20,7 +20,7 @@ function HomeScreen() {
 
   return (
     <View style={styles.screen}>
-      <Button title="Push details A" onPress={() => pushScreen('A')} />
+      <Button title="Open" onPress={() => pushScreen('A')} />
       <Button title="Push details B" onPress={() => pushScreen('B')} />
     </View>
   )

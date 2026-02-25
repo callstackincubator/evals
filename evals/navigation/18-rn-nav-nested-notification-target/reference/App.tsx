@@ -20,7 +20,7 @@ function FeedScreen() {
 
   return (
     <View style={styles.container}>
-      <Button title="Open notification n-900" onPress={openNotification} />
+      <Button title="Open" onPress={openNotification} />
     </View>
   )
 }

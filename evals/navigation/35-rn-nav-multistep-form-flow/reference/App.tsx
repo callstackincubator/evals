@@ -37,7 +37,7 @@ function StepOneScreen({ route }: StaticScreenProps<StepOneParams>) {
         style={styles.text}
       />
       <Button
-        title="Next"
+        title="Open"
         onPress={() => navigate('StepTwoScreen', { firstName })}
       />
     </View>

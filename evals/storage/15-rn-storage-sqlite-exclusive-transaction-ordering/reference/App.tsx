@@ -68,7 +68,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Exclusive Write Ordering</Text>
+      <Text style={styles.title}>Exclusive Transactions</Text>
       <Text style={styles.row}>Persisted rows: {rows.length}</Text>
 
       <Pressable

@@ -19,7 +19,7 @@ function HomeScreen() {
   return (
     <View style={styles.container}>
       <Button
-        title="Open notifications (default)"
+        title="Open"
         onPress={openNotificationsDefault}
       />
       <Button

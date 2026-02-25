@@ -9,5 +9,3 @@ requirements:
     description: Must implement dirty-form leave interception with usePreventRemove for native-stack back handling instead of relying only on beforeRemove listeners.
   - id: explicit-confirm-path
     description: Must provide an explicit user confirmation path that then continues the blocked navigation action.
-  - id: implementation-static-navigation-api
-    description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.

@@ -15,7 +15,7 @@ function HomeScreen() {
   const { navigate } = useNavigation()
   return (
     <View style={styles.container}>
-      <Button title="Go to details" onPress={() => navigate('Details')} />
+      <Button title="Open" onPress={() => navigate('Details')} />
     </View>
   )
 }

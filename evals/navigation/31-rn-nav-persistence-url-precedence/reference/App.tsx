@@ -28,7 +28,7 @@ function HomeScreen() {
     <View style={styles.homeContainer}>
       <Text>Home</Text>
       <Button
-        title="Open promo 7"
+        title="Open"
         onPress={() => navigate('Promo', { id: '7' })}
       />
     </View>

@@ -24,7 +24,7 @@ function ProductsScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Products</Text>
-      <Button title="Open Product 42" onPress={handleNavigateToDetails} />
+      <Button title="Open" onPress={handleNavigateToDetails} />
       <Button
         title="Open Missing Product"
         onPress={handleNavigateToMissingProduct}

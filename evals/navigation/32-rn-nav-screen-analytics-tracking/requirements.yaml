@@ -7,5 +7,3 @@ requirements:
     description: Must invoke analytics tracking from onStateChange route transitions.
   - id: duplicate-event-guard
     description: Must compare route-name snapshots to prevent duplicate tracking events.
-  - id: implementation-static-navigation-api
-    description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.

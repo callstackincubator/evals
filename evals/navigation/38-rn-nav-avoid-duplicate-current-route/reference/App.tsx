@@ -15,7 +15,7 @@ function ListScreen() {
 
   return (
     <View style={styles.list}>
-      <Button title="Open item 1" onPress={() => handleOpenItem('1')} />
+      <Button title="Open" onPress={() => handleOpenItem('1')} />
       <Button title="Open item 2" onPress={() => handleOpenItem('2')} />
     </View>
   )

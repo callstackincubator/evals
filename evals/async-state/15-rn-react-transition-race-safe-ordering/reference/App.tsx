@@ -84,7 +84,7 @@ export default function App() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Race-safe transitions</Text>
+      <Text style={styles.title}>Live Search</Text>
 
       <TextInput
         onChangeText={handleInputChange}

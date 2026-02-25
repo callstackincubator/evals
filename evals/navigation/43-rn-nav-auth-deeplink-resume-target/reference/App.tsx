@@ -36,7 +36,7 @@ function SignInScreen() {
 
   return (
     <View style={styles.centered}>
-      <Button title="Sign in" onPress={handleSignIn} />
+      <Button title="Open" onPress={handleSignIn} />
     </View>
   )
 }

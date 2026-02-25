@@ -24,7 +24,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>MMKV Listener Sync</Text>
+      <Text style={styles.title}>Listener Sync</Text>
       <Text style={styles.row}>Count: {count}</Text>
       <Pressable
         style={styles.button}

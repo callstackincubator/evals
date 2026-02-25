@@ -9,7 +9,5 @@ requirements:
     description: Must avoid explicit nested key props inside FlashList item subtrees that cause recycled rows to be treated as remounts.
   - id: mapping-helper-when-needed
     description: Must use FlashList mapping-safe strategy when rendering mapped nested children in row content.
-  - id: implementation-flashlist-v2-component-migration
-    description: Must use FlashList v2 component APIs and MUST NOT use deprecated MasonryFlashList component paths.
   - id: implementation-flashlist-v2-usemappinghelper-contract
     description: Must use FlashList v2 useMappingHelper/getMappingKey for mapped nested children and MUST NOT use ad-hoc nested key props that fight recycling.

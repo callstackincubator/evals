@@ -11,7 +11,7 @@ function HomeScreen() {
     <View style={styles.container}>
       <Text>Home screen</Text>
       <Button
-        title="Open details"
+        title="Open"
         onPress={() => navigate('Main', { screen: 'Details' })}
       />
     </View>
