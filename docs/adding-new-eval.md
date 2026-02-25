@@ -29,6 +29,45 @@ You can also provide `weight` parameter to prioritize certain requirements. By d
 
 Use the `implementation-` prefix for deterministic requirements that can be verified directly from source files (for example required imports, API usage, or specific wiring). Currently these are determined by LLM judge; in the future these could be ported to unit tests. We set weight to 1 for all deterministic requirements to avoid bias towards implementation details. We may experiment with different weight in the future.
 
+## Requirement design: two groups
+
+Each eval should include two requirement groups:
+
+1. Prompt fulfillment requirements (`what`): concrete acceptance criteria from `prompt.md` (parsing, behavior, fallback, transitions, user-visible outcome).
+2. React Native implementation requirements (`how`): RN-specific implementation checks that ensure the solution uses the intended RN stack and APIs.
+
+This prevents evals that only check generic behavior or only check imports.
+
+### Good example
+
+```yaml
+version: 1
+requirements:
+  - id: numeric-orderid-parse
+    description: Must parse orderId from deep-link input into numeric form.
+  - id: invalid-orderid-fallback
+    description: Must render deterministic fallback UI for invalid orderId values.
+  - id: safe-orderid-validation
+    description: Must validate parsed orderId as a safe positive integer.
+  - id: implementation-use-react-navigation-static-api
+    description: Must define navigation with React Navigation static APIs.
+```
+
+### Bad example
+
+```yaml
+version: 1
+requirements:
+  - id: good-code
+    description: Code should be clean and readable.
+  - id: best-practices
+    description: Must follow best practices.
+  - id: use-react-native
+    description: Must use React Native.
+```
+
+Why bad: requirements are vague, not atomic, not prompt-specific, and do not verify concrete RN implementation details.
+
 ## Notes
 
 - Keep evals self-contained

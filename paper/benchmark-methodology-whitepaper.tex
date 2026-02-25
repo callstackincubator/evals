@@ -107,6 +107,45 @@ Examples include required imports, API usage patterns, and specific wiring that 
 
 \textbf{Important distinction:} the runner does \emph{not} infer behavior from ID prefixes such as \texttt{implementation-}. Prefixes are an authoring convention; scoring changes only when a requirement explicitly sets \texttt{weight} in \texttt{requirements.yaml}.
 
+\subsection{Two-Layer Requirement Design for Eval Quality}
+Current eval authoring follows a two-layer requirement design:
+\begin{itemize}
+  \item \textbf{Layer A -- Prompt fulfillment requirements}: requirements that verify the task asked in \texttt{prompt.md} is actually implemented (for example parsing, fallback behavior, state transitions, and user-visible outcomes).
+  \item \textbf{Layer B -- React Native implementation requirements}: deterministic requirements that enforce React Native- and library-specific implementation details (for example React Navigation static API usage, Reanimated shared values, Expo/RN permission API flow).
+\end{itemize}
+
+This split is intentional: Layer A measures \emph{what} was implemented, Layer B measures \emph{how} it was implemented in React Native. Together, they reduce false positives where a response appears behaviorally plausible but does not use the required RN stack.
+
+\paragraph{Good example (balanced and specific).}
+\begin{verbatim}
+prompt.md:
+  Support deep links to an order details screen, parse orderId as a number,
+  and render fallback UI for invalid values.
+
+requirements:
+  - id: numeric-orderid-parse
+    description: Must parse orderId from deep-link input into numeric form.
+  - id: invalid-orderid-fallback
+    description: Must render deterministic fallback UI for invalid orderId values.
+  - id: safe-orderid-validation
+    description: Must validate parsed orderId as a safe positive integer.
+  - id: implementation-use-react-navigation-static-api
+    description: Must define navigation with React Navigation static APIs.
+\end{verbatim}
+
+\paragraph{Bad example (underspecified and non-discriminative).}
+\begin{verbatim}
+requirements:
+  - id: good-code
+    description: Code should be clean and readable.
+  - id: best-practices
+    description: Must follow best practices.
+  - id: use-react-native
+    description: Must use React Native.
+\end{verbatim}
+
+The bad pattern is not sufficiently judgeable, does not map to prompt acceptance criteria, and does not constrain concrete RN implementation details.
+
 \subsection{Judge Prompt Construction}
 The judge prompt includes:
 \begin{itemize}
