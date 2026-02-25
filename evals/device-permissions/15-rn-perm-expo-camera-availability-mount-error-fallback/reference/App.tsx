@@ -64,7 +64,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Permissions</Text>
+      <Text style={styles.title}>Camera Availability</Text>
       <Text style={styles.state}>State: {cameraState}</Text>
 
       {showPreview ? (

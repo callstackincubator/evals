@@ -8,8 +8,8 @@ async function requestMultiplePermissionsAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Permission Setup Sequence</Text>
+      <Text style={styles.subtitle}>Request camera, microphone, and notifications in order.</Text>
       <Pressable style={styles.button} onPress={() => requestMultiplePermissionsAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

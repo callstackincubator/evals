@@ -10,8 +10,8 @@ async function mergeConflictAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Storage</Text>
-      <Text style={styles.subtitle}>Keys: {STORAGE_KEYS.join(', ')}</Text>
+      <Text style={styles.title}>Reconnect Merge</Text>
+      <Text style={styles.subtitle}>Sync keys: {STORAGE_KEYS.join(', ')}</Text>
       <Pressable style={styles.button} onPress={() => mergeConflictAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

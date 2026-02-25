@@ -93,7 +93,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Permissions</Text>
+      <Text style={styles.title}>Permission Setup Sequence</Text>
 
       <Pressable onPress={runSequencedSetup} style={styles.button}>
         <Text style={styles.buttonText}>Run camera → microphone → notifications</Text>

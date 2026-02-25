@@ -8,8 +8,8 @@ async function requestMediaLibraryPermissionAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Photo Library Access</Text>
+      <Text style={styles.subtitle}>Handle limited media-library access states.</Text>
       <Pressable style={styles.button} onPress={() => requestMediaLibraryPermissionAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

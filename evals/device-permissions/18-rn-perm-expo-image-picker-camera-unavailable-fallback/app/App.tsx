@@ -8,8 +8,8 @@ async function fallbackToGalleryAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Camera Fallback</Text>
+      <Text style={styles.subtitle}>Fallback to gallery when camera is unavailable.</Text>
       <Pressable style={styles.button} onPress={() => fallbackToGalleryAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

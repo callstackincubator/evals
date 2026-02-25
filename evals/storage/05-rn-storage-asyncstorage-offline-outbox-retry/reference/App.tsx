@@ -137,7 +137,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Storage</Text>
+      <Text style={styles.title}>Offline Outbox</Text>
       <Text style={styles.row}>Online: {String(isOnline)}</Text>
       <Text style={styles.row}>Queued: {queueSize}</Text>
       <Text style={styles.row}>Status: {status}</Text>

@@ -123,7 +123,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Storage</Text>
+      <Text style={styles.title}>Outbox Replay</Text>
       <Text style={styles.row}>Pending: {counts.pending}</Text>
       <Text style={styles.row}>Sent: {counts.sent}</Text>
       <Text style={styles.row}>Failed: {counts.failed}</Text>

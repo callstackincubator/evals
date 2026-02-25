@@ -10,8 +10,8 @@ async function subscribeSqlChangesAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Storage</Text>
-      <Text style={styles.subtitle}>Keys: {STORAGE_KEYS.join(', ')}</Text>
+      <Text style={styles.title}>Reactive SQLite Updates</Text>
+      <Text style={styles.subtitle}>Observed keys: {STORAGE_KEYS.join(', ')}</Text>
       <Pressable style={styles.button} onPress={() => subscribeSqlChangesAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

@@ -117,7 +117,7 @@ function InboxScreen() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async State</Text>
+      <Text style={styles.title}>Activity Feed</Text>
 
       <Text style={styles.meta}>AppState: {appState}</Text>
       <Text style={styles.meta}>

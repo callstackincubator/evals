@@ -88,7 +88,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Permissions</Text>
+      <Text style={styles.title}>Location Services Gate</Text>
       <Text style={styles.state}>Permission: {permissionState}</Text>
       <Text style={styles.state}>Services: {servicesState}</Text>
 

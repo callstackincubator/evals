@@ -74,7 +74,7 @@ export default function App() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async State</Text>
+      <Text style={styles.title}>Search</Text>
 
       <TextInput
         onChangeText={setQuery}

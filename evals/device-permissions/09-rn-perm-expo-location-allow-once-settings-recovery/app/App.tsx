@@ -8,8 +8,8 @@ async function resolveAllowOnceRecoveryAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>iOS Location Upgrade</Text>
+      <Text style={styles.subtitle}>Handle Allow Once limits and settings recovery.</Text>
       <Pressable style={styles.button} onPress={() => resolveAllowOnceRecoveryAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

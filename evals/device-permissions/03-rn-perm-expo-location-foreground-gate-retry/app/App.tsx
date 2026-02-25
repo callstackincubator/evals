@@ -8,8 +8,8 @@ async function requestForegroundLocationAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Foreground Location</Text>
+      <Text style={styles.subtitle}>Request location access with retry fallback.</Text>
       <Pressable style={styles.button} onPress={() => requestForegroundLocationAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

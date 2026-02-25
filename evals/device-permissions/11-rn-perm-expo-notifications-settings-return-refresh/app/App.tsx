@@ -8,8 +8,8 @@ async function refreshNotificationStatusAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Notification Settings Recovery</Text>
+      <Text style={styles.subtitle}>Refresh permission when returning from settings.</Text>
       <Pressable style={styles.button} onPress={() => refreshNotificationStatusAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

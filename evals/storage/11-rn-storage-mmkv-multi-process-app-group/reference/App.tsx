@@ -46,7 +46,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Storage</Text>
+      <Text style={styles.title}>Shared App Group Store</Text>
       <Text style={styles.row}>Shared path: {SHARED_PATH}</Text>
       <Text style={styles.row}>Shared value: {sharedValue}</Text>
 

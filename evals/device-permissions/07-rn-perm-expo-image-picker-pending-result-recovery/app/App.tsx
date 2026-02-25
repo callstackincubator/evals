@@ -8,8 +8,8 @@ async function recoverPendingPickerResultAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Picker Result Recovery</Text>
+      <Text style={styles.subtitle}>Recover pending image-picker results after recreation.</Text>
       <Pressable style={styles.button} onPress={() => recoverPendingPickerResultAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

@@ -106,7 +106,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Storage</Text>
+      <Text style={styles.title}>Document Sharding</Text>
       <Text style={styles.row}>Chars: {document.length}</Text>
       <Text style={styles.row}>Status: {status}</Text>
 

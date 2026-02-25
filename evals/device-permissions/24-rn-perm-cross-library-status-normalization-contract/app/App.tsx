@@ -8,8 +8,8 @@ async function normalizePermissionStatus() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Permission Diagnostics</Text>
+      <Text style={styles.subtitle}>Normalize Expo and RN permission status models.</Text>
       <Pressable style={styles.button} onPress={() => normalizePermissionStatus()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

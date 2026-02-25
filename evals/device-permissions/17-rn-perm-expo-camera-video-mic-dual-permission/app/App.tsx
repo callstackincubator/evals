@@ -8,8 +8,8 @@ async function requestVideoMicPermissionsAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Video Capture Permissions</Text>
+      <Text style={styles.subtitle}>Request camera and microphone permissions separately.</Text>
       <Pressable style={styles.button} onPress={() => requestVideoMicPermissionsAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

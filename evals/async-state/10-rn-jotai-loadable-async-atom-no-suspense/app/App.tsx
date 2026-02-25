@@ -10,8 +10,8 @@ async function loadWithoutSuspenseAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async State </Text>
-      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Text style={styles.title}>Reports</Text>
+      <Text style={styles.subtitle}>Report placeholders: {ITEMS.length}</Text>
       <Pressable style={styles.button} onPress={() => loadWithoutSuspenseAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

@@ -8,8 +8,8 @@ async function registerPushTokenAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Push Token Registration</Text>
+      <Text style={styles.subtitle}>Handle physical device vs simulator registration paths.</Text>
       <Pressable style={styles.button} onPress={() => registerPushTokenAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

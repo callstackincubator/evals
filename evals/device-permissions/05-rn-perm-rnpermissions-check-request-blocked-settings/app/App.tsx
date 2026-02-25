@@ -8,8 +8,8 @@ async function checkPermissionAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Camera Permission Flow</Text>
+      <Text style={styles.subtitle}>Handle check/request/blocked camera states.</Text>
       <Pressable style={styles.button} onPress={() => checkPermissionAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

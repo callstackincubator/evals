@@ -10,8 +10,8 @@ async function runAsyncStoreActionAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async State </Text>
-      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Text style={styles.title}>Feed</Text>
+      <Text style={styles.subtitle}>Feed entries: {ITEMS.length}</Text>
       <Pressable style={styles.button} onPress={() => runAsyncStoreActionAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

@@ -8,8 +8,8 @@ async function requestBackgroundLocationAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Background Location Onboarding</Text>
+      <Text style={styles.subtitle}>Request foreground first, then background with rationale.</Text>
       <Pressable style={styles.button} onPress={() => requestBackgroundLocationAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

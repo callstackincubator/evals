@@ -83,7 +83,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Storage</Text>
+      <Text style={styles.title}>Encryption Rotation</Text>
       <Text style={styles.row}>Active key: {activeKey}</Text>
       <Text style={styles.row}>Status: {status}</Text>
       <Text style={styles.row}>Secret present: {secret ? 'yes' : 'no'}</Text>

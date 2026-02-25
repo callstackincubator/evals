@@ -8,8 +8,8 @@ async function resolveProvisionalStatusAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Provisional Notifications</Text>
+      <Text style={styles.subtitle}>Treat provisional iOS notification access as distinct state.</Text>
       <Pressable style={styles.button} onPress={() => resolveProvisionalStatusAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>

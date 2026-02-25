@@ -8,8 +8,8 @@ async function requestNotificationsAction() {
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Permissions</Text>
-      <Text style={styles.subtitle}>Permission status and actions.</Text>
+      <Text style={styles.title}>Android Push Setup</Text>
+      <Text style={styles.subtitle}>Request notification permission and configure channels.</Text>
       <Pressable style={styles.button} onPress={() => requestNotificationsAction()}>
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>
