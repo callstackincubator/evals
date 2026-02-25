@@ -15,13 +15,6 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated'
 
-type BridgeScheduler = (
-  callback: (...args: unknown[]) => void,
-  ...args: unknown[]
-) => void
-
-const scheduleOnReactRuntime = scheduleOnRN as unknown as BridgeScheduler
-
 const TRACK_WIDTH = 260
 const KNOB_SIZE = 28
 
@@ -77,7 +70,7 @@ export default function App() {
         return
       }
       const label = PHASE_LABELS[next]
-      scheduleOnReactRuntime(setPhaseLabel, label)
+      scheduleOnRN(setPhaseLabel, label)
     }
   )
 

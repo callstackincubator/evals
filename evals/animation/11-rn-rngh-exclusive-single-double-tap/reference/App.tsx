@@ -15,13 +15,6 @@ import Animated, {
 const DOUBLE_TAP_MAX_DELAY_MS = 260
 const TAP_MAX_DURATION_MS = 220
 
-type BridgeScheduler = (
-  callback: (...args: unknown[]) => void,
-  ...args: unknown[]
-) => void
-
-const scheduleOnReactRuntime = scheduleOnRN as unknown as BridgeScheduler
-
 export default function App() {
   const [outcome, setOutcome] = useState('Waiting for tap')
   const scale = useSharedValue(1)
@@ -39,7 +32,7 @@ export default function App() {
           scale.value = withTiming(1, { duration: 120 })
         }
       })
-      scheduleOnReactRuntime(setOutcome, 'Single tap action')
+      scheduleOnRN(setOutcome, 'Single tap action')
     })
 
   const doubleTap = Gesture.Tap()
@@ -56,7 +49,7 @@ export default function App() {
           scale.value = withTiming(1, { duration: 120 })
         }
       })
-      scheduleOnReactRuntime(setOutcome, 'Double tap action')
+      scheduleOnRN(setOutcome, 'Double tap action')
     })
 
   const tapGesture = Gesture.Exclusive(doubleTap, singleTap)

@@ -18,10 +18,6 @@ type RuntimeScheduler = (
   worker: (...args: unknown[]) => void,
   ...args: unknown[]
 ) => void
-type BridgeScheduler = (
-  callback: (...args: unknown[]) => void,
-  ...args: unknown[]
-) => void
 
 type BatchPayload = {
   batchIndex: number
@@ -30,7 +26,6 @@ type BatchPayload = {
 }
 
 const buildRuntime = createWorkletRuntime as unknown as RuntimeFactory
-const scheduleOnReactRuntime = scheduleOnRN as unknown as BridgeScheduler
 
 const TOTAL_BATCHES = 20
 const BATCH_SIZE = 3000
@@ -73,7 +68,7 @@ export default function App() {
         currentBatch % BRIDGE_EVERY_N_BATCHES === 0 ||
         currentBatch === totalBatches
       if (isScheduledBridgePoint) {
-        scheduleOnReactRuntime(commitBatch, {
+        scheduleOnRN(commitBatch, {
           batchIndex: currentBatch,
           totalBatches,
           score: compactScore,

@@ -12,17 +12,11 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 
-type BridgeScheduler = (
-  callback: (...args: unknown[]) => void,
-  ...args: unknown[]
-) => void
-
 type UIScheduler = (
   callback: (...args: unknown[]) => void,
   ...args: unknown[]
 ) => void
 
-const scheduleOnReactRuntime = scheduleOnRN as unknown as BridgeScheduler
 const scheduleOnUIRuntime = scheduleOnUI as unknown as UIScheduler
 
 export default function App() {
@@ -56,7 +50,7 @@ export default function App() {
       }
 
       lastPublishedBucket.value = nextBucket
-      scheduleOnReactRuntime(publishCheckpoint, nextBucket)
+      scheduleOnRN(publishCheckpoint, nextBucket)
     }
   )
 

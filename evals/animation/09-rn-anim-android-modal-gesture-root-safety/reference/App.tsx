@@ -16,13 +16,6 @@ import Animated, {
 const SHEET_HEIGHT = 320
 const CLOSE_THRESHOLD = 140
 
-type BridgeScheduler = (
-  callback: (...args: unknown[]) => void,
-  ...args: unknown[]
-) => void
-
-const scheduleOnReactRuntime = scheduleOnRN as unknown as BridgeScheduler
-
 export default function App() {
   const [visible, setVisible] = useState(false)
   const translateY = useSharedValue(0)
@@ -44,7 +37,7 @@ export default function App() {
           { duration: 160 },
           (finished) => {
             if (finished) {
-              scheduleOnReactRuntime(setVisible, false)
+              scheduleOnRN(setVisible, false)
             }
           }
         )
