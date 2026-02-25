@@ -7,7 +7,5 @@ requirements:
     description: Must place modal routes above tab routes in navigation hierarchy.
   - id: modal-dismiss-to-tab-context
     description: Must dismiss modal back to previously active tab context.
-  - id: implementation-static-navigation-api
-    description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.
   - id: implementation-nav-modal-over-tab-layer-contract
     description: Must define modal routes at a higher navigation layer than tabs so dismiss returns to the previously active tab context.

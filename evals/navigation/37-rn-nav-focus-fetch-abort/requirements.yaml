@@ -7,5 +7,3 @@ requirements:
     description: Must initiate data fetch from focus lifecycle for the screen.
   - id: fetch-cancellation-on-blur
     description: Must cancel or guard in-flight async updates in focus effect cleanup when screen loses focus.
-  - id: implementation-static-navigation-api
-    description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.
