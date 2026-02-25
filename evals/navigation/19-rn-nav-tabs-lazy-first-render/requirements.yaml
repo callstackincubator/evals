@@ -6,4 +6,6 @@ requirements:
   - id: tab-lazy-loading
     description: Must enable lazy behavior for bottom tabs so non-initial tabs are not eagerly rendered.
   - id: explicit-tab-config
-    description: Must include explicit tab navigator options for lazy rendering behavior.
+    description: Must set the tab navigator lazy option explicitly instead of relying on implicit defaults.
+  - id: implementation-static-navigation-api
+    description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.

@@ -1,12 +1,11 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: urgent-input-state-separate-from-deferred
-    description: Must keep text input state urgent and separate from deferred list filtering work.
+    description: Must keep text input as urgent state separate from deferred heavy-list filtering state.
   - id: use-deferred-value-for-heavy-list
-    description: Must use useDeferredValue for expensive list updates derived from search input.
+    description: Must use useDeferredValue for expensive list derivation from search input.
   - id: stale-results-indicator
-    description: Must render a deterministic stale-results indicator when deferred list data lags behind current input.
+    description: Must render deterministic stale indicator when deferred query lags behind current input value.

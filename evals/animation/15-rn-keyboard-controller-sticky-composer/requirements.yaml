@@ -8,4 +8,4 @@ requirements:
   - id: keyboard-shared-value-binding
     description: Must map keyboard progress or height to shared value driven composer position.
   - id: cross-platform-keyboard-follow
-    description: Must provide deterministic keyboard-follow behavior on both iOS and Android paths.
+    description: Must keep the composer attached to keyboard movement during show, hide, and dismiss transitions on both iOS and Android.

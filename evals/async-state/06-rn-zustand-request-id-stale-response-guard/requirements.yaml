@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: request-identity-tracking
-    description: Must track request identity or version for concurrent async actions.
+    description: Must track request identity/version for overlapping async searches (for example incrementing activeRequestId).
   - id: latest-intent-wins-commit
-    description: Must commit async results only when they belong to the latest active request.
+    description: Must commit async results only when request identity matches latest active request intent.
   - id: stale-response-ignored
-    description: Must ignore or drop out-of-date async responses so stale data cannot overwrite newer state.
+    description: Must drop stale async completions so older responses cannot overwrite newer state.
+  - id: implementation-zustand-v5-named-create
+    description: Must use named create import from 'zustand' (v5 style) and MUST NOT rely on removed default-export create usage.
+  - id: implementation-zustand-v5-selector-equality
+    description: Must NOT pass a custom equality function as the second argument to create-based hook selectors in v5; use useShallow or createWithEqualityFn when equality control is needed.

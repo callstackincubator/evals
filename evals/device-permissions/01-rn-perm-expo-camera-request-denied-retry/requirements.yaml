@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: expo-camera-permission-api
     description: Must use expo-camera permission APIs (hook or request/get async functions) to drive request state.
@@ -12,3 +11,7 @@ requirements:
     description: Must provide explicit denied or cannot-ask-again recovery actions (retry and settings guidance/action).
   - id: degraded-path-no-crash
     description: Must include a degraded UX path when camera permission is unavailable instead of failing silently.
+  - id: implementation-expo-camera-cameraview-api
+    description: Must use modern expo-camera preview and permission APIs (CameraView with useCameraPermissions and/or get/request camera permission methods) instead of legacy camera-screen wiring.
+  - id: implementation-expo-camera-grant-gated-preview
+    description: Must gate camera preview and capture actions behind granted camera permission state, with deterministic denied fallback UI.

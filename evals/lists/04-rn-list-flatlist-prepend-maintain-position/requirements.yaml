@@ -9,3 +9,7 @@ requirements:
     description: Must preserve visible content position after prepending data to prevent viewport jumps.
   - id: key-identity-stability
     description: Must keep message identity stable across prepend updates.
+  - id: implementation-rn-core-virtualizedlist-contract
+    description: Must implement long-list rendering with FlatList/SectionList virtualization primitives and MUST NOT replace the same flow with ScrollView plus map rendering.
+  - id: implementation-rn-core-keyextractor-nonindex
+    description: Must provide stable keyExtractor based on logical item identity and MUST NOT use array-index keys for mutable or reorderable datasets.

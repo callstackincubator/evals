@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: dependency-gated-query
-    description: Must gate the dependent projects query with enabled logic so it runs only when the upstream profile id exists.
+    description: Must gate the dependent projects query with enabled: !!profileId so it does not execute before upstream identity exists.
   - id: explicit-upstream-and-downstream-keys
-    description: Must model upstream and dependent queries with explicit and distinct query keys.
+    description: Must define distinct query keys for upstream profile and downstream projects queries.
   - id: safe-initial-dependent-state
-    description: Must keep dependent-query state safe before enablement, avoiding premature network calls and invalid-id requests.
+    description: Before enablement, dependent query must remain in a safe pending/idle state without invalid-id network requests.
+  - id: implementation-rq-v5-object-signature
+    description: Must use TanStack Query v5 object-signature APIs (for hooks and queryClient methods) and MUST NOT use legacy positional overload calls.
+  - id: implementation-rq-dependent-enabled-contract
+    description: Must gate dependent useQuery execution with enabled derived from upstream identity and avoid invalid-id queryFn requests before enablement.

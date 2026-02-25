@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: push-token-physical-device-gate
     description: Must gate push token retrieval to physical devices and avoid blind token requests on simulators.
@@ -14,3 +13,7 @@ requirements:
     description: Must require both granted permission and physical-device capability before registration success state.
   - id: token-error-message-sanitization
     description: Must surface explicit, domain-scoped token registration errors while mapping unknown failures to a generic fallback message (no raw unexpected error leakage to users).
+  - id: implementation-expo-notifications-permission-flow
+    description: Must use expo-notifications getPermissionsAsync/requestPermissionsAsync flow and branch on explicit permission status outcomes.
+  - id: implementation-expo-notifications-physical-device-gate-contract
+    description: Must gate push token APIs with Device.isDevice and granted notification status, returning deterministic degraded UX for simulator/non-device paths.

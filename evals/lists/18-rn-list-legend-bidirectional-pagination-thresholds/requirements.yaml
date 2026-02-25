@@ -8,4 +8,6 @@ requirements:
   - id: duplicate-trigger-guards
     description: Must prevent duplicate or overlapping page fetches on either direction while loading is active.
   - id: threshold-driven-determinism
-    description: Must use explicit threshold-driven behavior so start/end pagination triggers are predictable.
+    description: Must set explicit start and end reach thresholds and trigger pagination only after those thresholds are crossed.
+  - id: implementation-legendlist-bidirectional-cursor-contract
+    description: Must maintain independent start/end pagination cursors and apply updates to the correct edge during bidirectional loading.

@@ -4,8 +4,12 @@ inputs:
     - app/App.tsx
 requirements:
   - id: explicit-virtualization-tuning
-    description: Must intentionally configure virtualization props such as windowSize, maxToRenderPerBatch, or updateCellsBatchingPeriod.
+    description: Must set at least one virtualization prop (for example windowSize, maxToRenderPerBatch, or updateCellsBatchingPeriod) to a deliberate non-default value.
   - id: responsiveness-over-fill-rate-balance
     description: Must reflect explicit responsiveness vs fill-rate tradeoff in list configuration choices.
   - id: lightweight-row-path
     description: Must keep row render path lightweight enough to avoid avoidable interaction delays.
+  - id: implementation-rn-core-virtualizedlist-contract
+    description: Must implement long-list rendering with FlatList/SectionList virtualization primitives and MUST NOT replace the same flow with ScrollView plus map rendering.
+  - id: implementation-rn-core-keyextractor-nonindex
+    description: Must provide stable keyExtractor based on logical item identity and MUST NOT use array-index keys for mutable or reorderable datasets.

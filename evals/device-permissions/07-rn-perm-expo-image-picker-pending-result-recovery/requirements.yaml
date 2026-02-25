@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: imagepicker-pending-result-check
     description: Must check ImagePicker.getPendingResultAsync in startup or resume flow on Android-capable path.
@@ -12,3 +11,7 @@ requirements:
     description: Must avoid duplicate processing when pending and fresh picker responses overlap.
   - id: pending-result-cancel-error-branch
     description: Must preserve cancel and error branches for pending-result restoration path.
+  - id: implementation-expo-imagepicker-permission-before-launch
+    description: Must check or request expo-image-picker camera/media permissions before launching corresponding picker/camera flows.
+  - id: implementation-expo-imagepicker-no-mediatypeoptions
+    description: Must avoid deprecated MediaTypeOptions usage and use current mediaTypes array values (MediaType strings) in picker options.

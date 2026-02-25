@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: mmkv-multiple-instances
-    description: Must configure multiple MMKV instances with explicit IDs for different data scopes.
+    description: Must initialize separate MMKV instances with explicit IDs for global and user scopes.
   - id: user-scope-reset-only
-    description: Must clear only user-scoped MMKV instance data during sign-out.
+    description: Sign-out must clear only the user-scoped MMKV instance and leave global instance data untouched.
   - id: global-instance-retained
-    description: Must keep global MMKV preferences intact across user session resets.
+    description: Global preferences must be read/written through global MMKV instance and remain available after user reset.
+  - id: implementation-mmkv-createmmkv
+    description: Must create MMKV instances with createMMKV from react-native-mmkv and keep instance IDs explicit for scope separation.
+  - id: implementation-mmkv-no-legacy-constructor
+    description: Must NOT use legacy constructor-style MMKV initialization patterns from older docs; use current react-native-mmkv v4 API style.

@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { StyleSheet, Text } from 'react-native'
+import { scheduleOnRN } from 'react-native-worklets'
 import {
   Gesture,
   GestureDetector,
   GestureHandlerRootView,
 } from 'react-native-gesture-handler'
 import Animated, {
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -32,7 +32,7 @@ export default function App() {
           scale.value = withTiming(1, { duration: 120 })
         }
       })
-      runOnJS(setOutcome)('Single tap action')
+      scheduleOnRN(setOutcome, 'Single tap action')
     })
 
   const doubleTap = Gesture.Tap()
@@ -49,7 +49,7 @@ export default function App() {
           scale.value = withTiming(1, { duration: 120 })
         }
       })
-      runOnJS(setOutcome)('Double tap action')
+      scheduleOnRN(setOutcome, 'Double tap action')
     })
 
   const tapGesture = Gesture.Exclusive(doubleTap, singleTap)

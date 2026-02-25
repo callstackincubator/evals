@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: notifications-denied-settings-cta
     description: Must surface a settings recovery action when notification permission is denied or blocked.
@@ -12,3 +11,7 @@ requirements:
     description: Must avoid stale cached permission state for notification-gated features.
   - id: gated-feature-disabled-until-refresh
     description: Must keep notification-only actions disabled until refreshed permission state is resolved.
+  - id: implementation-expo-notifications-permission-flow
+    description: Must use expo-notifications getPermissionsAsync/requestPermissionsAsync flow and branch on explicit permission status outcomes.
+  - id: implementation-expo-notifications-settings-return-contract
+    description: Must re-check Notifications.getPermissionsAsync on app foreground/resume after settings navigation and refresh gated feature state from that result.

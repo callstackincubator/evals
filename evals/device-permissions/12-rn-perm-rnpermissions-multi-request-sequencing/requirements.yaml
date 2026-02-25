@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: multi-permission-status-map
     description: Must maintain per-permission status results rather than collapsing to one boolean.
@@ -12,3 +11,7 @@ requirements:
     description: Must include request-path handling for Android blocked detection limitations in check-only APIs.
   - id: per-permission-recovery-actions
     description: Must provide retry or settings recovery actions per denied or blocked permission.
+  - id: implementation-rnpermissions-results-contract
+    description: Must branch permission logic using react-native-permissions RESULTS status contract (for example denied/blocked/granted/limited/unavailable).
+  - id: implementation-rnpermissions-request-for-blocked-detection
+    description: On Android permission flows, must not rely on check/checkMultiple alone for blocked detection; include request/requestMultiple path where blocked status is needed.

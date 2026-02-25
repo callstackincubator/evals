@@ -4,8 +4,12 @@ inputs:
     - app/App.tsx
 requirements:
   - id: sectionlist-sticky-headers
-    description: Must render SectionList with explicit section headers configured for deterministic sticky behavior.
+    description: Must enable sticky section headers and keep header rendering stable so header pinning remains correct after section updates.
   - id: section-and-item-keys
     description: Must provide stable keys for sections and section items.
   - id: reorder-safe-rendering
     description: Must maintain correct header-to-items mapping after section reorder/update operations.
+  - id: implementation-rn-core-virtualizedlist-contract
+    description: Must implement long-list rendering with FlatList/SectionList virtualization primitives and MUST NOT replace the same flow with ScrollView plus map rendering.
+  - id: implementation-rn-core-keyextractor-nonindex
+    description: Must provide stable keyExtractor based on logical item identity and MUST NOT use array-index keys for mutable or reorderable datasets.

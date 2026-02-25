@@ -18,13 +18,15 @@ Note: this pilot intentionally focuses on data fetching and async state fundamen
 ### TanStack Query
 
 - [TanStack Query: overview](https://tanstack.com/query/latest/docs/framework/react/overview)
-- [TanStack Query: important defaults](https://tanstack.com/query/v5/docs/react/guides/important-defaults)
-- [TanStack Query: query keys](https://tanstack.com/query/v4/docs/framework/react/guides/query-keys)
-- [TanStack Query: dependent queries](https://tanstack.com/query/v5/docs/framework/react/guides/dependent-queries)
-- [TanStack Query: query cancellation](https://tanstack.com/query/v5/docs/react/guides/query-cancellation)
-- [TanStack Query: invalidations from mutations](https://tanstack.com/query/v5/docs/framework/react/guides/invalidations-from-mutations)
-- [TanStack Query: optimistic updates](https://tanstack.com/query/v5/docs/react/guides/optimistic-updates)
-- [TanStack Query: React Native](https://tanstack.com/query/v4/docs/framework/react/react-native)
+- [TanStack Query: important defaults](https://tanstack.com/query/latest/docs/react/guides/important-defaults)
+- [TanStack Query: query keys](https://tanstack.com/query/latest/docs/framework/react/guides/query-keys)
+- [TanStack Query: dependent queries](https://tanstack.com/query/latest/docs/framework/react/guides/dependent-queries)
+- [TanStack Query: query cancellation](https://tanstack.com/query/latest/docs/react/guides/query-cancellation)
+- [TanStack Query: invalidations from mutations](https://tanstack.com/query/latest/docs/framework/react/guides/invalidations-from-mutations)
+- [TanStack Query: optimistic updates](https://tanstack.com/query/latest/docs/react/guides/optimistic-updates)
+- [TanStack Query: React Native](https://tanstack.com/query/latest/docs/framework/react/react-native)
+- [TanStack Query: migrating to v5](https://tanstack.com/query/latest/docs/react/guides/migrating-to-v5)
+- [TanStack Query releases](https://github.com/TanStack/query/releases)
 
 ### Zustand
 
@@ -32,14 +34,18 @@ Note: this pilot intentionally focuses on data fetching and async state fundamen
 - [Zustand: updating state](https://zustand.docs.pmnd.rs/guides/updating-state)
 - [Zustand: immutable state and merging](https://zustand.docs.pmnd.rs/guides/immutable-state-and-merging)
 - [Zustand: persist middleware](https://zustand.docs.pmnd.rs/integrations/persisting-store-data)
+- [Zustand: migrating to v5](https://zustand.docs.pmnd.rs/migrations/migrating-to-v5)
 - [Zustand README (async actions)](https://github.com/pmndrs/zustand#async-actions)
+- [Zustand releases](https://github.com/pmndrs/zustand/releases)
 
 ### Jotai
 
 - [Jotai docs home](https://jotai.org/)
+- [Jotai docs: v2 API migration](https://jotai.org/docs/guides/migrating-to-v2-api)
 - [Jotai tutorial: async read atoms](https://tutorial.jotai.org/quick-start/async-read-atoms)
 - [Jotai tutorial: async write atoms](https://tutorial.jotai.org/quick-start/async-write-atoms)
 - [Jotai README](https://github.com/pmndrs/jotai)
+- [Jotai releases](https://github.com/pmndrs/jotai/releases)
 
 ### React built-ins
 
@@ -47,6 +53,43 @@ Note: this pilot intentionally focuses on data fetching and async state fundamen
 - [React docs: startTransition](https://react.dev/reference/react/startTransition)
 - [React docs: useTransition](https://react.dev/reference/react/useTransition)
 - [React docs: useDeferredValue](https://react.dev/reference/react/useDeferredValue)
+
+## recent api shifts to encode in eval requirements (as of 2026-02-25)
+
+### TanStack Query
+
+- v5 migration guidance confirms query APIs moved to object-signature usage.
+- v5 removed `onSuccess`/`onError`/`onSettled` callbacks on queries.
+- v5 removed `keepPreviousData` in favor of `placeholderData` identity patterns and renamed `cacheTime` to `gcTime`.
+- Eval policy:
+  - require v5 object-signature usage
+  - disallow removed query callbacks
+  - enforce `placeholderData` identity pattern where previous-page continuity is required.
+
+### Zustand
+
+- v5 migration guidance requires named `create` import and changes selector-equality patterns.
+- v5 migration guidance advises `useShallow` or `createWithEqualityFn` when equality control is needed.
+- Eval policy:
+  - require named `create` import from `zustand`
+  - disallow legacy selector equality argument on `create` hook usage.
+
+### Jotai
+
+- v2 API migration remains the baseline for current atom/read/write patterns.
+- `v2.17.0` release notes mark `loadable` utility as deprecated in favor of `derive`.
+- `v2.18.0` release notes move Babel plugin package from `jotai/babel` to `jotai-babel`.
+- Eval policy:
+  - require v2 entrypoints and disallow removed v1 APIs
+  - keep one loadable-focused eval for non-Suspense state-branching coverage while docs and migration usage overlap in v2.
+
+### React built-ins
+
+- React docs for `startTransition` and `useTransition` document a known limitation: state updates after `await` require another transition wrap.
+- `useDeferredValue` remains the core API for keeping input urgent while expensive derived rendering lags.
+- Eval policy:
+  - enforce transition-aware post-await update handling for race-sensitive flows
+  - enforce explicit stale indicator for deferred-render paths.
 
 ## best-practice inventory
 

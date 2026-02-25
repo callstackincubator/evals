@@ -9,3 +9,7 @@ requirements:
     description: Must provide getItemType for heterogeneous item categories.
   - id: type-safe-row-identity
     description: Must keep keys and item type mapping consistent across updates.
+  - id: implementation-flashlist-v2-component-migration
+    description: Must use FlashList v2 component APIs and MUST NOT use deprecated MasonryFlashList component paths.
+  - id: implementation-flashlist-v2-stable-getitemtype-contract
+    description: Must return stable low-cardinality getItemType values from item identity/category and MUST NOT derive type from index.

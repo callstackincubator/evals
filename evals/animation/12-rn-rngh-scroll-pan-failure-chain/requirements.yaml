@@ -5,6 +5,8 @@ inputs:
 requirements:
   - id: explicit-gesture-failure-chain
     description: Must use Gesture Handler composition or external failure requirements to model scroll versus swipe precedence.
+  - id: implementation-rngh-failure-chain-contract
+    description: Must model scroll-vs-pan arbitration with explicit RNGH failure/simultaneous requirements in Gesture API callbacks and MUST NOT use legacy useAnimatedGestureHandler.
   - id: no-dead-zone-interaction
     description: Must avoid dead-zone behavior where neither scroll nor swipe responds.
   - id: deterministic-axis-thresholds

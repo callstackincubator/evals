@@ -4,7 +4,7 @@ inputs:
     - app/App.tsx
 requirements:
   - id: animated-scroll-handler-source
-    description: Must derive header animation state from a Reanimated scroll handler or equivalent UI-thread scroll value source.
+    description: Must derive header animation state from Reanimated useAnimatedScrollHandler on the UI thread.
   - id: interpolated-header-transform-or-opacity
     description: Must use interpolation to map scroll offset to deterministic header visual changes.
   - id: clamped-header-range

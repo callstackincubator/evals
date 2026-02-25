@@ -5,6 +5,8 @@ inputs:
 requirements:
   - id: composed-gesture-sequence
     description: Must compose gestures so drag activation is gated by long-press completion.
+  - id: implementation-rngh-longpress-pan-gating-contract
+    description: Must compose LongPress and Pan with Gesture API composition primitives so pan updates begin only after long-press activation, without legacy useAnimatedGestureHandler.
   - id: accidental-drag-prevention
     description: Must prevent translation updates before the activation gate is satisfied.
   - id: visual-activation-feedback

@@ -11,32 +11,17 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 
-type RuntimeHandle = unknown
-type RuntimeFactory = (name: string) => RuntimeHandle
-type RuntimeScheduler = (
-  runtime: RuntimeHandle,
-  worker: (...args: unknown[]) => void,
-  ...args: unknown[]
-) => void
-type BridgeScheduler = (
-  callback: (...args: unknown[]) => void,
-  ...args: unknown[]
-) => void
-
 type BatchPayload = {
   batchIndex: number
   totalBatches: number
   score: number
 }
 
-const buildRuntime = createWorkletRuntime as unknown as RuntimeFactory
-const scheduleOnReactRuntime = scheduleOnRN as unknown as BridgeScheduler
-
 const TOTAL_BATCHES = 20
 const BATCH_SIZE = 3000
 const BRIDGE_EVERY_N_BATCHES = 4
 
-const runtime = buildRuntime('analysis-runtime')
+const runtime = createWorkletRuntime('analysis-runtime')
 
 export default function App() {
   const [status, setStatus] = useState('Idle')
@@ -73,7 +58,7 @@ export default function App() {
         currentBatch % BRIDGE_EVERY_N_BATCHES === 0 ||
         currentBatch === totalBatches
       if (isScheduledBridgePoint) {
-        scheduleOnReactRuntime(commitBatch, {
+        scheduleOnRN(commitBatch, {
           batchIndex: currentBatch,
           totalBatches,
           score: compactScore,

@@ -39,9 +39,11 @@ Note: if "react-native-keyboard-handler" is requested, this pack currently stand
 
 - [Worklets: getting started](https://docs.swmansion.com/react-native-worklets/docs/)
 - [Worklets: scheduleOnRN](https://docs.swmansion.com/react-native-worklets/docs/threading/scheduleOnRN)
-- [Worklets: runOnRN](https://docs.swmansion.com/react-native-worklets/docs/threading/runOnRN)
+- [Worklets: scheduleOnUI](https://docs.swmansion.com/react-native-worklets/docs/threading/scheduleOnUI)
+- [Worklets: scheduleOnRuntime](https://docs.swmansion.com/react-native-worklets/docs/threading/scheduleOnRuntime)
 - [Worklets: runOnJS (deprecated)](https://docs.swmansion.com/react-native-worklets/docs/threading/runOnJS)
 - [Worklets: runOnUI (deprecated)](https://docs.swmansion.com/react-native-worklets/docs/threading/runOnUI)
+- [Worklets: runOnRuntime (deprecated)](https://docs.swmansion.com/react-native-worklets/docs/threading/runOnRuntime)
 - [Worklets: troubleshooting](https://docs.swmansion.com/react-native-worklets/docs/guides/troubleshooting/)
 
 ### react-native-keyboard-controller
@@ -63,7 +65,7 @@ Note: if "react-native-keyboard-handler" is requested, this pack currently stand
 - `A7`: gate drag and pan interactions with explicit activation rules (distance, long press, or fail requirements).
 - `A8`: for modal interactions on Android, ensure RNGH root-view requirements are satisfied in modal boundaries.
 - `A9`: separate per-frame worklet computation from occasional React-runtime side effects.
-- `A10`: bridge to React runtime from worklets only through explicit worklets APIs (prefer `scheduleOnRN`/`runOnRN`).
+- `A10`: bridge to React runtime from worklets only through explicit worklets APIs (prefer `scheduleOnRN`; avoid deprecated `runOnJS`).
 - `A11`: avoid per-frame unbounded bridge calls from worklets to React state.
 - `A12`: keep dependencies version-aligned when migrating to Reanimated 4 and worklets plugin setup.
 - `A13`: account for new architecture performance regressions in scroll-heavy and multi-animated-view scenarios.

@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: encrypted-mmkv-instance
-    description: Must initialize MMKV with an explicit encryption key for sensitive values.
+    description: Must initialize MMKV with an explicit encryptionKey and stable encrypted instance ID.
   - id: recrypt-key-rotation-flow
-    description: Must rotate encryption keys through a deterministic recrypt flow.
+    description: Must rotate encryption with recrypt(nextKey) and validate that previously written secret data remains readable after rotation.
   - id: rotation-recovery-path
-    description: Must define a safe recovery path for invalid key or decrypt failure scenarios.
+    description: On decryption/rotation failure, must run deterministic recovery (clear/recrypt/reset) instead of leaving storage in unknown state.
+  - id: implementation-mmkv-createmmkv
+    description: Must create MMKV instances with createMMKV from react-native-mmkv and keep instance IDs explicit for scope separation.
+  - id: implementation-mmkv-no-legacy-constructor
+    description: Must NOT use legacy constructor-style MMKV initialization patterns from older docs; use current react-native-mmkv v4 API style.

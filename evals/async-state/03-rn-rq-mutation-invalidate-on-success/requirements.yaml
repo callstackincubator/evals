@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: mutation-success-invalidates-list
-    description: Must invalidate the relevant list query key after mutation success.
+    description: Must invalidate the affected list query via queryClient.invalidateQueries({ queryKey: ITEMS_QUERY_KEY }) after successful mutation.
   - id: targeted-invalidation-scope
-    description: Must target invalidation to the affected query key family instead of broad unrelated cache resets.
+    description: Must target invalidation to the affected list key family and avoid broad unrelated cache resets.
   - id: post-mutation-consistency
-    description: Must invalidate the same list query key family used by the rendered list so fresh server state is refetched after mutation success.
+    description: Mutation and invalidation flows must reference the same list query-key family used by rendered useQuery data.
+  - id: implementation-rq-v5-object-signature
+    description: Must use TanStack Query v5 object-signature APIs (for hooks and queryClient methods) and MUST NOT use legacy positional overload calls.
+  - id: implementation-rq-invalidatequeries-filter-contract
+    description: Must perform post-mutation cache refresh with object-form queryClient.invalidateQueries filters targeting the affected query-key family.

@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: includeextra-enabled-path
     description: Must configure an includeExtra-enabled picker path.
@@ -12,3 +11,7 @@ requirements:
     description: Must avoid assuming extra metadata availability without permission-aware handling.
   - id: fallback-to-core-asset-fields
     description: Must fall back to core asset fields when extra metadata is unavailable.
+  - id: implementation-rn-image-picker-response-contract
+    description: Must handle react-native-image-picker response contract with explicit didCancel/errorCode/success branches.
+  - id: implementation-rn-image-picker-permission-aware-options
+    description: Must apply permission-aware handling for options that require extra access (for example includeExtra/saveToPhotos) with deterministic degraded fallbacks.

@@ -1,1 +1,1 @@
-After a successful checkout, reset navigation history so users land on Success and then Home without returning to intermediate checkout screens.
+After successful checkout, route users to Success and then Home with checkout history reset.

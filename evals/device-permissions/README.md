@@ -14,11 +14,43 @@ This document is the reference for the device capabilities and permissions categ
 - [Expo Location docs](https://docs.expo.dev/versions/latest/sdk/location/)
 - [Expo Notifications docs](https://docs.expo.dev/versions/latest/sdk/notifications/)
 - [Expo push notifications setup](https://docs.expo.dev/push-notifications/push-notifications-setup/)
+- [Expo SDK 53 changelog](https://expo.dev/changelog/sdk-53)
 
 ### react native community libraries
 
 - [react-native-permissions README](https://github.com/zoontek/react-native-permissions#readme)
+- [react-native-permissions releases](https://github.com/zoontek/react-native-permissions/releases)
 - [react-native-image-picker README](https://github.com/react-native-image-picker/react-native-image-picker#readme)
+- [react-native-image-picker releases](https://github.com/react-native-image-picker/react-native-image-picker/releases)
+
+## recent api shifts to encode in eval requirements (as of 2026-02-25)
+
+### Expo modules
+
+- Expo ImagePicker docs mark `MediaTypeOptions` as deprecated and recommend current `mediaTypes` usage.
+- Expo SDK 53 notes that push notifications are no longer supported in Expo Go on Android.
+- Expo Notifications docs and setup guidance continue to require Android channel setup before token retrieval in Android 13+ registration paths.
+- Expo Location docs continue to enforce foreground-before-background request sequencing, with Android 11+ background access redirected through system settings.
+- Eval policy:
+  - require current Expo API paths and status-based branching
+  - disallow deprecated ImagePicker options (`MediaTypeOptions`)
+  - require deterministic degraded paths for denied/blocked/unavailable capability states.
+
+### react-native-permissions
+
+- README documents Android caveats where `check`/`checkMultiple` (and notification checks) cannot fully determine blocked states without request flow.
+- Latest `5.5.0` release (2026-02-20) updates one-time permission behavior documentation and tests, reinforcing request-path handling.
+- Eval policy:
+  - require `RESULTS`-driven state handling
+  - require request-path logic for blocked detection on Android-sensitive flows.
+
+### react-native-image-picker
+
+- README documents response branching around `didCancel`, `errorCode`, and `assets`, and notes save-to-photos permission constraints on Android 28 and below.
+- Latest releases in the `8.x` line include option-surface updates (for example restrict MIME type support), so evals should keep option handling explicit and permission-aware.
+- Eval policy:
+  - require explicit response-contract branching
+  - require permission-aware handling for `includeExtra`/`saveToPhotos` style options with deterministic fallback UX.
 
 ## best-practice inventory
 

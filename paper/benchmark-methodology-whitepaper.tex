@@ -21,7 +21,7 @@
 
 \title{\textbf{Methodology Whitepaper}\\React Native Evals Benchmark}
 \author{Repository-aligned methodology specification}
-\date{February 24, 2026}
+\date{February 25, 2026}
 
 \begin{document}
 \maketitle
@@ -106,6 +106,18 @@ The repository documents an authoring convention for deterministic requirements:
 Examples include required imports, API usage patterns, and specific wiring that can be verified directly from files.
 
 \textbf{Important distinction:} the runner does \emph{not} infer behavior from ID prefixes such as \texttt{implementation-}. Prefixes are an authoring convention; scoring changes only when a requirement explicitly sets \texttt{weight} in \texttt{requirements.yaml}.
+
+\subsection{Technical Eval Authoring Controls}
+For technical categories (for example navigation, animation, storage), requirement quality is governed by additional authoring controls documented under \texttt{docs/}.
+\begin{itemize}
+  \item \textbf{Recent API shift audit:} before requirement writing, review official docs plus recent releases/changelogs for each core library, and extract concrete ``new preferred API'' and ``deprecated/removed API'' signals with dates.
+  \item \textbf{Evidence-gated \texttt{MUST NOT}:} use explicit \texttt{MUST NOT} clauses only when backed by primary-source deprecation/removal or correctness caveats.
+  \item \textbf{Implementation-level specificity:} technical diversity is measured at requirement/API-constraint level, not prompt wording level.
+  \item \textbf{Similarity budget:} within a library subgroup, keep shared baseline requirements small (target: at most two shared IDs) and maintain multiple eval-specific implementation constraints per eval.
+  \item \textbf{Judge input scope:} set \texttt{inputs.files} to implementation files under evaluation (for example \texttt{app/App.tsx}) rather than prompt-only artifacts.
+\end{itemize}
+
+These controls are authoring policy for dataset quality; they are not independently enforced by runner schema validation.
 
 \subsection{Judge Prompt Construction}
 The judge prompt includes:

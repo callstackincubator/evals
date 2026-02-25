@@ -1,1 +1,1 @@
-Prevent stale network responses from overwriting newer user intent in a Zustand async action by guarding commits with request identity.
+Handle overlapping async requests in a Zustand action so newer user intent is reflected.

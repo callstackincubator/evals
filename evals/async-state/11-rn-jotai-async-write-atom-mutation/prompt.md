@@ -1,1 +1,1 @@
-Implement a Jotai async write atom that submits a mutation, updates local atoms on success, and exposes deterministic pending and error state.
+Implement a Jotai async write atom for a mutation with local atom updates.

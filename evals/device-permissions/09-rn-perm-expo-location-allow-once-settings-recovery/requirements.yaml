@@ -1,8 +1,7 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: ios-allow-once-background-denial-branch
     description: Must include a branch for background denial following when-in-use or allow-once foreground grant.
@@ -12,3 +11,7 @@ requirements:
     description: Must avoid repeated no-op background permission prompts in a single app session.
   - id: foreground-mode-remains-usable
     description: Must preserve foreground location functionality when background access is unavailable.
+  - id: implementation-expo-location-foreground-first
+    description: Must request or verify foreground location permission before issuing location reads or escalating to background permission flows.
+  - id: implementation-expo-location-status-driven-branching
+    description: Must branch behavior from explicit expo-location permission/service status values rather than optimistic boolean-only assumptions.

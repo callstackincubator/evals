@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: persist-middleware-with-async-storage
-    description: Must configure Zustand persist middleware with asynchronous storage integration.
+    description: Must configure persist middleware with createJSONStorage(() => AsyncStorage) for async React Native persistence.
   - id: hydration-complete-gate
-    description: Must gate protected UI decisions until persisted state hydration has completed.
+    description: Must maintain explicit hydration-complete gate (for example hasHydrated) before showing protected UI decisions.
   - id: deterministic-pre-hydration-fallback
-    description: Must provide deterministic pre-hydration fallback behavior that avoids incorrect logged-in or logged-out flashes.
+    description: Must render deterministic pre-hydration fallback to avoid incorrect auth-state flashes before rehydration completes.
+  - id: implementation-zustand-v5-named-create
+    description: Must use named create import from 'zustand' (v5 style) and MUST NOT rely on removed default-export create usage.
+  - id: implementation-zustand-v5-selector-equality
+    description: Must NOT pass a custom equality function as the second argument to create-based hook selectors in v5; use useShallow or createWithEqualityFn when equality control is needed.

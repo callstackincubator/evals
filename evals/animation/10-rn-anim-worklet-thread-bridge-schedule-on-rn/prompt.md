@@ -1,1 +1,1 @@
-Build an interaction where a UI-thread worklet computes high-frequency animation state and then schedules a lightweight React-side update through the worklets bridge only at controlled points.
+Build an interaction where high-frequency animation state is computed off the JavaScript thread, and React state is updated only at controlled points.

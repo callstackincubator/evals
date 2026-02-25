@@ -7,3 +7,5 @@ requirements:
     description: Must implement an explicit precedence rule that prioritizes initial deep-link URL over persisted nav state.
   - id: state-restore-gating
     description: Must gate state restoration logic based on startup URL presence.
+  - id: implementation-static-navigation-api
+    description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.

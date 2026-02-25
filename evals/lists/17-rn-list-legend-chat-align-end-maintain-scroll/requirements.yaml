@@ -8,4 +8,6 @@ requirements:
   - id: maintain-scroll-at-end
     description: Must configure maintainScrollAtEnd behavior for near-bottom new message handling.
   - id: deterministic-autoscroll-threshold
-    description: Must define deterministic threshold behavior so users away from bottom are not forcibly snapped.
+    description: Must set an explicit end-maintenance threshold so near-bottom users auto-follow new messages while users above the threshold do not get snapped.
+  - id: implementation-legendlist-chat-end-maintenance-contract
+    description: Must combine alignItemsAtEnd with maintainScrollAtEnd and maintainScrollAtEndThreshold so only near-bottom users auto-follow new messages.

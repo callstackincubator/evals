@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: atomwithstorage-async-backend
-    description: Must configure atomWithStorage with an asynchronous storage backend suitable for React Native.
+    description: Must configure atomWithStorage with createJSONStorage(() => AsyncStorage) for React Native async persistence.
   - id: rehydration-complete-guard
-    description: Must guard dependent UI logic until stored value rehydration is complete.
+    description: Must gate dependent UI until explicit rehydration completion signal is set.
   - id: safe-default-before-hydration
-    description: Must provide a deterministic safe default behavior before persisted values are available.
+    description: Must render an explicit pre-rehydration default state until persisted value load completes, and async updater paths must await previous value for async storage atoms.
+  - id: implementation-jotai-v2-entrypoints
+    description: Must use Jotai v2 entrypoints from 'jotai' and 'jotai/utils' for core and utility APIs.
+  - id: implementation-jotai-no-v1-removed-utils
+    description: Must NOT rely on removed Jotai v1 APIs such as waitForAll, abortableAtom, or Provider initialValues/scope props.

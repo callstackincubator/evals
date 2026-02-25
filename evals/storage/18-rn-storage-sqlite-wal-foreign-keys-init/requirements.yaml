@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: pragma-wal-enabled
-    description: Must enable journal_mode WAL during deterministic database initialization.
+    description: Must run PRAGMA journal_mode = WAL in deterministic initialization before relational write workload.
   - id: pragma-foreign-keys-enabled
-    description: Must enable foreign_keys pragma so relational constraints are enforced.
+    description: Must run PRAGMA foreign_keys = ON and define schema with foreign key constraints for relational integrity.
   - id: init-once-contract
-    description: Must apply initialization pragmas in a predictable startup path that avoids repeated inconsistent setup.
+    description: Must memoize one-time database initialization so PRAGMA and schema setup are not re-run concurrently.
+  - id: implementation-expo-sqlite-modern-api
+    description: Must use modern expo-sqlite APIs from expo-sqlite imports and MUST NOT rely on expo-sqlite/legacy paths.
+  - id: no-dynamic-input-via-execasync
+    description: Must avoid passing dynamic user-controlled values through execAsync SQL strings; use runAsync or prepared statements for bound parameters.

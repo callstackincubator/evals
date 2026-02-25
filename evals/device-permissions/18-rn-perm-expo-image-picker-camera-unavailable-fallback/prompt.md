@@ -1,1 +1,1 @@
-Implement an expo-image-picker capture entry that handles camera-unavailable environments and falls back to gallery selection without breaking permission flows.
+Implement an expo-image-picker capture entry with gallery support when camera is unavailable.

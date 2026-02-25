@@ -9,3 +9,7 @@ requirements:
     description: Must include deterministic viewOffset/getItemLayout strategy so target rows land predictably.
   - id: invalid-target-guard
     description: Must handle missing or invalid section/item targets without crashing.
+  - id: implementation-rn-core-virtualizedlist-contract
+    description: Must implement long-list rendering with FlatList/SectionList virtualization primitives and MUST NOT replace the same flow with ScrollView plus map rendering.
+  - id: implementation-rn-core-keyextractor-nonindex
+    description: Must provide stable keyExtractor based on logical item identity and MUST NOT use array-index keys for mutable or reorderable datasets.

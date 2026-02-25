@@ -1,1 +1,1 @@
-Avoid opening duplicate detail routes when users tap the currently active item; only navigate when target item differs.
+Handle taps on detail items so the current item route is not duplicated.
