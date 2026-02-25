@@ -10,4 +10,4 @@ requirements:
   - id: implementation-static-navigation-api
     description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.
   - id: implementation-nav-deeplink-nested-thread-contract
-    description: Must map deep links through explicit nested screen config (with parse/stringify where needed) to Thread targets and MUST NOT rely on legacy navigationInChildEnabled behavior.
+    description: Must declare nested linking config from parent route to Thread target (including id parsing) and MUST NOT rely on legacy navigationInChildEnabled behavior.

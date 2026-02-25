@@ -8,7 +8,7 @@ requirements:
   - id: connectivity-onlinemanager-integration
     description: Must map React Native connectivity signals to onlineManager.setOnline using conservative online detection.
   - id: controlled-refetch-behavior
-    description: Must ensure foreground/reconnect transitions trigger controlled refetch behavior without refetch storms.
+    description: Must trigger at most one refetch per foreground or reconnect transition for a given query key and avoid repeated refetch loops.
   - id: implementation-rq-v5-object-signature
     description: Must use TanStack Query v5 object-signature APIs (for hooks and queryClient methods) and MUST NOT use legacy positional overload calls.
   - id: implementation-rq-rn-focus-online-subscription-contract

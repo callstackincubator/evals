@@ -10,4 +10,4 @@ requirements:
   - id: reorder-update-safety
     description: Must preserve correct rendering after reorder/insert updates without key collisions.
   - id: implementation-legendlist-estimated-size-contract
-    description: Must provide getEstimatedItemSize for deterministic layout-cache behavior in insert/reorder flows.
+    description: Must provide getEstimatedItemSize with a positive estimate used during insert and reorder updates to keep layout caching stable.

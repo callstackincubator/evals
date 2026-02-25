@@ -4,7 +4,7 @@ inputs:
     - app/App.tsx
 requirements:
   - id: sectionlist-sticky-headers
-    description: Must render SectionList with explicit section headers configured for deterministic sticky behavior.
+    description: Must enable sticky section headers and keep header rendering stable so header pinning remains correct after section updates.
   - id: section-and-item-keys
     description: Must provide stable keys for sections and section items.
   - id: reorder-safe-rendering

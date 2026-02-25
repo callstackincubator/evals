@@ -8,4 +8,4 @@ requirements:
   - id: animated-exiting-for-removed-items
     description: Must apply a Reanimated exiting animation for removed rows.
   - id: stable-item-identity
-    description: Must preserve deterministic item identity keys so row animation behavior is stable.
+    description: Must keep row keys stable across add/remove operations so entering and exiting animations attach to the correct items.

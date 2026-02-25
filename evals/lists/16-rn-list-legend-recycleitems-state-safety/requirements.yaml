@@ -4,7 +4,7 @@ inputs:
     - app/App.tsx
 requirements:
   - id: recycleitems-enabled
-    description: Must enable recycleItems for LegendList and use it intentionally.
+    description: Must enable recycleItems for the LegendList feed path under test.
   - id: recycled-state-reset-contract
     description: Must prevent recycled local state from leaking across different item identities.
   - id: identity-driven-row-behavior

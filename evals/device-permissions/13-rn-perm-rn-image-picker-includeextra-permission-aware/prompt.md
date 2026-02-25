@@ -1,1 +1,1 @@
-Use react-native-image-picker with includeExtra enabled while handling permission and metadata variability so feature behavior remains deterministic.
+Implement a react-native-image-picker flow that requests richer metadata and handles permission and metadata variability deterministically.

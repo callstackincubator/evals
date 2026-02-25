@@ -10,4 +10,4 @@ requirements:
   - id: implementation-static-navigation-api
     description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.
   - id: implementation-nav-modal-over-tab-layer-contract
-    description: Must keep modal-group routes above nested tab routes in the static navigation tree while preserving explicit parent-child targeting semantics.
+    description: Must define modal routes at a higher navigation layer than tabs so dismiss returns to the previously active tab context.
