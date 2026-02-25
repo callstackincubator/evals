@@ -9,7 +9,7 @@ requirements:
     description: Must keep state transitions deterministic across increasing and decreasing input directions.
   - id: minimal-react-thread-coupling
     description: Must avoid routing every intermediate frame through React state updates.
-  - id: ui-thread-animation-driver
-    description: Must run high-frequency animation state on Reanimated shared values and worklets instead of per-frame React state updates.
-  - id: implementation-use-reanimated
-    description: Must implement animation behavior with react-native-reanimated primitives.
+  - id: ui-thread-animation-driver-14-rn-shared-value-derived-threshold-state
+    description: Must run high-frequency animation state on Reanimated shared values and worklets instead of per-frame React state updates for the 14-rn-shared-value-derived-threshold-state eval.
+  - id: implementation-use-reanimated-14-rn-shared-value-derived-threshold-state
+    description: Must implement animation behavior with react-native-reanimated primitives for the 14-rn-shared-value-derived-threshold-state eval.

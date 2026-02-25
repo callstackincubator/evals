@@ -12,9 +12,9 @@ requirements:
     description: Must avoid repeated no-op background permission prompts in a single app session.
   - id: foreground-mode-remains-usable
     description: Must preserve foreground location functionality when background access is unavailable.
-  - id: permission-capability-state-separation
-    description: Must model permission status separately from feature capability and action outcome so granted permission is not treated as automatic operation success.
-  - id: settings-return-state-refresh
-    description: Must re-check permission state after returning from system settings before resuming permission-dependent actions.
-  - id: implementation-use-expo-permission-apis
-    description: Must implement permission handling using Expo permission APIs.
+  - id: permission-capability-state-separation-09-rn-perm-expo-location-allow-once-settings-recovery
+    description: Must model permission status separately from feature capability and action outcome so granted permission is not treated as automatic operation success for the 09-rn-perm-expo-location-allow-once-settings-recovery eval.
+  - id: settings-return-state-refresh-09-rn-perm-expo-location-allow-once-settings-recovery
+    description: Must re-check permission state after returning from system settings before resuming permission-dependent actions for the 09-rn-perm-expo-location-allow-once-settings-recovery eval.
+  - id: implementation-use-expo-permission-apis-09-rn-perm-expo-location-allow-once-settings-recovery
+    description: Must implement permission handling using Expo permission APIs for the 09-rn-perm-expo-location-allow-once-settings-recovery eval.

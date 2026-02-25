@@ -11,7 +11,7 @@ requirements:
     description: Must include an explicit parse/normalization path for deep-link params.
   - id: valid-link-renders-profile-state
     description: Must render a normal profile state for valid userId deep links instead of routing all links to fallback.
-  - id: implementation-use-react-navigation-static-api
-    description: Must define navigation with React Navigation static APIs and createStaticNavigation.
-  - id: implementation-use-native-navigation
-    description: Must implement this flow with React Navigation native navigation primitives and route contracts.
+  - id: implementation-use-react-navigation-static-api-11-rn-nav-deeplink-invalid-fallback
+    description: Must define navigation with React Navigation static APIs and createStaticNavigation for the 11-rn-nav-deeplink-invalid-fallback eval.
+  - id: implementation-use-native-navigation-11-rn-nav-deeplink-invalid-fallback
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts for the 11-rn-nav-deeplink-invalid-fallback eval.

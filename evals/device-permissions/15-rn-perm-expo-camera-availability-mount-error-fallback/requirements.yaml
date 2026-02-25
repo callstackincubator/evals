@@ -16,5 +16,5 @@ requirements:
     description: Must re-check permission and availability when the app returns to active state after settings or interruptions.
   - id: fallback-action-exposed
     description: Must provide an alternate recovery action when preview cannot be mounted.
-  - id: implementation-use-expo-permission-apis
-    description: Must implement permission handling using Expo permission APIs.
+  - id: implementation-use-expo-permission-apis-15-rn-perm-expo-camera-availability-mount-error-fallback
+    description: Must implement permission handling using Expo permission APIs for the 15-rn-perm-expo-camera-availability-mount-error-fallback eval.

@@ -11,5 +11,5 @@ requirements:
     description: Must include deterministic viewOffset/getItemLayout strategy so target rows land predictably.
   - id: invalid-target-guard
     description: Must handle missing or invalid section/item targets without crashing.
-  - id: implementation-use-sectionlist
-    description: Must implement list behavior using SectionList APIs.
+  - id: implementation-use-sectionlist-07-rn-list-sectionlist-scrolltolocation-deterministic
+    description: Must implement list behavior using SectionList APIs for the 07-rn-list-sectionlist-scrolltolocation-deterministic eval.

@@ -9,9 +9,9 @@ requirements:
     description: Must align nested list implementation with FlashList guidance for parent-child list combinations.
   - id: stable-carousel-identity
     description: Must keep carousel item identity stable so nested list updates do not cause render artifacts.
-  - id: stable-row-identity-contract
-    description: Must preserve stable row identity with deterministic keys so virtualization and row state reuse remain correct across updates.
-  - id: virtualization-tuning-contract
-    description: Must provide library-specific virtualization tuning inputs such as estimated item size or item typing for deterministic rendering behavior.
-  - id: implementation-use-flashlist
-    description: Must implement list behavior using FlashList APIs.
+  - id: stable-row-identity-contract-14-rn-list-flashlist-nested-horizontal-in-vertical
+    description: Must preserve stable row identity with deterministic keys so virtualization and row state reuse remain correct across updates for the 14-rn-list-flashlist-nested-horizontal-in-vertical eval.
+  - id: virtualization-tuning-contract-14-rn-list-flashlist-nested-horizontal-in-vertical
+    description: Must provide library-specific virtualization tuning inputs such as estimated item size or item typing for deterministic rendering behavior for the 14-rn-list-flashlist-nested-horizontal-in-vertical eval.
+  - id: implementation-use-flashlist-14-rn-list-flashlist-nested-horizontal-in-vertical
+    description: Must implement list behavior using FlashList APIs for the 14-rn-list-flashlist-nested-horizontal-in-vertical eval.

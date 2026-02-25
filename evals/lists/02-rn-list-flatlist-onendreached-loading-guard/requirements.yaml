@@ -9,9 +9,9 @@ requirements:
     description: Must expose explicit loading state transitions for list pagination.
   - id: append-without-reset
     description: Must append new page items without resetting existing list identity or jumping to top.
-  - id: stable-row-identity-contract
-    description: Must preserve stable row identity with deterministic keys so virtualization and row state reuse remain correct across updates.
-  - id: list-pagination-overlap-guard
-    description: Must guard against overlapping pagination triggers so concurrent list fetches do not duplicate rows or corrupt ordering.
-  - id: implementation-use-flatlist
-    description: Must implement list behavior using FlatList APIs.
+  - id: stable-row-identity-contract-02-rn-list-flatlist-onendreached-loading-guard
+    description: Must preserve stable row identity with deterministic keys so virtualization and row state reuse remain correct across updates for the 02-rn-list-flatlist-onendreached-loading-guard eval.
+  - id: list-pagination-overlap-guard-02-rn-list-flatlist-onendreached-loading-guard
+    description: Must guard against overlapping pagination triggers so concurrent list fetches do not duplicate rows or corrupt ordering for the 02-rn-list-flatlist-onendreached-loading-guard eval.
+  - id: implementation-use-flatlist-02-rn-list-flatlist-onendreached-loading-guard
+    description: Must implement list behavior using FlatList APIs for the 02-rn-list-flatlist-onendreached-loading-guard eval.

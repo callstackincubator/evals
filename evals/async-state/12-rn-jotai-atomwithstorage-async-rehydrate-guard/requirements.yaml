@@ -12,5 +12,5 @@ requirements:
     description: Must fall back to a safe default preferences shape when persisted JSON is missing or invalid.
   - id: safe-default-before-hydration
     description: Must provide a deterministic safe default behavior before persisted values are available.
-  - id: implementation-use-jotai
-    description: Must implement state behavior using Jotai atoms and utilities.
+  - id: implementation-use-jotai-12-rn-jotai-atomwithstorage-async-rehydrate-guard
+    description: Must implement state behavior using Jotai atoms and utilities for the 12-rn-jotai-atomwithstorage-async-rehydrate-guard eval.

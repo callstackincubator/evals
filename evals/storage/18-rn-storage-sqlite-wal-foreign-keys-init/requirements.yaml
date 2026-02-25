@@ -10,9 +10,9 @@ requirements:
     description: Must enable foreign_keys pragma so relational constraints are enforced.
   - id: init-once-contract
     description: Must apply initialization pragmas in a predictable startup path that avoids repeated inconsistent setup.
-  - id: durable-parse-and-shape-guard
-    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values.
-  - id: sqlite-transaction-boundary-contract
-    description: Must scope multi-step SQLite state transitions to explicit transaction boundaries for atomicity under failure.
-  - id: implementation-use-sqlite
-    description: Must implement persistence behavior using SQLite APIs.
+  - id: durable-parse-and-shape-guard-18-rn-storage-sqlite-wal-foreign-keys-init
+    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values for the 18-rn-storage-sqlite-wal-foreign-keys-init eval.
+  - id: sqlite-transaction-boundary-contract-18-rn-storage-sqlite-wal-foreign-keys-init
+    description: Must scope multi-step SQLite state transitions to explicit transaction boundaries for atomicity under failure for the 18-rn-storage-sqlite-wal-foreign-keys-init eval.
+  - id: implementation-use-sqlite-18-rn-storage-sqlite-wal-foreign-keys-init
+    description: Must implement persistence behavior using SQLite APIs for the 18-rn-storage-sqlite-wal-foreign-keys-init eval.

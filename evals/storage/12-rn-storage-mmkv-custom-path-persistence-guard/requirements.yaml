@@ -12,5 +12,5 @@ requirements:
     description: Must keep path derivation stable across restarts and avoid per-session path drift.
   - id: path-mismatch-recovery
     description: Must provide a deterministic recovery or migration path when configured path changes.
-  - id: implementation-use-mmkv
-    description: Must implement persistence behavior using MMKV APIs.
+  - id: implementation-use-mmkv-12-rn-storage-mmkv-custom-path-persistence-guard
+    description: Must implement persistence behavior using MMKV APIs for the 12-rn-storage-mmkv-custom-path-persistence-guard eval.

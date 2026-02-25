@@ -10,9 +10,9 @@ requirements:
     description: Must apply migration steps inside a transaction boundary.
   - id: no-reapply-completed-migrations
     description: Must not reapply already completed migration versions on later startups.
-  - id: durable-parse-and-shape-guard
-    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values.
+  - id: durable-parse-and-shape-guard-13-rn-storage-sqlite-idempotent-migrations
+    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values for the 13-rn-storage-sqlite-idempotent-migrations eval.
   - id: migration-ordering-and-version-commit
     description: Must execute migrations in deterministic version order and commit version advancement only after each step succeeds.
-  - id: implementation-use-sqlite
-    description: Must implement persistence behavior using SQLite APIs.
+  - id: implementation-use-sqlite-13-rn-storage-sqlite-idempotent-migrations
+    description: Must implement persistence behavior using SQLite APIs for the 13-rn-storage-sqlite-idempotent-migrations eval.

@@ -9,9 +9,9 @@ requirements:
     description: Must coordinate sticky footer position with keyboard animation values without overlap glitches.
   - id: interactive-dismiss-stability
     description: Must keep layout stable during interactive keyboard dismissal and refocus transitions.
-  - id: ui-thread-animation-driver
-    description: Must run high-frequency animation state on Reanimated shared values and worklets instead of per-frame React state updates.
-  - id: gesture-lifecycle-determinism
-    description: Must implement deterministic begin, update, and end gesture transitions so interactive animation always resolves to a valid resting state.
-  - id: implementation-use-keyboard-controller
-    description: Must implement keyboard interaction with react-native-keyboard-controller APIs.
+  - id: ui-thread-animation-driver-16-rn-keyboard-controller-aware-scroll-footer
+    description: Must run high-frequency animation state on Reanimated shared values and worklets instead of per-frame React state updates for the 16-rn-keyboard-controller-aware-scroll-footer eval.
+  - id: gesture-lifecycle-determinism-16-rn-keyboard-controller-aware-scroll-footer
+    description: Must implement deterministic begin, update, and end gesture transitions so interactive animation always resolves to a valid resting state for the 16-rn-keyboard-controller-aware-scroll-footer eval.
+  - id: implementation-use-keyboard-controller-16-rn-keyboard-controller-aware-scroll-footer
+    description: Must implement keyboard interaction with react-native-keyboard-controller APIs for the 16-rn-keyboard-controller-aware-scroll-footer eval.

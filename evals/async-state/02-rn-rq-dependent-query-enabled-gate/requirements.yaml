@@ -10,9 +10,9 @@ requirements:
     description: Must model upstream and dependent queries with explicit and distinct query keys.
   - id: safe-initial-dependent-state
     description: Must keep dependent-query state safe before enablement, avoiding premature network calls and invalid-id requests.
-  - id: async-stale-result-guard
-    description: Must prevent stale async completions from overwriting newer state by using cancellation, request identity guards, or equivalent ordering control.
+  - id: async-stale-result-guard-02-rn-rq-dependent-query-enabled-gate
+    description: Must prevent stale async completions from overwriting newer state by using cancellation, request identity guards, or equivalent ordering control for the 02-rn-rq-dependent-query-enabled-gate eval.
   - id: query-lifecycle-cleanup-contract
     description: Must clean up lifecycle subscriptions and side effects tied to query invalidation or refetch triggers when scope changes.
-  - id: implementation-use-react-query
-    description: Must implement async state behavior using @tanstack/react-query primitives.
+  - id: implementation-use-react-query-02-rn-rq-dependent-query-enabled-gate
+    description: Must implement async state behavior using @tanstack/react-query primitives for the 02-rn-rq-dependent-query-enabled-gate eval.

@@ -10,7 +10,7 @@ requirements:
     description: Must apply transition APIs to non-urgent result state updates instead of treating them as urgent updates.
   - id: stale-completion-suppression
     description: Must suppress stale async completions from replacing fresher UI state.
-  - id: async-stale-result-guard
-    description: Must prevent stale async completions from overwriting newer state by using cancellation, request identity guards, or equivalent ordering control.
-  - id: implementation-use-react-concurrent-primitives
-    description: Must implement this behavior with React concurrent primitives.
+  - id: async-stale-result-guard-15-rn-react-transition-race-safe-ordering
+    description: Must prevent stale async completions from overwriting newer state by using cancellation, request identity guards, or equivalent ordering control for the 15-rn-react-transition-race-safe-ordering eval.
+  - id: implementation-use-react-concurrent-primitives-15-rn-react-transition-race-safe-ordering
+    description: Must implement this behavior with React concurrent primitives for the 15-rn-react-transition-race-safe-ordering eval.

@@ -7,9 +7,9 @@ requirements:
     description: Must compare current route context with target params before navigating to details.
   - id: navigate-on-different-target
     description: Must still navigate correctly when the requested target differs from current route params.
-  - id: state-driven-navigation-architecture
-    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state.
-  - id: implementation-use-react-navigation-static-api
-    description: Must define navigation with React Navigation static APIs and createStaticNavigation.
-  - id: implementation-use-native-navigation
-    description: Must implement this flow with React Navigation native navigation primitives and route contracts.
+  - id: state-driven-navigation-architecture-38-rn-nav-avoid-duplicate-current-route
+    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state for the 38-rn-nav-avoid-duplicate-current-route eval.
+  - id: implementation-use-react-navigation-static-api-38-rn-nav-avoid-duplicate-current-route
+    description: Must define navigation with React Navigation static APIs and createStaticNavigation for the 38-rn-nav-avoid-duplicate-current-route eval.
+  - id: implementation-use-native-navigation-38-rn-nav-avoid-duplicate-current-route
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts for the 38-rn-nav-avoid-duplicate-current-route eval.

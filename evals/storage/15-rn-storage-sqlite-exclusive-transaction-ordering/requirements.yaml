@@ -10,9 +10,9 @@ requirements:
     description: Must keep writes scoped to the opened transaction to avoid out of scope races.
   - id: rollback-on-failure
     description: Must enforce commit rollback behavior so failed operations do not partially apply writes.
-  - id: durable-parse-and-shape-guard
-    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values.
-  - id: sqlite-transaction-boundary-contract
-    description: Must scope multi-step SQLite state transitions to explicit transaction boundaries for atomicity under failure.
-  - id: implementation-use-sqlite
-    description: Must implement persistence behavior using SQLite APIs.
+  - id: durable-parse-and-shape-guard-15-rn-storage-sqlite-exclusive-transaction-ordering
+    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values for the 15-rn-storage-sqlite-exclusive-transaction-ordering eval.
+  - id: sqlite-transaction-boundary-contract-15-rn-storage-sqlite-exclusive-transaction-ordering
+    description: Must scope multi-step SQLite state transitions to explicit transaction boundaries for atomicity under failure for the 15-rn-storage-sqlite-exclusive-transaction-ordering eval.
+  - id: implementation-use-sqlite-15-rn-storage-sqlite-exclusive-transaction-ordering
+    description: Must implement persistence behavior using SQLite APIs for the 15-rn-storage-sqlite-exclusive-transaction-ordering eval.

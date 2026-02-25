@@ -7,11 +7,11 @@ requirements:
     description: Must persist navigation state on route changes.
   - id: storage-read-write-path
     description: Must restore navigation state through NavigationContainer initialState during startup.
-  - id: state-driven-navigation-architecture
-    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state.
-  - id: navigation-state-rehydrate-consistency
-    description: Must rehydrate or restore navigation state in a way that keeps route identity and params consistent across app restarts.
-  - id: implementation-use-react-navigation-static-api
-    description: Must define navigation with React Navigation static APIs and createStaticNavigation.
-  - id: implementation-use-native-navigation
-    description: Must implement this flow with React Navigation native navigation primitives and route contracts.
+  - id: state-driven-navigation-architecture-16-rn-nav-persist-last-route
+    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state for the 16-rn-nav-persist-last-route eval.
+  - id: navigation-state-rehydrate-consistency-16-rn-nav-persist-last-route
+    description: Must rehydrate or restore navigation state in a way that keeps route identity and params consistent across app restarts for the 16-rn-nav-persist-last-route eval.
+  - id: implementation-use-react-navigation-static-api-16-rn-nav-persist-last-route
+    description: Must define navigation with React Navigation static APIs and createStaticNavigation for the 16-rn-nav-persist-last-route eval.
+  - id: implementation-use-native-navigation-16-rn-nav-persist-last-route
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts for the 16-rn-nav-persist-last-route eval.

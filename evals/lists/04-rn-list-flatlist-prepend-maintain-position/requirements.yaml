@@ -9,9 +9,9 @@ requirements:
     description: Must preserve visible content position after prepending data to prevent viewport jumps.
   - id: key-identity-stability
     description: Must keep message identity stable across prepend updates.
-  - id: stable-row-identity-contract
-    description: Must preserve stable row identity with deterministic keys so virtualization and row state reuse remain correct across updates.
-  - id: list-pagination-overlap-guard
-    description: Must guard against overlapping pagination triggers so concurrent list fetches do not duplicate rows or corrupt ordering.
-  - id: implementation-use-flatlist
-    description: Must implement list behavior using FlatList APIs.
+  - id: stable-row-identity-contract-04-rn-list-flatlist-prepend-maintain-position
+    description: Must preserve stable row identity with deterministic keys so virtualization and row state reuse remain correct across updates for the 04-rn-list-flatlist-prepend-maintain-position eval.
+  - id: list-pagination-overlap-guard-04-rn-list-flatlist-prepend-maintain-position
+    description: Must guard against overlapping pagination triggers so concurrent list fetches do not duplicate rows or corrupt ordering for the 04-rn-list-flatlist-prepend-maintain-position eval.
+  - id: implementation-use-flatlist-04-rn-list-flatlist-prepend-maintain-position
+    description: Must implement list behavior using FlatList APIs for the 04-rn-list-flatlist-prepend-maintain-position eval.

@@ -16,5 +16,5 @@ requirements:
     description: Must validate fallback gallery results and handle canceled or empty asset responses without crashing.
   - id: no-hard-failure-on-unsupported-device
     description: Must avoid hard-failure behavior on simulator or unsupported camera environments.
-  - id: implementation-use-expo-permission-apis
-    description: Must implement permission handling using Expo permission APIs.
+  - id: implementation-use-expo-permission-apis-18-rn-perm-expo-image-picker-camera-unavailable-fallback
+    description: Must implement permission handling using Expo permission APIs for the 18-rn-perm-expo-image-picker-camera-unavailable-fallback eval.

@@ -11,5 +11,5 @@ requirements:
     description: Must use react-native-reanimated shared values and withTiming to animate a scale transform.
   - id: reset-to-rest-state
     description: Must restore the visual scale to a deterministic rest value after release.
-  - id: implementation-use-reanimated
-    description: Must implement animation behavior with react-native-reanimated primitives.
+  - id: implementation-use-reanimated-01-rn-anim-pressable-scale-with-timing
+    description: Must implement animation behavior with react-native-reanimated primitives for the 01-rn-anim-pressable-scale-with-timing eval.

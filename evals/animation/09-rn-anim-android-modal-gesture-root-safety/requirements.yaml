@@ -13,5 +13,5 @@ requirements:
     description: Must implement deterministic end-of-gesture behavior that either dismisses after a threshold or springs back to rest.
   - id: no-platform-specific-breakage-path
     description: Must avoid an implementation path that leaves Android modal gestures non-functional.
-  - id: implementation-use-reanimated
-    description: Must implement animation behavior with react-native-reanimated primitives.
+  - id: implementation-use-reanimated-09-rn-anim-android-modal-gesture-root-safety
+    description: Must implement animation behavior with react-native-reanimated primitives for the 09-rn-anim-android-modal-gesture-root-safety eval.

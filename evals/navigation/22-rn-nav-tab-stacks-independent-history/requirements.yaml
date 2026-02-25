@@ -7,9 +7,9 @@ requirements:
     description: Must define a stack navigator inside each tab instead of sharing one global stack for all tabs.
   - id: tab-history-preserved
     description: Must preserve independent navigation history for tab flows when switching tabs.
-  - id: state-driven-navigation-architecture
-    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state.
-  - id: implementation-use-react-navigation-static-api
-    description: Must define navigation with React Navigation static APIs and createStaticNavigation.
-  - id: implementation-use-native-navigation
-    description: Must implement this flow with React Navigation native navigation primitives and route contracts.
+  - id: state-driven-navigation-architecture-22-rn-nav-tab-stacks-independent-history
+    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state for the 22-rn-nav-tab-stacks-independent-history eval.
+  - id: implementation-use-react-navigation-static-api-22-rn-nav-tab-stacks-independent-history
+    description: Must define navigation with React Navigation static APIs and createStaticNavigation for the 22-rn-nav-tab-stacks-independent-history eval.
+  - id: implementation-use-native-navigation-22-rn-nav-tab-stacks-independent-history
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts for the 22-rn-nav-tab-stacks-independent-history eval.

@@ -9,9 +9,9 @@ requirements:
     description: Must compose single and double tap gestures with explicit exclusivity so both handlers do not fire for the same interaction.
   - id: deterministic-tap-outcomes
     description: Must implement deterministic single versus double tap outcome timing semantics.
-  - id: ui-thread-animation-driver
-    description: Must run high-frequency animation state on Reanimated shared values and worklets instead of per-frame React state updates.
-  - id: gesture-lifecycle-determinism
-    description: Must implement deterministic begin, update, and end gesture transitions so interactive animation always resolves to a valid resting state.
-  - id: implementation-use-rngh-gestures
-    description: Must implement gesture behavior with react-native-gesture-handler primitives.
+  - id: ui-thread-animation-driver-11-rn-rngh-exclusive-single-double-tap
+    description: Must run high-frequency animation state on Reanimated shared values and worklets instead of per-frame React state updates for the 11-rn-rngh-exclusive-single-double-tap eval.
+  - id: gesture-lifecycle-determinism-11-rn-rngh-exclusive-single-double-tap
+    description: Must implement deterministic begin, update, and end gesture transitions so interactive animation always resolves to a valid resting state for the 11-rn-rngh-exclusive-single-double-tap eval.
+  - id: implementation-use-rngh-gestures-11-rn-rngh-exclusive-single-double-tap
+    description: Must implement gesture behavior with react-native-gesture-handler primitives for the 11-rn-rngh-exclusive-single-double-tap eval.

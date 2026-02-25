@@ -12,5 +12,5 @@ requirements:
     description: Must derive request parameters from query key inputs inside the query function instead of hidden mutable external state.
   - id: query-signal-cancellation-path
     description: Must thread the TanStack Query abort signal into async fetch logic so canceled requests do not commit stale completions.
-  - id: implementation-use-react-query
-    description: Must implement async state behavior using @tanstack/react-query primitives.
+  - id: implementation-use-react-query-01-rn-rq-stable-query-key-filters
+    description: Must implement async state behavior using @tanstack/react-query primitives for the 01-rn-rq-stable-query-key-filters eval.

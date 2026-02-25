@@ -9,9 +9,9 @@ requirements:
     description: Must apply a Reanimated exiting animation for removed rows.
   - id: stable-item-identity
     description: Must preserve deterministic item identity keys so row animation behavior is stable.
-  - id: ui-thread-animation-driver
-    description: Must run high-frequency animation state on Reanimated shared values and worklets instead of per-frame React state updates.
+  - id: ui-thread-animation-driver-03-rn-anim-layout-enter-exit-list-items
+    description: Must run high-frequency animation state on Reanimated shared values and worklets instead of per-frame React state updates for the 03-rn-anim-layout-enter-exit-list-items eval.
   - id: layout-transition-determinism
     description: Must keep layout enter and exit transitions deterministic so element appearance and removal do not flash or jump.
-  - id: implementation-use-reanimated
-    description: Must implement animation behavior with react-native-reanimated primitives.
+  - id: implementation-use-reanimated-03-rn-anim-layout-enter-exit-list-items
+    description: Must implement animation behavior with react-native-reanimated primitives for the 03-rn-anim-layout-enter-exit-list-items eval.

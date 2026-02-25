@@ -7,11 +7,11 @@ requirements:
     description: Must implement an explicit precedence rule that prioritizes initial deep-link URL over persisted nav state.
   - id: state-restore-gating
     description: Must gate state restoration logic based on startup URL presence.
-  - id: state-driven-navigation-architecture
-    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state.
-  - id: navigation-state-rehydrate-consistency
-    description: Must rehydrate or restore navigation state in a way that keeps route identity and params consistent across app restarts.
-  - id: implementation-use-react-navigation-static-api
-    description: Must define navigation with React Navigation static APIs and createStaticNavigation.
-  - id: implementation-use-native-navigation
-    description: Must implement this flow with React Navigation native navigation primitives and route contracts.
+  - id: state-driven-navigation-architecture-31-rn-nav-persistence-url-precedence
+    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state for the 31-rn-nav-persistence-url-precedence eval.
+  - id: navigation-state-rehydrate-consistency-31-rn-nav-persistence-url-precedence
+    description: Must rehydrate or restore navigation state in a way that keeps route identity and params consistent across app restarts for the 31-rn-nav-persistence-url-precedence eval.
+  - id: implementation-use-react-navigation-static-api-31-rn-nav-persistence-url-precedence
+    description: Must define navigation with React Navigation static APIs and createStaticNavigation for the 31-rn-nav-persistence-url-precedence eval.
+  - id: implementation-use-native-navigation-31-rn-nav-persistence-url-precedence
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts for the 31-rn-nav-persistence-url-precedence eval.

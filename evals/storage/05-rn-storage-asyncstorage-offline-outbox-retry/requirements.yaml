@@ -14,5 +14,5 @@ requirements:
     description: Must include idempotent mutation identifiers so replay does not duplicate applied actions.
   - id: durable-applied-id-ledger
     description: Must persist applied mutation identifiers so deduplication survives app restarts.
-  - id: implementation-use-asyncstorage
-    description: Must implement persistence behavior using AsyncStorage APIs.
+  - id: implementation-use-asyncstorage-05-rn-storage-asyncstorage-offline-outbox-retry
+    description: Must implement persistence behavior using AsyncStorage APIs for the 05-rn-storage-asyncstorage-offline-outbox-retry eval.

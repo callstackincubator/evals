@@ -12,5 +12,5 @@ requirements:
     description: Must guard duplicate submits while mutation is pending to avoid overlapping writes for the same draft.
   - id: success-commits-to-target-atoms
     description: Must commit successful mutation results to the target atoms in a predictable way.
-  - id: implementation-use-jotai
-    description: Must implement state behavior using Jotai atoms and utilities.
+  - id: implementation-use-jotai-11-rn-jotai-async-write-atom-mutation
+    description: Must implement state behavior using Jotai atoms and utilities for the 11-rn-jotai-async-write-atom-mutation eval.

@@ -12,5 +12,5 @@ requirements:
     description: Must include a deterministic refresh path so process external updates become visible.
   - id: appstate-active-refresh-hook
     description: Must refresh shared values when the app returns to active state so external process writes are observed promptly.
-  - id: implementation-use-mmkv
-    description: Must implement persistence behavior using MMKV APIs.
+  - id: implementation-use-mmkv-11-rn-storage-mmkv-multi-process-app-group
+    description: Must implement persistence behavior using MMKV APIs for the 11-rn-storage-mmkv-multi-process-app-group eval.

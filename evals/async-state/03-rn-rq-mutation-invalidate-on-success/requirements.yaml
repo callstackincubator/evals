@@ -10,9 +10,9 @@ requirements:
     description: Must target invalidation to the affected query key family instead of broad unrelated cache resets.
   - id: post-mutation-consistency
     description: Must invalidate the same list query key family used by the rendered list so fresh server state is refetched after mutation success.
-  - id: async-stale-result-guard
-    description: Must prevent stale async completions from overwriting newer state by using cancellation, request identity guards, or equivalent ordering control.
-  - id: mutation-commit-ordering-contract
-    description: Must keep mutation commit and rollback ordering deterministic so overlapping updates cannot leave inconsistent client state.
-  - id: implementation-use-react-query
-    description: Must implement async state behavior using @tanstack/react-query primitives.
+  - id: async-stale-result-guard-03-rn-rq-mutation-invalidate-on-success
+    description: Must prevent stale async completions from overwriting newer state by using cancellation, request identity guards, or equivalent ordering control for the 03-rn-rq-mutation-invalidate-on-success eval.
+  - id: mutation-commit-ordering-contract-03-rn-rq-mutation-invalidate-on-success
+    description: Must keep mutation commit and rollback ordering deterministic so overlapping updates cannot leave inconsistent client state for the 03-rn-rq-mutation-invalidate-on-success eval.
+  - id: implementation-use-react-query-03-rn-rq-mutation-invalidate-on-success
+    description: Must implement async state behavior using @tanstack/react-query primitives for the 03-rn-rq-mutation-invalidate-on-success eval.

@@ -10,7 +10,7 @@ requirements:
     description: Must keep previously revealed content visible during transition instead of immediately replacing with a broad fallback.
   - id: pending-indicator-for-transition
     description: Must expose transition pending state to communicate background work progress.
-  - id: async-stale-result-guard
-    description: Must prevent stale async completions from overwriting newer state by using cancellation, request identity guards, or equivalent ordering control.
-  - id: implementation-use-react-concurrent-primitives
-    description: Must implement this behavior with React concurrent primitives.
+  - id: async-stale-result-guard-13-rn-react-suspense-transition-no-fallback-flash
+    description: Must prevent stale async completions from overwriting newer state by using cancellation, request identity guards, or equivalent ordering control for the 13-rn-react-suspense-transition-no-fallback-flash eval.
+  - id: implementation-use-react-concurrent-primitives-13-rn-react-suspense-transition-no-fallback-flash
+    description: Must implement this behavior with React concurrent primitives for the 13-rn-react-suspense-transition-no-fallback-flash eval.

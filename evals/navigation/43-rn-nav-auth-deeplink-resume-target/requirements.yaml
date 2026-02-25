@@ -7,11 +7,11 @@ requirements:
     description: Must defer navigation to a protected route when the user is unauthenticated.
   - id: resume-target-post-auth
     description: Must navigate to the originally intended destination after successful authentication.
-  - id: state-driven-navigation-architecture
-    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state.
-  - id: deep-link-valid-invalid-state-separation
-    description: Must keep valid deep-link rendering and invalid-link fallback as separate deterministic states derived from parsed link params.
-  - id: implementation-use-react-navigation-static-api
-    description: Must define navigation with React Navigation static APIs and createStaticNavigation.
-  - id: implementation-use-native-navigation
-    description: Must implement this flow with React Navigation native navigation primitives and route contracts.
+  - id: state-driven-navigation-architecture-43-rn-nav-auth-deeplink-resume-target
+    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state for the 43-rn-nav-auth-deeplink-resume-target eval.
+  - id: deep-link-valid-invalid-state-separation-43-rn-nav-auth-deeplink-resume-target
+    description: Must keep valid deep-link rendering and invalid-link fallback as separate deterministic states derived from parsed link params for the 43-rn-nav-auth-deeplink-resume-target eval.
+  - id: implementation-use-react-navigation-static-api-43-rn-nav-auth-deeplink-resume-target
+    description: Must define navigation with React Navigation static APIs and createStaticNavigation for the 43-rn-nav-auth-deeplink-resume-target eval.
+  - id: implementation-use-native-navigation-43-rn-nav-auth-deeplink-resume-target
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts for the 43-rn-nav-auth-deeplink-resume-target eval.

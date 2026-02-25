@@ -12,9 +12,9 @@ requirements:
     description: Must avoid duplicate processing when pending and fresh picker responses overlap.
   - id: pending-result-cancel-error-branch
     description: Must preserve cancel and error branches for pending-result restoration path.
-  - id: permission-capability-state-separation
-    description: Must model permission status separately from feature capability and action outcome so granted permission is not treated as automatic operation success.
-  - id: media-result-validation-contract
-    description: Must validate media picker or camera results before success state transitions and keep cancellation/error outcomes explicit.
-  - id: implementation-use-expo-permission-apis
-    description: Must implement permission handling using Expo permission APIs.
+  - id: permission-capability-state-separation-07-rn-perm-expo-image-picker-pending-result-recovery
+    description: Must model permission status separately from feature capability and action outcome so granted permission is not treated as automatic operation success for the 07-rn-perm-expo-image-picker-pending-result-recovery eval.
+  - id: media-result-validation-contract-07-rn-perm-expo-image-picker-pending-result-recovery
+    description: Must validate media picker or camera results before success state transitions and keep cancellation/error outcomes explicit for the 07-rn-perm-expo-image-picker-pending-result-recovery eval.
+  - id: implementation-use-expo-permission-apis-07-rn-perm-expo-image-picker-pending-result-recovery
+    description: Must implement permission handling using Expo permission APIs for the 07-rn-perm-expo-image-picker-pending-result-recovery eval.

@@ -10,9 +10,9 @@ requirements:
     description: Must restore prior cached state when the optimistic mutation fails.
   - id: settle-path-revalidation
     description: Must revalidate affected queries after mutation settles to realign with authoritative server state.
-  - id: async-stale-result-guard
-    description: Must prevent stale async completions from overwriting newer state by using cancellation, request identity guards, or equivalent ordering control.
-  - id: mutation-commit-ordering-contract
-    description: Must keep mutation commit and rollback ordering deterministic so overlapping updates cannot leave inconsistent client state.
-  - id: implementation-use-react-query
-    description: Must implement async state behavior using @tanstack/react-query primitives.
+  - id: async-stale-result-guard-04-rn-rq-optimistic-update-rollback
+    description: Must prevent stale async completions from overwriting newer state by using cancellation, request identity guards, or equivalent ordering control for the 04-rn-rq-optimistic-update-rollback eval.
+  - id: mutation-commit-ordering-contract-04-rn-rq-optimistic-update-rollback
+    description: Must keep mutation commit and rollback ordering deterministic so overlapping updates cannot leave inconsistent client state for the 04-rn-rq-optimistic-update-rollback eval.
+  - id: implementation-use-react-query-04-rn-rq-optimistic-update-rollback
+    description: Must implement async state behavior using @tanstack/react-query primitives for the 04-rn-rq-optimistic-update-rollback eval.

@@ -18,5 +18,5 @@ requirements:
     description: Must validate that retrieved push token data is non-empty before reporting successful registration.
   - id: token-error-message-sanitization
     description: Must surface explicit, domain-scoped token registration errors while mapping unknown failures to a generic fallback message (no raw unexpected error leakage to users).
-  - id: implementation-use-expo-permission-apis
-    description: Must implement permission handling using Expo permission APIs.
+  - id: implementation-use-expo-permission-apis-20-rn-perm-expo-notifications-physical-device-token-gate
+    description: Must implement permission handling using Expo permission APIs for the 20-rn-perm-expo-notifications-physical-device-token-gate eval.

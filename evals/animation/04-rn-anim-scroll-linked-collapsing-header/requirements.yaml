@@ -9,9 +9,9 @@ requirements:
     description: Must use interpolation to map scroll offset to deterministic header visual changes.
   - id: clamped-header-range
     description: Must clamp the header animation to defined min and max bounds to avoid runaway values.
-  - id: ui-thread-animation-driver
-    description: Must run high-frequency animation state on Reanimated shared values and worklets instead of per-frame React state updates.
-  - id: gesture-lifecycle-determinism
-    description: Must implement deterministic begin, update, and end gesture transitions so interactive animation always resolves to a valid resting state.
-  - id: implementation-use-reanimated
-    description: Must implement animation behavior with react-native-reanimated primitives.
+  - id: ui-thread-animation-driver-04-rn-anim-scroll-linked-collapsing-header
+    description: Must run high-frequency animation state on Reanimated shared values and worklets instead of per-frame React state updates for the 04-rn-anim-scroll-linked-collapsing-header eval.
+  - id: gesture-lifecycle-determinism-04-rn-anim-scroll-linked-collapsing-header
+    description: Must implement deterministic begin, update, and end gesture transitions so interactive animation always resolves to a valid resting state for the 04-rn-anim-scroll-linked-collapsing-header eval.
+  - id: implementation-use-reanimated-04-rn-anim-scroll-linked-collapsing-header
+    description: Must implement animation behavior with react-native-reanimated primitives for the 04-rn-anim-scroll-linked-collapsing-header eval.

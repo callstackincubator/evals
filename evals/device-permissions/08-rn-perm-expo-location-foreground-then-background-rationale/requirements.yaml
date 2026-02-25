@@ -12,7 +12,7 @@ requirements:
     description: Must handle Android 11+ background permission settings redirection with deterministic user guidance.
   - id: partial-grant-foreground-fallback
     description: Must keep foreground-only mode functional when background permission is denied.
-  - id: permission-capability-state-separation
-    description: Must model permission status separately from feature capability and action outcome so granted permission is not treated as automatic operation success.
-  - id: implementation-use-expo-permission-apis
-    description: Must implement permission handling using Expo permission APIs.
+  - id: permission-capability-state-separation-08-rn-perm-expo-location-foreground-then-background-rationale
+    description: Must model permission status separately from feature capability and action outcome so granted permission is not treated as automatic operation success for the 08-rn-perm-expo-location-foreground-then-background-rationale eval.
+  - id: implementation-use-expo-permission-apis-08-rn-perm-expo-location-foreground-then-background-rationale
+    description: Must implement permission handling using Expo permission APIs for the 08-rn-perm-expo-location-foreground-then-background-rationale eval.

@@ -12,5 +12,5 @@ requirements:
     description: Must run migrations idempotently so repeated startup does not reapply completed steps.
   - id: incompatible-version-fallback
     description: Must provide a deterministic fallback path for incompatible or unknown versions.
-  - id: implementation-use-asyncstorage
-    description: Must implement persistence behavior using AsyncStorage APIs.
+  - id: implementation-use-asyncstorage-07-rn-storage-asyncstorage-schema-version-migration
+    description: Must implement persistence behavior using AsyncStorage APIs for the 07-rn-storage-asyncstorage-schema-version-migration eval.

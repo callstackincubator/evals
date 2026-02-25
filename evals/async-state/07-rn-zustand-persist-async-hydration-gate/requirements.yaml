@@ -12,5 +12,5 @@ requirements:
     description: Must gate protected UI decisions until persisted state hydration has completed.
   - id: deterministic-pre-hydration-fallback
     description: Must provide deterministic pre-hydration fallback behavior that avoids incorrect logged-in or logged-out flashes.
-  - id: implementation-use-zustand
-    description: Must implement state behavior using Zustand stores, actions, and selectors.
+  - id: implementation-use-zustand-07-rn-zustand-persist-async-hydration-gate
+    description: Must implement state behavior using Zustand stores, actions, and selectors for the 07-rn-zustand-persist-async-hydration-gate eval.

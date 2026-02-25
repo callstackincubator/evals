@@ -10,7 +10,7 @@ requirements:
     description: Must guard JSON parse and missing-key paths with safe defaults instead of crashing hydration.
   - id: single-bootstrap-read-path
     description: Must centralize startup hydration into a single deterministic bootstrap read path.
-  - id: durable-parse-and-shape-guard
-    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values.
-  - id: implementation-use-asyncstorage
-    description: Must implement persistence behavior using AsyncStorage APIs.
+  - id: durable-parse-and-shape-guard-01-rn-storage-asyncstorage-rehydrate-bootstrap-guard
+    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values for the 01-rn-storage-asyncstorage-rehydrate-bootstrap-guard eval.
+  - id: implementation-use-asyncstorage-01-rn-storage-asyncstorage-rehydrate-bootstrap-guard
+    description: Must implement persistence behavior using AsyncStorage APIs for the 01-rn-storage-asyncstorage-rehydrate-bootstrap-guard eval.

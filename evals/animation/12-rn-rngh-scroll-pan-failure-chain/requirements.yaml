@@ -9,9 +9,9 @@ requirements:
     description: Must avoid dead-zone behavior where neither scroll nor swipe responds.
   - id: deterministic-axis-thresholds
     description: Must define explicit axis thresholds or activation offsets for resolving competing gestures.
-  - id: ui-thread-animation-driver
-    description: Must run high-frequency animation state on Reanimated shared values and worklets instead of per-frame React state updates.
-  - id: gesture-lifecycle-determinism
-    description: Must implement deterministic begin, update, and end gesture transitions so interactive animation always resolves to a valid resting state.
-  - id: implementation-use-rngh-gestures
-    description: Must implement gesture behavior with react-native-gesture-handler primitives.
+  - id: ui-thread-animation-driver-12-rn-rngh-scroll-pan-failure-chain
+    description: Must run high-frequency animation state on Reanimated shared values and worklets instead of per-frame React state updates for the 12-rn-rngh-scroll-pan-failure-chain eval.
+  - id: gesture-lifecycle-determinism-12-rn-rngh-scroll-pan-failure-chain
+    description: Must implement deterministic begin, update, and end gesture transitions so interactive animation always resolves to a valid resting state for the 12-rn-rngh-scroll-pan-failure-chain eval.
+  - id: implementation-use-rngh-gestures-12-rn-rngh-scroll-pan-failure-chain
+    description: Must implement gesture behavior with react-native-gesture-handler primitives for the 12-rn-rngh-scroll-pan-failure-chain eval.

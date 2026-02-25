@@ -9,7 +9,7 @@ requirements:
     description: Must map keyboard progress or height to shared value driven composer position.
   - id: cross-platform-keyboard-follow
     description: Must provide deterministic keyboard-follow behavior on both iOS and Android paths.
-  - id: ui-thread-animation-driver
-    description: Must run high-frequency animation state on Reanimated shared values and worklets instead of per-frame React state updates.
-  - id: implementation-use-keyboard-controller
-    description: Must implement keyboard interaction with react-native-keyboard-controller APIs.
+  - id: ui-thread-animation-driver-15-rn-keyboard-controller-sticky-composer
+    description: Must run high-frequency animation state on Reanimated shared values and worklets instead of per-frame React state updates for the 15-rn-keyboard-controller-sticky-composer eval.
+  - id: implementation-use-keyboard-controller-15-rn-keyboard-controller-sticky-composer
+    description: Must implement keyboard interaction with react-native-keyboard-controller APIs for the 15-rn-keyboard-controller-sticky-composer eval.

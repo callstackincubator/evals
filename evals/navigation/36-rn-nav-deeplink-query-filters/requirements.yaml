@@ -11,7 +11,7 @@ requirements:
     description: Must normalize missing or invalid query params to deterministic defaults.
   - id: normalized-query-drives-rendered-state
     description: Must render or consume normalized query values for feed state, not raw unvalidated params.
-  - id: implementation-use-react-navigation-static-api
-    description: Must define navigation with React Navigation static APIs and createStaticNavigation.
-  - id: implementation-use-native-navigation
-    description: Must implement this flow with React Navigation native navigation primitives and route contracts.
+  - id: implementation-use-react-navigation-static-api-36-rn-nav-deeplink-query-filters
+    description: Must define navigation with React Navigation static APIs and createStaticNavigation for the 36-rn-nav-deeplink-query-filters eval.
+  - id: implementation-use-native-navigation-36-rn-nav-deeplink-query-filters
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts for the 36-rn-nav-deeplink-query-filters eval.

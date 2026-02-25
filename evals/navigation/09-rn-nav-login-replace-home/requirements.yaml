@@ -7,11 +7,11 @@ requirements:
     description: Must transition from login to home with a navigation action that removes login from back history.
   - id: auth-state-driven-ui
     description: Must include explicit auth state logic controlling access to authenticated routes.
-  - id: state-driven-navigation-architecture
-    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state.
-  - id: auth-flow-history-isolation
-    description: Must isolate authenticated and unauthenticated navigation histories so protected routes are not reachable after auth-state switches.
-  - id: implementation-use-react-navigation-static-api
-    description: Must define navigation with React Navigation static APIs and createStaticNavigation.
-  - id: implementation-use-native-navigation
-    description: Must implement this flow with React Navigation native navigation primitives and route contracts.
+  - id: state-driven-navigation-architecture-09-rn-nav-login-replace-home
+    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state for the 09-rn-nav-login-replace-home eval.
+  - id: auth-flow-history-isolation-09-rn-nav-login-replace-home
+    description: Must isolate authenticated and unauthenticated navigation histories so protected routes are not reachable after auth-state switches for the 09-rn-nav-login-replace-home eval.
+  - id: implementation-use-react-navigation-static-api-09-rn-nav-login-replace-home
+    description: Must define navigation with React Navigation static APIs and createStaticNavigation for the 09-rn-nav-login-replace-home eval.
+  - id: implementation-use-native-navigation-09-rn-nav-login-replace-home
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts for the 09-rn-nav-login-replace-home eval.

@@ -12,5 +12,5 @@ requirements:
     description: Must render explicit non-Suspense UI branches for loading success and failure paths.
   - id: no-unhandled-promise-throw
     description: Must avoid unhandled promise throws in render when no Suspense boundary is present.
-  - id: implementation-use-jotai
-    description: Must implement state behavior using Jotai atoms and utilities.
+  - id: implementation-use-jotai-10-rn-jotai-loadable-async-atom-no-suspense
+    description: Must implement state behavior using Jotai atoms and utilities for the 10-rn-jotai-loadable-async-atom-no-suspense eval.

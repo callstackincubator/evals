@@ -9,9 +9,9 @@ requirements:
     description: Must provide a stable unique keyExtractor suitable for layout-cache reuse.
   - id: reorder-update-safety
     description: Must preserve correct rendering after reorder/insert updates without key collisions.
-  - id: stable-row-identity-contract
-    description: Must preserve stable row identity with deterministic keys so virtualization and row state reuse remain correct across updates.
-  - id: virtualization-tuning-contract
-    description: Must provide library-specific virtualization tuning inputs such as estimated item size or item typing for deterministic rendering behavior.
-  - id: implementation-use-legend-list
-    description: Must implement list behavior using Legend List APIs.
+  - id: stable-row-identity-contract-15-rn-list-legend-keyextractor-layout-cache
+    description: Must preserve stable row identity with deterministic keys so virtualization and row state reuse remain correct across updates for the 15-rn-list-legend-keyextractor-layout-cache eval.
+  - id: virtualization-tuning-contract-15-rn-list-legend-keyextractor-layout-cache
+    description: Must provide library-specific virtualization tuning inputs such as estimated item size or item typing for deterministic rendering behavior for the 15-rn-list-legend-keyextractor-layout-cache eval.
+  - id: implementation-use-legend-list-15-rn-list-legend-keyextractor-layout-cache
+    description: Must implement list behavior using Legend List APIs for the 15-rn-list-legend-keyextractor-layout-cache eval.

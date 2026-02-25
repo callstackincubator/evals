@@ -7,9 +7,9 @@ requirements:
     description: Must guard async updates during rapid navigation so stale responses do not mutate inactive screens.
   - id: cleanup-on-blur-unmount
     description: Must perform cleanup on blur/unmount for async operations started by route focus.
-  - id: state-driven-navigation-architecture
-    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state.
-  - id: implementation-use-react-navigation-static-api
-    description: Must define navigation with React Navigation static APIs and createStaticNavigation.
-  - id: implementation-use-native-navigation
-    description: Must implement this flow with React Navigation native navigation primitives and route contracts.
+  - id: state-driven-navigation-architecture-45-rn-nav-rapid-push-pop-cancel-safe
+    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state for the 45-rn-nav-rapid-push-pop-cancel-safe eval.
+  - id: implementation-use-react-navigation-static-api-45-rn-nav-rapid-push-pop-cancel-safe
+    description: Must define navigation with React Navigation static APIs and createStaticNavigation for the 45-rn-nav-rapid-push-pop-cancel-safe eval.
+  - id: implementation-use-native-navigation-45-rn-nav-rapid-push-pop-cancel-safe
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts for the 45-rn-nav-rapid-push-pop-cancel-safe eval.

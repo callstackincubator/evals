@@ -10,9 +10,9 @@ requirements:
     description: Must finalize prepared statements in deterministic cleanup paths.
   - id: no-sql-string-interpolation
     description: Must avoid interpolation based SQL for user supplied values.
-  - id: durable-parse-and-shape-guard
-    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values.
-  - id: sqlite-transaction-boundary-contract
-    description: Must scope multi-step SQLite state transitions to explicit transaction boundaries for atomicity under failure.
-  - id: implementation-use-sqlite
-    description: Must implement persistence behavior using SQLite APIs.
+  - id: durable-parse-and-shape-guard-14-rn-storage-sqlite-prepared-statements-finalize
+    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values for the 14-rn-storage-sqlite-prepared-statements-finalize eval.
+  - id: sqlite-transaction-boundary-contract-14-rn-storage-sqlite-prepared-statements-finalize
+    description: Must scope multi-step SQLite state transitions to explicit transaction boundaries for atomicity under failure for the 14-rn-storage-sqlite-prepared-statements-finalize eval.
+  - id: implementation-use-sqlite-14-rn-storage-sqlite-prepared-statements-finalize
+    description: Must implement persistence behavior using SQLite APIs for the 14-rn-storage-sqlite-prepared-statements-finalize eval.

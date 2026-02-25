@@ -9,7 +9,7 @@ requirements:
     description: Must wire FlatList extraData (or equivalent immutable dependency path) so selected-row UI updates are deterministic.
   - id: no-item-key-anti-pattern
     description: Must avoid forcing per-row remount via unstable key usage inside renderItem output.
-  - id: stable-row-identity-contract
-    description: Must preserve stable row identity with deterministic keys so virtualization and row state reuse remain correct across updates.
-  - id: implementation-use-flatlist
-    description: Must implement list behavior using FlatList APIs.
+  - id: stable-row-identity-contract-01-rn-list-flatlist-keys-extradata-selection
+    description: Must preserve stable row identity with deterministic keys so virtualization and row state reuse remain correct across updates for the 01-rn-list-flatlist-keys-extradata-selection eval.
+  - id: implementation-use-flatlist-01-rn-list-flatlist-keys-extradata-selection
+    description: Must implement list behavior using FlatList APIs for the 01-rn-list-flatlist-keys-extradata-selection eval.

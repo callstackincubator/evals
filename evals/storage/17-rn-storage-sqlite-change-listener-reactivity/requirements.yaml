@@ -10,9 +10,9 @@ requirements:
     description: Must trigger deterministic UI refresh from database change events.
   - id: listener-unsubscribe-cleanup
     description: Must remove change listeners during cleanup to avoid duplicate subscriptions.
-  - id: durable-parse-and-shape-guard
-    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values.
-  - id: sqlite-transaction-boundary-contract
-    description: Must scope multi-step SQLite state transitions to explicit transaction boundaries for atomicity under failure.
-  - id: implementation-use-sqlite
-    description: Must implement persistence behavior using SQLite APIs.
+  - id: durable-parse-and-shape-guard-17-rn-storage-sqlite-change-listener-reactivity
+    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values for the 17-rn-storage-sqlite-change-listener-reactivity eval.
+  - id: sqlite-transaction-boundary-contract-17-rn-storage-sqlite-change-listener-reactivity
+    description: Must scope multi-step SQLite state transitions to explicit transaction boundaries for atomicity under failure for the 17-rn-storage-sqlite-change-listener-reactivity eval.
+  - id: implementation-use-sqlite-17-rn-storage-sqlite-change-listener-reactivity
+    description: Must implement persistence behavior using SQLite APIs for the 17-rn-storage-sqlite-change-listener-reactivity eval.

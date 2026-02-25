@@ -12,5 +12,5 @@ requirements:
     description: Must consume store values through scoped selectors for individual fields or actions instead of subscribing to the full store object.
   - id: error-reset-or-retry-path
     description: Must provide deterministic error handling with a clear retry or reset path.
-  - id: implementation-use-zustand
-    description: Must implement state behavior using Zustand stores, actions, and selectors.
+  - id: implementation-use-zustand-05-rn-zustand-async-action-lifecycle
+    description: Must implement state behavior using Zustand stores, actions, and selectors for the 05-rn-zustand-async-action-lifecycle eval.

@@ -19,5 +19,5 @@ requirements:
     description: Must use createStaticNavigation to define the navigation wrapper component.
   - id: implementation-use-use-navigation
     description: Must use useNavigation to get the navigation object.
-  - id: implementation-use-native-navigation
-    description: Must implement this flow with React Navigation native navigation primitives and route contracts.
+  - id: implementation-use-native-navigation-01-rn-nav-stack-product-details
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts for the 01-rn-nav-stack-product-details eval.

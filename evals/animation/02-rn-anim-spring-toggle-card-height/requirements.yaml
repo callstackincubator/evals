@@ -11,5 +11,5 @@ requirements:
     description: Must animate the expand and collapse transition using withSpring from react-native-reanimated.
   - id: no-react-layout-jump
     description: Must avoid abrupt non-animated jumps when toggling between states.
-  - id: implementation-use-reanimated
-    description: Must implement animation behavior with react-native-reanimated primitives.
+  - id: implementation-use-reanimated-02-rn-anim-spring-toggle-card-height
+    description: Must implement animation behavior with react-native-reanimated primitives for the 02-rn-anim-spring-toggle-card-height eval.

@@ -10,7 +10,7 @@ requirements:
     description: Must map batched read results into deterministic typed state without key-order assumptions.
   - id: partial-failure-handling
     description: Must handle partial batch failure paths with explicit fallback or retry behavior.
-  - id: durable-parse-and-shape-guard
-    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values.
-  - id: implementation-use-asyncstorage
-    description: Must implement persistence behavior using AsyncStorage APIs.
+  - id: durable-parse-and-shape-guard-03-rn-storage-asyncstorage-batch-multiget-multiset
+    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values for the 03-rn-storage-asyncstorage-batch-multiget-multiset eval.
+  - id: implementation-use-asyncstorage-03-rn-storage-asyncstorage-batch-multiget-multiset
+    description: Must implement persistence behavior using AsyncStorage APIs for the 03-rn-storage-asyncstorage-batch-multiget-multiset eval.

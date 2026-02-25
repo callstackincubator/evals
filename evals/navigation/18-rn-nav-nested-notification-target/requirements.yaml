@@ -7,9 +7,9 @@ requirements:
     description: Must use nested navigate syntax with an explicit child screen target.
   - id: notification-detail-param
     description: Must pass deterministic params into NotificationDetails when triggering nested navigation.
-  - id: state-driven-navigation-architecture
-    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state.
-  - id: implementation-use-react-navigation-static-api
-    description: Must define navigation with React Navigation static APIs and createStaticNavigation.
-  - id: implementation-use-native-navigation
-    description: Must implement this flow with React Navigation native navigation primitives and route contracts.
+  - id: state-driven-navigation-architecture-18-rn-nav-nested-notification-target
+    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state for the 18-rn-nav-nested-notification-target eval.
+  - id: implementation-use-react-navigation-static-api-18-rn-nav-nested-notification-target
+    description: Must define navigation with React Navigation static APIs and createStaticNavigation for the 18-rn-nav-nested-notification-target eval.
+  - id: implementation-use-native-navigation-18-rn-nav-nested-notification-target
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts for the 18-rn-nav-nested-notification-target eval.

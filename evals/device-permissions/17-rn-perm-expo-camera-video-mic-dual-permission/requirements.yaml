@@ -12,9 +12,9 @@ requirements:
     description: Must provide deterministic degraded UX when only one permission is granted.
   - id: blocked-or-denied-recovery-actions
     description: Must provide retry and settings-oriented recovery for denied or blocked outcomes.
-  - id: permission-capability-state-separation
-    description: Must model permission status separately from feature capability and action outcome so granted permission is not treated as automatic operation success.
-  - id: media-result-validation-contract
-    description: Must validate media picker or camera results before success state transitions and keep cancellation/error outcomes explicit.
-  - id: implementation-use-expo-permission-apis
-    description: Must implement permission handling using Expo permission APIs.
+  - id: permission-capability-state-separation-17-rn-perm-expo-camera-video-mic-dual-permission
+    description: Must model permission status separately from feature capability and action outcome so granted permission is not treated as automatic operation success for the 17-rn-perm-expo-camera-video-mic-dual-permission eval.
+  - id: media-result-validation-contract-17-rn-perm-expo-camera-video-mic-dual-permission
+    description: Must validate media picker or camera results before success state transitions and keep cancellation/error outcomes explicit for the 17-rn-perm-expo-camera-video-mic-dual-permission eval.
+  - id: implementation-use-expo-permission-apis-17-rn-perm-expo-camera-video-mic-dual-permission
+    description: Must implement permission handling using Expo permission APIs for the 17-rn-perm-expo-camera-video-mic-dual-permission eval.

@@ -12,5 +12,5 @@ requirements:
     description: Must control refetch behavior across foreground/background and reconnect transitions through focusManager and onlineManager state changes (including duplicate-transition guards) so refetch storms are avoided; explicit QueryClient refetch default overrides are optional.
   - id: lifecycle-subscription-cleanup
     description: Must unsubscribe AppState and connectivity listeners on cleanup so lifecycle bridges do not leak duplicate handlers.
-  - id: implementation-use-react-query
-    description: Must implement async state behavior using @tanstack/react-query primitives.
+  - id: implementation-use-react-query-16-rn-rq-react-native-appstate-focus-online-managers
+    description: Must implement async state behavior using @tanstack/react-query primitives for the 16-rn-rq-react-native-appstate-focus-online-managers eval.

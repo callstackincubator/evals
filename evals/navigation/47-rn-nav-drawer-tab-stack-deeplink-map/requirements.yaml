@@ -11,7 +11,7 @@ requirements:
     description: Must pass dynamic deep-link path params to the deep stack route screen that is opened.
   - id: unknown-path-fallback-route
     description: Must route unknown deep-link paths to a deterministic fallback screen.
-  - id: implementation-use-react-navigation-static-api
-    description: Must define navigation with React Navigation static APIs and createStaticNavigation.
-  - id: implementation-use-native-navigation
-    description: Must implement this flow with React Navigation native navigation primitives and route contracts.
+  - id: implementation-use-react-navigation-static-api-47-rn-nav-drawer-tab-stack-deeplink-map
+    description: Must define navigation with React Navigation static APIs and createStaticNavigation for the 47-rn-nav-drawer-tab-stack-deeplink-map eval.
+  - id: implementation-use-native-navigation-47-rn-nav-drawer-tab-stack-deeplink-map
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts for the 47-rn-nav-drawer-tab-stack-deeplink-map eval.

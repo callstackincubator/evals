@@ -16,5 +16,5 @@ requirements:
     description: Must provide fallback behavior when camera hardware is unavailable.
   - id: fallback-library-result-handling
     description: Must validate fallback library outcomes and handle missing assets without runtime failures.
-  - id: implementation-use-react-native-image-picker-permissions
-    description: Must implement media permission-aware behavior using react-native-image-picker APIs.
+  - id: implementation-use-react-native-image-picker-permissions-23-rn-perm-rn-image-picker-video-permission-error-map
+    description: Must implement media permission-aware behavior using react-native-image-picker APIs for the 23-rn-perm-rn-image-picker-video-permission-error-map eval.

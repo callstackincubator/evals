@@ -10,7 +10,7 @@ requirements:
     description: Must clear only user-scoped keys on sign-out and keep global keys intact.
   - id: no-global-clear-anti-pattern
     description: Must avoid blanket clear operations that remove unrelated persisted data.
-  - id: durable-parse-and-shape-guard
-    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values.
-  - id: implementation-use-asyncstorage
-    description: Must implement persistence behavior using AsyncStorage APIs.
+  - id: durable-parse-and-shape-guard-02-rn-storage-asyncstorage-namespaced-keys-clear-scope
+    description: Must validate persisted payload shape on read and recover safely from invalid, missing, or corrupted serialized values for the 02-rn-storage-asyncstorage-namespaced-keys-clear-scope eval.
+  - id: implementation-use-asyncstorage-02-rn-storage-asyncstorage-namespaced-keys-clear-scope
+    description: Must implement persistence behavior using AsyncStorage APIs for the 02-rn-storage-asyncstorage-namespaced-keys-clear-scope eval.

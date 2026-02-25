@@ -12,9 +12,9 @@ requirements:
     description: Must avoid stale blocked-state UI when permission changed in system settings.
   - id: idempotent-resume-handling
     description: Must keep resume recheck logic idempotent without duplicate transition side effects.
-  - id: permission-capability-state-separation
-    description: Must model permission status separately from feature capability and action outcome so granted permission is not treated as automatic operation success.
-  - id: settings-return-state-refresh
-    description: Must re-check permission state after returning from system settings before resuming permission-dependent actions.
-  - id: implementation-use-react-native-permissions
-    description: Must implement permission handling using react-native-permissions APIs.
+  - id: permission-capability-state-separation-22-rn-perm-rnpermissions-settings-return-appstate-recheck
+    description: Must model permission status separately from feature capability and action outcome so granted permission is not treated as automatic operation success for the 22-rn-perm-rnpermissions-settings-return-appstate-recheck eval.
+  - id: settings-return-state-refresh-22-rn-perm-rnpermissions-settings-return-appstate-recheck
+    description: Must re-check permission state after returning from system settings before resuming permission-dependent actions for the 22-rn-perm-rnpermissions-settings-return-appstate-recheck eval.
+  - id: implementation-use-react-native-permissions-22-rn-perm-rnpermissions-settings-return-appstate-recheck
+    description: Must implement permission handling using react-native-permissions APIs for the 22-rn-perm-rnpermissions-settings-return-appstate-recheck eval.

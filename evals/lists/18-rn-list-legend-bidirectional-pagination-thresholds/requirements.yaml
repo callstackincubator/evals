@@ -13,5 +13,5 @@ requirements:
     description: Must use explicit threshold-driven behavior so start/end pagination triggers are predictable.
   - id: estimated-item-size-contract
     description: Must provide LegendList estimated item size configuration to keep virtualization behavior stable during pagination.
-  - id: implementation-use-legend-list
-    description: Must implement list behavior using Legend List APIs.
+  - id: implementation-use-legend-list-18-rn-list-legend-bidirectional-pagination-thresholds
+    description: Must implement list behavior using Legend List APIs for the 18-rn-list-legend-bidirectional-pagination-thresholds eval.

@@ -12,7 +12,7 @@ requirements:
     description: Must keep UI flows driven by normalized capability states rather than library-specific raw status objects.
   - id: unknown-status-safe-default
     description: Must handle unknown or unmapped statuses with a deterministic safe fallback state.
-  - id: permission-capability-state-separation
-    description: Must model permission status separately from feature capability and action outcome so granted permission is not treated as automatic operation success.
-  - id: implementation-use-cross-library-permission-normalization
-    description: Must normalize permission states across the targeted React Native permission libraries.
+  - id: permission-capability-state-separation-24-rn-perm-cross-library-status-normalization-contract
+    description: Must model permission status separately from feature capability and action outcome so granted permission is not treated as automatic operation success for the 24-rn-perm-cross-library-status-normalization-contract eval.
+  - id: implementation-use-cross-library-permission-normalization-24-rn-perm-cross-library-status-normalization-contract
+    description: Must normalize permission states across the targeted React Native permission libraries for the 24-rn-perm-cross-library-status-normalization-contract eval.

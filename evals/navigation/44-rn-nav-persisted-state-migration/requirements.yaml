@@ -7,11 +7,11 @@ requirements:
     description: Must check version metadata before applying persisted navigation state.
   - id: incompatible-state-fallback
     description: Must safely fallback when persisted state shape/version is incompatible.
-  - id: state-driven-navigation-architecture
-    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state.
-  - id: navigation-state-rehydrate-consistency
-    description: Must rehydrate or restore navigation state in a way that keeps route identity and params consistent across app restarts.
-  - id: implementation-use-react-navigation-static-api
-    description: Must define navigation with React Navigation static APIs and createStaticNavigation.
-  - id: implementation-use-native-navigation
-    description: Must implement this flow with React Navigation native navigation primitives and route contracts.
+  - id: state-driven-navigation-architecture-44-rn-nav-persisted-state-migration
+    description: Must drive screen transitions through React Navigation route state and navigator actions instead of manually swapping screen trees with local component state for the 44-rn-nav-persisted-state-migration eval.
+  - id: navigation-state-rehydrate-consistency-44-rn-nav-persisted-state-migration
+    description: Must rehydrate or restore navigation state in a way that keeps route identity and params consistent across app restarts for the 44-rn-nav-persisted-state-migration eval.
+  - id: implementation-use-react-navigation-static-api-44-rn-nav-persisted-state-migration
+    description: Must define navigation with React Navigation static APIs and createStaticNavigation for the 44-rn-nav-persisted-state-migration eval.
+  - id: implementation-use-native-navigation-44-rn-nav-persisted-state-migration
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts for the 44-rn-nav-persisted-state-migration eval.

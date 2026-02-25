@@ -9,7 +9,7 @@ requirements:
     description: Must provide getItemLayout for fixed-size rows to support deterministic index-based scrolling.
   - id: index-scroll-safety
     description: Must handle index-based scrolling without relying on runtime measurement side effects.
-  - id: stable-row-identity-contract
-    description: Must preserve stable row identity with deterministic keys so virtualization and row state reuse remain correct across updates.
-  - id: implementation-use-flatlist
-    description: Must implement list behavior using FlatList APIs.
+  - id: stable-row-identity-contract-03-rn-list-flatlist-getitemlayout-initial-scroll-index
+    description: Must preserve stable row identity with deterministic keys so virtualization and row state reuse remain correct across updates for the 03-rn-list-flatlist-getitemlayout-initial-scroll-index eval.
+  - id: implementation-use-flatlist-03-rn-list-flatlist-getitemlayout-initial-scroll-index
+    description: Must implement list behavior using FlatList APIs for the 03-rn-list-flatlist-getitemlayout-initial-scroll-index eval.
