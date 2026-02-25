@@ -50,10 +50,13 @@ This document is the reference for the lists and performance-sensitive rendering
   - `maintainVisibleContentPosition` enabled by default
   - `MasonryFlashList` deprecated in favor of `FlashList` with `masonry` prop
   - deprecated props removed/unsupported (`estimatedItemSize`, `estimatedListSize`, `estimatedFirstItemOffset`, `inverted`, `onBlankArea`, `disableAutoLayout`, and others)
+  - v2.1 warns when `maintainVisibleContentPosition` is used without `keyExtractor`
+  - v2.1 fixes a nested horizontal-list infinite-loop edge case
 - Eval policy:
   - require FlashList v2 component patterns
   - add explicit `MUST NOT` constraints for deprecated v2 props/components
-  - keep identity/recycling contracts strict for mapped nested children and heterogeneous rows.
+  - keep identity/recycling contracts strict for mapped nested children and heterogeneous rows
+  - encode explicit MVCP + keyExtractor and nested parent-child architecture contracts in chat/nested evals.
 
 ### Legend List v2
 

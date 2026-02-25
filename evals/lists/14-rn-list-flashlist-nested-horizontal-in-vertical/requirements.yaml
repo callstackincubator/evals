@@ -11,5 +11,5 @@ requirements:
     description: Must keep carousel item identity stable so nested list updates do not cause render artifacts.
   - id: implementation-flashlist-v2-component-migration
     description: Must use FlashList v2 component APIs and MUST NOT use deprecated MasonryFlashList component paths.
-  - id: implementation-flashlist-v2-no-deprecated-props
-    description: Must NOT rely on FlashList v2 deprecated props such as estimatedItemSize, estimatedListSize, estimatedFirstItemOffset, inverted, onBlankArea, or disableAutoLayout.
+  - id: implementation-flashlist-v2-parent-child-nesting-contract
+    description: Must keep parent vertical list and nested horizontal carousels on FlashList v2 primitives (not ScrollView wrappers) to preserve parent-child list optimization behavior.
