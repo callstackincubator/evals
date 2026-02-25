@@ -1,1 +1,1 @@
-Implement LegendList with stable item identity and layout reuse-friendly data updates so reordering and incremental inserts do not corrupt item positioning.
+Build a feed where rows can be reordered and new items can be inserted without rows jumping, swapping content, or losing their on-screen position.

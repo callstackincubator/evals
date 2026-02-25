@@ -1,1 +1,1 @@
-Use LegendList item recycling for a high-volume feed and ensure row-local transient state is safe when item containers are reused.
+Build a high-volume feed with expandable rows where fast scrolling and cell reuse never leak one item's expanded/collapsed state into another item.

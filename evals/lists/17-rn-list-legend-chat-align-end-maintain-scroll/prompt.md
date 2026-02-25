@@ -1,1 +1,1 @@
-Build a LegendList chat screen that aligns short conversations to the bottom and maintains scroll at end for near-bottom users when new messages arrive.
+Build a chat screen that keeps short conversations visually anchored to the bottom, and when new messages arrive, auto-follows only for users already near the end.
