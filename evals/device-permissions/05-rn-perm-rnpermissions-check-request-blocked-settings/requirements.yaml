@@ -12,6 +12,5 @@ requirements:
     description: Must route blocked outcomes to a settings recovery action using openSettings or equivalent.
   - id: android-check-blocked-caveat-aware
     description: Must avoid assuming Android check calls alone can determine blocked status for every permission type.
-
   - id: implementation-use-react-native-permissions
     description: Must implement permission handling using react-native-permissions APIs relevant to this task.

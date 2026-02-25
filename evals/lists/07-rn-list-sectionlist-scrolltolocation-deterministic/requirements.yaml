@@ -9,6 +9,5 @@ requirements:
     description: Must include deterministic viewOffset/getItemLayout strategy so target rows land predictably.
   - id: invalid-target-guard
     description: Must handle missing or invalid section/item targets without crashing.
-
   - id: implementation-use-sectionlist
     description: Must implement list behavior using SectionList APIs relevant to this task.

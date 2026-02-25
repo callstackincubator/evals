@@ -10,6 +10,5 @@ requirements:
     description: Must restore prior cached state when the optimistic mutation fails.
   - id: settle-path-revalidation
     description: Must revalidate affected queries after mutation settles to realign with authoritative server state.
-
   - id: implementation-use-react-query
     description: Must implement async state behavior using @tanstack/react-query primitives relevant to this task.

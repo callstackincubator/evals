@@ -10,6 +10,5 @@ requirements:
     description: Must use shallow or equivalent equality strategy for object-like selector outputs where appropriate.
   - id: immutable-untouched-branch-preservation
     description: Must update state immutably while preserving references for untouched branches to reduce unnecessary rerenders.
-
   - id: implementation-use-zustand
     description: Must implement state behavior using Zustand store/actions/selectors relevant to this task.

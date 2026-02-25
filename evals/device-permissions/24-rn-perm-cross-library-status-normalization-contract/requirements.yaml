@@ -12,6 +12,5 @@ requirements:
     description: Must keep UI flows driven by normalized capability states rather than library-specific raw status objects.
   - id: unknown-status-safe-default
     description: Must handle unknown or unmapped statuses with a deterministic safe fallback state.
-
   - id: implementation-use-cross-library-permission-normalization
     description: Must implement permission status normalization across the targeted React Native permission libraries in this task.

@@ -12,6 +12,5 @@ requirements:
     description: Must tolerate partial asset metadata (for example null asset identifiers) without breaking selection flow.
   - id: limited-or-denied-fallback-ux
     description: Must provide deterministic fallback UX for limited or denied media access.
-
   - id: implementation-use-expo-permission-apis
     description: Must implement permission handling using Expo permission APIs relevant to this task.

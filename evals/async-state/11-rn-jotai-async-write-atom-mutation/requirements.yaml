@@ -10,6 +10,5 @@ requirements:
     description: Must expose deterministic pending and error state for mutation lifecycle.
   - id: success-commits-to-target-atoms
     description: Must commit successful mutation results to the target atoms in a predictable way.
-
   - id: implementation-use-jotai
     description: Must implement state behavior using Jotai atoms/utilities relevant to this task.

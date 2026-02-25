@@ -9,6 +9,5 @@ requirements:
     description: Must expose explicit loading state transitions for list pagination.
   - id: append-without-reset
     description: Must append new page items without resetting existing list identity or jumping to top.
-
   - id: implementation-use-flatlist
     description: Must implement list behavior using FlatList APIs relevant to this task.

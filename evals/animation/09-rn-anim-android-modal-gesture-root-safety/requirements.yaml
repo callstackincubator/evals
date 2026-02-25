@@ -9,6 +9,5 @@ requirements:
     description: Must include at least one gesture-driven control inside the modal that uses RNGH APIs.
   - id: no-platform-specific-breakage-path
     description: Must avoid an implementation path that leaves Android modal gestures non-functional.
-
   - id: implementation-use-reanimated
     description: Must implement animation behavior with react-native-reanimated primitives relevant to this task.

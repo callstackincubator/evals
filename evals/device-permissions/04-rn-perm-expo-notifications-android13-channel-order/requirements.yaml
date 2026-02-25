@@ -12,6 +12,5 @@ requirements:
     description: Must avoid blind token registration attempts when notification permission is denied.
   - id: denied-recovery-action
     description: Must provide a deterministic denied fallback or recovery action for notification setup.
-
   - id: implementation-use-expo-permission-apis
     description: Must implement permission handling using Expo permission APIs relevant to this task.

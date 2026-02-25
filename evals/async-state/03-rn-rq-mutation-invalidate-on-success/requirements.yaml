@@ -10,6 +10,5 @@ requirements:
     description: Must target invalidation to the affected query key family instead of broad unrelated cache resets.
   - id: post-mutation-consistency
     description: Must invalidate the same list query key family used by the rendered list so fresh server state is refetched after mutation success.
-
   - id: implementation-use-react-query
     description: Must implement async state behavior using @tanstack/react-query primitives relevant to this task.

@@ -12,6 +12,5 @@ requirements:
     description: Must map permission-related picker errors to deterministic degraded UX states.
   - id: unavailable-hardware-fallback
     description: Must provide fallback behavior when camera hardware is unavailable.
-
   - id: implementation-use-react-native-image-picker-permissions
     description: Must implement media permission-aware behavior using react-native-image-picker APIs relevant to this task.

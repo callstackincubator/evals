@@ -9,6 +9,5 @@ requirements:
     description: Must prevent duplicate or overlapping page fetches on either direction while loading is active.
   - id: threshold-driven-determinism
     description: Must use explicit threshold-driven behavior so start/end pagination triggers are predictable.
-
   - id: implementation-use-legend-list
     description: Must implement list behavior using Legend List APIs relevant to this task.

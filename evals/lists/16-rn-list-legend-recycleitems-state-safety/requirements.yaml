@@ -9,6 +9,5 @@ requirements:
     description: Must prevent recycled local state from leaking across different item identities.
   - id: identity-driven-row-behavior
     description: Must bind row state behavior to item identity, not container instance.
-
   - id: implementation-use-legend-list
     description: Must implement list behavior using Legend List APIs relevant to this task.

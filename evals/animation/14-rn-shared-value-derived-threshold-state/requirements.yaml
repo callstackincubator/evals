@@ -9,6 +9,5 @@ requirements:
     description: Must keep state transitions deterministic across increasing and decreasing input directions.
   - id: minimal-react-thread-coupling
     description: Must avoid routing every intermediate frame through React state updates.
-
   - id: implementation-use-reanimated
     description: Must implement animation behavior with react-native-reanimated primitives relevant to this task.

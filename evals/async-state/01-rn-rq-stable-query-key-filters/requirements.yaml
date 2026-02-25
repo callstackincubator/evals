@@ -10,6 +10,5 @@ requirements:
     description: Must avoid unstable or non-serializable values in query keys such as functions or freshly-created object identities that change every render.
   - id: queryfn-derived-from-querykey
     description: Must derive request parameters from query key inputs inside the query function instead of hidden mutable external state.
-
   - id: implementation-use-react-query
     description: Must implement async state behavior using @tanstack/react-query primitives relevant to this task.

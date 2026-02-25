@@ -9,6 +9,5 @@ requirements:
     description: Must configure maintainScrollAtEnd behavior for near-bottom new message handling.
   - id: deterministic-autoscroll-threshold
     description: Must define deterministic threshold behavior so users away from bottom are not forcibly snapped.
-
   - id: implementation-use-legend-list
     description: Must implement list behavior using Legend List APIs relevant to this task.

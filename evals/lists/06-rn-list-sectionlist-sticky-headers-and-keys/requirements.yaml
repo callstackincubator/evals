@@ -9,6 +9,5 @@ requirements:
     description: Must provide stable keys for sections and section items.
   - id: reorder-safe-rendering
     description: Must maintain correct header-to-items mapping after section reorder/update operations.
-
   - id: implementation-use-sectionlist
     description: Must implement list behavior using SectionList APIs relevant to this task.

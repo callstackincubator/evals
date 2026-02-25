@@ -10,6 +10,5 @@ requirements:
     description: Must rotate encryption keys through a deterministic recrypt flow.
   - id: rotation-recovery-path
     description: Must define a safe recovery path for invalid key or decrypt failure scenarios.
-
   - id: implementation-use-mmkv
     description: Must implement persistence behavior using MMKV APIs relevant to this task.

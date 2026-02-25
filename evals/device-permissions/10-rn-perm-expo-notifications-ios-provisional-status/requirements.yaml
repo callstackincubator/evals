@@ -12,6 +12,5 @@ requirements:
     description: Must separate denied and not-determined notification states with distinct actions.
   - id: ios-permission-options-explicit
     description: Must call requestPermissionsAsync with explicit iOS options or equivalent granularity.
-
   - id: implementation-use-expo-permission-apis
     description: Must implement permission handling using Expo permission APIs relevant to this task.

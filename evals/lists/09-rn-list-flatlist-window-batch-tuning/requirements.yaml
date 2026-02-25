@@ -9,6 +9,5 @@ requirements:
     description: Must reflect explicit responsiveness vs fill-rate tradeoff in list configuration choices.
   - id: lightweight-row-path
     description: Must keep row render path lightweight enough to avoid avoidable interaction delays.
-
   - id: implementation-use-flatlist
     description: Must implement list behavior using FlatList APIs relevant to this task.
