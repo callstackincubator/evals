@@ -1,1 +1,1 @@
-Implement a card that supports both single-tap and double-tap actions, where double-tap wins and single-tap does not fire accidentally when the second tap arrives in time, and keeps gesture-runtime outcome updates to React minimal and deterministic.
+Implement a tappable card with both single-tap and double-tap behaviors where double-tap wins when the second tap arrives in time, and show one deterministic outcome label for the winning gesture only.
