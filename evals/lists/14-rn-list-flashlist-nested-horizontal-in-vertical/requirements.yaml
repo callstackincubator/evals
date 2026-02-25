@@ -9,3 +9,6 @@ requirements:
     description: Must align nested list implementation with FlashList guidance for parent-child list combinations.
   - id: stable-carousel-identity
     description: Must keep carousel item identity stable so nested list updates do not cause render artifacts.
+
+  - id: implementation-use-flashlist
+    description: Must implement list behavior using FlashList APIs relevant to this task.

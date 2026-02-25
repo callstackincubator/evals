@@ -10,3 +10,6 @@ requirements:
     description: Must keep writes scoped to the opened transaction to avoid out of scope races.
   - id: rollback-on-failure
     description: Must enforce commit rollback behavior so failed operations do not partially apply writes.
+
+  - id: implementation-use-sqlite
+    description: Must implement persistence behavior using SQLite APIs relevant to this task.

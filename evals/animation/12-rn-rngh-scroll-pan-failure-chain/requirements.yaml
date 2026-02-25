@@ -9,3 +9,6 @@ requirements:
     description: Must avoid dead-zone behavior where neither scroll nor swipe responds.
   - id: deterministic-axis-thresholds
     description: Must define explicit axis thresholds or activation offsets for resolving competing gestures.
+
+  - id: implementation-use-rngh-gestures
+    description: Must implement gesture behavior with react-native-gesture-handler primitives relevant to this task.

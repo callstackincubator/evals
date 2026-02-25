@@ -7,3 +7,7 @@ requirements:
     description: Must map deep-link paths through nested navigators to Thread route with id param.
   - id: thread-id-from-link
     description: Must expose thread id from deep-link params to the Thread screen.
+  - id: implementation-use-react-navigation-static-api
+    description: Must define navigation with React Navigation static APIs (object-based create*Navigator({ screens: ... })) and createStaticNavigation.
+  - id: implementation-use-native-navigation
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts in React Native.

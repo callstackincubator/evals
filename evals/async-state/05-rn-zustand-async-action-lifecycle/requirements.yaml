@@ -10,3 +10,6 @@ requirements:
     description: Must implement the fetch as a Zustand async action that updates store state via set.
   - id: error-reset-or-retry-path
     description: Must provide deterministic error handling with a clear retry or reset path.
+
+  - id: implementation-use-zustand
+    description: Must implement state behavior using Zustand store/actions/selectors relevant to this task.

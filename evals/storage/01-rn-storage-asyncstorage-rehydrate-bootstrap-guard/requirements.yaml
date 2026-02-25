@@ -10,3 +10,6 @@ requirements:
     description: Must guard JSON parse and missing-key paths with safe defaults instead of crashing hydration.
   - id: single-bootstrap-read-path
     description: Must centralize startup hydration into a single deterministic bootstrap read path.
+
+  - id: implementation-use-asyncstorage
+    description: Must implement persistence behavior using AsyncStorage APIs relevant to this task.

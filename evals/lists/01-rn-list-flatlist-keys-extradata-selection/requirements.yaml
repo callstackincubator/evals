@@ -9,3 +9,6 @@ requirements:
     description: Must wire FlatList extraData (or equivalent immutable dependency path) so selected-row UI updates are deterministic.
   - id: no-item-key-anti-pattern
     description: Must avoid forcing per-row remount via unstable key usage inside renderItem output.
+
+  - id: implementation-use-flatlist
+    description: Must implement list behavior using FlatList APIs relevant to this task.

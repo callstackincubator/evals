@@ -9,3 +9,6 @@ requirements:
     description: Must coordinate sticky footer position with keyboard animation values without overlap glitches.
   - id: interactive-dismiss-stability
     description: Must keep layout stable during interactive keyboard dismissal and refocus transitions.
+
+  - id: implementation-use-keyboard-controller
+    description: Must implement the keyboard interaction using react-native-keyboard-controller APIs relevant to this task.

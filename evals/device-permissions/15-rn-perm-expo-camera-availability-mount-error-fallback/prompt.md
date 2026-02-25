@@ -1,1 +1,1 @@
-Build an expo-camera screen that validates camera availability and handles mount errors with fallback actions instead of assuming permission-granted means usable hardware.
+Build an expo-camera screen that validates camera availability and handles mount errors with fallback actions instead of assuming permission-granted means usable hardware. Use React Native permission-handling best-practices for the targeted permission library implementation.

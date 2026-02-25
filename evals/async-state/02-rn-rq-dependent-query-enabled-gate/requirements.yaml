@@ -10,3 +10,6 @@ requirements:
     description: Must model upstream and dependent queries with explicit and distinct query keys.
   - id: safe-initial-dependent-state
     description: Must keep dependent-query state safe before enablement, avoiding premature network calls and invalid-id requests.
+
+  - id: implementation-use-react-query
+    description: Must implement async state behavior using @tanstack/react-query primitives relevant to this task.

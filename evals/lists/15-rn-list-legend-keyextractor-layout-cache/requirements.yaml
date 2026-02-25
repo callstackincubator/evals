@@ -9,3 +9,6 @@ requirements:
     description: Must provide a stable unique keyExtractor suitable for layout-cache reuse.
   - id: reorder-update-safety
     description: Must preserve correct rendering after reorder/insert updates without key collisions.
+
+  - id: implementation-use-legend-list
+    description: Must implement list behavior using Legend List APIs relevant to this task.

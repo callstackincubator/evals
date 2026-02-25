@@ -1,1 +1,1 @@
-When switching data filters that may suspend, use React transitions so previous content stays visible and fallback flash is minimized.
+When switching data filters that may suspend, use React transitions so previous content stays visible and fallback flash is minimized. Use React Native async-state best-practices for the targeted state-management implementation.

@@ -1,1 +1,1 @@
-Build a SectionList with sticky section headers and stable keys for both sections and rows so reordering sections does not corrupt rendering.
+Build a SectionList with sticky section headers and stable keys for both sections and rows so reordering sections does not corrupt rendering. Use React Native list-performance best-practices for the targeted list implementation.

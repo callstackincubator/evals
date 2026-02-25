@@ -10,3 +10,6 @@ requirements:
     description: Must use useDeferredValue for expensive list updates derived from search input.
   - id: stale-results-indicator
     description: Must render a deterministic stale-results indicator when deferred list data lags behind current input.
+
+  - id: implementation-use-react-concurrent-primitives
+    description: Must implement this behavior with React concurrent primitives relevant to this task.

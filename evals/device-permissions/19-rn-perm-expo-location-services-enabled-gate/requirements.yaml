@@ -12,3 +12,6 @@ requirements:
     description: Must avoid issuing location reads when services are disabled.
   - id: permission-and-services-state-modeled
     description: Must model permission and services-enabled states independently in the UX flow.
+
+  - id: implementation-use-expo-permission-apis
+    description: Must implement permission handling using Expo permission APIs relevant to this task.

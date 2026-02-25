@@ -1,1 +1,1 @@
-Implement a form screen using keyboard-aware scrolling plus a sticky submit footer so focused fields remain visible and the footer repositions smoothly during keyboard show, hide, and interactive dismiss.
+Implement a form screen using keyboard-aware scrolling plus a sticky submit footer so focused fields remain visible and the footer repositions smoothly during keyboard show, hide, and interactive dismiss. Use React Native animation and gesture best-practices for the targeted implementation.

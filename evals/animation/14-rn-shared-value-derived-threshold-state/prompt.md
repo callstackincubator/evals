@@ -1,1 +1,1 @@
-Implement an interaction where a derived shared value drives a small state machine (idle, active, committed) and updates UI styling and label text consistently at threshold boundaries.
+Implement an interaction where a derived shared value drives a small state machine (idle, active, committed) and updates UI styling and label text consistently at threshold boundaries. Use React Native animation and gesture best-practices for the targeted implementation.

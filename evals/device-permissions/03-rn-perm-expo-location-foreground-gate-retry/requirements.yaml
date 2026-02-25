@@ -12,3 +12,6 @@ requirements:
     description: Must include a denied-state retry action and explicit fallback UX.
   - id: unavailable-or-error-safe-path
     description: Must handle unavailable or failed location reads without crash-oriented control flow.
+
+  - id: implementation-use-expo-permission-apis
+    description: Must implement permission handling using Expo permission APIs relevant to this task.

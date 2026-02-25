@@ -1,1 +1,1 @@
-Optimize a FlatList feed so updating one row's state does not trigger avoidable re-render work in unrelated rows.
+Optimize a FlatList feed so updating one row's state does not trigger avoidable re-render work in unrelated rows. Use React Native list-performance best-practices for the targeted list implementation.

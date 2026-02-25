@@ -10,3 +10,6 @@ requirements:
     description: Must use TanStack Query onlineManager by deriving online/offline from React Native connectivity signals (for example NetInfo isConnected/isInternetReachable) and updating onlineManager.setOnline on connectivity transitions.
   - id: controlled-refetch-behavior
     description: Must control refetch behavior across foreground/background and reconnect transitions through focusManager and onlineManager state changes (including duplicate-transition guards) so refetch storms are avoided; explicit QueryClient refetch default overrides are optional.
+
+  - id: implementation-use-react-query
+    description: Must implement async state behavior using @tanstack/react-query primitives relevant to this task.

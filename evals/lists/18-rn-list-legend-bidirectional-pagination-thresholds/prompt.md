@@ -1,1 +1,1 @@
-Implement bidirectional pagination with LegendList using onStartReached and onEndReached, with strict duplicate-trigger guards and deterministic loading transitions.
+Implement bidirectional pagination with LegendList using onStartReached and onEndReached, with strict duplicate-trigger guards and deterministic loading transitions. Use React Native list-performance best-practices for the targeted list implementation.

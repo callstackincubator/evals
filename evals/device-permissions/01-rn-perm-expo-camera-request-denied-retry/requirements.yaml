@@ -12,3 +12,6 @@ requirements:
     description: Must provide explicit denied or cannot-ask-again recovery actions (retry and settings guidance/action).
   - id: degraded-path-no-crash
     description: Must include a degraded UX path when camera permission is unavailable instead of failing silently.
+
+  - id: implementation-use-expo-permission-apis
+    description: Must implement permission handling using Expo permission APIs relevant to this task.

@@ -9,3 +9,6 @@ requirements:
     description: Must use extraData or immutable section updates so filtered output refreshes reliably.
   - id: empty-state-correctness
     description: Must render empty-list behavior when filter removes all visible rows.
+
+  - id: implementation-use-sectionlist
+    description: Must implement list behavior using SectionList APIs relevant to this task.

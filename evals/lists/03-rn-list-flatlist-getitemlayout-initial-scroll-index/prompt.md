@@ -1,1 +1,1 @@
-Create a FlatList that opens at a non-zero initialScrollIndex and supports deterministic scrollToIndex behavior for fixed-height rows.
+Create a FlatList that opens at a non-zero initialScrollIndex and supports deterministic scrollToIndex behavior for fixed-height rows. Use React Native list-performance best-practices for the targeted list implementation.

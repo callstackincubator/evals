@@ -1,1 +1,1 @@
-Implement an expo-image-picker capture entry that handles camera-unavailable environments and falls back to gallery selection without breaking permission flows.
+Implement an expo-image-picker capture entry that handles camera-unavailable environments and falls back to gallery selection without breaking permission flows. Use React Native permission-handling best-practices for the targeted permission library implementation.

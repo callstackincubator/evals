@@ -12,3 +12,6 @@ requirements:
     description: Must avoid stale blocked-state UI when permission changed in system settings.
   - id: idempotent-resume-handling
     description: Must keep resume recheck logic idempotent without duplicate transition side effects.
+
+  - id: implementation-use-react-native-permissions
+    description: Must implement permission handling using react-native-permissions APIs relevant to this task.

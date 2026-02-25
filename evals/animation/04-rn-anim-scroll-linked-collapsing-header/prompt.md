@@ -1,1 +1,1 @@
-Implement a scrolling feed with a header that collapses smoothly as the user scrolls and expands back when scrolling up, using scroll-linked animation state.
+Implement a scrolling feed with a header that collapses smoothly as the user scrolls and expands back when scrolling up, using scroll-linked animation state. Use React Native animation and gesture best-practices for the targeted implementation.

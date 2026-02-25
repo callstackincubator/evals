@@ -1,1 +1,1 @@
-Implement MMKV storage with separate instances for global preferences and user scoped data, and ensure sign-out resets only user data.
+Implement MMKV storage with separate instances for global preferences and user scoped data, and ensure sign-out resets only user data. Use React Native persistence best-practices for the targeted storage implementation.

@@ -13,7 +13,7 @@ requirements:
     description: Must use createNativeStackNavigator to define the stack navigator with at least 2 screens defined.
   - id: implementation-use-create-static-navigation
     description: Must use createStaticNavigation to define the navigation wrapper component.
-  - id: implementation-use-import-native-stack-navigator
-    description: Must have imports from @react-navigation/native-stack and @react-navigation/native.
   - id: implementation-use-use-navigation
     description: Must use useNavigation to get the navigation object.
+  - id: implementation-use-native-navigation
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts in React Native.

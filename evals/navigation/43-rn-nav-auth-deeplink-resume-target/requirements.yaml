@@ -7,3 +7,7 @@ requirements:
     description: Must defer navigation to a protected route when the user is unauthenticated.
   - id: resume-target-post-auth
     description: Must navigate to the originally intended destination after successful authentication.
+  - id: implementation-use-react-navigation-static-api
+    description: Must define navigation with React Navigation static APIs (object-based create*Navigator({ screens: ... })) and createStaticNavigation.
+  - id: implementation-use-native-navigation
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts in React Native.

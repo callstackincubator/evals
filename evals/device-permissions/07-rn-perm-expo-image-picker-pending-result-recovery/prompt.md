@@ -1,1 +1,1 @@
-Harden expo-image-picker on Android by restoring pending picker results after activity recreation and feeding them through the same success pipeline.
+Harden expo-image-picker on Android by restoring pending picker results after activity recreation and feeding them through the same success pipeline. Use React Native permission-handling best-practices for the targeted permission library implementation.

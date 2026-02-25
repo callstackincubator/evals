@@ -1,1 +1,1 @@
-Add a create-item mutation that refreshes the related list using TanStack Query invalidation after successful completion.
+Add a create-item mutation that refreshes the related list using TanStack Query invalidation after successful completion. Use React Native async-state best-practices for the targeted state-management implementation.

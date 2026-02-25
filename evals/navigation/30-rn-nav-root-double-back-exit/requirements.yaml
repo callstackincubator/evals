@@ -7,3 +7,7 @@ requirements:
     description: Must require two back presses within a deterministic time window before exiting from root.
   - id: root-only-handler
     description: Must scope this behavior to root navigation context rather than all screens.
+  - id: implementation-use-react-navigation-static-api
+    description: Must define navigation with React Navigation static APIs (object-based create*Navigator({ screens: ... })) and createStaticNavigation.
+  - id: implementation-use-native-navigation
+    description: Must implement this flow with React Navigation native navigation primitives and route contracts in React Native.

@@ -1,1 +1,1 @@
-Add an expo-location foreground location flow that requests permission, retries after denial, and degrades cleanly when access is unavailable.
+Add an expo-location foreground location flow that requests permission, retries after denial, and degrades cleanly when access is unavailable. Use React Native permission-handling best-practices for the targeted permission library implementation.

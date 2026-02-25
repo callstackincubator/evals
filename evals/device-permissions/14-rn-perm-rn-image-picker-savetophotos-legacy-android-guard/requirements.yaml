@@ -12,3 +12,6 @@ requirements:
     description: Must degrade gracefully when save permission is unavailable instead of failing capture flow.
   - id: capture-result-preserved-on-save-failure
     description: Must preserve usable capture result data even when save-to-photos write fails.
+
+  - id: implementation-use-react-native-image-picker-permissions
+    description: Must implement media permission-aware behavior using react-native-image-picker APIs relevant to this task.

@@ -1,1 +1,1 @@
-Build a vertically scrolling FlashList feed where some rows contain horizontal carousels, while keeping parent/child list architecture compatible with FlashList performance guidance.
+Build a vertically scrolling FlashList feed where some rows contain horizontal carousels, while keeping parent/child list architecture compatible with FlashList performance guidance. Use React Native list-performance best-practices for the targeted list implementation.

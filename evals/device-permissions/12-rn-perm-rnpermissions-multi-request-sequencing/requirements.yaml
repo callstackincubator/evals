@@ -12,3 +12,6 @@ requirements:
     description: Must include request-path handling for Android blocked detection limitations in check-only APIs.
   - id: per-permission-recovery-actions
     description: Must provide retry or settings recovery actions per denied or blocked permission.
+
+  - id: implementation-use-react-native-permissions
+    description: Must implement permission handling using react-native-permissions APIs relevant to this task.

@@ -9,3 +9,6 @@ requirements:
     description: Must update card translation through Reanimated shared values during gesture updates.
   - id: deterministic-snap-on-release
     description: Must resolve release to a deterministic snap point based on velocity and or position thresholds.
+
+  - id: implementation-use-reanimated
+    description: Must implement animation behavior with react-native-reanimated primitives relevant to this task.

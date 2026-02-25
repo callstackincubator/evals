@@ -1,1 +1,1 @@
-Add an expo-location flow that distinguishes permission grant from device location-services availability and degrades correctly when services are disabled.
+Add an expo-location flow that distinguishes permission grant from device location-services availability and degrades correctly when services are disabled. Use React Native permission-handling best-practices for the targeted permission library implementation.

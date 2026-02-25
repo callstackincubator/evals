@@ -1,1 +1,1 @@
-Implement an expandable details card where tapping the header toggles between collapsed and expanded states with a spring-based animation.
+Implement an expandable details card where tapping the header toggles between collapsed and expanded states with a spring-based animation. Use React Native animation and gesture best-practices for the targeted implementation.

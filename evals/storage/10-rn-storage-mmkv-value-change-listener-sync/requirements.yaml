@@ -10,3 +10,6 @@ requirements:
     description: Must update UI state from listener events instead of periodic polling.
   - id: listener-cleanup
     description: Must unsubscribe listeners during cleanup to avoid leaks and duplicate handlers.
+
+  - id: implementation-use-mmkv
+    description: Must implement persistence behavior using MMKV APIs relevant to this task.

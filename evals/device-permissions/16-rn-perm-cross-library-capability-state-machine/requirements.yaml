@@ -12,3 +12,6 @@ requirements:
     description: Must provide deterministic degraded UX and retry or settings recovery actions for each capability.
   - id: resume-time-recheck
     description: Must include re-check behavior on app resume to avoid stale assumptions about previously granted permissions.
+
+  - id: implementation-use-cross-library-permission-normalization
+    description: Must implement permission status normalization across the targeted React Native permission libraries in this task.

@@ -1,1 +1,1 @@
-Add a global compose modal above tab navigation so users can launch it from any tab and dismiss back to the same tab context.
+Add a global compose modal above tab navigation so users can launch it from any tab and dismiss back to the same tab context. Use latest React Navigation API.

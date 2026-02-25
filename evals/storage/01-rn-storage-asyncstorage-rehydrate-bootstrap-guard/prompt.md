@@ -1,1 +1,1 @@
-Build an app bootstrap flow that rehydrates session and draft data from AsyncStorage and keeps the UI behind a deterministic loading gate until hydration completes.
+Build an app bootstrap flow that rehydrates session and draft data from AsyncStorage and keeps the UI behind a deterministic loading gate until hydration completes. Use React Native persistence best-practices for the targeted storage implementation.

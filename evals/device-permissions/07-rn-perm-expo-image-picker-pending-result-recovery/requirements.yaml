@@ -12,3 +12,6 @@ requirements:
     description: Must avoid duplicate processing when pending and fresh picker responses overlap.
   - id: pending-result-cancel-error-branch
     description: Must preserve cancel and error branches for pending-result restoration path.
+
+  - id: implementation-use-expo-permission-apis
+    description: Must implement permission handling using Expo permission APIs relevant to this task.

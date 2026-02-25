@@ -10,3 +10,6 @@ requirements:
     description: Must transition replay status atomically with transaction protected updates.
   - id: bounded-retry-policy
     description: Must include bounded retry behavior with explicit attempt tracking or backoff policy.
+
+  - id: implementation-use-sqlite
+    description: Must implement persistence behavior using SQLite APIs relevant to this task.

@@ -9,3 +9,6 @@ requirements:
     description: Must use react-native-worklets bridge primitives such as scheduleOnRN and or runOnRN for React-runtime callbacks.
   - id: throttled-or-bounded-react-updates
     description: Must avoid per-frame unbounded React state updates from the worklet bridge path.
+
+  - id: implementation-use-reanimated
+    description: Must implement animation behavior with react-native-reanimated primitives relevant to this task.

@@ -12,3 +12,6 @@ requirements:
     description: Must not assume granted permission guarantees functional camera preview.
   - id: fallback-action-exposed
     description: Must provide an alternate recovery action when preview cannot be mounted.
+
+  - id: implementation-use-expo-permission-apis
+    description: Must implement permission handling using Expo permission APIs relevant to this task.

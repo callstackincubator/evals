@@ -1,1 +1,1 @@
-Build a chat-like FlatList that prepends older messages when reaching the top while preserving visible content position so the viewport does not jump.
+Build a chat-like FlatList that prepends older messages when reaching the top while preserving visible content position so the viewport does not jump. Use React Native list-performance best-practices for the targeted list implementation.

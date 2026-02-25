@@ -12,3 +12,6 @@ requirements:
     description: Must keep limited-access behavior usable when upgrade is declined.
   - id: no-full-access-assumption-from-limited
     description: Must avoid treating limited photo-library access as full grant.
+
+  - id: implementation-use-react-native-permissions
+    description: Must implement permission handling using react-native-permissions APIs relevant to this task.

@@ -12,3 +12,6 @@ requirements:
     description: Must handle empty or missing assets arrays without runtime failure.
   - id: success-assets-consumption
     description: Must process success responses using picker assets data instead of implicit side effects.
+
+  - id: implementation-use-react-native-image-picker-permissions
+    description: Must implement media permission-aware behavior using react-native-image-picker APIs relevant to this task.
