@@ -1,1 +1,1 @@
-Use Jotai loadable patterns to handle an async atom without Suspense and render explicit loading data and error states.
+Handle an async Jotai atom outside a Suspense boundary and render loading, data, and error states.

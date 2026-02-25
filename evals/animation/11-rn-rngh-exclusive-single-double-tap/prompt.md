@@ -1,1 +1,1 @@
-Implement a tappable card with both single-tap and double-tap behaviors where double-tap wins when the second tap arrives in time, and show one deterministic outcome label for the winning gesture only.
+Implement a tappable card with both single-tap and double-tap behaviors.

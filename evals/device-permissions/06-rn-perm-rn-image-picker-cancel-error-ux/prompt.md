@@ -1,1 +1,1 @@
-Integrate react-native-image-picker camera and gallery launch flows with deterministic handling for cancellations, permission errors, and unavailable hardware paths.
+Integrate react-native-image-picker camera and gallery flows with cancellation, permission, and unavailable-hardware handling.

@@ -1,1 +1,1 @@
-Add an edit screen that blocks accidental navigation away when there are unsaved changes, and allows leaving only after explicit confirmation.
+Add an edit screen that asks for confirmation before leaving with unsaved changes.

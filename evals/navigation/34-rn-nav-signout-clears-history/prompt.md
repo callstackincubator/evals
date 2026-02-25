@@ -1,1 +1,1 @@
-When signing out from the app, clear protected navigation history and return users to auth screens without back access to private routes.
+When signing out, return users to auth screens and remove access to protected route history.

@@ -1,1 +1,1 @@
-Add an MMKV custom path setup and guard against path drift so persisted values survive restarts and environment transitions.
+Add an MMKV custom path setup so persisted values survive restarts and environment transitions.
