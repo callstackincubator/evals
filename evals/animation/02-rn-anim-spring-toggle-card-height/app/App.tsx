@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 
 type DetailRow = {
   label: string
@@ -26,13 +26,13 @@ export default function App() {
           <Text style={styles.action}>Toggle</Text>
         </Pressable>
 
-        <View style={styles.details}>
+        <ScrollView style={styles.details}>
           {SHIPMENT_DETAILS.map((row) => (
             <Text key={row.label} style={styles.copy}>
               {row.label}: {row.value}
             </Text>
           ))}
-        </View>
+        </ScrollView>
       </View>
     </View>
   )
