@@ -6,7 +6,7 @@ requirements:
   - id: rngh-gesturedetector-usage
     description: Must use GestureDetector with react-native-gesture-handler gesture objects.
   - id: implementation-rngh-exclusive-tap-contract
-    description: Must implement tap handling with Gesture.Exclusive (or equivalent explicit exclusivity) using current Gesture API callbacks and no legacy useAnimatedGestureHandler.
+    description: Must implement tap handling with Gesture.Exclusive using current Gesture API callbacks and no legacy useAnimatedGestureHandler.
   - id: schedule-on-rn-tap-outcome-bridge
     description: Must use scheduleOnRN for worklet-to-React tap outcome updates and MUST NOT use deprecated runOnJS.
   - id: exclusive-tap-composition
