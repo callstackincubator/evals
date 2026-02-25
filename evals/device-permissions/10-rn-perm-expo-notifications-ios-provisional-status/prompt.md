@@ -1,1 +1,1 @@
-Implement an expo-notifications permission gate that treats iOS provisional authorization as a first-class state instead of collapsing all non-denied states into full grant. Use React Native permission-handling best-practices for the targeted permission library implementation.
+Implement an expo-notifications permission gate that treats iOS provisional authorization as a first-class state instead of collapsing all non-denied states into full grant.

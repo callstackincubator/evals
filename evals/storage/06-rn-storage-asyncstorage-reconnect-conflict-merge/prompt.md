@@ -1,1 +1,1 @@
-Implement reconnect sync for locally edited entities where server updates may conflict, apply a deterministic merge strategy before writing final state, and persist both merged outcomes and unresolved conflict markers. Use React Native persistence best-practices for the targeted storage implementation.
+Implement reconnect sync for locally edited entities where server updates may conflict, apply a deterministic merge strategy before writing final state, and persist both merged outcomes and unresolved conflict markers.

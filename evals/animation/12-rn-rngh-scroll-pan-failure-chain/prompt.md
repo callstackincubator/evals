@@ -1,1 +1,1 @@
-Build a vertically scrollable container with a horizontal swipe row interaction and enforce deterministic arbitration so horizontal swipes do not deadlock or starve vertical scroll gestures. Use React Native animation and gesture best-practices for the targeted implementation.
+Build a vertically scrollable container with a horizontal swipe row interaction and enforce deterministic arbitration so horizontal swipes do not deadlock or starve vertical scroll gestures.

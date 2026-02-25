@@ -1,1 +1,1 @@
-Build a settings persistence module that reads and writes related AsyncStorage keys in batches using multiGet and multiSet so rehydration remains consistent. Use React Native persistence best-practices for the targeted storage implementation.
+Build a settings persistence module that reads and writes related AsyncStorage keys in batches using multiGet and multiSet so rehydration remains consistent.

@@ -1,1 +1,1 @@
-Implement Expo push registration for Android 13+ where notification channel setup and permission flow are ordered correctly with graceful denied handling. Use React Native permission-handling best-practices for the targeted permission library implementation.
+Implement Expo push registration for Android 13+ where notification channel setup and permission flow are ordered correctly with graceful denied handling.

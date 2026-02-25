@@ -1,1 +1,1 @@
-Tune a large FlatList for responsiveness by configuring virtualization window and batch props with explicit tradeoffs, then keep interactions responsive under scroll. Use React Native list-performance best-practices for the targeted list implementation.
+Tune a large FlatList for responsiveness by configuring virtualization window and batch props with explicit tradeoffs, then keep interactions responsive under scroll.

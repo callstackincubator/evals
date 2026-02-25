@@ -1,1 +1,1 @@
-Implement expo-location background onboarding that requests foreground permission first, then background permission with a rationale before Android settings redirection. Use React Native permission-handling best-practices for the targeted permission library implementation.
+Implement expo-location background onboarding that requests foreground permission first, then background permission with a rationale before Android settings redirection.

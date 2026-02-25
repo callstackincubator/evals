@@ -1,1 +1,1 @@
-Implement MMKV configuration for app and extension style sharing using multi-process mode and app group compatible path settings, and include a refresh path when shared keys are updated from another process. Use React Native persistence best-practices for the targeted storage implementation.
+Implement MMKV configuration for app and extension style sharing using multi-process mode and app group compatible path settings, and include a refresh path when shared keys are updated from another process.

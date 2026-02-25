@@ -1,1 +1,1 @@
-Keep text input responsive while rendering an expensive filtered list by using useDeferredValue and showing a stale-results indicator. Use React Native async-state best-practices for the targeted state-management implementation.
+Keep text input responsive while rendering an expensive filtered list by using useDeferredValue and showing a stale-results indicator.

@@ -1,1 +1,1 @@
-Enable LegendList recycleItems for a high-volume feed and ensure row-local transient state is safe when item containers are reused. Use React Native list-performance best-practices for the targeted list implementation.
+Enable LegendList recycleItems for a high-volume feed and ensure row-local transient state is safe when item containers are reused.

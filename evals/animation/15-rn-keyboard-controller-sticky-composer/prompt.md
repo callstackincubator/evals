@@ -1,1 +1,1 @@
-Build a chat composer that tracks keyboard movement using react-native-keyboard-controller and animates a sticky input bar with shared values so it stays attached to the keyboard on iOS and Android. Use React Native animation and gesture best-practices for the targeted implementation.
+Build a chat composer that tracks keyboard movement using react-native-keyboard-controller and animates a sticky input bar with shared values so it stays attached to the keyboard on iOS and Android.

@@ -1,1 +1,1 @@
-Implement a card that supports both single-tap and double-tap actions, where double-tap wins and single-tap does not fire accidentally when the second tap arrives in time. Use React Native animation and gesture best-practices for the targeted implementation.
+Implement a card that supports both single-tap and double-tap actions, where double-tap wins and single-tap does not fire accidentally when the second tap arrives in time.

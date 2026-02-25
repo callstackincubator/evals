@@ -1,1 +1,1 @@
-Prevent stale network responses from overwriting newer user intent in a Zustand async action by guarding commits with request identity. Use React Native async-state best-practices for the targeted state-management implementation.
+Prevent stale network responses from overwriting newer user intent in a Zustand async action by guarding commits with request identity.

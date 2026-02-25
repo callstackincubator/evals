@@ -1,1 +1,1 @@
-Use Jotai loadable patterns to handle an async atom without Suspense and render explicit loading data and error states. Use React Native async-state best-practices for the targeted state-management implementation.
+Use Jotai loadable patterns to handle an async atom without Suspense and render explicit loading data and error states.

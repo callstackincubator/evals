@@ -1,1 +1,1 @@
-Add live filtering to a SectionList where query changes update row visibility and empty states correctly without stale section artifacts. Use React Native list-performance best-practices for the targeted list implementation.
+Add live filtering to a SectionList where query changes update row visibility and empty states correctly without stale section artifacts.

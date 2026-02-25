@@ -1,1 +1,1 @@
-Build an offline first mutation outbox in AsyncStorage where user actions enqueue while offline and replay with retry when connectivity returns. Use React Native persistence best-practices for the targeted storage implementation.
+Build an offline first mutation outbox in AsyncStorage where user actions enqueue while offline and replay with retry when connectivity returns.

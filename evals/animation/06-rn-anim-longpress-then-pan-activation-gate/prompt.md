@@ -1,1 +1,1 @@
-Implement an interaction where a card becomes draggable only after a long-press gate passes, preventing accidental drag from simple taps. Use React Native animation and gesture best-practices for the targeted implementation.
+Implement an interaction where a card becomes draggable only after a long-press gate passes, preventing accidental drag from simple taps.

@@ -1,1 +1,1 @@
-Persist user preferences with Jotai atomWithStorage on asynchronous storage and guard dependent UI until rehydration completes. Use React Native async-state best-practices for the targeted state-management implementation.
+Persist user preferences with Jotai atomWithStorage on asynchronous storage and guard dependent UI until rehydration completes.

@@ -1,1 +1,1 @@
-Build an interaction where a UI-thread worklet computes high-frequency animation state and then schedules a lightweight React-side update through the worklets bridge only at controlled points. Use React Native animation and gesture best-practices for the targeted implementation.
+Build an interaction where a UI-thread worklet computes high-frequency animation state and then schedules a lightweight React-side update through the worklets bridge only at controlled points.

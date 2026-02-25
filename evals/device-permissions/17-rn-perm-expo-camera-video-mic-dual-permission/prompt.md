@@ -1,1 +1,1 @@
-Build an expo-camera video capture flow that requests camera and microphone permissions separately, supports partial-grant fallback, and only enables recording when both permissions are granted. Use React Native permission-handling best-practices for the targeted permission library implementation.
+Build an expo-camera video capture flow that requests camera and microphone permissions separately, supports partial-grant fallback, and only enables recording when both permissions are granted.

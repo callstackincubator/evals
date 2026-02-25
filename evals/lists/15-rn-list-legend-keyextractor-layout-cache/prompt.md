@@ -1,1 +1,1 @@
-Implement LegendList with a stable keyExtractor and layout reuse-friendly data updates so reordering and incremental inserts do not corrupt item positioning. Use React Native list-performance best-practices for the targeted list implementation.
+Implement LegendList with a stable keyExtractor and layout reuse-friendly data updates so reordering and incremental inserts do not corrupt item positioning.

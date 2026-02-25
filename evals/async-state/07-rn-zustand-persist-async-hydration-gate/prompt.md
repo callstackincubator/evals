@@ -1,1 +1,1 @@
-Persist auth session state in Zustand with asynchronous storage hydration and gate protected UI until hydration is complete. Use React Native async-state best-practices for the targeted state-management implementation.
+Persist auth session state in Zustand with asynchronous storage hydration and gate protected UI until hydration is complete.

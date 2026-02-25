@@ -1,1 +1,1 @@
-Configure TanStack Query for React Native AppState and connectivity so refetch behavior is focus-aware and network-aware across foreground and background transitions. Use React Native async-state best-practices for the targeted state-management implementation.
+Configure TanStack Query for React Native AppState and connectivity so refetch behavior is focus-aware and network-aware across foreground and background transitions.

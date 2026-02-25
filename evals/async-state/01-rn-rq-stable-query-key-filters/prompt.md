@@ -1,1 +1,1 @@
-Implement a filtered transactions list with TanStack Query where filter and pagination inputs map to stable serializable query keys so refetches happen only when meaningful inputs change. Use React Native async-state best-practices for the targeted state-management implementation.
+Implement a filtered transactions list with TanStack Query where filter and pagination inputs map to stable serializable query keys so refetches happen only when meaningful inputs change.

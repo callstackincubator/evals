@@ -1,1 +1,1 @@
-Use react-native-image-picker with includeExtra enabled while handling permission and metadata variability so feature behavior remains deterministic. Use React Native permission-handling best-practices for the targeted permission library implementation.
+Use react-native-image-picker with includeExtra enabled while handling permission and metadata variability so feature behavior remains deterministic.

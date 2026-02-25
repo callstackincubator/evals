@@ -1,1 +1,1 @@
-Build an iOS location flow in expo-location where foreground access works first, background upgrade handles Allow Once or When In Use limits, and users get settings recovery when background permission cannot be granted in-session. Use React Native permission-handling best-practices for the targeted permission library implementation.
+Build an iOS location flow in expo-location where foreground access works first, background upgrade handles Allow Once or When In Use limits, and users get settings recovery when background permission cannot be granted in-session.

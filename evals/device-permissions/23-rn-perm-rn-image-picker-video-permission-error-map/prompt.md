@@ -1,1 +1,1 @@
-Integrate react-native-image-picker video capture with explicit mapping of cancellation, camera or microphone permission errors, and unavailable-hardware outcomes. Use React Native permission-handling best-practices for the targeted permission library implementation.
+Integrate react-native-image-picker video capture with explicit mapping of cancellation, camera or microphone permission errors, and unavailable-hardware outcomes.

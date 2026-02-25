@@ -1,1 +1,1 @@
-Add AsyncStorage schema versioning and migration logic so old persisted payloads migrate forward exactly once during app upgrades. Use React Native persistence best-practices for the targeted storage implementation.
+Add AsyncStorage schema versioning and migration logic so old persisted payloads migrate forward exactly once during app upgrades.
