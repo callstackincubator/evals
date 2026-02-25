@@ -67,12 +67,12 @@ The eval pack covers the most important guides, troubleshooting topics, and APIs
 - state persistence, URL precedence, and migration: `16`, `31`, `44`
 - analytics tracking from root container: `32`
 - reset/history control with navigation actions: `21`, `34`
-- native stack and `react-native-screens` policies: `40`, `41`, `46`, `49`
+- native stack and `react-native-screens` policies: `41`, `46`, `49`
 - navigation ref API and readiness guard: `28`
 - troubleshooting non-serializable params: `08`
 - static API + TypeScript param list safety: `50`
 
-## active navigation eval set (50)
+## active navigation eval set (49)
 
 ### easy (20)
 
@@ -119,9 +119,8 @@ The eval pack covers the most important guides, troubleshooting topics, and APIs
 38. [`38-rn-nav-avoid-duplicate-current-route`](./38-rn-nav-avoid-duplicate-current-route)
 39. [`39-rn-nav-tabs-with-modal-layer`](./39-rn-nav-tabs-with-modal-layer)
 
-### hard (11)
+### hard (10)
 
-40. [`40-rn-screens-native-stack-freeze-policy`](./40-rn-screens-native-stack-freeze-policy)
 41. [`41-rn-screens-detach-tabs-draft-retention`](./41-rn-screens-detach-tabs-draft-retention)
 42. [`42-rn-nav-android-transparent-modal-back`](./42-rn-nav-android-transparent-modal-back)
 43. [`43-rn-nav-auth-deeplink-resume-target`](./43-rn-nav-auth-deeplink-resume-target)
