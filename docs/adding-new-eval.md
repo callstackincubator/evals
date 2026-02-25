@@ -38,6 +38,15 @@ requirements:
 
 ## Technical eval structure
 
+- Keep evals self-contained
+- Follow starter baseline rules in [`starter-scaffold-contract.md`](./starter-scaffold-contract.md)
+- Keep starter apps minimal: shells + named stubs, no eager behavior implementation
+- Keep requirement descriptions concrete and verifiable
+- Keep requirement descriptions atomic (single check per requirement)
+- Include only files that are needed for judging
+- Prefer small input file sets to control judge token usage
+- Prompts must be forward-looking implementation asks, as if requested by a regular app developer
+
 For sibling evals inside one library subgroup:
 
 - Keep shared baseline requirements small (target: at most 2 shared IDs).

@@ -1,21 +1,52 @@
-import { StatusBar } from 'expo-status-bar'
+import { createDrawerNavigator } from '@react-navigation/drawer'
+import { createStaticNavigation } from '@react-navigation/native'
 import { StyleSheet, Text, View } from 'react-native'
 
-export default function App() {
+function AccountScreen() {
   return (
-    <View style={styles.container}>
-      <Text>Implement: Drawer with Account and Help</Text>
-      <StatusBar style="auto" />
+    <View style={styles.screen}>
+      <Text style={styles.title}>Account</Text>
     </View>
   )
 }
 
+function HelpScreen() {
+  return (
+    <View style={styles.screen}>
+      <Text style={styles.title}>Help</Text>
+    </View>
+  )
+}
+
+const Drawer = createDrawerNavigator({
+  screens: {
+    Account: AccountScreen,
+    Help: HelpScreen,
+  },
+})
+
+const Navigation = createStaticNavigation(Drawer)
+
+export default function App() {
+  return <Navigation />
+}
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
+  screen: {
     alignItems: 'center',
+    backgroundColor: '#fff',
+    flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
+    rowGap: 8,
+  },
+  subtitle: {
+    color: '#6b7280',
+    textAlign: 'center',
+  },
+  title: {
+    color: '#111827',
+    fontSize: 20,
+    fontWeight: '600',
   },
 })

@@ -1,21 +1,57 @@
-import { StatusBar } from 'expo-status-bar'
-import { StyleSheet, Text, View } from 'react-native'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { Button, StyleSheet, Text, View } from 'react-native'
 
-export default function App() {
+function HomeScreen() {
+  const navigation = useNavigation()
+
   return (
-    <View style={styles.container}>
-      <Text>Implement: Back behavior parity across platforms</Text>
-      <StatusBar style="auto" />
+    <View style={styles.screen}>
+      <Text style={styles.title}>Home</Text>
+      <Text style={styles.subtitle}>Navigation starter scaffold</Text>
+      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
     </View>
   )
 }
 
+function DetailsScreen() {
+  return (
+    <View style={styles.screen}>
+      <Text style={styles.title}>Details</Text>
+      <Text style={styles.subtitle}>Implement eval behavior from this shell.</Text>
+    </View>
+  )
+}
+
+const Stack = createNativeStackNavigator({
+  screens: {
+    Home: HomeScreen,
+    Details: DetailsScreen,
+  },
+})
+
+const Navigation = createStaticNavigation(Stack)
+
+export default function App() {
+  return <Navigation />
+}
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
+  screen: {
     alignItems: 'center',
+    backgroundColor: '#fff',
+    flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
+    rowGap: 8,
+  },
+  subtitle: {
+    color: '#6b7280',
+    textAlign: 'center',
+  },
+  title: {
+    color: '#111827',
+    fontSize: 20,
+    fontWeight: '600',
   },
 })
