@@ -1,1 +1,1 @@
-Implement a form screen using keyboard-aware scrolling plus a sticky submit footer so focused fields remain visible and the footer repositions smoothly during keyboard show, hide, and interactive dismiss.
+Using the existing form scaffold, add keyboard-aware scrolling and a sticky submit footer so focused fields remain visible during keyboard show, hide, and interactive dismiss.
