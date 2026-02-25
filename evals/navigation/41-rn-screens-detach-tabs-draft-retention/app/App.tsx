@@ -1,61 +1,42 @@
-import { useState } from 'react'
-
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { createStaticNavigation } from '@react-navigation/native'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-type ComposeDraft = {
-  body: string
+async function loadDraft() {
+  // TODO: implement navigation behavior for this eval
+  return 'pending'
 }
 
-let draftCache: ComposeDraft = {
-  body: '',
-}
+function HomeScreen() {
+  const navigation = useNavigation()
 
-function loadDraft() {
-  // TODO: load draft from durable store
-  return draftCache
-}
-
-function saveDraft(nextDraft: ComposeDraft) {
-  // TODO: persist draft across tab detach/attach
-  draftCache = nextDraft
-}
-
-function FeedScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Feed</Text>
+      <Text style={styles.title}>Home</Text>
+      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
+      <Button title='Call placeholder' onPress={() => loadDraft()} />
+      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
     </View>
   )
 }
 
-function ComposeScreen() {
-  const [draftPreview, setDraftPreview] = useState(loadDraft().body || '(empty)')
-
-  const updateDraftPlaceholder = () => {
-    const nextDraft = { body: 'placeholder-draft' }
-    saveDraft(nextDraft)
-    setDraftPreview(nextDraft.body)
-  }
-
+function DetailsScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Compose</Text>
-      <Text style={styles.subtitle}>Draft: {draftPreview}</Text>
-      <Button title="Call draft placeholders" onPress={updateDraftPlaceholder} />
+      <Text style={styles.title}>Details</Text>
+      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
     </View>
   )
 }
 
-const Tabs = createBottomTabNavigator({
+const Stack = createNativeStackNavigator({
   screens: {
-    Feed: FeedScreen,
-    Compose: ComposeScreen,
+    Home: HomeScreen,
+    Details: DetailsScreen,
   },
 })
 
-const Navigation = createStaticNavigation(Tabs)
+const Navigation = createStaticNavigation(Stack)
 
 export default function App() {
   return <Navigation />

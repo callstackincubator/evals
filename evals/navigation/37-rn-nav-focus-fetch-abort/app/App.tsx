@@ -1,52 +1,37 @@
-import { useState } from 'react'
-
 import { createStaticNavigation, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-type FeedResponse = {
-  label: string
+async function fetchFeedSnapshot() {
+  // TODO: implement navigation behavior for this eval
+  return 'pending'
 }
 
-async function fetchFeedSnapshot(signal?: AbortSignal): Promise<FeedResponse> {
-  // TODO: implement focus-scoped request and cancellation
-  void signal
-  return { label: 'placeholder' }
-}
-
-function FeedScreen() {
+function HomeScreen() {
   const navigation = useNavigation()
-  const [status, setStatus] = useState('idle')
-
-  const runFetchPlaceholder = async () => {
-    await fetchFeedSnapshot()
-    setStatus('fetch-placeholder-called')
-  }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Feed</Text>
-      <Text style={styles.subtitle}>Fetch status: {status}</Text>
-      <Button title="Call fetch placeholder" onPress={runFetchPlaceholder} />
-      <Button title="Open details" onPress={() => navigation.navigate('Details')} />
+      <Text style={styles.title}>Home</Text>
+      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
+      <Button title='Call placeholder' onPress={() => fetchFeedSnapshot()} />
+      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
     </View>
   )
 }
 
 function DetailsScreen() {
-  const navigation = useNavigation()
-
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Details</Text>
-      <Button title="Back" onPress={() => navigation.goBack()} />
+      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
     </View>
   )
 }
 
 const Stack = createNativeStackNavigator({
   screens: {
-    Feed: FeedScreen,
+    Home: HomeScreen,
     Details: DetailsScreen,
   },
 })

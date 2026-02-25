@@ -1,57 +1,80 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 
-function runAnimationPlaceholder(progress: Animated.SharedValue<number>) {
-  progress.value = withTiming(progress.value === 1 ? 0 : 1)
+type DetailRow = {
+  label: string
+  value: string
+}
+
+const CARD_TITLE = 'Interaction details'
+
+const DETAILS: DetailRow[] = [
+  { label: 'State', value: 'idle' },
+  { label: 'Target', value: 'not implemented' },
+  { label: 'Notes', value: 'fill behavior using requirement specs' },
+]
+
+function runAnimationPlaceholder() {
+  // TODO: implement animation behavior for this eval
 }
 
 export default function App() {
-  const progress = useSharedValue(0)
-
-  const cardStyle = useAnimatedStyle(() => ({
-    opacity: 0.5 + progress.value * 0.5,
-    transform: [{ scale: 0.95 + progress.value * 0.05 }],
-  }))
-
   return (
     <View style={styles.screen}>
-      <Animated.View style={[styles.card, cardStyle]}>
-        <Text style={styles.title}>Reanimated Starter</Text>
-      </Animated.View>
-      <Pressable style={styles.button} onPress={() => runAnimationPlaceholder(progress)}>
-        <Text style={styles.buttonText}>Run animation placeholder</Text>
-      </Pressable>
+      <View style={styles.card}>
+        <Pressable style={styles.header} onPress={runAnimationPlaceholder}>
+          <Text style={styles.title}>{CARD_TITLE}</Text>
+          <Text style={styles.action}>Run</Text>
+        </Pressable>
+
+        <View style={styles.details}>
+          {DETAILS.map((row) => (
+            <Text key={row.label} style={styles.copy}>
+              {row.label}: {row.value}
+            </Text>
+          ))}
+        </View>
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-  },
-  buttonText: {
-    color: '#fff',
+  action: {
+    color: '#1d4ed8',
+    fontSize: 14,
     fontWeight: '600',
   },
   card: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  copy: {
+    color: '#334155',
+    fontSize: 14,
+    marginBottom: 6,
+  },
+  details: {
+    paddingHorizontal: 18,
+    paddingTop: 4,
+  },
+  header: {
     alignItems: 'center',
-    backgroundColor: '#dbeafe',
-    borderRadius: 12,
-    padding: 18,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 18,
+    paddingTop: 18,
   },
   screen: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#eef2ff',
     flex: 1,
     justifyContent: 'center',
-    rowGap: 12,
+    padding: 20,
   },
   title: {
     color: '#0f172a',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
   },
 })

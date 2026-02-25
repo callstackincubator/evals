@@ -1,28 +1,18 @@
-import * as Location from 'expo-location'
-import { StatusBar } from 'expo-status-bar'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 async function requestForegroundLocationPlaceholder() {
-  // TODO: implement foreground permission flow for this eval
-  return Location.requestForegroundPermissionsAsync()
-}
-
-async function requestBackgroundLocationPlaceholder() {
-  // TODO: implement background/location services handling for this eval
-  return Location.requestBackgroundPermissionsAsync()
+  // TODO: implement permission behavior for this eval
+  return 'pending'
 }
 
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Expo Location Starter</Text>
-      <Pressable style={styles.button} onPress={() => void requestForegroundLocationPlaceholder()}>
-        <Text style={styles.buttonText}>Call foreground placeholder</Text>
+      <Text style={styles.title}>Permissions Starter</Text>
+      <Text style={styles.subtitle}>Implement platform permission flow from this shell.</Text>
+      <Pressable style={styles.button} onPress={() => requestForegroundLocationPlaceholder()}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
       </Pressable>
-      <Pressable style={styles.button} onPress={() => void requestBackgroundLocationPlaceholder()}>
-        <Text style={styles.buttonText}>Call background placeholder</Text>
-      </Pressable>
-      <StatusBar style='auto' />
     </View>
   )
 }
@@ -44,6 +34,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     rowGap: 10,
+  },
+  subtitle: {
+    color: '#6b7280',
+    textAlign: 'center',
   },
   title: {
     color: '#111827',

@@ -1,29 +1,38 @@
-import { createStaticNavigation } from '@react-navigation/native'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { StyleSheet, Text, View } from 'react-native'
+import { Button, StyleSheet, Text, View } from 'react-native'
 
-function LoginScreen() {
+async function runNavigationPlaceholder() {
+  // TODO: implement navigation behavior for this eval
+  return 'pending'
+}
+
+function HomeScreen() {
+  const navigation = useNavigation()
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Login</Text>
-      <Text style={styles.subtitle}>Auth shell starter</Text>
+      <Text style={styles.title}>Home</Text>
+      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
+      <Button title='Call placeholder' onPress={() => runNavigationPlaceholder()} />
+      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
     </View>
   )
 }
 
-function AppHomeScreen() {
+function DetailsScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>App Home</Text>
-      <Text style={styles.subtitle}>Implement auth transition behavior.</Text>
+      <Text style={styles.title}>Details</Text>
+      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
     </View>
   )
 }
 
 const Stack = createNativeStackNavigator({
   screens: {
-    Login: LoginScreen,
-    AppHome: AppHomeScreen,
+    Home: HomeScreen,
+    Details: DetailsScreen,
   },
 })
 

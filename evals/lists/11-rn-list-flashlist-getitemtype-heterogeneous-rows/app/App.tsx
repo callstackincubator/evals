@@ -1,36 +1,54 @@
-import { FlashList } from '@shopify/flash-list'
-import { StyleSheet, Text, View } from 'react-native'
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
 
-type FeedItem = {
+type Row = {
   id: string
   title: string
 }
 
-const FEED_ITEMS: FeedItem[] = Array.from({ length: 40 }, (_, index) => ({
-  id: `feed-${index + 1}`,
-  title: `Feed item ${index + 1}`,
+const ROWS: Row[] = Array.from({ length: 30 }, (_, index) => ({
+  id: `item-${index + 1}`,
+  title: `Row ${index + 1}`,
 }))
+
+function RowItem({ item }: { item: Row }) {
+  return (
+    <View style={styles.row}>
+      <Text style={styles.rowTitle}>{item.title}</Text>
+    </View>
+  )
+}
+
+function runListBehaviorPlaceholder() {
+  // TODO: implement list behavior required by this eval
+}
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>FlashList Scaffold</Text>
-      <Text style={styles.helper}>Build a heterogeneous FlashList timeline (for example text, image, and system rows) with getItemType to keep recycling pools efficient.</Text>
-      <FlashList
-        data={FEED_ITEMS}
-        estimatedItemSize={58}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.row}>
-            <Text style={styles.rowTitle}>{item.title}</Text>
-          </View>
-        )}
-      />
+      <Text style={styles.header}>List Scaffold</Text>
+      <Text style={styles.helper}>Seed data is ready; implement required list behavior.</Text>
+      <Pressable style={styles.button} onPress={runListBehaviorPlaceholder}>
+        <Text style={styles.buttonText}>Run placeholder</Text>
+      </Pressable>
+      <FlatList data={ROWS} renderItem={({ item }) => <RowItem item={item} />} />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  button: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#111827',
+    borderRadius: 8,
+    marginBottom: 8,
+    marginHorizontal: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
   container: {
     backgroundColor: '#fff',
     flex: 1,

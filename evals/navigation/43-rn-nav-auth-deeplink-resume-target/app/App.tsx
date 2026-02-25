@@ -1,41 +1,21 @@
-import { useState } from 'react'
-
-import { createStaticNavigation } from '@react-navigation/native'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-type DeferredNavigationTarget = {
-  name: 'Details'
-  params: { itemId: string }
+async function captureDeferredTarget() {
+  // TODO: implement navigation behavior for this eval
+  return 'pending'
 }
 
-let deferredTarget: DeferredNavigationTarget | null = null
-
-function captureDeferredTarget(target: DeferredNavigationTarget) {
-  // TODO: store deferred deep-link target while signed out
-  deferredTarget = target
-}
-
-function consumeDeferredTarget() {
-  // TODO: resume deferred target after authentication
-  const target = deferredTarget
-  deferredTarget = null
-  return target
-}
-
-function LoginScreen() {
-  const [status, setStatus] = useState('signed-out')
-
-  const runResumePlaceholder = () => {
-    const resumedTarget = consumeDeferredTarget()
-    setStatus(resumedTarget ? 'deferred-target-found' : 'no-deferred-target')
-  }
+function HomeScreen() {
+  const navigation = useNavigation()
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Login</Text>
-      <Text style={styles.subtitle}>Deferred target status: {status}</Text>
-      <Button title="Consume deferred target" onPress={runResumePlaceholder} />
+      <Text style={styles.title}>Home</Text>
+      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
+      <Button title='Call placeholder' onPress={() => captureDeferredTarget()} />
+      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
     </View>
   )
 }
@@ -44,17 +24,14 @@ function DetailsScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Details</Text>
-      <Button
-        title="Capture deferred target"
-        onPress={() => captureDeferredTarget({ name: 'Details', params: { itemId: '42' } })}
-      />
+      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
     </View>
   )
 }
 
 const Stack = createNativeStackNavigator({
   screens: {
-    Login: LoginScreen,
+    Home: HomeScreen,
     Details: DetailsScreen,
   },
 })

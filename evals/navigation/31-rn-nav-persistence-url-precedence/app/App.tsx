@@ -1,41 +1,21 @@
-import { useState } from 'react'
-
 import { createStaticNavigation, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function getInitialUrl() {
-  // TODO: read startup URL from platform/linking layer
-  return null
-}
-
-async function loadPersistedNavigationState() {
-  // TODO: load serialized navigation state
-  return null
-}
-
 async function resolveColdStartSource() {
-  // TODO: enforce URL precedence over persisted state
-  await getInitialUrl()
-  await loadPersistedNavigationState()
-  return 'unresolved'
+  // TODO: implement navigation behavior for this eval
+  return 'pending'
 }
 
 function HomeScreen() {
   const navigation = useNavigation()
-  const [source, setSource] = useState('unknown')
-
-  const runBootstrapPlaceholder = async () => {
-    const nextSource = await resolveColdStartSource()
-    setSource(nextSource)
-  }
 
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Home</Text>
-      <Text style={styles.subtitle}>Cold start source: {source}</Text>
-      <Button title="Call bootstrap placeholder" onPress={runBootstrapPlaceholder} />
-      <Button title="Open details" onPress={() => navigation.navigate('Details')} />
+      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
+      <Button title='Call placeholder' onPress={() => resolveColdStartSource()} />
+      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
     </View>
   )
 }
@@ -44,6 +24,7 @@ function DetailsScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Details</Text>
+      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
     </View>
   )
 }

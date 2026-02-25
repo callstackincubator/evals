@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
 
 type Row = {
   id: string
@@ -18,21 +18,37 @@ function RowItem({ item }: { item: Row }) {
   )
 }
 
+function runListBehaviorPlaceholder() {
+  // TODO: implement list behavior required by this eval
+}
+
 export default function App() {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>List Scaffold</Text>
-      <Text style={styles.helper}>Build a selectable FlatList where tapping a row toggles selected styling.</Text>
-      <FlatList
-        data={ROWS}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <RowItem item={item} />}
-      />
+      <Text style={styles.helper}>Seed data is ready; implement required list behavior.</Text>
+      <Pressable style={styles.button} onPress={runListBehaviorPlaceholder}>
+        <Text style={styles.buttonText}>Run placeholder</Text>
+      </Pressable>
+      <FlatList data={ROWS} renderItem={({ item }) => <RowItem item={item} />} />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  button: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#111827',
+    borderRadius: 8,
+    marginBottom: 8,
+    marginHorizontal: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
   container: {
     backgroundColor: '#fff',
     flex: 1,

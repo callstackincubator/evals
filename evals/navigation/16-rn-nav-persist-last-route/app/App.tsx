@@ -1,38 +1,21 @@
-import { useState } from 'react'
-
 import { createStaticNavigation, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-const NAV_STATE_KEY = 'nav-state-v1'
-const memoryStorage: Record<string, string | undefined> = {}
-
 async function loadPersistedNavigationState() {
-  // TODO: restore and validate persisted navigation state
-  return memoryStorage[NAV_STATE_KEY] ?? null
-}
-
-async function savePersistedNavigationState(state: unknown) {
-  // TODO: persist serialized navigation state
-  memoryStorage[NAV_STATE_KEY] = JSON.stringify(state)
+  // TODO: implement navigation behavior for this eval
+  return 'pending'
 }
 
 function HomeScreen() {
   const navigation = useNavigation()
-  const [status, setStatus] = useState('idle')
-
-  const runPersistencePlaceholder = async () => {
-    await savePersistedNavigationState({ route: 'Home' })
-    await loadPersistedNavigationState()
-    setStatus('persistence-placeholder-called')
-  }
 
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Home</Text>
-      <Text style={styles.subtitle}>Persistence status: {status}</Text>
-      <Button title="Call persistence placeholders" onPress={runPersistencePlaceholder} />
-      <Button title="Open details" onPress={() => navigation.navigate('Details')} />
+      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
+      <Button title='Call placeholder' onPress={() => loadPersistedNavigationState()} />
+      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
     </View>
   )
 }
@@ -41,6 +24,7 @@ function DetailsScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Details</Text>
+      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
     </View>
   )
 }

@@ -1,23 +1,19 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { openDatabaseAsync } from 'expo-sqlite'
 
-async function openDatabasePlaceholder() {
-  // TODO: configure SQLite and apply migration/transaction setup for this eval
-  return openDatabaseAsync('eval-storage.db')
-}
+const STORAGE_KEYS = ['session', 'draft', 'outbox']
 
-async function runSqlPlaceholder() {
-  const db = await openDatabasePlaceholder()
-  // TODO: run prepared statements / outbox / listener wiring for this eval
-  return db
+async function runExclusiveTransactionPlaceholder() {
+  // TODO: implement persistence behavior for this eval
+  return STORAGE_KEYS.length
 }
 
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>SQLite Starter</Text>
-      <Pressable style={styles.button} onPress={() => void runSqlPlaceholder()}>
-        <Text style={styles.buttonText}>Run SQLite placeholder</Text>
+      <Text style={styles.title}>Storage Starter</Text>
+      <Text style={styles.subtitle}>Keys: {STORAGE_KEYS.join(', ')}</Text>
+      <Pressable style={styles.button} onPress={() => runExclusiveTransactionPlaceholder()}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
       </Pressable>
     </View>
   )
@@ -40,6 +36,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     rowGap: 10,
+  },
+  subtitle: {
+    color: '#6b7280',
+    textAlign: 'center',
   },
   title: {
     color: '#111827',

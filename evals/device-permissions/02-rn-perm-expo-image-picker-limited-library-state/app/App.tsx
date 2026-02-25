@@ -1,28 +1,18 @@
-import * as ImagePicker from 'expo-image-picker'
-import { StatusBar } from 'expo-status-bar'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-async function requestMediaPermissionPlaceholder() {
-  // TODO: implement media permission handling for this eval
-  return ImagePicker.requestMediaLibraryPermissionsAsync()
-}
-
-async function launchPickerPlaceholder() {
-  // TODO: implement camera/gallery fallback handling for this eval
-  return ImagePicker.launchImageLibraryAsync()
+async function requestMediaLibraryPermissionPlaceholder() {
+  // TODO: implement permission behavior for this eval
+  return 'pending'
 }
 
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Expo Image Picker Starter</Text>
-      <Pressable style={styles.button} onPress={() => void requestMediaPermissionPlaceholder()}>
-        <Text style={styles.buttonText}>Call permission placeholder</Text>
+      <Text style={styles.title}>Permissions Starter</Text>
+      <Text style={styles.subtitle}>Implement platform permission flow from this shell.</Text>
+      <Pressable style={styles.button} onPress={() => requestMediaLibraryPermissionPlaceholder()}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
       </Pressable>
-      <Pressable style={styles.button} onPress={() => void launchPickerPlaceholder()}>
-        <Text style={styles.buttonText}>Call picker placeholder</Text>
-      </Pressable>
-      <StatusBar style='auto' />
     </View>
   )
 }
@@ -44,6 +34,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     rowGap: 10,
+  },
+  subtitle: {
+    color: '#6b7280',
+    textAlign: 'center',
   },
   title: {
     color: '#111827',

@@ -1,70 +1,80 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { KeyboardProvider, useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller'
-import Animated, { useAnimatedStyle } from 'react-native-reanimated'
 
-function mapKeyboardToComposerOffset(height: number) {
-  // TODO: tune keyboard-aware composer positioning
-  return Math.max(0, height)
+type DetailRow = {
+  label: string
+  value: string
 }
 
-function KeyboardScreen() {
-  const keyboard = useReanimatedKeyboardAnimation()
+const CARD_TITLE = 'Interaction details'
 
-  const composerStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: -mapKeyboardToComposerOffset(Math.abs(keyboard.height.value)) }],
-  }))
+const DETAILS: DetailRow[] = [
+  { label: 'State', value: 'idle' },
+  { label: 'Target', value: 'not implemented' },
+  { label: 'Notes', value: 'fill behavior using requirement specs' },
+]
 
-  return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Keyboard Starter</Text>
-      <Animated.View style={[styles.composer, composerStyle]}>
-        <Text style={styles.subtitle}>Composer placeholder</Text>
-      </Animated.View>
-      <Pressable style={styles.button} onPress={() => {}}>
-        <Text style={styles.buttonText}>No-op action</Text>
-      </Pressable>
-    </View>
-  )
+function runAnimationPlaceholder() {
+  // TODO: implement animation behavior for this eval
 }
 
 export default function App() {
   return (
-    <KeyboardProvider>
-      <KeyboardScreen />
-    </KeyboardProvider>
+    <View style={styles.screen}>
+      <View style={styles.card}>
+        <Pressable style={styles.header} onPress={runAnimationPlaceholder}>
+          <Text style={styles.title}>{CARD_TITLE}</Text>
+          <Text style={styles.action}>Run</Text>
+        </Pressable>
+
+        <View style={styles.details}>
+          {DETAILS.map((row) => (
+            <Text key={row.label} style={styles.copy}>
+              {row.label}: {row.value}
+            </Text>
+          ))}
+        </View>
+      </View>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-  },
-  buttonText: {
-    color: '#fff',
+  action: {
+    color: '#1d4ed8',
+    fontSize: 14,
     fontWeight: '600',
   },
-  composer: {
-    backgroundColor: '#f1f5f9',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  copy: {
+    color: '#334155',
+    fontSize: 14,
+    marginBottom: 6,
+  },
+  details: {
+    paddingHorizontal: 18,
+    paddingTop: 4,
+  },
+  header: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 18,
+    paddingTop: 18,
   },
   screen: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#eef2ff',
     flex: 1,
     justifyContent: 'center',
-    rowGap: 12,
-  },
-  subtitle: {
-    color: '#334155',
+    padding: 20,
   },
   title: {
     color: '#0f172a',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
   },
 })

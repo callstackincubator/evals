@@ -1,30 +1,21 @@
-import { useState } from 'react'
-
 import { createStaticNavigation, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-function migratePersistedNavigationState(raw: string | null) {
-  // TODO: parse and migrate/dismiss incompatible persisted state by version
-  void raw
-  return null
+async function migratePersistedNavigationState() {
+  // TODO: implement navigation behavior for this eval
+  return 'pending'
 }
 
 function HomeScreen() {
   const navigation = useNavigation()
-  const [status, setStatus] = useState('idle')
-
-  const runMigrationPlaceholder = () => {
-    migratePersistedNavigationState(null)
-    setStatus('migration-placeholder-called')
-  }
 
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Home</Text>
-      <Text style={styles.subtitle}>Migration status: {status}</Text>
-      <Button title="Call migration placeholder" onPress={runMigrationPlaceholder} />
-      <Button title="Open details" onPress={() => navigation.navigate('Details')} />
+      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
+      <Button title='Call placeholder' onPress={() => migratePersistedNavigationState()} />
+      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
     </View>
   )
 }
@@ -33,6 +24,7 @@ function DetailsScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Details</Text>
+      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
     </View>
   )
 }

@@ -1,56 +1,54 @@
-import { SectionList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
 
 type Row = {
   id: string
   title: string
 }
 
-type RowSection = {
-  data: Row[]
-  title: string
+const ROWS: Row[] = Array.from({ length: 30 }, (_, index) => ({
+  id: `item-${index + 1}`,
+  title: `Row ${index + 1}`,
+}))
+
+function RowItem({ item }: { item: Row }) {
+  return (
+    <View style={styles.row}>
+      <Text style={styles.rowTitle}>{item.title}</Text>
+    </View>
+  )
 }
 
-const SECTIONS: RowSection[] = [
-  {
-    title: 'Today',
-    data: [
-      { id: 'today-1', title: 'Draft release notes' },
-      { id: 'today-2', title: 'Review pull requests' },
-    ],
-  },
-  {
-    title: 'Tomorrow',
-    data: [
-      { id: 'tomorrow-1', title: 'Plan sprint backlog' },
-      { id: 'tomorrow-2', title: 'Sync with design' },
-    ],
-  },
-]
+function runListBehaviorPlaceholder() {
+  // TODO: implement list behavior required by this eval
+}
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Section Scaffold</Text>
-      <Text style={styles.helper}>Add live filtering to a SectionList where query changes update row visibility and empty states correctly without stale section artifacts.</Text>
-      <SectionList
-        sections={SECTIONS}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.row}>
-            <Text style={styles.rowTitle}>{item.title}</Text>
-          </View>
-        )}
-        renderSectionHeader={({ section }) => (
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionHeaderText}>{section.title}</Text>
-          </View>
-        )}
-      />
+      <Text style={styles.header}>List Scaffold</Text>
+      <Text style={styles.helper}>Seed data is ready; implement required list behavior.</Text>
+      <Pressable style={styles.button} onPress={runListBehaviorPlaceholder}>
+        <Text style={styles.buttonText}>Run placeholder</Text>
+      </Pressable>
+      <FlatList data={ROWS} renderItem={({ item }) => <RowItem item={item} />} />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  button: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#111827',
+    borderRadius: 8,
+    marginBottom: 8,
+    marginHorizontal: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
   container: {
     backgroundColor: '#fff',
     flex: 1,
@@ -69,7 +67,6 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   row: {
-    backgroundColor: '#fff',
     borderBottomColor: '#e5e7eb',
     borderBottomWidth: StyleSheet.hairlineWidth,
     paddingHorizontal: 12,
@@ -78,14 +75,5 @@ const styles = StyleSheet.create({
   rowTitle: {
     color: '#111827',
     fontSize: 15,
-  },
-  sectionHeader: {
-    backgroundColor: '#f3f4f6',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  sectionHeaderText: {
-    color: '#374151',
-    fontWeight: '600',
   },
 })

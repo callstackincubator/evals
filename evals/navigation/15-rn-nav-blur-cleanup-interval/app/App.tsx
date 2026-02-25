@@ -1,32 +1,21 @@
-import { useState } from 'react'
-
 import { createStaticNavigation, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-function startPolling(onTick: () => void, intervalMs = 1000) {
-  // TODO: implement focus-aware interval lifecycle
-  void onTick
-  void intervalMs
-  return () => {}
+async function startPolling() {
+  // TODO: implement navigation behavior for this eval
+  return 'pending'
 }
 
-function PollingScreen() {
+function HomeScreen() {
   const navigation = useNavigation()
-  const [status, setStatus] = useState('idle')
-
-  const runPollingPlaceholder = () => {
-    const stop = startPolling(() => {}, 1000)
-    stop()
-    setStatus('polling-placeholder-called')
-  }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Polling</Text>
-      <Text style={styles.subtitle}>Polling status: {status}</Text>
-      <Button title="Call polling placeholder" onPress={runPollingPlaceholder} />
-      <Button title="Open details" onPress={() => navigation.navigate('Details')} />
+      <Text style={styles.title}>Home</Text>
+      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
+      <Button title='Call placeholder' onPress={() => startPolling()} />
+      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
     </View>
   )
 }
@@ -35,13 +24,14 @@ function DetailsScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Details</Text>
+      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
     </View>
   )
 }
 
 const Stack = createNativeStackNavigator({
   screens: {
-    Polling: PollingScreen,
+    Home: HomeScreen,
     Details: DetailsScreen,
   },
 })

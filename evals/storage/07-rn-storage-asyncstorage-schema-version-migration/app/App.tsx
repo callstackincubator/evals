@@ -1,27 +1,19 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-const STORAGE_KEY = 'storage:placeholder'
+const STORAGE_KEYS = ['session', 'draft', 'outbox']
 
-async function loadFromStoragePlaceholder() {
-  // TODO: implement async storage read behavior for this eval
-  return AsyncStorage.getItem(STORAGE_KEY)
-}
-
-async function saveToStoragePlaceholder(value: string) {
-  // TODO: implement async storage write behavior for this eval
-  return AsyncStorage.setItem(STORAGE_KEY, value)
+async function migrateSchemaPlaceholder() {
+  // TODO: implement persistence behavior for this eval
+  return STORAGE_KEYS.length
 }
 
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>AsyncStorage Starter</Text>
-      <Pressable style={styles.button} onPress={() => void loadFromStoragePlaceholder()}>
-        <Text style={styles.buttonText}>Load placeholder</Text>
-      </Pressable>
-      <Pressable style={styles.button} onPress={() => void saveToStoragePlaceholder('next')}>
-        <Text style={styles.buttonText}>Save placeholder</Text>
+      <Text style={styles.title}>Storage Starter</Text>
+      <Text style={styles.subtitle}>Keys: {STORAGE_KEYS.join(', ')}</Text>
+      <Pressable style={styles.button} onPress={() => migrateSchemaPlaceholder()}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
       </Pressable>
     </View>
   )
@@ -44,6 +36,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     rowGap: 10,
+  },
+  subtitle: {
+    color: '#6b7280',
+    textAlign: 'center',
   },
   title: {
     color: '#111827',

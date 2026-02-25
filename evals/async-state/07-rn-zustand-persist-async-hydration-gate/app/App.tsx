@@ -1,54 +1,41 @@
-import { Button, StyleSheet, Text, View } from 'react-native'
-import { create } from 'zustand'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { createJSONStorage, persist } from 'zustand/middleware'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-type StoreState = {
-  count: number
-  status: 'idle' | 'loading' | 'done'
-  runAsyncAction: () => Promise<void>
+const ITEMS = ['alpha', 'beta', 'gamma']
+
+async function isHydrationReadyPlaceholder() {
+  // TODO: implement async/state-management behavior for this eval
+  return ITEMS.length
 }
 
-const useStore = create<StoreState>()(persist((set) => ({
-  count: 0,
-  status: 'idle',
-  runAsyncAction: async () => {
-    set({ status: 'loading' })
-    // TODO: implement async store behavior for this eval
-    set((prev) => ({ count: prev.count + 1, status: 'done' }))
-  },
-}), {
-  name: 'zustand-placeholder',
-  storage: createJSONStorage(() => AsyncStorage),
-}))
-
-function Screen() {
-  const count = useStore((state) => state.count)
-  const status = useStore((state) => state.status)
-  const runAsyncAction = useStore((state) => state.runAsyncAction)
-
+export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Zustand Starter</Text>
-      <Text style={styles.subtitle}>Status: {status}</Text>
-      <Text style={styles.subtitle}>Count: {count}</Text>
-      <Button title='Call async action placeholder' onPress={() => void runAsyncAction()} />
+      <Text style={styles.title}>Async State Starter</Text>
+      <Text style={styles.subtitle}>Seed items: {ITEMS.length}</Text>
+      <Pressable style={styles.button} onPress={() => isHydrationReadyPlaceholder()}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
+      </Pressable>
     </View>
   )
 }
 
-export default function App() {
-  return <Screen />
-}
-
 const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#111827',
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
   screen: {
     alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 24,
-    rowGap: 8,
+    rowGap: 10,
   },
   subtitle: {
     color: '#6b7280',

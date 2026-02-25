@@ -1,29 +1,18 @@
-import * as Notifications from 'expo-notifications'
-import { StatusBar } from 'expo-status-bar'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-async function checkNotificationsPlaceholder() {
-  // TODO: implement notifications status flow for this eval
-  return Notifications.getPermissionsAsync()
-}
-
-async function requestNotificationsPlaceholder() {
-  // TODO: implement notifications request/channel ordering for this eval
-  
-  return Notifications.requestPermissionsAsync()
+async function resolveProvisionalStatusPlaceholder() {
+  // TODO: implement permission behavior for this eval
+  return 'pending'
 }
 
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Expo Notifications Starter</Text>
-      <Pressable style={styles.button} onPress={() => void checkNotificationsPlaceholder()}>
-        <Text style={styles.buttonText}>Check notifications placeholder</Text>
+      <Text style={styles.title}>Permissions Starter</Text>
+      <Text style={styles.subtitle}>Implement platform permission flow from this shell.</Text>
+      <Pressable style={styles.button} onPress={() => resolveProvisionalStatusPlaceholder()}>
+        <Text style={styles.buttonText}>Call placeholder</Text>
       </Pressable>
-      <Pressable style={styles.button} onPress={() => void requestNotificationsPlaceholder()}>
-        <Text style={styles.buttonText}>Request notifications placeholder</Text>
-      </Pressable>
-      <StatusBar style='auto' />
     </View>
   )
 }
@@ -45,6 +34,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     rowGap: 10,
+  },
+  subtitle: {
+    color: '#6b7280',
+    textAlign: 'center',
   },
   title: {
     color: '#111827',

@@ -1,37 +1,21 @@
-import { useState } from 'react'
-
 import { createStaticNavigation, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-type CheckoutResult = {
-  orderId: string
-  success: boolean
+async function submitCheckout() {
+  // TODO: implement navigation behavior for this eval
+  return 'pending'
 }
 
-async function submitCheckout(): Promise<CheckoutResult> {
-  // TODO: implement checkout request and response handling
-  return {
-    orderId: 'placeholder-order',
-    success: false,
-  }
-}
-
-function CheckoutScreen() {
+function HomeScreen() {
   const navigation = useNavigation()
-  const [status, setStatus] = useState('idle')
-
-  const runCheckoutPlaceholder = async () => {
-    await submitCheckout()
-    setStatus('checkout-placeholder-called')
-  }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Checkout</Text>
-      <Text style={styles.subtitle}>Checkout status: {status}</Text>
-      <Button title="Call checkout placeholder" onPress={runCheckoutPlaceholder} />
-      <Button title="Open details" onPress={() => navigation.navigate('Details')} />
+      <Text style={styles.title}>Home</Text>
+      <Text style={styles.subtitle}>Navigation baseline scaffold</Text>
+      <Button title='Call placeholder' onPress={() => submitCheckout()} />
+      <Button title='Open details' onPress={() => navigation.navigate('Details')} />
     </View>
   )
 }
@@ -39,14 +23,15 @@ function CheckoutScreen() {
 function DetailsScreen() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Success</Text>
+      <Text style={styles.title}>Details</Text>
+      <Text style={styles.subtitle}>Implement requirement behavior from this shell.</Text>
     </View>
   )
 }
 
 const Stack = createNativeStackNavigator({
   screens: {
-    Checkout: CheckoutScreen,
+    Home: HomeScreen,
     Details: DetailsScreen,
   },
 })
