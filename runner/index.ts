@@ -1,11 +1,7 @@
-import { mkdir } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { parseCliArgs } from './config'
-import {
-  runCodeEvaluatorStage,
-  type CodeEvaluatorResult,
-} from './evaluators/code/run'
 import { discoverEvals } from './utils/discovery'
 import {
   createRunOutputDirectories,
@@ -16,9 +12,7 @@ import {
 import { runLlmJudgeStage } from './evaluators/llm/run'
 import { runWithConcurrency } from './solver/concurrency'
 import { runSolverStage } from './solver/pipeline'
-import { writeFile } from 'node:fs/promises'
 import { loadFiles, sanitizeSegment } from './utils/fs'
-import { readFile } from 'node:fs/promises'
 
 const RESULTS_DIR = 'results'
 
@@ -31,31 +25,11 @@ function toRelativePath(value: string) {
   return path.relative(process.cwd(), value).split(path.sep).join('/')
 }
 
-function formatCheckStatus(
-  name: string,
-  errorCount: number,
-  warningCount: number
-) {
-  if (errorCount === 0 && warningCount === 0) {
-    return `${name}:ok`
-  }
-
-  const parts: string[] = []
-  if (errorCount > 0) {
-    parts.push(`❌ ${errorCount}`)
-  }
-  if (warningCount > 0) {
-    parts.push(`⚠️ ${warningCount}`)
-  }
-
-  return `${name}:${parts.join(' ')}`
-}
-
 /*
   End-to-end benchmark pipeline:
   1. Discover evals and initialize run output directories.
   2. Execute solver for each eval (bounded concurrency).
-  3. Run static checks and LLM judging on solver output.
+  3. Run LLM judging on solver output.
   4. Persist per-eval artifacts and write aggregate summary.
 */
 async function main() {
@@ -103,13 +77,7 @@ async function main() {
           cliOptions
         )
 
-        // Step 2: Evaluate generated files with static checks.
-        const codeEvaluationStage = await runCodeEvaluatorStage(
-          solverStage.files,
-          generatedEvalRunDirectory,
-        )
-
-        // Step 3: Run LLM judge on the produced code
+        // Step 2: Run LLM judge on the produced code
         const llmJudgeStage = await runLlmJudgeStage(
           solverStage.files,
           referenceFiles,
@@ -117,7 +85,7 @@ async function main() {
           cliOptions,
         )
 
-        // Step 4: Compose the final per-eval result payload.
+        // Step 3: Compose the final per-eval result payload.
         const stageResult = {
           evalId: evalItem.evalId,
           evalPath: toRelativePath(evalItem.evalPath),
@@ -126,10 +94,9 @@ async function main() {
           llmJudgeRequirements: llmJudgeStage.requirements,
           score: llmJudgeStage.score,
           outputFiles: solverStage.files.map((file) => file.path),
-          code: codeEvaluationStage,
         }
 
-        // Step 5: Optionally write debug artifacts.
+        // Step 4: Optionally write debug artifacts.
         if (cliOptions.debug) {
           await writeDebugArtifacts(
             outputDirs.runDirectory,
@@ -140,7 +107,7 @@ async function main() {
           // tbd: attach this to result as debug.
         }
 
-        // Step 6: Persist per-eval output and report progress.
+        // Step 5: Persist per-eval output and report progress.
         const resultFileName = `${sanitizeSegment(stageResult.evalId)}.json`
         await writeFile(
           path.join(outputDirs.evalDirectory, resultFileName),
@@ -154,40 +121,11 @@ async function main() {
         }
 
         const position = index + 1
-        const codeStatus =
-          stageResult.code === undefined
-            ? 'code:n/a'
-            : `code:${formatCheckStatus(
-                'eslint',
-                stageResult.code.eslint.errorCount,
-                stageResult.code.eslint.warningCount
-              )} ` +
-              `${formatCheckStatus(
-                'tsc',
-                stageResult.code.tsc.errorCount,
-                stageResult.code.tsc.warningCount
-              )} ` +
-              `CC=${stageResult.code.cyclomaticComplexity.total}`
 
         console.log(
           `[${position}/${discoveredEvals.length}] ${evalItem.evalId} ` +
-            `-> llm:${stageResult.score.ratio} ${codeStatus}`
+            `-> llm:${stageResult.score.ratio}`
         )
-
-        // Optional detailed logging for failed static checks.
-        if (cliOptions.debug && stageResult.code) {
-          const eslintIssues =
-            stageResult.code.eslint.errorCount + stageResult.code.eslint.warningCount
-          if (eslintIssues > 0 && stageResult.code.eslint.output.length > 0) {
-            console.error(`[eslint][${evalItem.evalId}] ${stageResult.code.eslint.output}`)
-          }
-
-          const tscIssues =
-            stageResult.code.tsc.errorCount + stageResult.code.tsc.warningCount
-          if (tscIssues > 0 && stageResult.code.tsc.output.length > 0) {
-            console.error(`[tsc][${evalItem.evalId}] ${stageResult.code.tsc.output}`)
-          }
-        }
 
         return { kind: 'success' as const, index, result: stageResult, indexItem }
       } catch (error) {
@@ -252,14 +190,6 @@ async function main() {
           4
         )
 
-  const codeEvaluations = sortedSuccessfulRuns
-    .map((result) => result.result.code)
-    .filter((result): result is CodeEvaluatorResult => result !== undefined)
-  
-  const totalCyclomaticComplexity = codeEvaluations.reduce((sum, result) => {
-    return sum + result.cyclomaticComplexity.total
-  }, 0)
-
   const summaryPayload = {
     runId,
     startedAt,
@@ -273,29 +203,7 @@ async function main() {
     requirementsTotal,
     requirementsPassed,
     weightedAverageScore,
-    codeChecks: {
-      evalsWithCodeChecks: codeEvaluations.length,
-      eslintErrorCount: codeEvaluations.reduce((sum, result) => {
-        return sum + result.eslint.errorCount
-      }, 0),
-      eslintWarningCount: codeEvaluations.reduce((sum, result) => {
-        return sum + result.eslint.warningCount
-      }, 0),
-      tscErrorCount: codeEvaluations.reduce((sum, result) => {
-        return sum + result.tsc.errorCount
-      }, 0),
-      tscWarningCount: codeEvaluations.reduce((sum, result) => {
-        return sum + result.tsc.warningCount
-      }, 0),
-      averageCC:
-        codeEvaluations.length === 0
-          ? 0
-          : roundTo(totalCyclomaticComplexity / codeEvaluations.length, 4),
-    },
   }
-
-  // tbd: bring this back in a follow-up
-  // printResultsReportTable(evalResults)
 
   const summaryPath = await writeSummary(outputDirs.runDirectory, summaryPayload)
   console.log(`run complete: ${toRelativePath(summaryPath)}`)

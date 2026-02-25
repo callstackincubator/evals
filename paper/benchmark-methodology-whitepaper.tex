@@ -27,7 +27,7 @@
 \maketitle
 
 \begin{abstract}
-This document specifies the methodology implemented by the React Native Evals repository for benchmarking coding models on React Native tasks. It describes dataset structure, execution flow, solver and judge roles, static code checks, requirement-weighted scoring, aggregation logic, artifact outputs, and reproducibility considerations. The description is implementation-faithful to the current repository state and explicitly notes branch-level authoring conventions where they affect interpretation.
+This document specifies the methodology implemented by the React Native Evals repository for benchmarking coding models on React Native tasks. It describes dataset structure, execution flow, solver and judge roles, requirement-weighted scoring, aggregation logic, artifact outputs, and reproducibility considerations. The description is implementation-faithful to the current repository state and explicitly notes branch-level authoring conventions where they affect interpretation.
 \end{abstract}
 
 \section{Scope and Assumptions}
@@ -52,7 +52,6 @@ For each benchmark run, the runner performs the following stages:
   \item \textbf{Discover evals}: scan the requested pattern for \texttt{requirements.yaml}, derive eval paths, and sort by eval ID.
   \item \textbf{Load eval assets}: read \texttt{app/}, \texttt{reference/}, \texttt{requirements.yaml}, and \texttt{prompt.md}.
   \item \textbf{Run solver stage}: call the configured solver model, or materialize \texttt{reference/} files as generated output if no solver model is configured.
-  \item \textbf{Run code evaluator stage}: run static checks (\texttt{eslint}, \texttt{tsc --noEmit}) and compute cyclomatic complexity for generated source files.
   \item \textbf{Run LLM judge stage}: if a judge model is configured, evaluate generated output against declared requirements.
   \item \textbf{Persist artifacts}: write per-eval results and run summary under \texttt{results/<run-id>/}.
 \end{enumerate}
@@ -82,29 +81,6 @@ Returned paths are sanitized before writing to disk (e.g., stripping leading sla
 \subsection{Oracle/Reference Mode}
 If \texttt{--solver-model} is omitted, no solver model is called. Instead, the runner materializes the eval's \texttt{reference/} files as the generated output. This provides an oracle/reference mode for validating the evaluation pipeline.
 
-\section{Static Code Evaluation Methodology}
-Static code evaluation runs on generated files and is reported independently from the requirement-based LLM score.
-
-\subsection{Source File Selection}
-The code evaluator analyzes generated files with extensions:
-\[
-\texttt{.ts,\ .tsx,\ .js,\ .jsx}
-\]
-
-\subsection{ESLint and TypeScript Checks}
-The runner copies a template ESLint and TypeScript setup into the generated working directory and executes:
-\begin{itemize}
-  \item \texttt{eslint} (JSON formatter)
-  \item \texttt{tsc --project tsconfig.json --pretty false --noEmit}
-\end{itemize}
-
-For each tool, the runner records pass/fail status, exit code, output, and parsed error/warning counts. If a tool exits non-zero but no counts can be parsed, the evaluator falls back to at least one error.
-
-\subsection{Cyclomatic Complexity}
-Cyclomatic complexity is computed from the TypeScript AST for each generated source file. Per-file complexity starts at 1 and increments on selected control-flow constructs (e.g., conditionals, loops, \texttt{catch}, \texttt{case}) and short-circuit/nullish logical operators (including assignment variants). The evaluator reports total complexity, average per file, and a per-file breakdown.
-
-\textbf{Important:} static checks and complexity are currently not score-coupled; they are reported as parallel quality signals.
-
 \section{LLM Judge Methodology}
 \subsection{Requirements Parsing}
 \texttt{requirements.yaml} is parsed and validated at runtime. The enforced schema requires:
@@ -120,16 +96,16 @@ Cyclomatic complexity is computed from the TypeScript AST for each generated sou
 
 Extra fields are ignored by the current runtime parser.
 
-\subsection{Branch-Specific Authoring Convention: \texttt{must-} Requirements}
-This branch introduces a documented authoring convention for deterministic requirements:
+\subsection{Deterministic \texttt{implementation-} Requirement Convention}
+The repository documents an authoring convention for deterministic requirements:
 \begin{itemize}
-  \item prefix deterministic, source-verifiable requirement IDs with \texttt{must-}
-  \item assign \texttt{weight: 2} to emphasize these requirements in scoring
+  \item prefix deterministic, source-verifiable requirement IDs with \texttt{implementation-}
+  \item use \texttt{weight: 1} by default to avoid overweighting implementation details
 \end{itemize}
 
 Examples include required imports, API usage patterns, and specific wiring that can be verified directly from files.
 
-\textbf{Important distinction:} the runner does \emph{not} infer weight from the \texttt{must-} prefix. The prefix is a repository authoring convention; the score changes only when the requirement explicitly includes \texttt{weight: 2} (or another positive weight) in \texttt{requirements.yaml}.
+\textbf{Important distinction:} the runner does \emph{not} infer behavior from ID prefixes such as \texttt{implementation-}. Prefixes are an authoring convention; scoring changes only when a requirement explicitly sets \texttt{weight} in \texttt{requirements.yaml}.
 
 \subsection{Judge Prompt Construction}
 The judge prompt includes:
@@ -194,7 +170,7 @@ The runner rounds \texttt{passedWeight}, \texttt{totalWeight}, and \texttt{score
 \[
 \frac{2 + 0 + 1}{2 + 2 + 1} = \frac{3}{5} = 0.6
 \]
-This pattern is particularly relevant on this branch because deterministic \texttt{must-} requirements are encouraged to use weight 2.
+This pattern is relevant only when authors intentionally assign non-default weights to specific requirements.
 
 \subsection{Run-Level Aggregate Score}
 Let \(E^+\) be the set of evals that complete successfully (i.e., without an unrecovered pipeline error). The summary field \texttt{weightedAverageScore} is:
@@ -215,7 +191,6 @@ The run summary also reports:
   \item \texttt{requirementsTotal}
   \item \texttt{requirementsPassed}
   \item \texttt{evalsErrored}
-  \item aggregate static-check counts and average cyclomatic complexity
 \end{itemize}
 
 \section{Artifacts and Output Schema (Operational View)}
@@ -227,7 +202,7 @@ Each run writes artifacts under a timestamp-based run ID:
   \item optional debug artifacts when \texttt{--debug} is enabled
 \end{itemize}
 
-Per-eval results include solver and judge model identifiers, mapped requirement verdicts, per-eval score, generated file list, and static code evaluation outputs.
+Per-eval results include solver and judge model identifiers, mapped requirement verdicts, per-eval score, and generated file list.
 
 \section{Recommended Reporting Protocol}
 For comparative studies, report at minimum:
@@ -236,7 +211,7 @@ For comparative studies, report at minimum:
   \item CLI options (\texttt{--pattern}, \texttt{--solver-model}, \texttt{--model}, \texttt{--timeout}, \texttt{--concurrency})
   \item execution date and time
   \item counts of discovered, processed, and errored evals
-  \item \texttt{weightedAverageScore}, \texttt{requirementsPassed/Total}, and static-check summary metrics
+  \item \texttt{weightedAverageScore} and \texttt{requirementsPassed/Total}
   \item whether oracle/reference mode was used (no solver model)
 \end{enumerate}
 
@@ -246,14 +221,13 @@ Repeat runs are recommended. The current runner does not explicitly pin a random
 \begin{itemize}
   \item \textbf{Judge dependence:} requirement verdicts depend on the configured LLM judge model and prompt behavior.
   \item \textbf{Reference-context bias:} the judge sees reference implementation content, which helps requirement interpretation but may introduce bias.
-  \item \textbf{Static checks not score-coupled:} ESLint, TypeScript diagnostics, and complexity do not currently reduce the requirement score.
   \item \textbf{Binary requirement outcomes:} there is no partial credit within a single requirement.
   \item \textbf{Run-level averaging choice:} the summary score is unweighted across evals, which can underweight larger evals.
   \item \textbf{Pipeline error exclusion from mean:} errored evals are counted separately and excluded from the run-level score average.
-  \item \textbf{Authoring-convention variability:} branch-specific conventions such as \texttt{must-}/\texttt{weight: 2} improve consistency but are not enforced by the runtime parser.
+  \item \textbf{Authoring-convention variability:} conventions such as \texttt{implementation-} improve consistency but are not enforced by the runtime parser.
 \end{itemize}
 
 \section{Conclusion}
-The methodology combines structured solver outputs, requirement-based LLM judging, and static code quality signals to evaluate React Native coding performance on repository-defined tasks. Its main strength is transparency: scoring is based on declared requirements with explicit weights, documented mapping behavior, and reproducible artifact outputs. On this branch, the added \texttt{must-} convention provides clearer guidance for emphasizing deterministic requirements without changing the underlying runner logic.
+The methodology combines structured solver outputs and requirement-based LLM judging to evaluate React Native coding performance on repository-defined tasks. Its main strength is transparency: scoring is based on declared requirements with explicit weights, documented mapping behavior, and reproducible artifact outputs. The documented \texttt{implementation-} convention provides clearer guidance for deterministic requirement authoring without changing the underlying runner logic.
 
 \end{document}

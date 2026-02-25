@@ -36,7 +36,7 @@ Each eval is expected to include:
 For each eval:
 1. load `app/**` as baseline input
 2. run the eval prompt on that baseline to generate output to benchmark
-3. evaluate generated output with static checks (`eslint`, `tsc`, cyclomatic complexity), and run LLM judging when `--model` is provided
+3. evaluate generated output with LLM judging when `--model` is provided
 4. compute weighted requirement score
 
 ## Common commands

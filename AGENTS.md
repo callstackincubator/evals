@@ -5,7 +5,7 @@ This file is the practical playbook for agents working in this repo.
 ## What this repo is
 
 - Purpose: benchmark how coding models solve React Native tasks.
-- Primary engine: `runner/` orchestrates discovery -> solve -> static checks -> LLM judge -> summary.
+- Primary engine: `runner/` orchestrates discovery -> solve -> LLM judge -> summary.
 - Dataset: evals under `evals/<category>/<eval-id>/`, typically with:
   - `prompt.md`
   - `requirements.yaml`
@@ -21,12 +21,8 @@ When you run `bun runner/index.ts`, the pipeline is:
 3. Run solver stage (`runner/solver/pipeline.ts`):
   - If `--solver-model` is set, model edits `app` files.
   - If `--solver-model` is missing, runner uses `reference/` files as generated output.
-4. Run code checks on generated files (`runner/evaluators/code/run.ts`):
-  - `eslint` via `runner/solver/template/eslint.config.mjs`
-  - `tsc --noEmit` via `runner/solver/template/tsconfig.json`
-  - cyclomatic complexity calculation
-5. Run LLM judge if `--model` is provided (`runner/evaluators/llm/run.ts`).
-6. Write artifacts under `results/<run-id>/`.
+4. Run LLM judge if `--model` is provided (`runner/evaluators/llm/run.ts`).
+5. Write artifacts under `results/<run-id>/`.
 
 Key output behavior:
 
@@ -91,7 +87,7 @@ For multi-step tasks, include a short step plan with a verification checkpoint p
 
 - `docs/testing-your-evals.md` and `docs/benchmarking-selected-models.md` are currently placeholders (`TBD`). Do not assume they contain workflow details.
 - `testbench/` is currently not wired into active runner pipeline (`testbench/README.md`).
-- Root ESLint ignores `evals/**`; eval code quality in benchmark runs is checked by the runner’s template ESLint config, not root lint.
+- Root linting ignores `evals/**`; benchmark scoring is requirement-judge based and does not run extra code-quality gates on eval outputs.
 - Eval discovery depends on `requirements.yaml`; missing that file means eval is invisible to the runner.
 - `requirements.yaml` runtime validation currently enforces only:
   - `version`
@@ -120,14 +116,14 @@ Use this order when deciding intent:
 
 The whitepaper is the authoritative specification for benchmark methodology, scoring, pipeline stages, and eval conventions. If runner behavior and the whitepaper disagree, the whitepaper defines intended behavior.
 
-**Mandatory sync rule:** any PR that changes eval framework behavior (pipeline stages, scoring logic, requirement parsing, judge methodology, static checks, artifact schema, or authoring conventions) **must** include a corresponding update to `paper/benchmark-methodology-whitepaper.tex` in the same PR. Do not merge framework changes without updating the whitepaper.
+**Mandatory sync rule:** any PR that changes eval framework behavior (pipeline stages, scoring logic, requirement parsing, judge methodology, artifact schema, or authoring conventions) **must** include a corresponding update to `paper/benchmark-methodology-whitepaper.tex` in the same PR. Do not merge framework changes without updating the whitepaper.
 
 ## Style and tooling
 
 - Package manager: `bun`
 - Formatting: single quotes, no semicolons
 - Imports: sorted (`simple-import-sort`)
-- Keep TypeScript/ESLint changes compatible with existing configs
+- Keep TypeScript and linting changes compatible with existing configs
 
 ## Commit messages
 
