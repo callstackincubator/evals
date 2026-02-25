@@ -12,13 +12,6 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 
-type UIScheduler = (
-  callback: (...args: unknown[]) => void,
-  ...args: unknown[]
-) => void
-
-const scheduleOnUIRuntime = scheduleOnUI as unknown as UIScheduler
-
 export default function App() {
   const [checkpointLabel, setCheckpointLabel] = useState('Checkpoint: 0/8')
   const [running, setRunning] = useState(false)
@@ -76,14 +69,14 @@ export default function App() {
 
   const toggleAnimation = () => {
     if (running) {
-      scheduleOnUIRuntime(resetLoop)
+      scheduleOnUI(resetLoop)
       setCheckpointLabel('Checkpoint: 0/8')
       setRunning(false)
       return
     }
 
     setRunning(true)
-    scheduleOnUIRuntime(startLoop)
+    scheduleOnUI(startLoop)
   }
 
   return (
