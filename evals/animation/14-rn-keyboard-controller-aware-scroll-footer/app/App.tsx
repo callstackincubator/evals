@@ -1,6 +1,6 @@
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 
-const FORM_FIELDS = [
+const FIELDS = [
   'First name',
   'Last name',
   'Email',
@@ -10,16 +10,12 @@ const FORM_FIELDS = [
   'Notes',
 ]
 
-function submitFormAction() {
-  // No-op
-}
-
 export default function App() {
   return (
     <View style={styles.screen}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.title}>Checkout form</Text>
-        {FORM_FIELDS.map((field) => (
+        {FIELDS.map((field) => (
           <View key={field} style={styles.fieldBlock}>
             <Text style={styles.label}>{field}</Text>
             <TextInput
@@ -32,7 +28,7 @@ export default function App() {
       </ScrollView>
 
       <View style={styles.footer}>
-        <Pressable style={styles.submitButton} onPress={submitFormAction}>
+        <Pressable style={styles.submitButton}>
           <Text style={styles.submitText}>Submit</Text>
         </Pressable>
       </View>
