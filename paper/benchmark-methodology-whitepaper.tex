@@ -213,7 +213,7 @@ Each run writes artifacts under a timestamp-based run ID:
 \begin{itemize}
   \item \texttt{results/<run-id>/evals/<eval-id>.json}: per-eval results
   \item \texttt{results/<run-id>/summary.json}: aggregate run summary
-  \item generated artifacts and \texttt{manifest.json}: written by generation CLI to a user-selected output directory (for example \texttt{results/<run-id>/generated} or \texttt{runs/reference})
+  \item generated artifacts and \texttt{manifest.json}: written by generation CLI to a user-selected output directory (for example \texttt{results/<run-id>/generated})
   \item optional debug artifacts when \texttt{--debug} is enabled
 \end{itemize}
 
@@ -227,7 +227,7 @@ For comparative studies, report at minimum:
   \item execution date and time
   \item counts of discovered, processed, and errored evals
   \item \texttt{weightedAverageScore} and \texttt{requirementsPassed/Total}
-  \item generated artifact source directory (for example solver output or materialized reference output)
+  \item generated artifact source directory
 \end{enumerate}
 
 Repeat runs are recommended. The current runner does not explicitly pin a random seed or decoding settings (e.g., temperature) in solver or judge calls, so provider defaults and model nondeterminism can affect results.

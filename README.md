@@ -52,7 +52,6 @@ Use these commands for the most common local workflows:
 ```bash
 bun runner/run.ts --model openai/gpt-4.1-mini --output results/my-generated
 bun runner/judge.ts --input results/my-generated --model openai/gpt-5.3-codex
-bun runner/judge.ts --input runs/reference --model openai/gpt-5.3-codex
 bun runner/judge.ts --input results/my-generated --model openai/gpt-5.3-codex --debug
 bun lint
 ```
