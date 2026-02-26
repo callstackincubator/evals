@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
-import { readGenerationManifest } from './artifacts/generation-manifest'
+import { readGenerationManifest } from './utils/generation-manifest'
 import { parseJudgeCliArgs } from './config'
 import {
   createRunOutputDirectories,

@@ -5,7 +5,7 @@ import {
   getGenerationManifestPath,
   stringifyGenerationManifest,
   type GenerationManifest,
-} from './artifacts/generation-manifest'
+} from './utils/generation-manifest'
 import { parseRunCliArgs } from './config'
 import { runWithConcurrency } from './solver/concurrency'
 import { runSolverStage } from './solver/pipeline'
