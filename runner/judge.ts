@@ -66,15 +66,13 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
           )
         }
 
-        const [referenceFiles, requirements, prompt] = await Promise.all([
-          loadFiles(path.join(evalItem.evalPath, 'reference')),
+        const [requirements, prompt] = await Promise.all([
           readFile(path.join(evalItem.evalPath, 'requirements.yaml'), 'utf-8'),
           readFile(path.join(evalItem.evalPath, 'prompt.md'), 'utf-8'),
         ])
 
         const llmJudgeStage = await runLlmJudgeStage(
           generatedFiles,
-          referenceFiles,
           requirements,
           cliOptions
         )

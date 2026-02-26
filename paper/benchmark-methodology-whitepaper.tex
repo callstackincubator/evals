@@ -41,7 +41,7 @@ The atomic benchmark unit is a single eval directory. Each eval is expected to c
   \item \texttt{prompt.md}: task prompt used by the solver model
   \item \texttt{requirements.yaml}: a list of judgeable requirements (optional per-requirement weights)
   \item \texttt{app/}: baseline input files provided to the solver
-  \item \texttt{reference/}: reference implementation files used as judge context
+  \item \texttt{reference/}: reference implementation files retained for authoring and manual validation workflows
 \end{itemize}
 
 Eval discovery is file-driven: the runner scans for \texttt{requirements.yaml}. If that file is missing, the eval is not discovered and will not be included in the run.
@@ -50,7 +50,7 @@ Eval discovery is file-driven: the runner scans for \texttt{requirements.yaml}. 
 For each benchmark run, execution is split into generation and judging:
 \begin{enumerate}
   \item \textbf{Generation CLI}: discover evals, load \texttt{app/} and \texttt{prompt.md}, run solver model, write generated files and \texttt{manifest.json} to the configured output directory.
-  \item \textbf{Judge CLI}: discover evals, load generated files from manifest entries, load \texttt{reference/} and \texttt{requirements.yaml}, run LLM judging, write per-eval results and summary under \texttt{results/<run-id>/}.
+  \item \textbf{Judge CLI}: discover evals, load generated files from manifest entries and \texttt{requirements.yaml}, run LLM judging, write per-eval results and summary under \texttt{results/<run-id>/}.
 \end{enumerate}
 
 The runner supports bounded concurrency. If an eval fails and \texttt{--fail-fast} is not enabled, the run continues and the eval is counted in \texttt{evalsErrored}.
@@ -121,7 +121,6 @@ The judge prompt includes:
 \begin{itemize}
   \item declared requirements (including weights when present)
   \item generated files under evaluation
-  \item reference implementation content (when available)
   \item rules instructing the judge to use only provided files as evidence and return one result per declared requirement ID
 \end{itemize}
 
@@ -235,7 +234,7 @@ Repeat runs are recommended. The current runner does not explicitly pin a random
 \section{Limitations and Threats to Validity}
 \begin{itemize}
   \item \textbf{Judge dependence:} requirement verdicts depend on the configured LLM judge model and prompt behavior.
-  \item \textbf{Reference-context bias:} the judge sees reference implementation content, which helps requirement interpretation but may introduce bias.
+  \item \textbf{Requirement-interpretation ambiguity:} without seeded reference context, ambiguous requirement phrasing can increase variance in judge decisions.
   \item \textbf{Binary requirement outcomes:} there is no partial credit within a single requirement.
   \item \textbf{Run-level averaging choice:} the summary score is unweighted across evals, which can underweight larger evals.
   \item \textbf{Pipeline error exclusion from mean:} errored evals are counted separately and excluded from the run-level score average.

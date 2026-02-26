@@ -45,13 +45,12 @@ function mapRequirementResults(
 */
 export async function runLlmJudgeStage(
   files: LoadedFile[],
-  referenceFiles: LoadedFile[],
   rawRequirements: string,
   cliOptions: LlmJudgeStageOptions
 ) {
   const requirements = await loadRequirements(rawRequirements)
 
-  const prompt = buildJudgePrompt(requirements, files, referenceFiles)
+  const prompt = buildJudgePrompt(requirements, files)
 
   const results = await runJudgeCall(prompt, cliOptions.model, cliOptions.timeout, cliOptions.port)
 
