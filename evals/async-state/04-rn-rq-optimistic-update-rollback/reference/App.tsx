@@ -24,44 +24,48 @@ const TODOS_QUERY_KEY: TodosQueryKey = ['todos'] as const
 
 const queryClient = new QueryClient()
 
-const todosDb: readonly Todo[] = [
-  { done: false, id: 'todo-1', title: 'Document async-state evals' },
-  { done: true, id: 'todo-2', title: 'Ship benchmark runner improvements' },
-  { done: false, id: 'todo-3', title: 'Trim rerenders in dashboard' },
-]
+const flipTodo = (todo: Todo, todoId: string, nextDone: boolean): Todo =>
+  todo.id === todoId ? { ...todo, done: nextDone } : todo
 
-const toggledIds = new Set<string>()
+const fetchTodos = async (signal?: AbortSignal): Promise<Todo[]> => {
+  const response = await fetch('https://dummyjson.com/todos?limit=10&skip=0', {
+    signal,
+  })
 
-const FETCH_DELAY_MS = 180
-const TOGGLE_DELAY_MS = 240
-
-const sleep = (ms: number) =>
-  new Promise<void>((resolve) => setTimeout(resolve, ms))
-
-const resolveTodo = (todo: Todo): Todo => ({
-  ...todo,
-  done: toggledIds.has(todo.id) ? !todo.done : todo.done,
-})
-
-const flipTodo = (todo: Todo, todoId: string): Todo =>
-  todo.id === todoId ? { ...todo, done: !todo.done } : todo
-
-const fetchTodos = async (_signal?: AbortSignal) => {
-  await sleep(FETCH_DELAY_MS)
-  return todosDb.map(resolveTodo)
-}
-
-const toggleTodoOnServer = async (todoId: string) => {
-  await sleep(TOGGLE_DELAY_MS)
-
-  if (todoId === 'todo-3') {
-    throw new Error('Server rejected this toggle')
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
   }
 
-  if (toggledIds.has(todoId)) {
-    toggledIds.delete(todoId)
-  } else {
-    toggledIds.add(todoId)
+  const json = (await response.json()) as {
+    todos: Array<{ completed: boolean; id: number; todo: string }>
+  }
+
+  return json.todos.map((todo) => ({
+    done: todo.completed,
+    id: String(todo.id),
+    title: todo.todo,
+  }))
+}
+
+const toggleTodoOnServer = async ({
+  nextDone,
+  todoId,
+}: {
+  nextDone: boolean
+  todoId: string
+}) => {
+  const response = await fetch(`https://dummyjson.com/todos/${todoId}`, {
+    body: JSON.stringify({
+      completed: nextDone,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'PUT',
+  })
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
   }
 }
 
@@ -74,19 +78,29 @@ function TodosScreen() {
     queryKey: TODOS_QUERY_KEY,
   })
 
-  const onMutate = async (todoId: string): Promise<ToggleContext> => {
+  const onMutate = async ({
+    nextDone,
+    todoId,
+  }: {
+    nextDone: boolean
+    todoId: string
+  }): Promise<ToggleContext> => {
     await reactQueryClient.cancelQueries({ queryKey: TODOS_QUERY_KEY })
 
     const snapshot = reactQueryClient.getQueryData<Todo[]>(TODOS_QUERY_KEY)
 
     reactQueryClient.setQueryData<Todo[]>(TODOS_QUERY_KEY, (current = []) =>
-      current.map((todo) => flipTodo(todo, todoId))
+      current.map((todo) => flipTodo(todo, todoId, nextDone))
     )
 
     return { snapshot }
   }
 
-  const onError = (_error: unknown, _todoId: string, context: ToggleContext | undefined) => {
+  const onError = (
+    _error: unknown,
+    _variables: { nextDone: boolean; todoId: string },
+    context: ToggleContext | undefined
+  ) => {
     if (context?.snapshot) {
       reactQueryClient.setQueryData(TODOS_QUERY_KEY, context.snapshot)
     }
@@ -103,8 +117,8 @@ function TodosScreen() {
     onSettled,
   })
 
-  const handleTodoPressCallback = (todoId: string) => () => {
-    toggleMutation.mutate(todoId)
+  const handleTodoPressCallback = (todoId: string, nextDone: boolean) => () => {
+    toggleMutation.mutate({ nextDone, todoId })
   }
 
   return (
@@ -115,7 +129,7 @@ function TodosScreen() {
         return (
           <Pressable
             key={todo.id}
-            onPress={handleTodoPressCallback(todo.id)}
+            onPress={handleTodoPressCallback(todo.id, !todo.done)}
             style={styles.row}
           >
             <Text style={[styles.todoText, todo.done && styles.done]}>{todo.title}</Text>

@@ -1,49 +1,53 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 
-const ITEMS = ['alpha', 'beta', 'gamma']
-
-async function resolveDependentRequestAction() {
-  // No-op
-  return ITEMS.length
-}
-
-export default function App() {
+function ProjectsScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Profile & Projects</Text>
-      <Text style={styles.subtitle}>Project stubs: {ITEMS.length}</Text>
-      <Pressable style={styles.button} onPress={() => resolveDependentRequestAction()}>
-        <Text style={styles.buttonText}>Open</Text>
-      </Pressable>
+
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Profile</Text>
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Projects</Text>
+      </View>
     </View>
   )
 }
 
+export default function App() {
+  return (
+    <ProjectsScreen />
+  )
+}
+
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    marginBottom: 12,
+    padding: 12,
   },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
+  cardTitle: {
+    color: '#0f172a',
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  muted: {
+    color: '#64748b',
   },
   screen: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#e2e8f0',
     flex: 1,
-    justifyContent: 'center',
-    rowGap: 10,
-  },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+    paddingHorizontal: 14,
+    paddingTop: 56,
   },
   title: {
-    color: '#111827',
-    fontSize: 20,
-    fontWeight: '600',
+    color: '#0f172a',
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 12,
   },
 })

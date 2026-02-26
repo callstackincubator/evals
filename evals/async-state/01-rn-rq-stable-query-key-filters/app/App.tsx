@@ -1,105 +1,32 @@
+import { useState } from 'react'
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
 
-type TransactionType = 'income' | 'expense'
-type TransactionFilter = 'all' | TransactionType
-
-type Transaction = {
-  id: string
-  title: string
-  amount: number
-  type: TransactionType
-}
-
-type TransactionsResponse = {
-  items: Transaction[]
-  page: number
-  totalPages: number
-}
-
-type TransactionsQueryKey = readonly [
-  'transactions',
-  TransactionFilter,
-  number,
-  number,
-]
-
-const PAGE_SIZE = 4
-
-const FILTER_OPTIONS: readonly TransactionFilter[] = [
+const FILTER_OPTIONS = [
   'all',
-  'income',
-  'expense',
-]
+  'smartphones',
+  'laptops',
+] as const
 
-const DATA: Transaction[] = [
-  { amount: 4200, id: 't-1', title: 'Payroll', type: 'income' },
-  { amount: 140, id: 't-2', title: 'Groceries', type: 'expense' },
-  { amount: 95, id: 't-3', title: 'Fuel', type: 'expense' },
-  { amount: 80, id: 't-4', title: 'Dining', type: 'expense' },
-  { amount: 230, id: 't-5', title: 'Freelance payout', type: 'income' },
-  { amount: 60, id: 't-6', title: 'Transit card', type: 'expense' },
-  { amount: 900, id: 't-7', title: 'Bonus', type: 'income' },
-  { amount: 35, id: 't-8', title: 'Coffee supplies', type: 'expense' },
-  { amount: 320, id: 't-9', title: 'Tax refund', type: 'income' },
-  { amount: 125, id: 't-10', title: 'Utilities', type: 'expense' },
-]
+function TransactionsScreen() {
+  const [filter, setFilter] = useState<typeof FILTER_OPTIONS[number]>('all')
+  
+  // Update these with real data and logic in later steps
+  const page = 1
+  const totalPages = 1
 
-function wait(ms: number, signal?: AbortSignal) {
-  return new Promise<void>((resolve, reject) => {
-    const timer = setTimeout(resolve, ms)
-    signal?.addEventListener('abort', () => {
-      clearTimeout(timer)
-      reject(new DOMException('Aborted', 'AbortError'))
-    })
-  })
-}
-
-function buildTransactionsQueryKey(
-  filter: TransactionFilter,
-  page: number,
-  pageSize: number
-): TransactionsQueryKey {
-  return ['transactions', filter, page, pageSize] as const
-}
-
-async function fetchTransactions(
-  filter: TransactionFilter,
-  page: number,
-  pageSize: number,
-  signal?: AbortSignal
-) {
-  await wait(220, signal)
-
-  const filtered =
-    filter === 'all' ? DATA : DATA.filter((item) => item.type === filter)
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
-  const safePage = Math.min(page, totalPages)
-  const start = (safePage - 1) * pageSize
-
-  return {
-    items: filtered.slice(start, start + pageSize),
-    page: safePage,
-    totalPages,
-  } satisfies TransactionsResponse
-}
-
-const BASELINE_FILTER: TransactionFilter = 'all'
-const BASELINE_PAGE = 1
-const BASELINE_TOTAL_PAGES = 1
-
-export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Transactions</Text>
+      <Text style={styles.title}>Products</Text>
 
       <View style={styles.filterRow}>
         {FILTER_OPTIONS.map((candidate) => {
-          const isActive = candidate === BASELINE_FILTER
+          const isActive = filter === candidate
           return (
             <Pressable
               key={candidate}
-              onPress={() => {}}
+              onPress={() => {
+                setFilter(candidate)
+              }}
               style={[styles.filterButton, isActive && styles.filterButtonActive]}
             >
               <Text
@@ -117,13 +44,13 @@ export default function App() {
 
       <FlatList
         data={[]}
-        keyExtractor={(item: Transaction) => item.id}
+        keyExtractor={(item) => item.id}
         ListEmptyComponent={<Text style={styles.meta}>No rows yet.</Text>}
         renderItem={({ item }) => {
           return (
             <View style={styles.row}>
               <Text style={styles.rowTitle}>{item.title}</Text>
-              <Text style={styles.rowAmount}>${item.amount}</Text>
+              <Text style={styles.rowAmount}>${item.amount ?? '-'}</Text>
             </View>
           )
         }}
@@ -131,25 +58,31 @@ export default function App() {
 
       <View style={styles.paginationRow}>
         <Pressable
+          disabled={page <= 1}
           onPress={() => {}}
-          style={[styles.pageButton, styles.pageButtonDisabled]}
+          style={[styles.pageButton, page <= 1 && styles.pageButtonDisabled]}
         >
           <Text style={styles.pageButtonText}>Prev</Text>
         </Pressable>
 
         <Text style={styles.pageLabel}>
-          Page {BASELINE_PAGE} / {BASELINE_TOTAL_PAGES}
+          Page {page} / {totalPages}
         </Text>
 
         <Pressable
+          disabled={page >= totalPages}
           onPress={() => {}}
-          style={[styles.pageButton, styles.pageButtonDisabled]}
+          style={[styles.pageButton, page >= totalPages && styles.pageButtonDisabled]}
         >
           <Text style={styles.pageButtonText}>Next</Text>
         </Pressable>
       </View>
     </View>
   )
+}
+
+export default function App() {
+  return <TransactionsScreen />
 }
 
 const styles = StyleSheet.create({

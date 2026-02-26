@@ -7,45 +7,52 @@ import {
 } from '@tanstack/react-query'
 
 type Profile = {
-  id: string
-  name: string
+  firstName: string
+  id: number
+  lastName: string
 }
 
 type Project = {
-  id: string
+  id: number
   title: string
 }
 
 type ProfileQueryKey = readonly ['profile', 'me']
-type ProjectsQueryKey = readonly ['projects', string]
+type ProjectsQueryKey = readonly ['projects', number | 'pending']
 
 const queryClient = new QueryClient()
 
-function wait(ms: number, signal?: AbortSignal) {
-  return new Promise<void>((resolve, reject) => {
-    const timer = setTimeout(resolve, ms)
-    signal?.addEventListener('abort', () => {
-      clearTimeout(timer)
-      reject(new DOMException('Aborted', 'AbortError'))
-    })
-  })
-}
-
 async function fetchProfile(signal?: AbortSignal): Promise<Profile> {
-  await wait(200, signal)
-  return { id: 'user-42', name: 'Casey' }
+  const response = await fetch('https://dummyjson.com/users/1', { signal })
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
+  }
+
+  const json = (await response.json()) as Profile
+  return json
 }
 
 async function fetchProjectsByUserId(
-  userId: string,
+  userId: number,
   signal?: AbortSignal
 ): Promise<Project[]> {
-  await wait(280, signal)
-  return [
-    { id: `${userId}-p1`, title: 'Async-state rollout' },
-    { id: `${userId}-p2`, title: 'RN performance audit' },
-    { id: `${userId}-p3`, title: 'Offline reliability pass' },
-  ]
+  const response = await fetch(`https://dummyjson.com/todos/user/${userId}`, {
+    signal,
+  })
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
+  }
+
+  const json = (await response.json()) as {
+    todos: Array<{ id: number; todo: string }>
+  }
+
+  return json.todos.map((todo) => ({
+    id: todo.id,
+    title: todo.todo,
+  }))
 }
 
 function ProjectsScreen() {
@@ -62,8 +69,13 @@ function ProjectsScreen() {
     queryFn: ({
       queryKey: [, userId],
       signal,
-    }: QueryFunctionContext<ProjectsQueryKey>) =>
-      fetchProjectsByUserId(userId, signal),
+    }: QueryFunctionContext<ProjectsQueryKey>) => {
+      if (typeof userId !== 'number') {
+        return []
+      }
+
+      return fetchProjectsByUserId(userId, signal)
+    },
     queryKey: ['projects', profileId ?? 'pending'] as const,
   })
 
@@ -74,7 +86,9 @@ function ProjectsScreen() {
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Profile</Text>
         {profileQuery.isLoading ? <Text>Loading profile…</Text> : null}
-        {profileQuery.data ? <Text>{profileQuery.data.name}</Text> : null}
+        {profileQuery.data ? (
+          <Text>{`${profileQuery.data.firstName} ${profileQuery.data.lastName}`}</Text>
+        ) : null}
       </View>
 
       <View style={styles.card}>

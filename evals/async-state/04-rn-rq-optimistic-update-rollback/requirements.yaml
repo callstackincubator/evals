@@ -3,13 +3,17 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: optimistic-update-with-snapshot
-    description: Must implement optimistic cache update in onMutate with cancelQueries + snapshot capture + setQueryData optimistic write.
-  - id: rollback-on-mutation-error
-    description: Must restore pre-mutation snapshot in onError when optimistic mutation fails.
-  - id: settle-path-revalidation
-    description: Must revalidate affected query keys in onSettled to reconcile optimistic cache with authoritative server state.
-  - id: implementation-rq-v5-object-signature
-    description: Must use TanStack Query v5 object-signature APIs (for hooks and queryClient methods) and MUST NOT use legacy positional overload calls.
-  - id: implementation-rq-optimistic-context-rollback-contract
-    description: Must return snapshot rollback context from onMutate and consume that context in onError to deterministically restore optimistic cache state.
+  - id: app-is-wrapped-with-query-client-provider
+    description: App component renders `QueryClientProvider` with `client` set to `queryClient` and wraps `TodosScreen`
+  - id: mutation-uses-object-form-with-optimistic-callbacks
+    description: Toggle flow uses `useMutation` object form with `mutationFn` `onMutate` `onError` and `onSettled` callbacks
+  - id: onmutate-cancels-snapshots-and-writes-optimistic-cache
+    description: Must call `cancelQueries` from `onMutate`, read snapshot with `getQueryData`, and write optimistic list with `setQueryData`
+  - id: onerror-restores-snapshot-context
+    description: Must read snapshot from `onError` and restore it through `setQueryData`
+  - id: onsettled-invalidates-todos-query-key
+    description: Must call `reactQueryClient.invalidateQueries` from `onSettled`
+  - id: press-handler-calls-mutate-with-todoid-and-nextdone
+    description: Row press callback must trigger mutation
+  - id: error-copy-is-conditional-on-mutation-error
+    description: Failure text is rendered only when mutation error state is set.

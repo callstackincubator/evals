@@ -10,7 +10,7 @@ import {
 } from '@tanstack/react-query'
 
 type TodoItem = {
-  id: string
+  id: number
   title: string
 }
 
@@ -20,31 +20,51 @@ const ITEMS_QUERY_KEY: ItemsQueryKey = ['items'] as const
 
 const queryClient = new QueryClient()
 
-let itemsDb: TodoItem[] = [
-  { id: 'item-1', title: 'Review release notes' },
-  { id: 'item-2', title: 'Prepare QA checklist' },
-]
-
-function wait(ms: number, signal?: AbortSignal) {
-  return new Promise<void>((resolve, reject) => {
-    const timer = setTimeout(resolve, ms)
-    signal?.addEventListener('abort', () => {
-      clearTimeout(timer)
-      reject(new DOMException('Aborted', 'AbortError'))
-    })
+async function fetchItems(signal?: AbortSignal): Promise<TodoItem[]> {
+  const response = await fetch('https://dummyjson.com/todos?limit=10&skip=0', {
+    signal,
   })
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
+  }
+
+  const json = (await response.json()) as {
+    todos: Array<{ id: number; todo: string }>
+  }
+
+  return json.todos.map((todo) => ({
+    id: todo.id,
+    title: todo.todo,
+  }))
 }
 
-async function fetchItems(signal?: AbortSignal) {
-  await wait(180, signal)
-  return [...itemsDb]
-}
+async function createItem(title: string): Promise<TodoItem> {
+  const response = await fetch('https://dummyjson.com/todos/add', {
+    body: JSON.stringify({
+      completed: false,
+      todo: title,
+      userId: 1,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+  })
 
-async function createItem(title: string) {
-  await wait(220)
-  const next = { id: `item-${Date.now()}`, title }
-  itemsDb = [next, ...itemsDb]
-  return next
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
+  }
+
+  const json = (await response.json()) as {
+    id: number
+    todo: string
+  }
+
+  return {
+    id: json.id,
+    title: json.todo,
+  }
 }
 
 function ItemsScreen() {
@@ -59,9 +79,6 @@ function ItemsScreen() {
 
   const createItemMutation = useMutation({
     mutationFn: createItem,
-    onError: () => {
-      setDraft(draft)
-    },
     onSuccess: async () => {
       await reactQueryClient.invalidateQueries({ queryKey: ITEMS_QUERY_KEY })
     },
@@ -69,7 +86,7 @@ function ItemsScreen() {
 
   const submit = () => {
     const nextTitle = draft.trim()
-    
+
     if (!nextTitle) {
       return
     }
