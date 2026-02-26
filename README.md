@@ -10,16 +10,28 @@ Install dependencies:
 bun install
 ```
 
-Run a full benchmark with explicit solver and judge models:
-
+Then, generate outputs:
 ```bash
-bun runner/index.ts --solver-model "<solver-model>" --model "<judge-model>"
+bun runner/run.ts --model openai/gpt-4.1-mini --output generated/my-generated
 ```
+Default output path is `generated/<model>-<timestamp>`.
+
+To generate a reference baseline (no solver call), use `noop`:
+```bash
+bun runner/run.ts --model noop
+```
+
+Judge the generated outputs:
+```bash
+bun runner/judge.ts --model openai/gpt-5.3-codex --input generated/my-generated
+```
+Default judge output path is `runs/<input-folder>/` with per-eval files in `runs/<input-folder>/evals/`.
 
 Run a focused subset:
 
 ```bash
-bun runner/index.ts --pattern "evals/animation/01*" --solver-model "<solver-model>" --model "<judge-model>"
+bun runner/run.ts --pattern "evals/animation/01*" --model "openai/gpt-5.3-codex" --output generated/my-generated
+bun runner/judge.ts --model "openai/gpt-5.3-codex" --input generated/my-generated
 ```
 
 ## What this repository includes
@@ -33,21 +45,13 @@ Each eval includes:
 - `app/` baseline input files for solver stage
 - `reference/` reference files for judge context and oracle mode
 
-## How evaluation works
-
-For each discovered eval:
-
-1. Load `app/`, `reference/`, `requirements.yaml`, and `prompt.md`.
-2. Run solver stage (`--solver-model`), or materialize `reference/` files if solver model is omitted.
-3. Run judge stage when `--model` is provided.
-4. Write artifacts under `results/<run-id>/`.
-
 ## Common commands
 
 ```bash
-bun runner/index.ts
-bun runner/index.ts --debug
-bun runner/index.ts --pattern "evals/<category>/<eval-id>/**" --debug --fail-fast
+bun runner/run.ts --model openai/gpt-4.1-mini
+bun runner/run.ts --model noop --output generated/reference-generated
+bun runner/judge.ts --input generated/reference-generated --model openai/gpt-5.3-codex
+bun runner/judge.ts --input generated/reference-generated --model openai/gpt-5.3-codex --debug
 bun lint
 ```
 

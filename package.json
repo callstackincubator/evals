@@ -5,8 +5,8 @@
   "scripts": {
     "lint": "eslint .",
     "format": "prettier --write .",
-    "bench": "bun runner/index.ts",
-    "bench:local": "bun runner/index.ts --debug --fail-fast"
+    "bench:run": "bun runner/run.ts",
+    "bench:judge": "bun runner/judge.ts"
   },
   "devDependencies": {
     "@types/node": "^25.2.2",
