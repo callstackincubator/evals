@@ -1,5 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
+const SHEET_HEIGHT = 320
+const CLOSE_THRESHOLD = 140
+
 export default function App() {
   return (
     <View style={styles.screen}>

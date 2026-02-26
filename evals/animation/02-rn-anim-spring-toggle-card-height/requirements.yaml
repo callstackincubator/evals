@@ -4,8 +4,8 @@ inputs:
     - app/App.tsx
 requirements:
   - id: deterministic-collapsed-expanded-states
-    description: Must define deterministic collapsed and expanded visual states for the card.
+    description: Must represent collapsed/expanded states with a Reanimated progress shared value (for example `0`/`1`) and map it to card height via `interpolate(...)` in `useAnimatedStyle`.
   - id: spring-driven-transition
-    description: Must animate the expand and collapse transition using withSpring from react-native-reanimated.
+    description: Header press must toggle the progress shared value between collapsed/expanded states using `withSpring(...)` from `react-native-reanimated`.
   - id: no-react-layout-jump
-    description: Must avoid abrupt non-animated jumps when toggling between states.
+    description: Card/details visuals must be driven by Reanimated animated styles (`Animated.View` + `useAnimatedStyle`) instead of direct non-animated React style toggles.

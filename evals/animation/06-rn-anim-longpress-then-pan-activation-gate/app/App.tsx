@@ -1,5 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 
+const DRAG_LIMIT = 170
+
 export default function App() {
   return (
     <View style={styles.screen}>

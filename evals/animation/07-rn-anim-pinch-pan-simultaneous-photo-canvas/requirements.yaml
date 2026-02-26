@@ -4,10 +4,12 @@ inputs:
     - app/App.tsx
 requirements:
   - id: simultaneous-pinch-and-pan
-    description: Must compose pinch and pan gestures to run simultaneously using Gesture Handler composition primitives.
-  - id: implementation-rngh-pinch-pan-simultaneous-contract
-    description: Must use Gesture.Simultaneous for pinch + pan updates and MUST NOT rely on legacy useAnimatedGestureHandler paths.
+    description: Must compose `Gesture.Pinch()` and `Gesture.Pan()` with `Gesture.Simultaneous(...)` from `react-native-gesture-handler`.
   - id: scale-and-translation-shared-values
-    description: Must store zoom scale and translation in Reanimated shared values.
-  - id: bounded-pan-while-zoomed
-    description: Must clamp translation bounds based on current zoom so content remains partially visible.
+    description: Must store zoom and translation in Reanimated shared values (`scale`, `translateX`, `translateY`) and apply them through `useAnimatedStyle` transform.
+  - id: min-scale-clamp-usage
+    description: Must clamp zoom using the existing `MIN_SCALE` constant inside `Gesture.Pinch().onUpdate(...)`
+  - id: max-scale-clamp-usage
+    description: Must clamp zoom using the existing `MAX_SCALE` constant inside `Gesture.Pinch().onUpdate(...)`
+  - id: viewport-size-pan-bounds-usage
+    description: Must use the existing `VIEWPORT_SIZE` to constrain movement while zoomed inside `Gesture.Pan().onUpdate(...)`.

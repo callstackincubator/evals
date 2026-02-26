@@ -1,5 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native'
 
+const MAX_SCALE = 3
+const MIN_SCALE = 1
+const VIEWPORT_SIZE = 280
+
 export default function App() {
   return (
     <View style={styles.screen}>

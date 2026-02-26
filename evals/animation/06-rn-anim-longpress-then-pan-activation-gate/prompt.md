@@ -1,1 +1,1 @@
-Implement an interaction where a card becomes draggable after a long-press gate.
+Implement an interaction where a card becomes draggable on long-press, using `react-native-gesture-handler` and `react-native-reanimated`. Show a neutral pre-activation state, then an unlocked drag state by changing the card border/status color (for example gray to green) and slightly scaling the card once dragging is enabled. Keep horizontal dragging bounded by the existing `DRAG_LIMIT` so the card cannot move past the allowed range.

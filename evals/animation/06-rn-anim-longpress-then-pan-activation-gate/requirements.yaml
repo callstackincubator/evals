@@ -4,10 +4,10 @@ inputs:
     - app/App.tsx
 requirements:
   - id: composed-gesture-sequence
-    description: Must compose gestures so drag activation is gated by long-press completion.
+    description: Must compose `Gesture.LongPress()` and `Gesture.Pan()` with RNGH composition APIs (for example `Gesture.Simultaneous(...)`) so drag is gated by long-press activation.
   - id: implementation-rngh-longpress-pan-gating-contract
-    description: Must compose LongPress and Pan with Gesture API composition primitives so pan updates begin only after long-press activation, without legacy useAnimatedGestureHandler.
-  - id: accidental-drag-prevention
-    description: Must prevent translation updates before the activation gate is satisfied.
-  - id: visual-activation-feedback
-    description: Must provide deterministic visual feedback for pre-activation versus active-drag states.
+    description: Must implement gating in pan callbacks by checking long-press activation state before applying translation updates, and MUST NOT use legacy `useAnimatedGestureHandler`.
+  - id: drag-limit-clamp-usage
+    description: `Gesture.Pan().onUpdate(...)` must clamp horizontal translation using the existing `DRAG_LIMIT` constant (bounded to `-DRAG_LIMIT` and `DRAG_LIMIT`) before assigning `translateX`.
+  - id: visual-activation-feedback-card-border
+    description: Must drive card style from a Reanimated shared value using `useAnimatedStyle`.

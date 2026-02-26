@@ -4,8 +4,8 @@ inputs:
     - app/App.tsx
 requirements:
   - id: animated-entering-for-new-items
-    description: Must apply a Reanimated entering animation for newly added rows.
+    description: Row container must set Reanimated `entering={...}` animation (for example `FadeInDown`) on `Animated.View`.
   - id: animated-exiting-for-removed-items
-    description: Must apply a Reanimated exiting animation for removed rows.
+    description: Row container must set Reanimated `exiting={...}` animation (for example `FadeOutUp`) on `Animated.View`.
   - id: stable-item-identity
-    description: Must keep row keys stable across add/remove operations so entering and exiting animations attach to the correct items.
+    description: List rendering must use stable row identity via `keyExtractor`/`key` from persistent item IDs so entering/exiting animations bind to the correct row instances.

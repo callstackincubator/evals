@@ -1,30 +1,17 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
-
-type DetailRow = {
-  label: string
-  value: string
-}
-
-const CARD_TITLE = 'Shipment details'
-
-const SHIPMENT_DETAILS: DetailRow[] = [
-  { label: 'Estimated arrival', value: 'Tomorrow, 10:00 - 12:00' },
-  { label: 'Carrier', value: 'Eastline Express' },
-  { label: 'Tracking', value: 'EX-329-1192' },
-]
+import { StyleSheet, Text, View } from 'react-native'
 
 export default function App() {
   return (
     <View style={styles.screen}>
       <View style={styles.card}>
-        <Text style={styles.title}>{CARD_TITLE}</Text>
-        <ScrollView style={styles.details}>
-          {SHIPMENT_DETAILS.map((row) => (
-            <Text key={row.label} style={styles.copy}>
-              {row.label}: {row.value}
-            </Text>
-          ))}
-        </ScrollView>
+        <Text style={styles.title}>Shipment details</Text>
+        <View style={styles.details}>
+          <Text style={styles.copy}>
+            Estimated arrival: Tomorrow, 10:00 - 12:00
+          </Text>
+          <Text style={styles.copy}>Carrier: Eastline Express</Text>
+          <Text style={styles.copy}>Tracking: EX-329-1192</Text>
+        </View>
       </View>
     </View>
   )

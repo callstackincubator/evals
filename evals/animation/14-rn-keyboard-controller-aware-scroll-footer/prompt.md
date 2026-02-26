@@ -1,0 +1,1 @@
+Add keyboard-aware scrolling and a sticky submit footer with `react-native-keyboard-controller` and `react-native-reanimated` so focused fields remain visible during keyboard show, hide, and interactive dismiss.

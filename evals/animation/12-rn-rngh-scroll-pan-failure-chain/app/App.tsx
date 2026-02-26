@@ -1,12 +1,26 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
-type ContactRow = {
+const ROW_OPEN_OFFSET = -96
+const ROW_SNAP_OPEN_THRESHOLD = ROW_OPEN_OFFSET / 2
+
+const PAN_ACTIVATE_HORIZONTAL_PX = 14
+const PAN_FAIL_VERTICAL_PX = 10
+
+const ROW_SPRING_CONFIG = {
+  damping: 16,
+  stiffness: 180,
+  overshootClamping: true,
+}
+
+const ACTION_BACKGROUND_WIDTH = 120
+
+type Contact = {
   id: string
   name: string
   team: string
 }
 
-const CONTACTS: ContactRow[] = [
+const CONTACTS: Contact[] = [
   { id: 'c-1', name: 'Maya Chen', team: 'Support' },
   { id: 'c-2', name: 'Noah Patel', team: 'Logistics' },
   { id: 'c-3', name: 'Avery Kim', team: 'Partnerships' },

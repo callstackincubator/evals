@@ -4,8 +4,8 @@ inputs:
     - app/App.tsx
 requirements:
   - id: create-and-use-worklet-runtime
-    description: Must create a dedicated worklets runtime with createWorkletRuntime and schedule compute on it with scheduleOnRuntime, not deprecated runOnRuntime.
+    description: Must create a dedicated runtime with `createWorkletRuntime(...)` and schedule compute onto it with `scheduleOnRuntime(runtime, worklet, ...)`, not deprecated `runOnRuntime`.
   - id: schedule-on-rn-bridge
-    description: Must bridge results back to React runtime with scheduleOnRN from react-native-worklets and MUST NOT use deprecated runOnJS.
+    description: Must bridge runtime results back to React with `scheduleOnRN(...)` from `react-native-worklets` and MUST NOT use deprecated `runOnJS`.
   - id: bounded-bridge-frequency
-    description: Must avoid unbounded per-frame bridging and enforce controlled update cadence.
+    description: Must gate `scheduleOnRN` calls behind an explicit cadence condition (for example modulo/batch checkpoints plus final batch) instead of calling `scheduleOnRN` on every compute iteration.

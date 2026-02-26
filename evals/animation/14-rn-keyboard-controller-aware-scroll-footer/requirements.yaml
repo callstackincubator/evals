@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: keyboard-aware-scroll-behavior
+    description: Must wrap the form screen with `KeyboardProvider` and render form content in `KeyboardAwareScrollView` from `react-native-keyboard-controller`.
+  - id: keyboard-aware-scroll-dismiss-mode-prop
+    description: `KeyboardAwareScrollView` must set `keyboardDismissMode="interactive"`.
+  - id: keyboard-aware-scroll-persist-taps-prop
+    description: `KeyboardAwareScrollView` must set `keyboardShouldPersistTaps="handled"`.
+  - id: sticky-footer-translate-with-keyboard-height
+    description: Must use `useReanimatedKeyboardAnimation` with Reanimated `useAnimatedStyle` to drive footer `translateY` from `-keyboard.height.value`.
+  - id: sticky-footer-padding-with-keyboard-progress
+    description: Must use Reanimated `interpolate` over `keyboard.progress.value` to animate footer bottom padding during keyboard transitions.

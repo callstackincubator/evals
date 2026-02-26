@@ -1,1 +1,1 @@
-Implement a UI where heavy compute is moved off the JavaScript thread, and only compact result updates are bridged back to React runtime at controlled intervals (for example every few batches, not per-frame).
+Implement a UI where heavy compute is moved off the JavaScript thread using `react-native-worklets` and only compact result updates are bridged back to React runtime at controlled intervals (for example every few batches, not per-frame).

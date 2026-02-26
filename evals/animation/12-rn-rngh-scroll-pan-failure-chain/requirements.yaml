@@ -4,10 +4,12 @@ inputs:
     - app/App.tsx
 requirements:
   - id: explicit-gesture-failure-chain
-    description: Must use Gesture Handler composition or external failure requirements to model scroll versus swipe precedence.
+    description: Must define scroll-vs-swipe arbitration with `react-native-gesture-handler` by creating a `Gesture.Native()` scroll gesture and wiring it to row pan via explicit external-gesture relation APIs (for example `simultaneousWithExternalGesture` or `requireExternalGestureToFail`).
   - id: implementation-rngh-failure-chain-contract
-    description: Must model scroll-vs-pan arbitration with explicit RNGH failure/simultaneous requirements in Gesture API callbacks and MUST NOT use legacy useAnimatedGestureHandler.
-  - id: no-dead-zone-interaction
-    description: Must avoid dead-zone behavior where neither scroll nor swipe responds.
-  - id: deterministic-axis-thresholds
-    description: Must define explicit axis thresholds or activation offsets for resolving competing gestures.
+    description: Must implement swipe handling with `Gesture.Pan()` and `GestureDetector` using current builder callbacks (`onBegin`/`onUpdate`/`onEnd`) and MUST NOT use legacy `useAnimatedGestureHandler`.
+  - id: bounded-swipe-translation-clamp
+    description: Pan `onUpdate` must bound horizontal translation with an explicit clamp path (for example `clamp(...)` or equivalent min/max logic) before assigning the row translate shared value.
+  - id: horizontal-pan-with-vertical-scroll-activation
+    description: Must configure `Gesture.Pan().activeOffsetX(...)` with explicit numeric thresholds so horizontal movement is required before swipe activation.
+  - id: no-dead-zone-interaction-continued
+    description: Must configure `Gesture.Pan().failOffsetY(...)` with explicit numeric thresholds so vertical movement fails pan and hands interaction back to scroll.

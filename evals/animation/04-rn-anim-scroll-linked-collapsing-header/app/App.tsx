@@ -1,5 +1,9 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
+const HEADER_MAX_HEIGHT = 170
+const HEADER_MIN_HEIGHT = 76
+const COLLAPSE_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT
+
 const FEED_ITEMS = Array.from({ length: 12 }, (_, index) => ({
   id: `feed-${index + 1}`,
   title: `Feed item ${index + 1}`,

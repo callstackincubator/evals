@@ -4,10 +4,10 @@ inputs:
     - app/App.tsx
 requirements:
   - id: gesture-handler-pan-api
-    description: Must use react-native-gesture-handler gesture APIs to drive drag updates.
+    description: Must define drag with `Gesture.Pan()` and attach it via `GestureDetector` under `GestureHandlerRootView` from `react-native-gesture-handler`.
   - id: implementation-rngh-pan-gesturebuilder-contract
-    description: Must implement drag with Gesture.Pan builder callbacks (onBegin/onUpdate/onEnd) and MUST NOT use legacy useAnimatedGestureHandler paths.
+    description: Must implement drag with `Gesture.Pan()` builder callbacks (`onBegin`/`onUpdate`/`onEnd`) and MUST NOT use legacy `useAnimatedGestureHandler`.
   - id: translation-shared-value
-    description: Must update card translation through Reanimated shared values during gesture updates.
+    description: Must store translation in Reanimated shared values (`translateX`/`translateY`) and update them in pan callbacks, then apply via `useAnimatedStyle` transform.
   - id: deterministic-snap-on-release
-    description: Must resolve release to a deterministic snap point using velocity and position threshold logic.
+    description: Pan `onEnd` must compute a snap target from explicit velocity/position decision logic and animate shared values to that target with `withTiming(...)`.
