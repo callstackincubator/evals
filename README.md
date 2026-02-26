@@ -11,14 +11,20 @@ Start OpenCode server:
 opencode serve [--print-logs]
 ```
 
-Then, run the CLI:
+Then, generate outputs:
 ```bash
-bun runner/index.ts --model openai/gpt-5.3-codex --solver-model openai/gpt-4.1-mini
+bun runner/run.ts --model openai/gpt-4.1-mini --output results/my-generated
+```
+
+Judge the generated outputs:
+```bash
+bun runner/judge.ts --model openai/gpt-5.3-codex --input results/my-generated
 ```
 
 To run specific eval, do:
 ```bash
-bun runner/index.ts --pattern "evals/animation/01*" --model "openai/gpt-5.3-codex" --solver-model "openai/gpt-5.3-codex"
+bun runner/run.ts --pattern "evals/animation/01*" --model "openai/gpt-5.3-codex" --output results/my-generated
+bun runner/judge.ts --pattern "evals/animation/01*" --model "openai/gpt-5.3-codex" --input results/my-generated
 ```
 
 ## What this repository includes
@@ -36,7 +42,7 @@ Each eval is expected to include:
 For each eval:
 1. load `app/**` as baseline input
 2. run the eval prompt on that baseline to generate output to benchmark
-3. evaluate generated output with LLM judging when `--model` is provided
+3. evaluate generated output with LLM judging (`--model` required)
 4. compute weighted requirement score
 
 ## Common commands
@@ -44,8 +50,10 @@ For each eval:
 Use these commands for the most common local workflows:
 
 ```bash
-bun runner/index.ts
-bun runner/index.ts --debug
+bun runner/run.ts --model openai/gpt-4.1-mini --output results/my-generated
+bun runner/judge.ts --input results/my-generated --model openai/gpt-5.3-codex
+bun runner/judge.ts --input runs/reference --model openai/gpt-5.3-codex
+bun runner/judge.ts --input results/my-generated --model openai/gpt-5.3-codex --debug
 bun lint
 ```
 

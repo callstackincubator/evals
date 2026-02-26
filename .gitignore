@@ -2,8 +2,6 @@
 node_modules/
 
 # runner outputs
-runs/*
-!runs/.gitkeep
 results/*
 !results/.gitkeep
 

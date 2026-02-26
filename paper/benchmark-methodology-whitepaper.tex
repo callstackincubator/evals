@@ -21,7 +21,7 @@
 
 \title{\textbf{Methodology Whitepaper}\\React Native Evals Benchmark}
 \author{Repository-aligned methodology specification}
-\date{February 25, 2026}
+\date{February 26, 2026}
 
 \begin{document}
 \maketitle
@@ -31,7 +31,7 @@ This document specifies the methodology implemented by the React Native Evals re
 \end{abstract}
 
 \section{Scope and Assumptions}
-This whitepaper documents the benchmark as executed through \texttt{bun runner/index.ts} in the current checked-out repository state. It is aligned to observable runner behavior under \texttt{runner/} and to repository-level eval authoring guidance under \texttt{docs/}.
+This whitepaper documents the benchmark as executed through the split CLI flow: \texttt{bun runner/run.ts} followed by \texttt{bun runner/judge.ts}. It is aligned to observable runner behavior under \texttt{runner/} and to repository-level eval authoring guidance under \texttt{docs/}.
 
 \textbf{Assumption used in this document:} evals follow the repository contract under \texttt{evals/<category>/<eval-id>/} and are benchmarked via the standard runner pipeline.
 
@@ -41,19 +41,16 @@ The atomic benchmark unit is a single eval directory. Each eval is expected to c
   \item \texttt{prompt.md}: task prompt used by the solver model
   \item \texttt{requirements.yaml}: a list of judgeable requirements (optional per-requirement weights)
   \item \texttt{app/}: baseline input files provided to the solver
-  \item \texttt{reference/}: reference implementation files used as judge context and for oracle-mode validation
+  \item \texttt{reference/}: reference implementation files used as judge context
 \end{itemize}
 
 Eval discovery is file-driven: the runner scans for \texttt{requirements.yaml}. If that file is missing, the eval is not discovered and will not be included in the run.
 
 \section{End-to-End Execution Pipeline}
-For each benchmark run, the runner performs the following stages:
+For each benchmark run, execution is split into generation and judging:
 \begin{enumerate}
-  \item \textbf{Discover evals}: scan the requested pattern for \texttt{requirements.yaml}, derive eval paths, and sort by eval ID.
-  \item \textbf{Load eval assets}: read \texttt{app/}, \texttt{reference/}, \texttt{requirements.yaml}, and \texttt{prompt.md}.
-  \item \textbf{Run solver stage}: call the configured solver model, or materialize \texttt{reference/} files as generated output if no solver model is configured.
-  \item \textbf{Run LLM judge stage}: if a judge model is configured, evaluate generated output against declared requirements.
-  \item \textbf{Persist artifacts}: write per-eval results and run summary under \texttt{results/<run-id>/}.
+  \item \textbf{Generation CLI}: discover evals, load \texttt{app/} and \texttt{prompt.md}, run solver model, write generated files and \texttt{manifest.json} to the configured output directory.
+  \item \textbf{Judge CLI}: discover evals, load generated files from manifest entries, load \texttt{reference/} and \texttt{requirements.yaml}, run LLM judging, write per-eval results and summary under \texttt{results/<run-id>/}.
 \end{enumerate}
 
 The runner supports bounded concurrency. If an eval fails and \texttt{--fail-fast} is not enabled, the run continues and the eval is counted in \texttt{evalsErrored}.
@@ -78,8 +75,8 @@ The solver returns structured output with:
 
 Returned paths are sanitized before writing to disk (e.g., stripping leading slashes and removing traversal segments such as \texttt{..}).
 
-\subsection{Oracle/Reference Mode}
-If \texttt{--solver-model} is omitted, no solver model is called. Instead, the runner materializes the eval's \texttt{reference/} files as the generated output. This provides an oracle/reference mode for validating the evaluation pipeline.
+\subsection{Model Requirement}
+The generation CLI requires \texttt{--model}. There is no solver fallback mode that copies \texttt{reference/} files when model is omitted.
 
 \section{LLM Judge Methodology}
 \subsection{Requirements Parsing}
@@ -144,7 +141,7 @@ Judge rows are mapped back to declared requirements by ID.
   \item Requirement weights are normalized before scoring (Section~\ref{sec:scoring}).
 \end{itemize}
 
-If no judge model is configured (no \texttt{--model}), the LLM judge stage is skipped and the per-eval score is set to zero.
+The judge CLI requires \texttt{--model}; there is no judge skip/noop path.
 
 \section{Scoring Methodology}
 \label{sec:scoring}
@@ -216,7 +213,7 @@ Each run writes artifacts under a timestamp-based run ID:
 \begin{itemize}
   \item \texttt{results/<run-id>/evals/<eval-id>.json}: per-eval results
   \item \texttt{results/<run-id>/summary.json}: aggregate run summary
-  \item \texttt{results/<run-id>/generated/...}: generated files used for evaluation
+  \item generated artifacts and \texttt{manifest.json}: written by generation CLI to a user-selected output directory (for example \texttt{results/<run-id>/generated} or \texttt{runs/reference})
   \item optional debug artifacts when \texttt{--debug} is enabled
 \end{itemize}
 
@@ -226,11 +223,11 @@ Per-eval results include solver and judge model identifiers, mapped requirement 
 For comparative studies, report at minimum:
 \begin{enumerate}
   \item repository commit hash (dataset and runner version)
-  \item CLI options (\texttt{--pattern}, \texttt{--solver-model}, \texttt{--model}, \texttt{--timeout}, \texttt{--concurrency})
+  \item CLI options (\texttt{run: --pattern, --model, --timeout, --concurrency, --output}; \texttt{judge: --pattern, --model, --timeout, --concurrency, --input})
   \item execution date and time
   \item counts of discovered, processed, and errored evals
   \item \texttt{weightedAverageScore} and \texttt{requirementsPassed/Total}
-  \item whether oracle/reference mode was used (no solver model)
+  \item generated artifact source directory (for example solver output or materialized reference output)
 \end{enumerate}
 
 Repeat runs are recommended. The current runner does not explicitly pin a random seed or decoding settings (e.g., temperature) in solver or judge calls, so provider defaults and model nondeterminism can affect results.

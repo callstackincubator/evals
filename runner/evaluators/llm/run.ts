@@ -3,7 +3,12 @@ import { buildJudgePrompt } from './prompt'
 import { loadRequirements, type RequirementDefinition } from './requirements'
 import { computeScore, normalizeWeight } from './utils'
 import type { LoadedFile } from 'runner/utils/fs'
-import type { CliOptions } from 'runner/config'
+
+type LlmJudgeStageOptions = {
+  model: string
+  timeout: number
+  port?: number
+}
 
 // todo: this could be handled by structured output to make sure all requirements are satisfied
 function mapRequirementResults(
@@ -42,20 +47,8 @@ export async function runLlmJudgeStage(
   files: LoadedFile[],
   referenceFiles: LoadedFile[],
   rawRequirements: string,
-  cliOptions: CliOptions
+  cliOptions: LlmJudgeStageOptions
 ) {
-  if (!cliOptions.model) {
-    return {
-      requirements: [],
-      summary: 'llm judge skipped: no --model provided',
-      score: {
-        passedWeight: 0,
-        totalWeight: 0,
-        ratio: 0,
-      }
-    }
-  }
-
   const requirements = await loadRequirements(rawRequirements)
 
   const prompt = buildJudgePrompt(requirements, files, referenceFiles)

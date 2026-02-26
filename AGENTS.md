@@ -14,15 +14,16 @@ This file is the practical playbook for agents working in this repo.
 
 ## Mental model of execution
 
-When you run `bun runner/index.ts`, the pipeline is:
+Benchmark execution uses two CLIs:
 
-1. Discover evals by scanning for `requirements.yaml` (`runner/utils/discovery.ts`).
-2. Load eval files (`app/`, `reference/`, `requirements.yaml`, `prompt.md`).
-3. Run solver stage (`runner/solver/pipeline.ts`):
-  - If `--solver-model` is set, model edits `app` files.
-  - If `--solver-model` is missing, runner uses `reference/` files as generated output.
-4. Run LLM judge if `--model` is provided (`runner/evaluators/llm/run.ts`).
-5. Write artifacts under `results/<run-id>/`.
+1. `bun runner/run.ts` discovers evals and generates artifacts under the configured output directory.
+2. `bun runner/judge.ts` reads generated artifacts, runs LLM judging, and writes results under `results/<run-id>/`.
+
+Generation details (`runner/solver/pipeline.ts`):
+- `--model` is required and is always used for generation.
+
+Judge details (`runner/evaluators/llm/run.ts`):
+- `--model` is required and LLM judge always runs against generated artifacts.
 
 Key output behavior:
 
@@ -71,8 +72,8 @@ Apply these before implementation:
 Pick the smallest command set that proves the change:
 
 - Repo lint: `bun lint`
-- Runner smoke run: `bun runner/index.ts --pattern "evals/<category>/<eval-id>/**" --debug --fail-fast`
-- Full run (expensive): `bun runner/index.ts`
+- Runner smoke run: `bun runner/run.ts --pattern "evals/<category>/<eval-id>/**" --model <solver-model> --output /tmp/evals-generated && bun runner/judge.ts --pattern "evals/<category>/<eval-id>/**" --model <judge-model> --input /tmp/evals-generated --debug --fail-fast`
+- Full run (expensive): `bun runner/run.ts --model <solver-model> --output /tmp/evals-generated && bun runner/judge.ts --model <judge-model> --input /tmp/evals-generated`
 - Unit tests (when runner logic changes): `bun test runner`
 
 For bug fixes, prefer:

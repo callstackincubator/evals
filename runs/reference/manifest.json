@@ -1,0 +1,1132 @@
+{
+  "runId": "2026-02-26T14-45-58-613Z",
+  "startedAt": "2026-02-26T14:45:58.613Z",
+  "finishedAt": "2026-02-26T14:45:58.613Z",
+  "solverModel": "xxx",
+  "pattern": "evals/**/*",
+  "evalCount": 140,
+  "evalsProcessed": 140,
+  "evalsErrored": 0,
+  "evals": [
+    {
+      "evalId": "01-rn-anim-pressable-scale-with-timing",
+      "evalPath": "evals/animation/01-rn-anim-pressable-scale-with-timing",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "animation/01-rn-anim-pressable-scale-with-timing"
+    },
+    {
+      "evalId": "02-rn-anim-spring-toggle-card-height",
+      "evalPath": "evals/animation/02-rn-anim-spring-toggle-card-height",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "animation/02-rn-anim-spring-toggle-card-height"
+    },
+    {
+      "evalId": "03-rn-anim-layout-enter-exit-list-items",
+      "evalPath": "evals/animation/03-rn-anim-layout-enter-exit-list-items",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "animation/03-rn-anim-layout-enter-exit-list-items"
+    },
+    {
+      "evalId": "04-rn-anim-scroll-linked-collapsing-header",
+      "evalPath": "evals/animation/04-rn-anim-scroll-linked-collapsing-header",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "animation/04-rn-anim-scroll-linked-collapsing-header"
+    },
+    {
+      "evalId": "05-rn-anim-pan-drag-card-with-snap-points",
+      "evalPath": "evals/animation/05-rn-anim-pan-drag-card-with-snap-points",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "animation/05-rn-anim-pan-drag-card-with-snap-points"
+    },
+    {
+      "evalId": "06-rn-anim-longpress-then-pan-activation-gate",
+      "evalPath": "evals/animation/06-rn-anim-longpress-then-pan-activation-gate",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "animation/06-rn-anim-longpress-then-pan-activation-gate"
+    },
+    {
+      "evalId": "07-rn-anim-pinch-pan-simultaneous-photo-canvas",
+      "evalPath": "evals/animation/07-rn-anim-pinch-pan-simultaneous-photo-canvas",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "animation/07-rn-anim-pinch-pan-simultaneous-photo-canvas"
+    },
+    {
+      "evalId": "09-rn-anim-android-modal-gesture-root-safety",
+      "evalPath": "evals/animation/09-rn-anim-android-modal-gesture-root-safety",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "animation/09-rn-anim-android-modal-gesture-root-safety"
+    },
+    {
+      "evalId": "10-rn-anim-worklet-thread-bridge-schedule-on-rn",
+      "evalPath": "evals/animation/10-rn-anim-worklet-thread-bridge-schedule-on-rn",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "animation/10-rn-anim-worklet-thread-bridge-schedule-on-rn"
+    },
+    {
+      "evalId": "11-rn-rngh-exclusive-single-double-tap",
+      "evalPath": "evals/animation/11-rn-rngh-exclusive-single-double-tap",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "animation/11-rn-rngh-exclusive-single-double-tap"
+    },
+    {
+      "evalId": "12-rn-rngh-scroll-pan-failure-chain",
+      "evalPath": "evals/animation/12-rn-rngh-scroll-pan-failure-chain",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "animation/12-rn-rngh-scroll-pan-failure-chain"
+    },
+    {
+      "evalId": "13-rn-worklets-runtime-offload-and-bridge",
+      "evalPath": "evals/animation/13-rn-worklets-runtime-offload-and-bridge",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "animation/13-rn-worklets-runtime-offload-and-bridge"
+    },
+    {
+      "evalId": "14-rn-shared-value-derived-threshold-state",
+      "evalPath": "evals/animation/14-rn-shared-value-derived-threshold-state",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "animation/14-rn-shared-value-derived-threshold-state"
+    },
+    {
+      "evalId": "15-rn-keyboard-controller-sticky-composer",
+      "evalPath": "evals/animation/15-rn-keyboard-controller-sticky-composer",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "animation/15-rn-keyboard-controller-sticky-composer"
+    },
+    {
+      "evalId": "16-rn-keyboard-controller-aware-scroll-footer",
+      "evalPath": "evals/animation/16-rn-keyboard-controller-aware-scroll-footer",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "animation/16-rn-keyboard-controller-aware-scroll-footer"
+    },
+    {
+      "evalId": "01-rn-rq-stable-query-key-filters",
+      "evalPath": "evals/async-state/01-rn-rq-stable-query-key-filters",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "async-state/01-rn-rq-stable-query-key-filters"
+    },
+    {
+      "evalId": "02-rn-rq-dependent-query-enabled-gate",
+      "evalPath": "evals/async-state/02-rn-rq-dependent-query-enabled-gate",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "async-state/02-rn-rq-dependent-query-enabled-gate"
+    },
+    {
+      "evalId": "03-rn-rq-mutation-invalidate-on-success",
+      "evalPath": "evals/async-state/03-rn-rq-mutation-invalidate-on-success",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "async-state/03-rn-rq-mutation-invalidate-on-success"
+    },
+    {
+      "evalId": "04-rn-rq-optimistic-update-rollback",
+      "evalPath": "evals/async-state/04-rn-rq-optimistic-update-rollback",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "async-state/04-rn-rq-optimistic-update-rollback"
+    },
+    {
+      "evalId": "05-rn-zustand-async-action-lifecycle",
+      "evalPath": "evals/async-state/05-rn-zustand-async-action-lifecycle",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "async-state/05-rn-zustand-async-action-lifecycle"
+    },
+    {
+      "evalId": "06-rn-zustand-request-id-stale-response-guard",
+      "evalPath": "evals/async-state/06-rn-zustand-request-id-stale-response-guard",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "async-state/06-rn-zustand-request-id-stale-response-guard"
+    },
+    {
+      "evalId": "07-rn-zustand-persist-async-hydration-gate",
+      "evalPath": "evals/async-state/07-rn-zustand-persist-async-hydration-gate",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "async-state/07-rn-zustand-persist-async-hydration-gate"
+    },
+    {
+      "evalId": "08-rn-zustand-selector-shallow-stability",
+      "evalPath": "evals/async-state/08-rn-zustand-selector-shallow-stability",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "async-state/08-rn-zustand-selector-shallow-stability"
+    },
+    {
+      "evalId": "09-rn-jotai-async-read-atom-suspense",
+      "evalPath": "evals/async-state/09-rn-jotai-async-read-atom-suspense",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "async-state/09-rn-jotai-async-read-atom-suspense"
+    },
+    {
+      "evalId": "10-rn-jotai-loadable-async-atom-no-suspense",
+      "evalPath": "evals/async-state/10-rn-jotai-loadable-async-atom-no-suspense",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "async-state/10-rn-jotai-loadable-async-atom-no-suspense"
+    },
+    {
+      "evalId": "11-rn-jotai-async-write-atom-mutation",
+      "evalPath": "evals/async-state/11-rn-jotai-async-write-atom-mutation",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "async-state/11-rn-jotai-async-write-atom-mutation"
+    },
+    {
+      "evalId": "12-rn-jotai-atomwithstorage-async-rehydrate-guard",
+      "evalPath": "evals/async-state/12-rn-jotai-atomwithstorage-async-rehydrate-guard",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "async-state/12-rn-jotai-atomwithstorage-async-rehydrate-guard"
+    },
+    {
+      "evalId": "13-rn-react-suspense-transition-no-fallback-flash",
+      "evalPath": "evals/async-state/13-rn-react-suspense-transition-no-fallback-flash",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "async-state/13-rn-react-suspense-transition-no-fallback-flash"
+    },
+    {
+      "evalId": "14-rn-react-usedeferredvalue-search-stale-indicator",
+      "evalPath": "evals/async-state/14-rn-react-usedeferredvalue-search-stale-indicator",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "async-state/14-rn-react-usedeferredvalue-search-stale-indicator"
+    },
+    {
+      "evalId": "15-rn-react-transition-race-safe-ordering",
+      "evalPath": "evals/async-state/15-rn-react-transition-race-safe-ordering",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "async-state/15-rn-react-transition-race-safe-ordering"
+    },
+    {
+      "evalId": "16-rn-rq-react-native-appstate-focus-online-managers",
+      "evalPath": "evals/async-state/16-rn-rq-react-native-appstate-focus-online-managers",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "async-state/16-rn-rq-react-native-appstate-focus-online-managers"
+    },
+    {
+      "evalId": "01-rn-perm-expo-camera-request-denied-retry",
+      "evalPath": "evals/device-permissions/01-rn-perm-expo-camera-request-denied-retry",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/01-rn-perm-expo-camera-request-denied-retry"
+    },
+    {
+      "evalId": "02-rn-perm-expo-image-picker-limited-library-state",
+      "evalPath": "evals/device-permissions/02-rn-perm-expo-image-picker-limited-library-state",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/02-rn-perm-expo-image-picker-limited-library-state"
+    },
+    {
+      "evalId": "03-rn-perm-expo-location-foreground-gate-retry",
+      "evalPath": "evals/device-permissions/03-rn-perm-expo-location-foreground-gate-retry",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/03-rn-perm-expo-location-foreground-gate-retry"
+    },
+    {
+      "evalId": "04-rn-perm-expo-notifications-android13-channel-order",
+      "evalPath": "evals/device-permissions/04-rn-perm-expo-notifications-android13-channel-order",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/04-rn-perm-expo-notifications-android13-channel-order"
+    },
+    {
+      "evalId": "05-rn-perm-rnpermissions-check-request-blocked-settings",
+      "evalPath": "evals/device-permissions/05-rn-perm-rnpermissions-check-request-blocked-settings",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/05-rn-perm-rnpermissions-check-request-blocked-settings"
+    },
+    {
+      "evalId": "06-rn-perm-rn-image-picker-cancel-error-ux",
+      "evalPath": "evals/device-permissions/06-rn-perm-rn-image-picker-cancel-error-ux",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/06-rn-perm-rn-image-picker-cancel-error-ux"
+    },
+    {
+      "evalId": "07-rn-perm-expo-image-picker-pending-result-recovery",
+      "evalPath": "evals/device-permissions/07-rn-perm-expo-image-picker-pending-result-recovery",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/07-rn-perm-expo-image-picker-pending-result-recovery"
+    },
+    {
+      "evalId": "08-rn-perm-expo-location-foreground-then-background-rationale",
+      "evalPath": "evals/device-permissions/08-rn-perm-expo-location-foreground-then-background-rationale",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/08-rn-perm-expo-location-foreground-then-background-rationale"
+    },
+    {
+      "evalId": "09-rn-perm-expo-location-allow-once-settings-recovery",
+      "evalPath": "evals/device-permissions/09-rn-perm-expo-location-allow-once-settings-recovery",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/09-rn-perm-expo-location-allow-once-settings-recovery"
+    },
+    {
+      "evalId": "10-rn-perm-expo-notifications-ios-provisional-status",
+      "evalPath": "evals/device-permissions/10-rn-perm-expo-notifications-ios-provisional-status",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/10-rn-perm-expo-notifications-ios-provisional-status"
+    },
+    {
+      "evalId": "11-rn-perm-expo-notifications-settings-return-refresh",
+      "evalPath": "evals/device-permissions/11-rn-perm-expo-notifications-settings-return-refresh",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/11-rn-perm-expo-notifications-settings-return-refresh"
+    },
+    {
+      "evalId": "12-rn-perm-rnpermissions-multi-request-sequencing",
+      "evalPath": "evals/device-permissions/12-rn-perm-rnpermissions-multi-request-sequencing",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/12-rn-perm-rnpermissions-multi-request-sequencing"
+    },
+    {
+      "evalId": "13-rn-perm-rn-image-picker-includeextra-permission-aware",
+      "evalPath": "evals/device-permissions/13-rn-perm-rn-image-picker-includeextra-permission-aware",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/13-rn-perm-rn-image-picker-includeextra-permission-aware"
+    },
+    {
+      "evalId": "14-rn-perm-rn-image-picker-savetophotos-legacy-android-guard",
+      "evalPath": "evals/device-permissions/14-rn-perm-rn-image-picker-savetophotos-legacy-android-guard",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/14-rn-perm-rn-image-picker-savetophotos-legacy-android-guard"
+    },
+    {
+      "evalId": "15-rn-perm-expo-camera-availability-mount-error-fallback",
+      "evalPath": "evals/device-permissions/15-rn-perm-expo-camera-availability-mount-error-fallback",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/15-rn-perm-expo-camera-availability-mount-error-fallback"
+    },
+    {
+      "evalId": "16-rn-perm-cross-library-capability-state-machine",
+      "evalPath": "evals/device-permissions/16-rn-perm-cross-library-capability-state-machine",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/16-rn-perm-cross-library-capability-state-machine"
+    },
+    {
+      "evalId": "17-rn-perm-expo-camera-video-mic-dual-permission",
+      "evalPath": "evals/device-permissions/17-rn-perm-expo-camera-video-mic-dual-permission",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/17-rn-perm-expo-camera-video-mic-dual-permission"
+    },
+    {
+      "evalId": "18-rn-perm-expo-image-picker-camera-unavailable-fallback",
+      "evalPath": "evals/device-permissions/18-rn-perm-expo-image-picker-camera-unavailable-fallback",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/18-rn-perm-expo-image-picker-camera-unavailable-fallback"
+    },
+    {
+      "evalId": "19-rn-perm-expo-location-services-enabled-gate",
+      "evalPath": "evals/device-permissions/19-rn-perm-expo-location-services-enabled-gate",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/19-rn-perm-expo-location-services-enabled-gate"
+    },
+    {
+      "evalId": "20-rn-perm-expo-notifications-physical-device-token-gate",
+      "evalPath": "evals/device-permissions/20-rn-perm-expo-notifications-physical-device-token-gate",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/20-rn-perm-expo-notifications-physical-device-token-gate"
+    },
+    {
+      "evalId": "21-rn-perm-rnpermissions-ios-limited-photo-upgrade",
+      "evalPath": "evals/device-permissions/21-rn-perm-rnpermissions-ios-limited-photo-upgrade",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/21-rn-perm-rnpermissions-ios-limited-photo-upgrade"
+    },
+    {
+      "evalId": "22-rn-perm-rnpermissions-settings-return-appstate-recheck",
+      "evalPath": "evals/device-permissions/22-rn-perm-rnpermissions-settings-return-appstate-recheck",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/22-rn-perm-rnpermissions-settings-return-appstate-recheck"
+    },
+    {
+      "evalId": "23-rn-perm-rn-image-picker-video-permission-error-map",
+      "evalPath": "evals/device-permissions/23-rn-perm-rn-image-picker-video-permission-error-map",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/23-rn-perm-rn-image-picker-video-permission-error-map"
+    },
+    {
+      "evalId": "24-rn-perm-cross-library-status-normalization-contract",
+      "evalPath": "evals/device-permissions/24-rn-perm-cross-library-status-normalization-contract",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "device-permissions/24-rn-perm-cross-library-status-normalization-contract"
+    },
+    {
+      "evalId": "01-rn-list-flatlist-keys-extradata-selection",
+      "evalPath": "evals/lists/01-rn-list-flatlist-keys-extradata-selection",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/01-rn-list-flatlist-keys-extradata-selection"
+    },
+    {
+      "evalId": "02-rn-list-flatlist-onendreached-loading-guard",
+      "evalPath": "evals/lists/02-rn-list-flatlist-onendreached-loading-guard",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/02-rn-list-flatlist-onendreached-loading-guard"
+    },
+    {
+      "evalId": "03-rn-list-flatlist-getitemlayout-initial-scroll-index",
+      "evalPath": "evals/lists/03-rn-list-flatlist-getitemlayout-initial-scroll-index",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/03-rn-list-flatlist-getitemlayout-initial-scroll-index"
+    },
+    {
+      "evalId": "04-rn-list-flatlist-prepend-maintain-position",
+      "evalPath": "evals/lists/04-rn-list-flatlist-prepend-maintain-position",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/04-rn-list-flatlist-prepend-maintain-position"
+    },
+    {
+      "evalId": "05-rn-list-flatlist-memoized-row-rerender-control",
+      "evalPath": "evals/lists/05-rn-list-flatlist-memoized-row-rerender-control",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/05-rn-list-flatlist-memoized-row-rerender-control"
+    },
+    {
+      "evalId": "06-rn-list-sectionlist-sticky-headers-and-keys",
+      "evalPath": "evals/lists/06-rn-list-sectionlist-sticky-headers-and-keys",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/06-rn-list-sectionlist-sticky-headers-and-keys"
+    },
+    {
+      "evalId": "07-rn-list-sectionlist-scrolltolocation-deterministic",
+      "evalPath": "evals/lists/07-rn-list-sectionlist-scrolltolocation-deterministic",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/07-rn-list-sectionlist-scrolltolocation-deterministic"
+    },
+    {
+      "evalId": "08-rn-list-sectionlist-filter-extra-data-stability",
+      "evalPath": "evals/lists/08-rn-list-sectionlist-filter-extra-data-stability",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/08-rn-list-sectionlist-filter-extra-data-stability"
+    },
+    {
+      "evalId": "09-rn-list-flatlist-window-batch-tuning",
+      "evalPath": "evals/lists/09-rn-list-flatlist-window-batch-tuning",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/09-rn-list-flatlist-window-batch-tuning"
+    },
+    {
+      "evalId": "10-rn-list-flashlist-migration-remove-item-keys",
+      "evalPath": "evals/lists/10-rn-list-flashlist-migration-remove-item-keys",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/10-rn-list-flashlist-migration-remove-item-keys"
+    },
+    {
+      "evalId": "11-rn-list-flashlist-getitemtype-heterogeneous-rows",
+      "evalPath": "evals/lists/11-rn-list-flashlist-getitemtype-heterogeneous-rows",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/11-rn-list-flashlist-getitemtype-heterogeneous-rows"
+    },
+    {
+      "evalId": "12-rn-list-flashlist-recyclingstate-reset",
+      "evalPath": "evals/lists/12-rn-list-flashlist-recyclingstate-reset",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/12-rn-list-flashlist-recyclingstate-reset"
+    },
+    {
+      "evalId": "13-rn-list-flashlist-chat-prepend-mvcp",
+      "evalPath": "evals/lists/13-rn-list-flashlist-chat-prepend-mvcp",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/13-rn-list-flashlist-chat-prepend-mvcp"
+    },
+    {
+      "evalId": "14-rn-list-flashlist-nested-horizontal-in-vertical",
+      "evalPath": "evals/lists/14-rn-list-flashlist-nested-horizontal-in-vertical",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/14-rn-list-flashlist-nested-horizontal-in-vertical"
+    },
+    {
+      "evalId": "15-rn-list-legend-keyextractor-layout-cache",
+      "evalPath": "evals/lists/15-rn-list-legend-keyextractor-layout-cache",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/15-rn-list-legend-keyextractor-layout-cache"
+    },
+    {
+      "evalId": "16-rn-list-legend-recycleitems-state-safety",
+      "evalPath": "evals/lists/16-rn-list-legend-recycleitems-state-safety",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/16-rn-list-legend-recycleitems-state-safety"
+    },
+    {
+      "evalId": "17-rn-list-legend-chat-align-end-maintain-scroll",
+      "evalPath": "evals/lists/17-rn-list-legend-chat-align-end-maintain-scroll",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/17-rn-list-legend-chat-align-end-maintain-scroll"
+    },
+    {
+      "evalId": "18-rn-list-legend-bidirectional-pagination-thresholds",
+      "evalPath": "evals/lists/18-rn-list-legend-bidirectional-pagination-thresholds",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "lists/18-rn-list-legend-bidirectional-pagination-thresholds"
+    },
+    {
+      "evalId": "01-rn-nav-stack-product-details",
+      "evalPath": "evals/navigation/01-rn-nav-stack-product-details",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/01-rn-nav-stack-product-details"
+    },
+    {
+      "evalId": "02-rn-nav-stack-filter-default",
+      "evalPath": "evals/navigation/02-rn-nav-stack-filter-default",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/02-rn-nav-stack-filter-default"
+    },
+    {
+      "evalId": "03-rn-nav-stack-header-from-param",
+      "evalPath": "evals/navigation/03-rn-nav-stack-header-from-param",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/03-rn-nav-stack-header-from-param"
+    },
+    {
+      "evalId": "04-rn-nav-modal-compose-note",
+      "evalPath": "evals/navigation/04-rn-nav-modal-compose-note",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/04-rn-nav-modal-compose-note"
+    },
+    {
+      "evalId": "05-rn-nav-tabs-three-sections",
+      "evalPath": "evals/navigation/05-rn-nav-tabs-three-sections",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/05-rn-nav-tabs-three-sections"
+    },
+    {
+      "evalId": "06-rn-nav-home-tab-nested-details",
+      "evalPath": "evals/navigation/06-rn-nav-home-tab-nested-details",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/06-rn-nav-home-tab-nested-details"
+    },
+    {
+      "evalId": "07-rn-nav-drawer-account-help",
+      "evalPath": "evals/navigation/07-rn-nav-drawer-account-help",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/07-rn-nav-drawer-account-help"
+    },
+    {
+      "evalId": "08-rn-nav-picker-result-return",
+      "evalPath": "evals/navigation/08-rn-nav-picker-result-return",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/08-rn-nav-picker-result-return"
+    },
+    {
+      "evalId": "09-rn-nav-login-replace-home",
+      "evalPath": "evals/navigation/09-rn-nav-login-replace-home",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/09-rn-nav-login-replace-home"
+    },
+    {
+      "evalId": "10-rn-nav-deeplink-profile-basic",
+      "evalPath": "evals/navigation/10-rn-nav-deeplink-profile-basic",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/10-rn-nav-deeplink-profile-basic"
+    },
+    {
+      "evalId": "11-rn-nav-deeplink-invalid-fallback",
+      "evalPath": "evals/navigation/11-rn-nav-deeplink-invalid-fallback",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/11-rn-nav-deeplink-invalid-fallback"
+    },
+    {
+      "evalId": "12-rn-nav-android-back-selection-mode",
+      "evalPath": "evals/navigation/12-rn-nav-android-back-selection-mode",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/12-rn-nav-android-back-selection-mode"
+    },
+    {
+      "evalId": "13-rn-nav-unsaved-edit-confirm",
+      "evalPath": "evals/navigation/13-rn-nav-unsaved-edit-confirm",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/13-rn-nav-unsaved-edit-confirm"
+    },
+    {
+      "evalId": "14-rn-nav-focus-refresh-inbox",
+      "evalPath": "evals/navigation/14-rn-nav-focus-refresh-inbox",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/14-rn-nav-focus-refresh-inbox"
+    },
+    {
+      "evalId": "15-rn-nav-blur-cleanup-interval",
+      "evalPath": "evals/navigation/15-rn-nav-blur-cleanup-interval",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/15-rn-nav-blur-cleanup-interval"
+    },
+    {
+      "evalId": "16-rn-nav-persist-last-route",
+      "evalPath": "evals/navigation/16-rn-nav-persist-last-route",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/16-rn-nav-persist-last-route"
+    },
+    {
+      "evalId": "17-rn-nav-auth-switch-stacks",
+      "evalPath": "evals/navigation/17-rn-nav-auth-switch-stacks",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/17-rn-nav-auth-switch-stacks"
+    },
+    {
+      "evalId": "18-rn-nav-nested-notification-target",
+      "evalPath": "evals/navigation/18-rn-nav-nested-notification-target",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/18-rn-nav-nested-notification-target"
+    },
+    {
+      "evalId": "19-rn-nav-tabs-lazy-first-render",
+      "evalPath": "evals/navigation/19-rn-nav-tabs-lazy-first-render",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/19-rn-nav-tabs-lazy-first-render"
+    },
+    {
+      "evalId": "20-rn-nav-hide-tabbar-on-details",
+      "evalPath": "evals/navigation/20-rn-nav-hide-tabbar-on-details",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/20-rn-nav-hide-tabbar-on-details"
+    },
+    {
+      "evalId": "21-rn-nav-checkout-reset-success",
+      "evalPath": "evals/navigation/21-rn-nav-checkout-reset-success",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/21-rn-nav-checkout-reset-success"
+    },
+    {
+      "evalId": "22-rn-nav-tab-stacks-independent-history",
+      "evalPath": "evals/navigation/22-rn-nav-tab-stacks-independent-history",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/22-rn-nav-tab-stacks-independent-history"
+    },
+    {
+      "evalId": "23-rn-nav-deeplink-nested-thread",
+      "evalPath": "evals/navigation/23-rn-nav-deeplink-nested-thread",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/23-rn-nav-deeplink-nested-thread"
+    },
+    {
+      "evalId": "24-rn-nav-deeplink-parse-number",
+      "evalPath": "evals/navigation/24-rn-nav-deeplink-parse-number",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/24-rn-nav-deeplink-parse-number"
+    },
+    {
+      "evalId": "25-rn-nav-chat-push-multiple-threads",
+      "evalPath": "evals/navigation/25-rn-nav-chat-push-multiple-threads",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/25-rn-nav-chat-push-multiple-threads"
+    },
+    {
+      "evalId": "26-rn-nav-live-filter-setparams",
+      "evalPath": "evals/navigation/26-rn-nav-live-filter-setparams",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/26-rn-nav-live-filter-setparams"
+    },
+    {
+      "evalId": "27-rn-nav-header-action-stateful",
+      "evalPath": "evals/navigation/27-rn-nav-header-action-stateful",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/27-rn-nav-header-action-stateful"
+    },
+    {
+      "evalId": "28-rn-nav-notification-routing-service",
+      "evalPath": "evals/navigation/28-rn-nav-notification-routing-service",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/28-rn-nav-notification-routing-service"
+    },
+    {
+      "evalId": "29-rn-nav-drawer-back-priority",
+      "evalPath": "evals/navigation/29-rn-nav-drawer-back-priority",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/29-rn-nav-drawer-back-priority"
+    },
+    {
+      "evalId": "30-rn-nav-root-double-back-exit",
+      "evalPath": "evals/navigation/30-rn-nav-root-double-back-exit",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/30-rn-nav-root-double-back-exit"
+    },
+    {
+      "evalId": "31-rn-nav-persistence-url-precedence",
+      "evalPath": "evals/navigation/31-rn-nav-persistence-url-precedence",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/31-rn-nav-persistence-url-precedence"
+    },
+    {
+      "evalId": "32-rn-nav-screen-analytics-tracking",
+      "evalPath": "evals/navigation/32-rn-nav-screen-analytics-tracking",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/32-rn-nav-screen-analytics-tracking"
+    },
+    {
+      "evalId": "33-rn-nav-onboarding-gated-main",
+      "evalPath": "evals/navigation/33-rn-nav-onboarding-gated-main",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/33-rn-nav-onboarding-gated-main"
+    },
+    {
+      "evalId": "34-rn-nav-signout-clears-history",
+      "evalPath": "evals/navigation/34-rn-nav-signout-clears-history",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/34-rn-nav-signout-clears-history"
+    },
+    {
+      "evalId": "35-rn-nav-multistep-form-flow",
+      "evalPath": "evals/navigation/35-rn-nav-multistep-form-flow",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/35-rn-nav-multistep-form-flow"
+    },
+    {
+      "evalId": "36-rn-nav-deeplink-query-filters",
+      "evalPath": "evals/navigation/36-rn-nav-deeplink-query-filters",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/36-rn-nav-deeplink-query-filters"
+    },
+    {
+      "evalId": "37-rn-nav-focus-fetch-abort",
+      "evalPath": "evals/navigation/37-rn-nav-focus-fetch-abort",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/37-rn-nav-focus-fetch-abort"
+    },
+    {
+      "evalId": "38-rn-nav-avoid-duplicate-current-route",
+      "evalPath": "evals/navigation/38-rn-nav-avoid-duplicate-current-route",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/38-rn-nav-avoid-duplicate-current-route"
+    },
+    {
+      "evalId": "39-rn-nav-tabs-with-modal-layer",
+      "evalPath": "evals/navigation/39-rn-nav-tabs-with-modal-layer",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/39-rn-nav-tabs-with-modal-layer"
+    },
+    {
+      "evalId": "41-rn-screens-detach-tabs-draft-retention",
+      "evalPath": "evals/navigation/41-rn-screens-detach-tabs-draft-retention",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/41-rn-screens-detach-tabs-draft-retention"
+    },
+    {
+      "evalId": "42-rn-nav-android-transparent-modal-back",
+      "evalPath": "evals/navigation/42-rn-nav-android-transparent-modal-back",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/42-rn-nav-android-transparent-modal-back"
+    },
+    {
+      "evalId": "43-rn-nav-auth-deeplink-resume-target",
+      "evalPath": "evals/navigation/43-rn-nav-auth-deeplink-resume-target",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/43-rn-nav-auth-deeplink-resume-target"
+    },
+    {
+      "evalId": "44-rn-nav-persisted-state-migration",
+      "evalPath": "evals/navigation/44-rn-nav-persisted-state-migration",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/44-rn-nav-persisted-state-migration"
+    },
+    {
+      "evalId": "45-rn-nav-rapid-push-pop-cancel-safe",
+      "evalPath": "evals/navigation/45-rn-nav-rapid-push-pop-cancel-safe",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/45-rn-nav-rapid-push-pop-cancel-safe"
+    },
+    {
+      "evalId": "46-rn-nav-gesture-back-parity",
+      "evalPath": "evals/navigation/46-rn-nav-gesture-back-parity",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/46-rn-nav-gesture-back-parity"
+    },
+    {
+      "evalId": "47-rn-nav-drawer-tab-stack-deeplink-map",
+      "evalPath": "evals/navigation/47-rn-nav-drawer-tab-stack-deeplink-map",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/47-rn-nav-drawer-tab-stack-deeplink-map"
+    },
+    {
+      "evalId": "48-rn-nav-main-modal-group-architecture",
+      "evalPath": "evals/navigation/48-rn-nav-main-modal-group-architecture",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/48-rn-nav-main-modal-group-architecture"
+    },
+    {
+      "evalId": "49-rn-nav-predictive-back-before-remove",
+      "evalPath": "evals/navigation/49-rn-nav-predictive-back-before-remove",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/49-rn-nav-predictive-back-before-remove"
+    },
+    {
+      "evalId": "50-rn-nav-static-typesafe-route-contract",
+      "evalPath": "evals/navigation/50-rn-nav-static-typesafe-route-contract",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "navigation/50-rn-nav-static-typesafe-route-contract"
+    },
+    {
+      "evalId": "01-rn-storage-asyncstorage-rehydrate-bootstrap-guard",
+      "evalPath": "evals/storage/01-rn-storage-asyncstorage-rehydrate-bootstrap-guard",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/01-rn-storage-asyncstorage-rehydrate-bootstrap-guard"
+    },
+    {
+      "evalId": "02-rn-storage-asyncstorage-namespaced-keys-clear-scope",
+      "evalPath": "evals/storage/02-rn-storage-asyncstorage-namespaced-keys-clear-scope",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/02-rn-storage-asyncstorage-namespaced-keys-clear-scope"
+    },
+    {
+      "evalId": "03-rn-storage-asyncstorage-batch-multiget-multiset",
+      "evalPath": "evals/storage/03-rn-storage-asyncstorage-batch-multiget-multiset",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/03-rn-storage-asyncstorage-batch-multiget-multiset"
+    },
+    {
+      "evalId": "04-rn-storage-asyncstorage-large-payload-sharding",
+      "evalPath": "evals/storage/04-rn-storage-asyncstorage-large-payload-sharding",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/04-rn-storage-asyncstorage-large-payload-sharding"
+    },
+    {
+      "evalId": "05-rn-storage-asyncstorage-offline-outbox-retry",
+      "evalPath": "evals/storage/05-rn-storage-asyncstorage-offline-outbox-retry",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/05-rn-storage-asyncstorage-offline-outbox-retry"
+    },
+    {
+      "evalId": "06-rn-storage-asyncstorage-reconnect-conflict-merge",
+      "evalPath": "evals/storage/06-rn-storage-asyncstorage-reconnect-conflict-merge",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/06-rn-storage-asyncstorage-reconnect-conflict-merge"
+    },
+    {
+      "evalId": "07-rn-storage-asyncstorage-schema-version-migration",
+      "evalPath": "evals/storage/07-rn-storage-asyncstorage-schema-version-migration",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/07-rn-storage-asyncstorage-schema-version-migration"
+    },
+    {
+      "evalId": "08-rn-storage-mmkv-split-global-user-instances",
+      "evalPath": "evals/storage/08-rn-storage-mmkv-split-global-user-instances",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/08-rn-storage-mmkv-split-global-user-instances"
+    },
+    {
+      "evalId": "09-rn-storage-mmkv-encryption-recrypt-rotation",
+      "evalPath": "evals/storage/09-rn-storage-mmkv-encryption-recrypt-rotation",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/09-rn-storage-mmkv-encryption-recrypt-rotation"
+    },
+    {
+      "evalId": "10-rn-storage-mmkv-value-change-listener-sync",
+      "evalPath": "evals/storage/10-rn-storage-mmkv-value-change-listener-sync",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/10-rn-storage-mmkv-value-change-listener-sync"
+    },
+    {
+      "evalId": "11-rn-storage-mmkv-multi-process-app-group",
+      "evalPath": "evals/storage/11-rn-storage-mmkv-multi-process-app-group",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/11-rn-storage-mmkv-multi-process-app-group"
+    },
+    {
+      "evalId": "12-rn-storage-mmkv-custom-path-persistence-guard",
+      "evalPath": "evals/storage/12-rn-storage-mmkv-custom-path-persistence-guard",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/12-rn-storage-mmkv-custom-path-persistence-guard"
+    },
+    {
+      "evalId": "13-rn-storage-sqlite-idempotent-migrations",
+      "evalPath": "evals/storage/13-rn-storage-sqlite-idempotent-migrations",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/13-rn-storage-sqlite-idempotent-migrations"
+    },
+    {
+      "evalId": "14-rn-storage-sqlite-prepared-statements-finalize",
+      "evalPath": "evals/storage/14-rn-storage-sqlite-prepared-statements-finalize",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/14-rn-storage-sqlite-prepared-statements-finalize"
+    },
+    {
+      "evalId": "15-rn-storage-sqlite-exclusive-transaction-ordering",
+      "evalPath": "evals/storage/15-rn-storage-sqlite-exclusive-transaction-ordering",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/15-rn-storage-sqlite-exclusive-transaction-ordering"
+    },
+    {
+      "evalId": "16-rn-storage-sqlite-offline-outbox-replay",
+      "evalPath": "evals/storage/16-rn-storage-sqlite-offline-outbox-replay",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/16-rn-storage-sqlite-offline-outbox-replay"
+    },
+    {
+      "evalId": "17-rn-storage-sqlite-change-listener-reactivity",
+      "evalPath": "evals/storage/17-rn-storage-sqlite-change-listener-reactivity",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/17-rn-storage-sqlite-change-listener-reactivity"
+    },
+    {
+      "evalId": "18-rn-storage-sqlite-wal-foreign-keys-init",
+      "evalPath": "evals/storage/18-rn-storage-sqlite-wal-foreign-keys-init",
+      "outputFiles": [
+        "App.tsx"
+      ],
+      "generatedPath": "storage/18-rn-storage-sqlite-wal-foreign-keys-init"
+    }
+  ]
+}

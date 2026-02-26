@@ -37,10 +37,6 @@ export type SolverResult = {
   summary?: string
 }
 
-function toPosixPath(value: string) {
-  return value.split(path.sep).join('/')
-}
-
 function sanitizeGeneratedPath(relativePath: string) {
   const normalizedPath = relativePath.replace(/\\/g, '/').replace(/^\/+/, '')
   const segments = normalizedPath
@@ -64,7 +60,7 @@ export async function materializeFiles(
       await writeFile(absolutePath, file.content, 'utf8')
 
       return {
-        path: toPosixPath(safeRelativePath),
+        path: safeRelativePath,
         absolutePath,
         content: file.content,
       }
@@ -145,7 +141,6 @@ export async function runSolver(params: {
   const prompt = buildSolverPrompt(params.prompt, params.files)
   const model = provider(params.model, {
     createNewSession: true,
-    directory: params.workingDirectory,
     cwd: params.workingDirectory,
   })
 
