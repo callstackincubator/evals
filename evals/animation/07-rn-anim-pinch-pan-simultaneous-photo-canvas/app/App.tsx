@@ -1,13 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 export default function App() {
   return (
-    <View style={styles.screen}>
+    <GestureHandlerRootView style={styles.screen}>
       <Text style={styles.title}>Pinch + pan photo canvas</Text>
       <View style={styles.canvas}>
         <Text style={styles.canvasLabel}>Zoom and drag me</Text>
       </View>
-    </View>
+    </GestureHandlerRootView>
   )
 }
 

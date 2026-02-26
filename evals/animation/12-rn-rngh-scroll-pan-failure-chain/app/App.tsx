@@ -1,4 +1,5 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 type ContactRow = {
   id: string
@@ -17,7 +18,7 @@ const CONTACTS: ContactRow[] = [
 
 export default function App() {
   return (
-    <View style={styles.screen}>
+    <GestureHandlerRootView style={styles.screen}>
       <Text style={styles.title}>Contacts</Text>
       <ScrollView contentContainerStyle={styles.list}>
         {CONTACTS.map((contact) => (
@@ -27,7 +28,7 @@ export default function App() {
           </View>
         ))}
       </ScrollView>
-    </View>
+    </GestureHandlerRootView>
   )
 }
 

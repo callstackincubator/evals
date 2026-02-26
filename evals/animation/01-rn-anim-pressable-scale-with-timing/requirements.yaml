@@ -3,9 +3,9 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: pressable-drives-animation
-    description: Must render a Pressable interaction that triggers animation state changes on press-in and press-out.
+  - id: pressable-onpressin-onpressout-contract
+    description: Must drive the interaction via explicit Pressable onPressIn and onPressOut handlers.
   - id: reanimated-timing-scale
     description: Must use react-native-reanimated shared values and withTiming to animate a scale transform.
-  - id: reset-to-rest-state
-    description: Must restore the visual scale to a deterministic rest value after release.
+  - id: implementation-pressed-rest-target-contract
+    description: Must define explicit pressed and rest scale targets (constants or equivalent) and drive them from onPressIn/onPressOut via withTiming rather than toggling an implicit boolean style branch.

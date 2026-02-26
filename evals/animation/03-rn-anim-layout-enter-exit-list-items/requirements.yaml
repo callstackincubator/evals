@@ -3,9 +3,7 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: animated-entering-for-new-items
-    description: Must apply a Reanimated entering animation for newly added rows.
-  - id: animated-exiting-for-removed-items
-    description: Must apply a Reanimated exiting animation for removed rows.
-  - id: stable-item-identity
-    description: Must keep row keys stable across add/remove operations so entering and exiting animations attach to the correct items.
+  - id: implementation-reanimated-view
+    description: Must render each row as a Reanimated Animated.View.
+  - id: implementation-reanimated-entering-exiting-prop-contract
+    description: Must provide entering and exiting props with a Reanimated built-in animation builder (for example FadeInDown and FadeOutUp).

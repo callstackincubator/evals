@@ -1,1 +1,1 @@
-Implement an interaction where a card becomes draggable after a long-press gate.
+Implement an interaction where a card becomes draggable after a long-press.

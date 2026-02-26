@@ -8,4 +8,4 @@ requirements:
   - id: schedule-on-rn-bridge
     description: Must bridge results back to React runtime with scheduleOnRN from react-native-worklets and MUST NOT use deprecated runOnJS.
   - id: bounded-bridge-frequency
-    description: Must avoid unbounded per-frame bridging and enforce controlled update cadence.
+    description: Must call scheduleOnRN only at bounded checkpoints (for example every N batches), not for every runtime iteration.

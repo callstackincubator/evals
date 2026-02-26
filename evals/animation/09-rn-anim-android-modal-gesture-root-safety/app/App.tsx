@@ -1,15 +1,16 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 export default function App() {
   return (
-    <View style={styles.screen}>
+    <GestureHandlerRootView style={styles.screen}>
       <Pressable style={styles.button}>
         <Text style={styles.buttonText}>Open gesture modal</Text>
       </Pressable>
       <View style={styles.sheetPreview}>
         <Text style={styles.sheetTitle}>Drag down to dismiss</Text>
       </View>
-    </View>
+    </GestureHandlerRootView>
   )
 }
 

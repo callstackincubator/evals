@@ -4,12 +4,10 @@ inputs:
     - app/App.tsx
 requirements:
   - id: modal-gesture-root-view-setup
-    description: Must configure GestureHandlerRootView or gestureHandlerRootHOC in the modal interaction path required for Android modal gesture handling.
+    description: Must configure GestureHandlerRootView in the modal interaction path required for Android modal gesture handling.
   - id: gesture-control-inside-modal
-    description: Must include at least one gesture-driven control inside the modal that uses RNGH APIs.
+    description: Must place a GestureDetector with a Gesture.Pan control inside the modal content path.
   - id: implementation-rngh-modal-root-boundary-contract
-    description: Must keep modal gesture controls under a GestureHandlerRootView/gestureHandlerRootHOC boundary and use current Gesture API callbacks (no legacy useAnimatedGestureHandler).
+    description: Must keep modal gesture controls under a GestureHandlerRootView and use current Gesture API callbacks (no legacy useAnimatedGestureHandler).
   - id: schedule-on-rn-modal-dismiss-bridge
     description: Must use scheduleOnRN for worklet-to-React dismiss state updates and MUST NOT use deprecated runOnJS.
-  - id: no-platform-specific-breakage-path
-    description: Must avoid an implementation path that leaves Android modal gestures non-functional.

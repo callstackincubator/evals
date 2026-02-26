@@ -1,15 +1,16 @@
 import { StyleSheet, Text, View } from 'react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 export default function App() {
   return (
-    <View style={styles.screen}>
+    <GestureHandlerRootView style={styles.screen}>
       <View style={styles.card}>
         <Text style={styles.title}>Hold, then drag</Text>
         <Text style={styles.subtitle}>
           Long press unlocks dragging and avoids accidental tap-drag.
         </Text>
       </View>
-    </View>
+    </GestureHandlerRootView>
   )
 }
 

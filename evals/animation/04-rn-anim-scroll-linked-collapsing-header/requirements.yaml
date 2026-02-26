@@ -3,9 +3,11 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: animated-scroll-handler-source
-    description: Must derive header animation state from Reanimated useAnimatedScrollHandler on the UI thread.
-  - id: interpolated-header-transform-or-opacity
-    description: Must use interpolation to map scroll offset to deterministic header visual changes.
-  - id: clamped-header-range
-    description: Must clamp the header animation to defined min and max bounds to avoid runaway values.
+  - id: implementation-reanimated-scroll-handler-contract
+    description: Must update a shared value from event.contentOffset.y inside useAnimatedScrollHandler.
+  - id: implementation-animated-scrollview-onscroll-contract
+    description: Must wire the animated scroll handler into an Animated.ScrollView onScroll prop.
+  - id: implementation-header-animatedstyle-interpolation-contract
+    description: Must compute collapsing header styles in useAnimatedStyle using interpolate.
+  - id: implementation-clamped-header-bounds-contract
+    description: Must clamp header interpolation with Extrapolation.CLAMP and min/max header constants.

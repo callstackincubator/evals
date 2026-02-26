@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
-const FEED_ITEMS = Array.from({ length: 12 }, (_, index) => ({
-  id: `feed-${index + 1}`,
+const FEED_ITEMS = Array.from({ length: 30 }, (_, index) => ({
+  id: `item-${index + 1}`,
   title: `Feed item ${index + 1}`,
 }))
 
