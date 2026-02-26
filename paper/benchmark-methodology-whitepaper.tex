@@ -203,7 +203,13 @@ The run summary also reports:
   \item \texttt{requirementsTotal}
   \item \texttt{requirementsPassed}
   \item \texttt{evalsErrored}
+  \item \texttt{perEvalMetrics}
 \end{itemize}
+
+\texttt{perEvalMetrics} is ordered by execution index and records one row per discovered eval.
+For successful evals, each row includes \texttt{requirementsTotal}, \texttt{requirementsPassed},
+and \texttt{scoreRatio}. For pipeline errors, each row includes \texttt{status=error}
+along with the eval identifier and path.
 
 \section{Artifacts and Output Schema (Operational View)}
 Each run writes artifacts under a timestamp-based run ID:
