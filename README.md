@@ -13,18 +13,25 @@ opencode serve [--print-logs]
 
 Then, generate outputs:
 ```bash
-bun runner/run.ts --model openai/gpt-4.1-mini --output results/my-generated
+bun runner/run.ts --model openai/gpt-4.1-mini --output generated/my-generated
+```
+Default output path is `generated/<model>-<timestamp>`.
+
+To generate a reference baseline (no solver call), use `noop`:
+```bash
+bun runner/run.ts --model noop
 ```
 
 Judge the generated outputs:
 ```bash
-bun runner/judge.ts --model openai/gpt-5.3-codex --input results/my-generated
+bun runner/judge.ts --model openai/gpt-5.3-codex --input generated/my-generated
 ```
+Default judge output path is `runs/<input-folder>/` with per-eval files in `runs/<input-folder>/evals/`.
 
 To run specific eval, do:
 ```bash
-bun runner/run.ts --pattern "evals/animation/01*" --model "openai/gpt-5.3-codex" --output results/my-generated
-bun runner/judge.ts --pattern "evals/animation/01*" --model "openai/gpt-5.3-codex" --input results/my-generated
+bun runner/run.ts --pattern "evals/animation/01*" --model "openai/gpt-5.3-codex" --output generated/my-generated
+bun runner/judge.ts --model "openai/gpt-5.3-codex" --input generated/my-generated
 ```
 
 ## What this repository includes
@@ -37,22 +44,15 @@ Each eval is expected to include:
 - `app/` (baseline source context used to generate benchmark output)
 - `reference/` (judge reference context)
 
-## How evaluation works
-
-For each eval:
-1. load `app/**` as baseline input
-2. run the eval prompt on that baseline to generate output to benchmark
-3. evaluate generated output with LLM judging (`--model` required)
-4. compute weighted requirement score
-
 ## Common commands
 
 Use these commands for the most common local workflows:
 
 ```bash
-bun runner/run.ts --model openai/gpt-4.1-mini --output results/my-generated
-bun runner/judge.ts --input results/my-generated --model openai/gpt-5.3-codex
-bun runner/judge.ts --input results/my-generated --model openai/gpt-5.3-codex --debug
+bun runner/run.ts --model openai/gpt-4.1-mini
+bun runner/run.ts --model noop --output generated/reference-generated
+bun runner/judge.ts --input generated/reference-generated --model openai/gpt-5.3-codex
+bun runner/judge.ts --input generated/reference-generated --model openai/gpt-5.3-codex --debug
 bun lint
 ```
 

@@ -7,17 +7,16 @@ import { sanitizeSegment } from 'runner/utils/fs'
   Creates run output directories and returns absolute paths used by writers.
  */
 export async function createRunOutputDirectories(
-  outputDir: string,
-  runId: string
+  runDirectory: string
 ) {
-  const runDirectory = path.resolve(process.cwd(), outputDir, runId)
-  await mkdir(runDirectory, { recursive: true })
+  const resolvedRunDirectory = path.resolve(process.cwd(), runDirectory)
+  await mkdir(resolvedRunDirectory, { recursive: true })
 
-  const evalDirectory = path.join(runDirectory, 'evals')
+  const evalDirectory = path.join(resolvedRunDirectory, 'evals')
   await mkdir(evalDirectory, { recursive: true })
 
   return {
-    runDirectory,
+    runDirectory: resolvedRunDirectory,
     evalDirectory,
   }
 }

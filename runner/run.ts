@@ -8,10 +8,11 @@ import {
 } from './utils/generation-manifest'
 import { parseRunCliArgs } from './config'
 import { runWithConcurrency } from './solver/concurrency'
+import { materializeFiles } from './solver'
 import { runSolverStage } from './solver/pipeline'
 import { discoverEvals } from './utils/discovery'
 import { partitionEvalRuns } from './utils/eval-runs'
-import { loadFiles } from './utils/fs'
+import { loadFiles, sanitizeSegment } from './utils/fs'
 
 function toRelativePath(value: string) {
   return path.relative(process.cwd(), value).split(path.sep).join('/')
@@ -28,7 +29,8 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
   const startedAt = new Date().toISOString()
   const outputDirectory = path.resolve(
     process.cwd(),
-    cliOptions.output ?? path.join('results', runId, 'generated')
+    cliOptions.output ??
+      path.join('generated', `${sanitizeSegment(cliOptions.model)}-${runId}`)
   )
   await mkdir(outputDirectory, { recursive: true })
 
@@ -51,16 +53,25 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
             ? relativeToEvals
             : path.relative(process.cwd(), evalItem.evalPath)
         const generatedEvalRunDirectory = path.join(outputDirectory, generatedPath)
-        const solverStage = await runSolverStage(
-          prompt,
-          appFiles,
-          generatedEvalRunDirectory,
-          {
-            solverModel: cliOptions.model,
-            timeout: cliOptions.timeout,
-            port: cliOptions.port,
-          }
-        )
+        const solverStage =
+          cliOptions.model === 'noop'
+            ? {
+                summary: 'Copied reference files',
+                files: await materializeFiles(
+                  generatedEvalRunDirectory,
+                  (await loadFiles(path.join(evalItem.evalPath, 'reference'))).map(
+                    (file) => ({
+                      path: file.path,
+                      content: file.content,
+                    })
+                  )
+                ),
+              }
+            : await runSolverStage(prompt, appFiles, generatedEvalRunDirectory, {
+                solverModel: cliOptions.model,
+                timeout: cliOptions.timeout,
+                port: cliOptions.port,
+              })
 
         const position = index + 1
         console.log(

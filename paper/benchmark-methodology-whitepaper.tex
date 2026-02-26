@@ -50,7 +50,7 @@ Eval discovery is file-driven: the runner scans for \texttt{requirements.yaml}. 
 For each benchmark run, execution is split into generation and judging:
 \begin{enumerate}
   \item \textbf{Generation CLI}: discover evals, load \texttt{app/} and \texttt{prompt.md}, run solver model, write generated files and \texttt{manifest.json} to the configured output directory.
-  \item \textbf{Judge CLI}: discover evals, load generated files from manifest entries and \texttt{requirements.yaml}, run LLM judging, write per-eval results and summary under \texttt{results/<run-id>/}.
+  \item \textbf{Judge CLI}: read eval entries from generation \texttt{manifest.json}, load generated files and \texttt{requirements.yaml}, run LLM judging, write per-eval results incrementally under \texttt{runs/<input-folder>/evals/}, and write summary at run completion.
 \end{enumerate}
 
 The runner supports bounded concurrency. If an eval fails and \texttt{--fail-fast} is not enabled, the run continues and the eval is counted in \texttt{evalsErrored}.
@@ -76,7 +76,7 @@ The solver returns structured output with:
 Returned paths are sanitized before writing to disk (e.g., stripping leading slashes and removing traversal segments such as \texttt{..}).
 
 \subsection{Model Requirement}
-The generation CLI requires \texttt{--model}. There is no solver fallback mode that copies \texttt{reference/} files when model is omitted.
+The generation CLI requires \texttt{--model}. When set to \texttt{noop}, the generation stage copies files from each eval's \texttt{reference/} directory into the configured output and still writes a validated \texttt{manifest.json}. Any other model value runs normal solver generation.
 
 \section{LLM Judge Methodology}
 \subsection{Requirements Parsing}
@@ -208,11 +208,11 @@ and \texttt{scoreRatio}. For pipeline errors, each row includes \texttt{status=e
 along with the eval identifier and path.
 
 \section{Artifacts and Output Schema (Operational View)}
-Each run writes artifacts under a timestamp-based run ID:
+Each run writes artifacts to deterministic generation and judge directories:
 \begin{itemize}
-  \item \texttt{results/<run-id>/evals/<eval-id>.json}: per-eval results
-  \item \texttt{results/<run-id>/summary.json}: aggregate run summary
-  \item generated artifacts and \texttt{manifest.json}: written by generation CLI to a user-selected output directory (for example \texttt{results/<run-id>/generated})
+  \item \texttt{runs/<input-folder>/evals/<eval-id>.json}: per-eval judge results (written as each eval completes)
+  \item \texttt{runs/<input-folder>/summary.json}: aggregate judge summary (written at end)
+  \item generated artifacts and \texttt{manifest.json}: written by generation CLI to a user-selected output directory (default: \texttt{generated/<model>-<run-id>})
   \item optional debug artifacts when \texttt{--debug} is enabled
 \end{itemize}
 
@@ -222,7 +222,7 @@ Per-eval results include solver and judge model identifiers, mapped requirement 
 For comparative studies, report at minimum:
 \begin{enumerate}
   \item repository commit hash (dataset and runner version)
-  \item CLI options (\texttt{run: --pattern, --model, --timeout, --concurrency, --output}; \texttt{judge: --pattern, --model, --timeout, --concurrency, --input})
+  \item CLI options (\texttt{run: --pattern, --model, --timeout, --concurrency, --output}; \texttt{judge: --model, --timeout, --concurrency, --input})
   \item execution date and time
   \item counts of discovered, processed, and errored evals
   \item \texttt{weightedAverageScore} and \texttt{requirementsPassed/Total}

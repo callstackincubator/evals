@@ -10,7 +10,6 @@ import {
 } from './evaluators/llm/output'
 import { runLlmJudgeStage } from './evaluators/llm/run'
 import { runWithConcurrency } from './solver/concurrency'
-import { discoverEvals } from './utils/discovery'
 import { partitionEvalRuns } from './utils/eval-runs'
 import { loadFiles, sanitizeSegment } from './utils/fs'
 
@@ -29,32 +28,28 @@ function toRelativePath(value: string) {
 */
 export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
   const cliOptions = parseJudgeCliArgs(argv)
-  const discoveredEvals = await discoverEvals(cliOptions.pattern)
   const runId = new Date().toISOString().replace(/[:.]/g, '-')
   const startedAt = new Date().toISOString()
   const inputDirectory = path.resolve(process.cwd(), cliOptions.input)
+  const outputDirectory =
+    cliOptions.output ??
+    path.join('runs', sanitizeSegment(path.basename(inputDirectory)))
   const outputDirectories = await createRunOutputDirectories(
-    cliOptions.output ?? 'results',
-    runId
+    outputDirectory
   )
   const generationManifest = await readGenerationManifest(inputDirectory)
-  const manifestEvalByPath = new Map(
-    generationManifest.evals.map((evalArtifact) => [evalArtifact.evalPath, evalArtifact])
-  )
+  const manifestEvals = generationManifest.evals
 
-  console.log(`starting judge: ${discoveredEvals.length} eval(s)`)
+  console.log(`judge output: ${toRelativePath(outputDirectories.runDirectory)}`)
+  console.log(`starting judge: ${manifestEvals.length} eval(s)`)
 
   const evalRuns = await runWithConcurrency(
-    discoveredEvals,
+    manifestEvals,
     cliOptions.concurrency,
-    async (evalItem, index) => {
+    async (manifestEval, index) => {
       try {
-        const evalPath = toRelativePath(evalItem.evalPath)
-        const manifestEval = manifestEvalByPath.get(evalPath)
-        if (!manifestEval) {
-          throw new Error(`no generated entry in manifest for ${evalPath}`)
-        }
-
+        const evalPath = manifestEval.evalPath
+        const evalDirectory = path.resolve(process.cwd(), evalPath)
         const generatedEvalRunDirectory = path.join(
           inputDirectory,
           manifestEval.generatedPath
@@ -67,8 +62,8 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
         }
 
         const [requirements, prompt] = await Promise.all([
-          readFile(path.join(evalItem.evalPath, 'requirements.yaml'), 'utf-8'),
-          readFile(path.join(evalItem.evalPath, 'prompt.md'), 'utf-8'),
+          readFile(path.join(evalDirectory, 'requirements.yaml'), 'utf-8'),
+          readFile(path.join(evalDirectory, 'prompt.md'), 'utf-8'),
         ])
 
         const llmJudgeStage = await runLlmJudgeStage(
@@ -78,7 +73,7 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
         )
 
         const stageResult = {
-          evalId: evalItem.evalId,
+          evalId: manifestEval.evalId,
           evalPath,
           judgeModel: cliOptions.model,
           solverModel: generationManifest.solverModel,
@@ -90,7 +85,7 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
         if (cliOptions.debug) {
           await writeDebugArtifacts(
             outputDirectories.runDirectory,
-            evalItem.evalId,
+            manifestEval.evalId,
             prompt,
             llmJudgeStage
           )
@@ -105,14 +100,14 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
 
         const position = index + 1
         console.log(
-          `[${position}/${discoveredEvals.length}] ${evalItem.evalId} ` +
+          `[${position}/${manifestEvals.length}] ${manifestEval.evalId} ` +
             `-> llm:${stageResult.score.ratio}`
         )
 
         return { kind: 'success' as const, index, result: stageResult }
       } catch (error) {
         const errorMessage = error instanceof Error ? error.stack : String(error)
-        console.error(`[judge-stage][${evalItem.evalId}] ${errorMessage}`)
+        console.error(`[judge-stage][${manifestEval.evalId}] ${errorMessage}`)
 
         if (cliOptions.failFast) {
           throw error
@@ -157,9 +152,9 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
     finishedAt: new Date().toISOString(),
     judgeModel: cliOptions.model,
     solverModel: generationManifest.solverModel,
-    pattern: cliOptions.pattern,
+    pattern: generationManifest.pattern,
     inputGeneratedArtifacts: toRelativePath(inputDirectory),
-    evalCount: discoveredEvals.length,
+    evalCount: manifestEvals.length,
     evalsProcessed: successfulRuns.length,
     evalsErrored,
     requirementsTotal,
