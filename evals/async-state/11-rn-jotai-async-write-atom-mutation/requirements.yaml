@@ -3,13 +3,13 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: async-write-atom-mutation-action
-    description: Must implement mutation side effects inside an async writable atom action.
-  - id: pending-and-error-state-atoms
-    description: Must maintain deterministic pending and error atoms updated in try/catch/finally mutation lifecycle.
-  - id: success-commits-to-target-atoms
-    description: On successful mutation, must commit results to target atoms (for example list atom) in predictable order.
-  - id: implementation-jotai-v2-entrypoints
-    description: Must use Jotai v2 entrypoints from 'jotai' and 'jotai/utils' for core and utility APIs.
-  - id: implementation-jotai-no-v1-removed-utils
-    description: Must NOT rely on removed Jotai v1 APIs such as waitForAll, abortableAtom, or Provider initialValues/scope props.
+  - id: submit-mutation-is-async-write-atom
+    description: Submit flow is implemented as a writable async Jotai atom action
+  - id: composer-uses-draft-posts-and-submit-state-atoms
+    description: Screen state includes separate atoms for draft text posts list and submit lifecycle
+  - id: submit-lifecycle-handles-pending-success-error
+    description: Submit action writes pending then commits success or error lifecycle state
+  - id: submit-success-commits-created-post-and-resets-draft
+    description: Successful mutation appends or prepends created post data and clears draft input atom
+  - id: submit-ui-dispatches-write-atom
+    description: Submit button triggers the async write atom through `useSetAtom` or `useAtom` dispatch

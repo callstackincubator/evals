@@ -2,27 +2,30 @@ import { Suspense } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { atom, useAtomValue } from 'jotai'
 
-const FETCH_DELAY_MS = 260
-
-const sleep = (ms: number) =>
-  new Promise<void>((resolve) => setTimeout(resolve, ms))
-
 type Profile = {
   id: string
   name: string
   role: string
 }
 
-const MOCK_PROFILE: Profile = {
-  id: 'p-1',
-  name: 'Jordan Lee',
-  role: 'Release engineer',
-}
+const profileAtom = atom(async (): Promise<Profile> => {
+  const response = await fetch('https://dummyjson.com/users/1')
 
-const profileAtom = atom(async () => {
-  await sleep(FETCH_DELAY_MS)
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
+  }
 
-  return MOCK_PROFILE
+  const json = (await response.json()) as {
+    firstName: string
+    id: number
+    lastName: string
+  }
+
+  return {
+    id: String(json.id),
+    name: `${json.firstName} ${json.lastName}`,
+    role: 'User profile',
+  }
 })
 
 function ProfileCard() {

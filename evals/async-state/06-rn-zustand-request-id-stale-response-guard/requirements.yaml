@@ -3,13 +3,13 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: request-identity-tracking
-    description: Must track request identity/version for overlapping async searches (for example incrementing activeRequestId).
-  - id: latest-intent-wins-commit
-    description: Must commit async results only when request identity matches latest active request intent.
-  - id: stale-response-ignored
-    description: Must drop stale async completions so older responses cannot overwrite newer state.
-  - id: implementation-zustand-v5-named-create
-    description: Must use named create import from 'zustand' (v5 style) and MUST NOT rely on removed default-export create usage.
-  - id: implementation-zustand-v5-selector-equality
-    description: Must NOT pass a custom equality function as the second argument to create-based hook selectors in v5; use useShallow or createWithEqualityFn when equality control is needed.
+  - id: zustand-create-store-hook
+    description: Store hook is created with `create` from `zustand`
+  - id: request-identity-state-is-tracked
+    description: Store state must include `activeRequestId`
+  - id: request-identity-is-incremented-before-fetch
+    description: Must write `activeRequestId` through `set` before fetch
+  - id: search-request-uses-encoded-query-endpoint
+    description: Search fetch uses `encodeURIComponent` for query
+  - id: stale-request-guard-runs-after-async-work
+    description: After async fetch, must compare `activeRequestId` with local request id and return on mismatch

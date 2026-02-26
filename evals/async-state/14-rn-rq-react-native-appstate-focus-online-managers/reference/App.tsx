@@ -21,6 +21,15 @@ type InboxPayload = {
   version: number
 }
 
+type TodoResponse = {
+  todos: Array<{
+    id: number
+    todo: string
+    completed: boolean
+  }>
+  total: number
+}
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -30,22 +39,18 @@ const queryClient = new QueryClient({
   },
 })
 
-let serverVersion = 0
-
 async function fetchInbox(): Promise<InboxPayload> {
-  await new Promise<void>((resolve) => {
-    setTimeout(resolve, 220)
-  })
+  const response = await fetch('https://dummyjson.com/todos?limit=3&skip=0')
 
-  serverVersion += 1
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
+  }
+
+  const json = (await response.json()) as TodoResponse
 
   return {
-    items: [
-      `Sync check #${serverVersion}`,
-      `Foreground refresh #${serverVersion}`,
-      `Reconnect refresh #${serverVersion}`,
-    ],
-    version: serverVersion,
+    items: json.todos.map((item) => item.todo),
+    version: json.total,
   }
 }
 
@@ -54,39 +59,24 @@ function useReactQueryLifecycleBridge() {
     AppState.currentState
   )
   const [isOnline, setIsOnline] = useState(true)
-  const lastFocus = useRef<boolean | null>(null)
-  const lastOnline = useRef<boolean | null>(null)
 
   const addOnAppStateChangeListener = () => {
     return AppState.addEventListener('change', (nextState) => {
       setAppState(nextState)
-      const focused = nextState === 'active'
-
-      if (lastFocus.current !== focused) {
-        lastFocus.current = focused
-        focusManager.setFocused(focused)
-      }
+      focusManager.setFocused(nextState === 'active')
     })
   }
 
   const addOnNetInfoChangeListener = () => {
     return NetInfo.addEventListener((state) => {
-      const nextOnline =
-        Boolean(state.isConnected) && state.isInternetReachable !== false
-
+      const nextOnline = state.isConnected && state.isInternetReachable !== false
       setIsOnline(nextOnline)
-
-      if (lastOnline.current !== nextOnline) {
-        lastOnline.current = nextOnline
-        onlineManager.setOnline(nextOnline)
-      }
+      onlineManager.setOnline(nextOnline)
     })
   }
 
   useEffect(() => {
-    const initialFocused = AppState.currentState === 'active'
-    focusManager.setFocused(initialFocused)
-    lastFocus.current = initialFocused
+    focusManager.setFocused(AppState.currentState === 'active')
 
     const appStateSubscription = addOnAppStateChangeListener()
     const unsubscribeNetInfo = addOnNetInfoChangeListener()

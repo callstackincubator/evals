@@ -25,23 +25,27 @@ const refreshIndexAtom = atom(0)
 const reportsAtom = atom(async (get): Promise<Report[]> => {
   const refreshIndex = get(refreshIndexAtom)
 
-  await new Promise<void>((resolve) => {
-    setTimeout(resolve, 260)
-  })
+  const endpoint =
+    refreshIndex % 2 === 1
+      ? 'https://dummyjson.com/todos/not-found'
+      : 'https://dummyjson.com/todos?limit=3&skip=0'
 
-  if (refreshIndex % 2 === 1) {
-    throw new Error('Failed to load reports on odd refresh attempts')
+  const response = await fetch(endpoint)
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
   }
 
-  return [
-    { id: 'r-1', title: 'Build health summary' },
-    { id: 'r-2', title: 'Crash-free session trend' },
-    { id: 'r-3', title: 'Release checklist status' },
-  ]
+  const json = (await response.json()) as {
+    todos: Array<{ id: number; todo: string }>
+  }
+
+  return json.todos.map((todo) => ({
+    id: String(todo.id),
+    title: todo.todo,
+  }))
 })
 
-// loadable is getting deprecated in v3 in favour of unwrap
-// For reference: https://github.com/pmndrs/jotai/pull/3217
 function loadable<Value>(anAtom: Atom<Value>): Atom<Loadable<Value>> {
   const LOADING: Loadable<Value> = { state: 'loading' }
   const unwrappedAtom = unwrap(anAtom, () => LOADING)
@@ -49,6 +53,7 @@ function loadable<Value>(anAtom: Atom<Value>): Atom<Loadable<Value>> {
   return atom((get) => {
     try {
       const data = get(unwrappedAtom)
+
       if (data === LOADING) {
         return LOADING
       }

@@ -3,13 +3,11 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: loadable-wrapping-for-async-atom
-    description: Must wrap async atom access with loadable(...) from jotai/utils for non-Suspense consumption.
-  - id: explicit-non-suspense-state-branches
-    description: Must render explicit hasData/loading/hasError UI branches from loadable atom state.
-  - id: no-unhandled-promise-throw
-    description: Must avoid direct async-atom reads that throw promises when no Suspense boundary is used.
-  - id: implementation-jotai-v2-entrypoints
-    description: Must use Jotai v2 entrypoints from 'jotai' and 'jotai/utils' for core and utility APIs.
-  - id: implementation-jotai-no-v1-removed-utils
-    description: Must NOT rely on removed Jotai v1 APIs such as waitForAll, abortableAtom, or Provider initialValues/scope props.
+  - id: reports-source-is-async-atom
+    description: Reports are sourced from a Jotai async atom and include a refresh trigger read via `get`
+  - id: non-suspense-loadable-helper-construction
+    description: Implementation includes a helper that adapts an async atom using Jotai `unwrap` plus a derived `atom((get) => ...)` read function with try/catch error capture
+  - id: loadable-helper-state-shape-and-branching
+    description: Helper returns explicit loadable objects for loading data and error states (including payload for data/error), and UI branches directly on that returned state shape
+  - id: reload-action-triggers-refetch
+    description: Reload action updates the refresh trigger atom through `useSetAtom` or `useAtom` dispatch

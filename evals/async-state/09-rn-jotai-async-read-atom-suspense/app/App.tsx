@@ -1,49 +1,47 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 
-const ITEMS = ['alpha', 'beta', 'gamma']
-
-async function loadAtomValueAction() {
-  // No-op
-  return ITEMS.length
+function ProfileCard() {
+  return (
+    <View style={styles.card}>
+      <Text style={styles.name}></Text>
+      <Text style={styles.meta}></Text>
+    </View>
+  )
 }
 
 export default function App() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Profile</Text>
-      <Text style={styles.subtitle}>Profile placeholders: {ITEMS.length}</Text>
-      <Pressable style={styles.button} onPress={() => loadAtomValueAction()}>
-        <Text style={styles.buttonText}>Open</Text>
-      </Pressable>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    marginTop: 12,
+    padding: 14,
   },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
+  meta: {
+    color: '#334155',
+  },
+  name: {
+    color: '#0f172a',
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 6,
   },
   screen: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#f1f5f9',
     flex: 1,
-    justifyContent: 'center',
-    rowGap: 10,
-  },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+    paddingHorizontal: 14,
+    paddingTop: 56,
   },
   title: {
-    color: '#111827',
-    fontSize: 20,
-    fontWeight: '600',
+    color: '#0f172a',
+    fontSize: 24,
+    fontWeight: '700',
   },
 })

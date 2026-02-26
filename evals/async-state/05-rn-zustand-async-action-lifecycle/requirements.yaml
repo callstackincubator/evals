@@ -3,13 +3,13 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: explicit-async-lifecycle-state
-    description: Must model async lifecycle explicitly in store state with idle/loading/success/error phases.
-  - id: async-action-updates-store
-    description: Must implement async fetch action that updates Zustand state via set/get transitions through lifecycle phases.
-  - id: error-reset-or-retry-path
-    description: Must provide an explicit retry action after a failed async action.
-  - id: implementation-zustand-v5-named-create
-    description: Must use named create import from 'zustand' (v5 style) and MUST NOT rely on removed default-export create usage.
-  - id: implementation-zustand-v5-selector-equality
-    description: Must NOT pass a custom equality function as the second argument to create-based hook selectors in v5; use useShallow or createWithEqualityFn when equality control is needed.
+  - id: zustand-create-store-hook
+    description: Store hook is created with `create` from `zustand`
+  - id: async-action-sets-loading-before-await
+    description: Async fetch action calls `set` to write loading state before awaiting network work
+  - id: async-action-success-and-error-branches
+    description: Async fetch action writes success data and error state through `set` in separate branches
+  - id: retry-path-calls-same-store-action
+    description: Error UI retry trigger calls the same async store action used by initial fetch
+  - id: status-driven-ui-branching
+    description: UI output branches by lifecycle status values for idle loading success and error

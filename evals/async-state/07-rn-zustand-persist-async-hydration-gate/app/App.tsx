@@ -1,49 +1,66 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-const SESSION_STATE = 'signed-out'
-
-async function isHydrationReadyAction() {
-  // No-op
-  return SESSION_STATE
-}
-
 export default function App() {
+  const hasHydrated = false
+  const isAuthenticated = false
+
+  if (!hasHydrated) {
+    return (
+      <View style={styles.screen}>
+        <Text style={styles.title}>Loading your session...</Text>
+      </View>
+    )
+  }
+
+  const card = isAuthenticated
+    ? { label: 'Authenticated content visible.', button: 'Log out' }
+    : { label: 'Public content visible.', button: 'Log in' }
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Session Gate</Text>
-      <Text style={styles.subtitle}>Restore session before showing account actions.</Text>
-      <Pressable style={styles.button} onPress={() => isHydrationReadyAction()}>
-        <Text style={styles.buttonText}>Restore Session</Text>
-      </Pressable>
+      <Text style={styles.title}>Session</Text>
+
+      <View style={styles.card}>
+        <Text style={styles.meta}>{card.label}</Text>
+        <Pressable onPress={() => {}} style={styles.button}>
+          <Text style={styles.buttonText}>{card.button}</Text>
+        </Pressable>
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    alignSelf: 'flex-start',
+    backgroundColor: '#0f172a',
+    borderRadius: 8,
+    marginTop: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
   },
   buttonText: {
     color: '#fff',
     fontWeight: '600',
   },
-  screen: {
-    alignItems: 'center',
+  card: {
     backgroundColor: '#fff',
-    flex: 1,
-    justifyContent: 'center',
-    rowGap: 10,
+    borderRadius: 12,
+    marginTop: 12,
+    padding: 12,
   },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+  meta: {
+    color: '#334155',
+  },
+  screen: {
+    backgroundColor: '#f1f5f9',
+    flex: 1,
+    paddingHorizontal: 14,
+    paddingTop: 56,
   },
   title: {
-    color: '#111827',
-    fontSize: 20,
-    fontWeight: '600',
+    color: '#0f172a',
+    fontSize: 24,
+    fontWeight: '700',
   },
 })

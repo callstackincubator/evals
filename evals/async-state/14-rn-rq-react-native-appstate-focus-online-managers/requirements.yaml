@@ -1,0 +1,11 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: appstate-focusmanager-integration
+    description: Must map React Native `AppState` transitions to `focusManager.setFocused(...)` by subscribing to `change` events via `addEventListener`.
+  - id: connectivity-onlinemanager-integration
+    description: Must map connectivity signals to `onlineManager.setOnline(...)` by subscribing to connectivity changes via `NetInfo.addEventListener` and using conservative online detection (`isConnected` + `isInternetReachable`).
+  - id: implementation-rq-v5-object-signature
+    description: Must use TanStack Query v5 object-form APIs for query hooks and client methods.
