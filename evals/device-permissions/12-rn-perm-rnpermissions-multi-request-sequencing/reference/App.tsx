@@ -108,7 +108,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Multi Permission Setup</Text>
+      <Text style={styles.title}>Permission Setup Sequence</Text>
 
       <Pressable onPress={runSequencedSetup} style={styles.button}>
         <Text style={styles.buttonText}>

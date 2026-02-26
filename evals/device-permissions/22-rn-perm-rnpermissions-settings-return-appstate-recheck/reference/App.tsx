@@ -186,7 +186,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Blocked Permission Recovery</Text>
+      <Text style={styles.title}>Settings Recheck</Text>
       <Text style={styles.state}>Status: {status}</Text>
 
       <Pressable onPress={refreshStatus} style={styles.secondaryButton}>

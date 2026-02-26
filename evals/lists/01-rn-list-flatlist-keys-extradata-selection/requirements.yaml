@@ -9,7 +9,5 @@ requirements:
     description: Must wire FlatList extraData to selection state so selected-row UI updates when selection changes.
   - id: no-item-key-anti-pattern
     description: Must avoid forcing per-row remount via unstable key usage inside renderItem output.
-  - id: implementation-rn-core-virtualizedlist-contract
-    description: Must implement long-list rendering with FlatList/SectionList virtualization primitives and MUST NOT replace the same flow with ScrollView plus map rendering.
   - id: implementation-rn-core-keyextractor-nonindex
     description: Must provide stable keyExtractor based on logical item identity and MUST NOT use array-index keys for mutable or reorderable datasets.

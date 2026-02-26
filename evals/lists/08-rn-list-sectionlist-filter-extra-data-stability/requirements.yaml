@@ -9,7 +9,5 @@ requirements:
     description: Must use extraData or immutable section updates so filtered output refreshes reliably.
   - id: empty-state-correctness
     description: Must render empty-list behavior when filter removes all visible rows.
-  - id: implementation-rn-core-virtualizedlist-contract
-    description: Must implement long-list rendering with FlatList/SectionList virtualization primitives and MUST NOT replace the same flow with ScrollView plus map rendering.
   - id: implementation-rn-core-keyextractor-nonindex
     description: Must provide stable keyExtractor based on logical item identity and MUST NOT use array-index keys for mutable or reorderable datasets.

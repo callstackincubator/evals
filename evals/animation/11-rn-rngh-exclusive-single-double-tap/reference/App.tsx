@@ -15,8 +15,10 @@ import Animated, {
 const DOUBLE_TAP_MAX_DELAY_MS = 260
 const TAP_MAX_DURATION_MS = 220
 
+type Outcome = 'Waiting for tap' | 'Single tap action' | 'Double tap action'
+
 export default function App() {
-  const [outcome, setOutcome] = useState('Waiting for tap')
+  const [outcome, setOutcome] = useState<Outcome>('Waiting for tap')
   const scale = useSharedValue(1)
 
   const singleTap = Gesture.Tap()

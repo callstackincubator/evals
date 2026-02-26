@@ -22,14 +22,8 @@ declare global {
   }
 }
 
-type PollingNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  'Polling'
->
-type OtherNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  'Other'
->
+type PollingNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Polling'>
+type OtherNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Other'>
 
 function PollingScreen() {
   const navigation = useNavigation<PollingNavigationProp>()
@@ -52,7 +46,7 @@ function PollingScreen() {
   return (
     <View style={styles.container}>
       <Text>Polling ticks while focused: {ticks}</Text>
-      <Button title="Open other screen" onPress={handleOpenOtherScreen} />
+      <Button title='Open' onPress={handleOpenOtherScreen} />
     </View>
   )
 }
@@ -66,7 +60,7 @@ function OtherScreen() {
 
   return (
     <View style={styles.container}>
-      <Button title="Back to polling" onPress={handleBackToPolling} />
+      <Button title='Back to polling' onPress={handleBackToPolling} />
     </View>
   )
 }

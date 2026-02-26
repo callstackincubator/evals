@@ -116,7 +116,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Batched Settings</Text>
+      <Text style={styles.title}>Settings Batch Sync</Text>
       <Text style={styles.row}>Language: {settings.language}</Text>
       <Text style={styles.row}>Push: {String(settings.pushOptIn)}</Text>
       <Text style={styles.row}>Email: {String(settings.emailOptIn)}</Text>

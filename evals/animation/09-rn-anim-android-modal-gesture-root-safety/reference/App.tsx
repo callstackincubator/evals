@@ -74,10 +74,6 @@ export default function App() {
             <Animated.View style={[styles.sheet, sheetStyle]}>
               <View style={styles.grabber} />
               <Text style={styles.title}>Drag down to dismiss</Text>
-              <Text style={styles.subtitle}>
-                This modal path is wrapped in GestureHandlerRootView for Android
-                gesture safety.
-              </Text>
             </Animated.View>
           </GestureDetector>
         </GestureHandlerRootView>

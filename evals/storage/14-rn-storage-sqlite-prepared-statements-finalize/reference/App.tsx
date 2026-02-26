@@ -1,30 +1,34 @@
+import { openDatabaseAsync, SQLiteDatabase } from 'expo-sqlite'
 import { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import * as SQLite from 'expo-sqlite'
 
 type Note = {
   body: string
   id: string
 }
 
-let dbPromise: Promise<SQLite.SQLiteDatabase> | null = null
+let dbPromise: Promise<SQLiteDatabase> | null = null
 
 function getDb() {
   if (!dbPromise) {
-    dbPromise = SQLite.openDatabaseAsync('prepared-statements.db')
+    dbPromise = openDatabaseAsync('prepared-statements.db')
   }
   return dbPromise
 }
 
-async function ensureTable(db: SQLite.SQLiteDatabase) {
+async function ensureTable(db: SQLiteDatabase) {
   await db.execAsync(
     'CREATE TABLE IF NOT EXISTS notes (id TEXT PRIMARY KEY NOT NULL, body TEXT NOT NULL)'
   )
 }
 
-async function insertNote(body: string) {
+async function initDb() {
   const db = await getDb()
   await ensureTable(db)
+}
+
+async function insertNote(body: string) {
+  const db = await getDb()
 
   const statement = await db.prepareAsync(
     'INSERT INTO notes (id, body) VALUES ($id, $body)'
@@ -41,7 +45,6 @@ async function insertNote(body: string) {
 
 async function searchNotes(query: string): Promise<Note[]> {
   const db = await getDb()
-  await ensureTable(db)
 
   const statement = await db.prepareAsync(
     'SELECT id, body FROM notes WHERE body LIKE $query ORDER BY id DESC LIMIT 20'
@@ -66,7 +69,14 @@ export default function App() {
   }
 
   useEffect(() => {
-    refresh()
+    ;(async () => {
+      try {
+        await initDb()
+        await refresh()
+      } catch (error) {
+        console.error('Failed to initialize database:', error)
+      }
+    })()
   }, [])
 
   return (

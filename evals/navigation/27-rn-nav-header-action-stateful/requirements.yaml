@@ -7,5 +7,3 @@ requirements:
     description: Must provide a stateful header action for bookmark toggling on the current route.
   - id: ui-state-sync
     description: Must synchronize visible screen UI with the bookmark state changed from header action.
-  - id: implementation-static-navigation-api
-    description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.

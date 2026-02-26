@@ -91,7 +91,7 @@ export default function App() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Feed lifecycle</Text>
+      <Text style={styles.title}>Feed</Text>
 
       <View style={styles.row}>
         <Pressable onPress={fetchFeed} style={styles.button}>

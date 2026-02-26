@@ -7,5 +7,3 @@ requirements:
     description: Must reset navigation state after checkout completion to a deterministic post-checkout route graph.
   - id: no-back-to-checkout
     description: Must avoid leaving checkout routes in back history after success navigation.
-  - id: implementation-static-navigation-api
-    description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.

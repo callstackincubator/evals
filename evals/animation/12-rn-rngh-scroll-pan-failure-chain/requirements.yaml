@@ -4,10 +4,10 @@ inputs:
     - app/App.tsx
 requirements:
   - id: explicit-gesture-failure-chain
-    description: Must use Gesture Handler composition or external failure requirements to model scroll versus swipe precedence.
+    description: Must use Gesture.Native plus Pan arbitration APIs to model scroll-versus-swipe precedence.
   - id: implementation-rngh-failure-chain-contract
     description: Must model scroll-vs-pan arbitration with explicit RNGH failure/simultaneous requirements in Gesture API callbacks and MUST NOT use legacy useAnimatedGestureHandler.
   - id: no-dead-zone-interaction
-    description: Must avoid dead-zone behavior where neither scroll nor swipe responds.
+    description: Must configure pan activation/failure thresholds so one handler always resolves instead of both stalling.
   - id: deterministic-axis-thresholds
-    description: Must define explicit axis thresholds or activation offsets for resolving competing gestures.
+    description: Must define explicit axis thresholds with Pan activeOffsetX and failOffsetY values.

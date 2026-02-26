@@ -1,21 +1,84 @@
-import { StatusBar } from 'expo-status-bar'
-import { StyleSheet, Text, View } from 'react-native'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createStaticNavigation } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { Button, StyleSheet, Text, View } from 'react-native'
 
-export default function App() {
+async function openNotificationTargetAction() {
+  // No-op
+  return 'pending'
+}
+
+function NotificationsListScreen() {
   return (
-    <View style={styles.container}>
-      <Text>Implement: Navigate to nested notification detail</Text>
-      <StatusBar style="auto" />
+    <View style={styles.screen}>
+      <Text style={styles.title}>NotificationsList</Text>
+      <Text style={styles.copy}>
+        Notifications are ready.
+      </Text>
+      <Button
+        title="Open"
+        onPress={() => openNotificationTargetAction()}
+      />
     </View>
   )
 }
 
+function NotificationDetailsScreen() {
+  return (
+    <View style={styles.screen}>
+      <Text style={styles.title}>NotificationDetails</Text>
+      <Text style={styles.copy}>
+        More details appear here.
+      </Text>
+    </View>
+  )
+}
+
+function FeedScreen() {
+  return (
+    <View style={styles.screen}>
+      <Text style={styles.title}>Feed</Text>
+      <Text style={styles.copy}>Notification center</Text>
+    </View>
+  )
+}
+
+const NotificationsStack = createNativeStackNavigator({
+  screens: {
+    NotificationsList: NotificationsListScreen,
+    NotificationDetails: NotificationDetailsScreen,
+  },
+})
+
+const Tabs = createBottomTabNavigator({
+  screens: {
+    NotificationsTab: NotificationsStack,
+    Feed: FeedScreen,
+  },
+})
+
+const Navigation = createStaticNavigation(Tabs)
+
+export default function App() {
+  return <Navigation />
+}
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
+  copy: {
+    color: '#6b7280',
+    textAlign: 'center',
+  },
+  screen: {
     alignItems: 'center',
+    backgroundColor: '#fff',
+    flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
+    rowGap: 10,
+  },
+  title: {
+    color: '#111827',
+    fontSize: 20,
+    fontWeight: '600',
   },
 })

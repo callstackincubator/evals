@@ -10,6 +10,6 @@ requirements:
   - id: schedule-on-rn-tap-outcome-bridge
     description: Must use scheduleOnRN for worklet-to-React tap outcome updates and MUST NOT use deprecated runOnJS.
   - id: exclusive-tap-composition
-    description: Must compose single and double tap gestures with explicit exclusivity so both handlers do not fire for the same interaction.
+    description: Must use Gesture.Exclusive to compose single and double tap gesture objects for the same tap target.
   - id: deterministic-tap-outcomes
-    description: Must trigger single-tap only after the double-tap window expires, and MUST NOT trigger single-tap when a valid double-tap is recognized.
+    description: Must enforce deterministic single/double outcomes with explicit maxDelay/maxDuration tap timing constraints.

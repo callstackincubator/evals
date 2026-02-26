@@ -40,7 +40,7 @@ function InboxScreen() {
   return (
     <View style={styles.container}>
       <Text>Inbox refreshes on focus: {refreshCount}</Text>
-      <Button title="Go to details" onPress={handleGoToDetails} />
+      <Button title="Open" onPress={handleGoToDetails} />
     </View>
   )
 }

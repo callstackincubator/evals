@@ -89,7 +89,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>includeExtra Permission-Aware Picker</Text>
+      <Text style={styles.title}>Rich Photo Metadata</Text>
       <Text style={styles.state}>Permission: {permissionLevel}</Text>
 
       <Pressable onPress={pickWithExtra} style={styles.button}>

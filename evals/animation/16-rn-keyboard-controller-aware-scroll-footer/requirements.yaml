@@ -4,8 +4,8 @@ inputs:
     - app/App.tsx
 requirements:
   - id: keyboard-aware-scroll-behavior
-    description: Must use keyboard-aware scroll behavior from react-native-keyboard-controller components or hooks.
-  - id: sticky-footer-coordination
-    description: Must coordinate sticky footer position with keyboard animation values without overlap glitches.
-  - id: interactive-dismiss-stability
-    description: Must keep layout stable during interactive keyboard dismissal and refocus transitions.
+    description: Must use KeyboardAwareScrollView from react-native-keyboard-controller.
+  - id: implementation-use-reanimated-keyboard-hook
+    description: Must read keyboard animation values via useReanimatedKeyboardAnimation from react-native-keyboard-controller.
+  - id: implementation-footer-position-from-animated-style
+    description: Must compute sticky footer position inside a Reanimated useAnimatedStyle using keyboard shared values.

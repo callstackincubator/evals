@@ -27,7 +27,7 @@ function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Button title="Open list" onPress={handleOpenList} />
+      <Button title="Open" onPress={handleOpenList} />
     </View>
   )
 }

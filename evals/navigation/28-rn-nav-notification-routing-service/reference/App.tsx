@@ -96,7 +96,7 @@ function NotificationServicePanel() {
   return (
     <View style={styles.notificationServicePanelContainer}>
       <Button
-        title="Thread payload"
+        title="Open"
         onPress={() =>
           routeNotificationFromService({ type: 'thread', threadId: 't-55' })
         }

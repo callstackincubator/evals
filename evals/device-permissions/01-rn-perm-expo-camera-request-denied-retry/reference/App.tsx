@@ -98,7 +98,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Camera Permission Flow</Text>
+      <Text style={styles.title}>Camera Access</Text>
       <Text style={styles.status}>{statusText}</Text>
 
       {flowState === 'granted' ? (

@@ -80,7 +80,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Camera with Gallery Fallback</Text>
+      <Text style={styles.title}>Camera Fallback</Text>
       <Text style={styles.state}>State: {pickerState}</Text>
 
       <Pressable onPress={launchCameraWithGuard} style={styles.button}>

@@ -38,10 +38,6 @@ export async function loadFile(absolutePath: string): Promise<LoadedFile> {
   }
 }
 
-export function toPosix(value: string): string {
-  return value.replace(/\\/g, '/')
-}
-
 function isNotFoundError(error: unknown) {
   return (
     typeof error === 'object' &&
@@ -77,7 +73,7 @@ export async function loadFiles(dir: string): Promise<LoadedFile[]> {
 
   return loadedFiles.map((file) => ({
     ...file,
-    path: toPosix(file.path),
+    path: file.path,
     absolutePath: path.resolve(file.absolutePath),
   }))
 }

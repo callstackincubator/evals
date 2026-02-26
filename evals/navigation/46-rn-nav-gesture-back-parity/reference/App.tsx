@@ -1,4 +1,7 @@
-import { createStaticNavigation, useNavigation } from '@react-navigation/native'
+import {
+  createStaticNavigation,
+  useNavigation,
+} from '@react-navigation/native'
 import {
   createNativeStackNavigator,
   type NativeStackScreenProps,
@@ -11,29 +14,25 @@ type RootStackParamList = {
 }
 
 function HomeScreen() {
-  const navigation =
-    useNavigation<
-      NativeStackScreenProps<RootStackParamList, 'Home'>['navigation']
-    >()
+  const navigation = useNavigation<NativeStackScreenProps<RootStackParamList, 'Home'>['navigation']>()
   const goToCriticalStep = () => navigation.navigate('CriticalStep')
   return (
     <View style={styles.container}>
-      <Button title="Start critical flow" onPress={goToCriticalStep} />
+      <Button title='Open' onPress={goToCriticalStep} />
     </View>
   )
 }
 
 function CriticalStepScreen() {
-  const navigation =
-    useNavigation<
-      NativeStackScreenProps<RootStackParamList, 'CriticalStep'>['navigation']
-    >()
+  const navigation = useNavigation<
+    NativeStackScreenProps<RootStackParamList, 'CriticalStep'>['navigation']
+  >()
   const goBack = () => navigation.goBack()
 
   return (
     <View style={styles.container}>
       <Text>Critical step</Text>
-      <Button title="Complete and go back" onPress={goBack} />
+      <Button title='Complete and go back' onPress={goBack} />
     </View>
   )
 }
@@ -52,7 +51,9 @@ const RootStack = createNativeStackNavigator({
 const Navigation = createStaticNavigation(RootStack)
 
 export default function App() {
-  return <Navigation />
+  return (
+    <Navigation />
+  )
 }
 
 const styles = StyleSheet.create({

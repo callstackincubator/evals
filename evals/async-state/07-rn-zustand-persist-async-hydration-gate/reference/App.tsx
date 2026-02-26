@@ -50,25 +50,19 @@ function HydrationGate() {
   if (!hasHydrated) {
     return (
       <View style={styles.screen}>
-        <Text style={styles.title}>Restoring session…</Text>
-        <Text style={styles.meta}>
-          Protected UI is gated until hydration completes.
-        </Text>
+        <Text style={styles.title}>Session Gate</Text>
+        <Text style={styles.meta}>Loading your session...</Text>
       </View>
     )
   }
 
   const card = token
-    ? {
-        label: 'Authenticated content visible.',
-        action: logout,
-        button: 'Log out',
-      }
+    ? { label: 'Authenticated content visible.', action: logout, button: 'Log out' }
     : { label: 'Public content visible.', action: login, button: 'Log in' }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Session gate</Text>
+      <Text style={styles.title}>Session Gate</Text>
 
       <View style={styles.card}>
         <Text style={styles.meta}>{card.label}</Text>

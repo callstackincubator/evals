@@ -4,10 +4,10 @@ inputs:
     - app/App.tsx
 requirements:
   - id: ui-thread-worklet-computation
-    description: Must perform animation-critical computation inside a worklet on the UI runtime.
+    description: Must run animation-critical computation inside UI worklets (for example callbacks dispatched with scheduleOnUI).
   - id: schedule-on-ui-dispatch
     description: Must use scheduleOnUI from react-native-worklets for explicit React-runtime to UI-runtime dispatch and MUST NOT use deprecated runOnUI.
   - id: controlled-bridge-to-react-runtime
     description: Must use scheduleOnRN from react-native-worklets for React-runtime callbacks and MUST NOT use deprecated runOnJS.
   - id: throttled-or-bounded-react-updates
-    description: Must avoid per-frame unbounded React state updates from the worklet bridge path.
+    description: Must gate scheduleOnRN publishes with bounded checkpoint logic (for example bucketed useAnimatedReaction), not per-frame updates.

@@ -1,15 +1,19 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 
 type Post = {
   id: string
   title: string
 }
 
+type SubmitState =
+  | { status: 'idle' }
+  | { status: 'pending' }
+  | { status: 'error'; message: string }
+
 const draftAtom = atom('')
 const postsAtom = atom<Post[]>([])
-const pendingAtom = atom(false)
-const errorAtom = atom<string | null>(null)
+const submitStateAtom = atom<SubmitState>({ status: 'idle' })
 
 async function createPost(title: string): Promise<Post> {
   await new Promise<void>((resolve) => {
@@ -26,36 +30,38 @@ async function createPost(title: string): Promise<Post> {
   }
 }
 
-const submitPostAtom = atom(null, async (get, set, title: string) => {
+const submitPostAtom = atom(null, async (_, set, title: string) => {
   const nextTitle = title.trim()
   if (!nextTitle) {
     return
   }
 
-  set(pendingAtom, true)
-  set(errorAtom, null)
+  set(submitStateAtom, { status: 'pending' })
 
   try {
     const created = await createPost(nextTitle)
+    set(submitStateAtom, { status: 'idle' })
     set(postsAtom, (previous) => [created, ...previous])
     set(draftAtom, '')
   } catch (error) {
-    set(errorAtom, error instanceof Error ? error.message : 'Unknown error')
-  } finally {
-    set(pendingAtom, false)
+    set(submitStateAtom, {
+      status: 'error',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    })
   }
 })
 
 export default function App() {
   const [draft, setDraft] = useAtom(draftAtom)
   const posts = useAtomValue(postsAtom)
-  const pending = useAtomValue(pendingAtom)
-  const submitError = useAtomValue(errorAtom)
+  const submitStatus = useAtomValue(submitStateAtom)
   const submitPost = useSetAtom(submitPostAtom)
+
+  const pending = submitStatus.status === 'pending'
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async write atom</Text>
+      <Text style={styles.title}>Post Composer</Text>
 
       <View style={styles.row}>
         <TextInput
@@ -76,7 +82,9 @@ export default function App() {
         </Pressable>
       </View>
 
-      {submitError ? <Text style={styles.error}>{submitError}</Text> : null}
+      {submitStatus.status === 'error' ? (
+        <Text style={styles.error}>{submitStatus.message}</Text>
+      ) : null}
 
       {posts.map((post) => {
         return (

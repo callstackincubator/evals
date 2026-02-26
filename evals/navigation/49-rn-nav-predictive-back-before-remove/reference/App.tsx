@@ -25,7 +25,7 @@ function HomeScreen() {
 
   return (
     <View style={styles.centered}>
-      <Button title="Open edit flow" onPress={handleOpenEdit} />
+      <Button title="Open" onPress={handleOpenEdit} />
     </View>
   )
 }

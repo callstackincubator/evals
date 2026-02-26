@@ -23,7 +23,7 @@ function FormScreen({ route }: FormScreenProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Selected color: {selectedColor}</Text>
-      <Button title="Choose color" onPress={pickColor} />
+      <Button title="Open" onPress={pickColor} />
     </View>
   )
 }

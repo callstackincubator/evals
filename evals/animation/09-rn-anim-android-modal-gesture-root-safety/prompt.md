@@ -1,1 +1,1 @@
-Implement a modal interaction that uses gesture-driven content, works on Android by applying the required Gesture Handler root-view setup inside modal boundaries, and keeps dismiss-state updates from the gesture runtime to React minimal and controlled.
+Implement a modal that can be dismissed with gesture-driven content.

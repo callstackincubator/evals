@@ -113,7 +113,7 @@ function TodosScreen() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Optimistic Toggle</Text>
+      <Text style={styles.title}>Todo List</Text>
 
       {todosQuery.data?.map((todo) => {
         return (

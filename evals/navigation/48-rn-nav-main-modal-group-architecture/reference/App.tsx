@@ -16,7 +16,7 @@ function HomeScreen() {
 
   return (
     <View style={styles.centered}>
-      <Button title="Open details" onPress={handleOpenDetails} />
+      <Button title="Open" onPress={handleOpenDetails} />
       <Button title="Open compose modal" onPress={handleOpenCompose} />
     </View>
   )

@@ -1,19 +1,96 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { LegendList } from '@legendapp/list'
+
+type Row = {
+  id: string
+  title: string
+}
+
+const TASK_ROWS: Row[] = [
+  {
+    id: 'task-1',
+    title: 'Inbox triage',
+  },
+  {
+    id: 'task-2',
+    title: 'Ship release notes',
+  },
+  {
+    id: 'task-3',
+    title: 'Review analytics',
+  },
+  {
+    id: 'task-4',
+    title: 'Plan sprint',
+  },
+]
+
+function insertTaskAtTopAction() {
+  // No-op
+}
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Hello World</Text>
+      <Text style={styles.header}>Task Board</Text>
+      <Text style={styles.helper}>
+        Task rows are loaded. Browse list items.
+      </Text>
+      <Pressable style={styles.button} onPress={insertTaskAtTopAction}>
+        <Text style={styles.buttonText}>Open</Text>
+      </Pressable>
+      <LegendList
+        data={TASK_ROWS}
+        estimatedItemSize={56}
+        renderItem={({ item }) => (
+          <View style={styles.row}>
+            <Text style={styles.rowTitle}>{item.title}</Text>
+          </View>
+        )}
+      />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  button: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#111827',
+    borderRadius: 8,
+    marginBottom: 8,
+    marginHorizontal: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
   container: {
-    alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 24,
+    paddingTop: 56,
+  },
+  header: {
+    color: '#111827',
+    fontSize: 20,
+    fontWeight: '700',
+    marginHorizontal: 12,
+  },
+  helper: {
+    color: '#6b7280',
+    marginBottom: 10,
+    marginHorizontal: 12,
+    marginTop: 6,
+  },
+  row: {
+    borderBottomColor: '#e5e7eb',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+  },
+  rowTitle: {
+    color: '#111827',
+    fontSize: 15,
   },
 })

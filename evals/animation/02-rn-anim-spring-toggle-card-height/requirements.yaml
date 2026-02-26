@@ -5,7 +5,9 @@ inputs:
 requirements:
   - id: deterministic-collapsed-expanded-states
     description: Must define deterministic collapsed and expanded visual states for the card.
+  - id: implementation-reanimated-shared-value-style-contract
+    description: Must represent expand/collapse progress with a Reanimated shared value and map it to card/detail styles via useAnimatedStyle.
+  - id: implementation-reanimated-interpolate-clamp-contract
+    description: Must derive animated card height or detail visibility with interpolate and bounded extrapolation/clamp behavior (for example Extrapolation.CLAMP) instead of direct React style jumps.
   - id: spring-driven-transition
-    description: Must animate the expand and collapse transition using withSpring from react-native-reanimated.
-  - id: no-react-layout-jump
-    description: Must avoid abrupt non-animated jumps when toggling between states.
+    description: Must toggle expand/collapse by animating the shared value with withSpring from react-native-reanimated.

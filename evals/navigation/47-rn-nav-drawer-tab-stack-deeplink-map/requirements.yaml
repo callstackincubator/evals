@@ -7,7 +7,5 @@ requirements:
     description: Must define linking config across drawer, tab, stack nesting levels.
   - id: unknown-path-fallback-route
     description: Must route unknown deep-link paths to a deterministic fallback screen.
-  - id: implementation-static-navigation-api
-    description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.
   - id: implementation-nav-multilevel-linking-contract
     description: Must declare deep-link mappings across drawer, tab, and stack levels in static linking config and MUST NOT rely on legacy navigationInChildEnabled behavior.

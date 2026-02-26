@@ -9,5 +9,3 @@ requirements:
     description: Must dismiss the modal to list context on cancel.
   - id: dismiss-on-save
     description: Must dismiss the modal to list context on save.
-  - id: implementation-static-navigation-api
-    description: Must define navigators using React Navigation static object configuration and render via createStaticNavigation.

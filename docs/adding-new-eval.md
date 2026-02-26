@@ -24,7 +24,12 @@ requirements:
     weight: 1
 ```
 
-`weight` is optional. If omitted, requirements are treated with equal importance.
+Runtime schema enforcement currently validates only:
+
+- `version` (positive integer)
+- `requirements[]` with `id`, `description`, optional positive `weight`
+
+Additional fields (for example `inputs`) are allowed as authoring metadata but are ignored by current runtime parsing.
 
 ## Authoring standards
 
@@ -34,9 +39,15 @@ requirements:
 - Use `implementation-` prefix for deterministic API/import/wiring checks.
 - Use `MUST NOT` only when backed by primary-source deprecation/removal or correctness caveats.
 - Do not reference eval names or numbers in requirement IDs or descriptions.
-- Keep `inputs.files` limited to implementation files needed for judging.
+- Keep `inputs.files` limited to implementation files needed for judging metadata.
 
 ## Technical eval structure
+
+- Follow starter baseline rules in [`starter-scaffold-contract.md`](./starter-scaffold-contract.md).
+- Keep starter apps minimal: shells + named stubs, no eager behavior implementation.
+- Include only files needed for judging.
+- Prefer small input file sets to control judge token usage.
+- Prompts must be forward-looking implementation asks, as if requested by a regular app developer.
 
 For sibling evals inside one library subgroup:
 

@@ -1,21 +1,70 @@
-import { StatusBar } from 'expo-status-bar'
-import { StyleSheet, Text, View } from 'react-native'
+import { createStaticNavigation } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { Button, StyleSheet, Text, View } from 'react-native'
 
-export default function App() {
+const SEED_ITEMS = ['item-1', 'item-2']
+
+async function shouldNavigateToTargetAction() {
+  // No-op
+  return 'pending'
+}
+
+function ItemListScreen() {
   return (
-    <View style={styles.container}>
-      <Text>Implement: Prevent duplicate push of active item</Text>
-      <StatusBar style="auto" />
+    <View style={styles.screen}>
+      <Text style={styles.title}>ItemList</Text>
+      <Text style={styles.copy}>
+        List and detail routes are ready.
+      </Text>
+      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
+      <Button
+        title="Open"
+        onPress={() => shouldNavigateToTargetAction()}
+      />
     </View>
   )
 }
 
+function ItemDetailsScreen() {
+  return (
+    <View style={styles.screen}>
+      <Text style={styles.title}>ItemDetails</Text>
+      <Text style={styles.copy}>
+        More details appear here.
+      </Text>
+    </View>
+  )
+}
+
+const Stack = createNativeStackNavigator({
+  screens: {
+    ItemList: ItemListScreen,
+    ItemDetails: ItemDetailsScreen,
+  },
+})
+
+const Navigation = createStaticNavigation(Stack)
+
+export default function App() {
+  return <Navigation />
+}
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
+  copy: {
+    color: '#6b7280',
+    textAlign: 'center',
+  },
+  screen: {
     alignItems: 'center',
+    backgroundColor: '#fff',
+    flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
+    rowGap: 10,
+  },
+  title: {
+    color: '#111827',
+    fontSize: 20,
+    fontWeight: '600',
   },
 })

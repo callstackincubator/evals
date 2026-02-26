@@ -233,7 +233,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>iOS Limited Photo Access</Text>
+      <Text style={styles.title}>Limited Photo Access</Text>
       <Text style={styles.state}>Access: {photoAccess}</Text>
 
       <Pressable onPress={refreshAccess} style={styles.secondaryButton}>
