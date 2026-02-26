@@ -1,6 +1,6 @@
 import { createOpencodeServer } from '@opencode-ai/sdk/v2/server'
 
-let serverPromise: Promise<void> | undefined
+let serverPromise: ReturnType<typeof createOpencodeServer> | undefined
 
 /*
   Starts one reusable OpenCode server process for solver and judge stages.
@@ -13,12 +13,10 @@ export async function ensureOpencodeServerStarted({
   timeout?: number,
 }) {
   if (!serverPromise) {
-    serverPromise = (async () => {
-      await createOpencodeServer({
-        port,
-        timeout,
-      })
-    })()
+    serverPromise = createOpencodeServer({
+      port,
+      timeout,
+    })
   }
 
   await serverPromise

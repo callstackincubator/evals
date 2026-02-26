@@ -13,6 +13,7 @@ import { runLlmJudgeStage } from './evaluators/llm/run'
 import { runWithConcurrency } from './solver/concurrency'
 import { runSolverStage } from './solver/pipeline'
 import { loadFiles, sanitizeSegment } from './utils/fs'
+import { createProgressReporter } from './utils/progress'
 
 const RESULTS_DIR = 'results'
 
@@ -48,6 +49,7 @@ async function main() {
   await mkdir(generatedOutputsDirectory, { recursive: true })
 
   console.log(`starting run: ${discoveredEvals.length} eval(s)`)
+  const progress = createProgressReporter(discoveredEvals.length)
 
   // Process evals concurrently while preserving stable final ordering.
   const evalRuns = await runWithConcurrency(
@@ -120,12 +122,10 @@ async function main() {
           scoreRatio: stageResult.score.ratio,
         }
 
-        const position = index + 1
-
-        console.log(
-          `[${position}/${discoveredEvals.length}] ${evalItem.evalId} ` +
-            `-> llm:${stageResult.score.ratio}`
-        )
+        progress.tick({
+          evalId: evalItem.evalId,
+          scoreRatio: stageResult.score.ratio,
+        })
 
         return { kind: 'success' as const, index, result: stageResult, indexItem }
       } catch (error) {
@@ -135,6 +135,11 @@ async function main() {
         if (cliOptions.failFast) {
           throw error
         }
+
+        progress.tick({
+          evalId: evalItem.evalId,
+          error: true,
+        })
 
         return {
           kind: 'error' as const,

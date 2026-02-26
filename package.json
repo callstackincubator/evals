@@ -6,7 +6,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "bench": "bun runner/index.ts",
-    "bench:local": "bun runner/index.ts --debug --fail-fast"
+    "bench:local": "bun runner/index.ts --debug --fail-fast",
+    "bench:ui": "bun runner/ui.ts"
   },
   "devDependencies": {
     "@types/node": "^25.2.2",
