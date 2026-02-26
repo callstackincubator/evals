@@ -1,6 +1,6 @@
+import { openDatabaseAsync, SQLiteDatabase } from 'expo-sqlite'
 import { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import * as SQLite from 'expo-sqlite'
 
 type OutboxRow = {
   attempts: number
@@ -12,18 +12,18 @@ type OutboxRow = {
 const MAX_ATTEMPTS = 3
 const BATCH_SIZE = 20
 
-let dbPromise: Promise<SQLite.SQLiteDatabase> | null = null
+let dbPromise: Promise<SQLiteDatabase> | null = null
 
 function getDb() {
   if (!dbPromise) {
-    dbPromise = SQLite.openDatabaseAsync('sqlite-outbox.db')
+    dbPromise = openDatabaseAsync('sqlite-outbox.db')
   }
   return dbPromise
 }
 
-async function ensureOutboxSchema(db: SQLite.SQLiteDatabase) {
+async function ensureOutboxSchema(db: SQLiteDatabase) {
   await db.execAsync(
-    'CREATE TABLE IF NOT EXISTS outbox (id TEXT PRIMARY KEY NOT NULL, payload TEXT NOT NULL, status TEXT NOT NULL, attempts INTEGER NOT NULL, next_retry_at INTEGER NOT NULL, updated_at INTEGER NOT NULL)',
+    'CREATE TABLE IF NOT EXISTS outbox (id TEXT PRIMARY KEY NOT NULL, payload TEXT NOT NULL, status TEXT NOT NULL, attempts INTEGER NOT NULL, next_retry_at INTEGER NOT NULL, updated_at INTEGER NOT NULL)'
   )
 }
 
@@ -39,14 +39,8 @@ async function enqueueMutation(payload: string) {
     'pending',
     0,
     now,
-    now,
+    now
   )
-}
-
-async function sendMutation(row: OutboxRow) {
-  if (row.attempts < 1) {
-    throw new Error('simulate transient failure')
-  }
 }
 
 async function replayBatch() {
@@ -60,17 +54,11 @@ async function replayBatch() {
     'failed',
     MAX_ATTEMPTS,
     now,
-    BATCH_SIZE,
+    BATCH_SIZE
   )
 
-  for (const row of rows) {
-    let sent = false
-    try {
-      await sendMutation(row)
-      sent = true
-    } catch {
-      sent = false
-    }
+  for (const { id, attempts } of rows) {
+    const sent = attempts >= 1
 
     await db.withExclusiveTransactionAsync(async (transaction) => {
       if (sent) {
@@ -78,11 +66,12 @@ async function replayBatch() {
           'UPDATE outbox SET status = ?, updated_at = ? WHERE id = ?',
           'sent',
           Date.now(),
-          row.id,
+          id
         )
       } else {
-        const nextAttempts = row.attempts + 1
-        const nextStatus: OutboxRow['status'] = nextAttempts >= MAX_ATTEMPTS ? 'failed' : 'pending'
+        const nextAttempts = attempts + 1
+        const nextStatus: OutboxRow['status'] =
+          nextAttempts >= MAX_ATTEMPTS ? 'failed' : 'pending'
         const nextRetryAt = Date.now() + nextAttempts * 3_000
 
         await transaction.runAsync(
@@ -91,7 +80,7 @@ async function replayBatch() {
           nextStatus,
           nextRetryAt,
           Date.now(),
-          row.id,
+          id
         )
       }
     })
@@ -105,13 +94,14 @@ export default function App() {
     const db = await getDb()
     await ensureOutboxSchema(db)
 
-    const rows = await db.getAllAsync<{ count: number; status: 'failed' | 'pending' | 'sent' }>(
-      'SELECT status, COUNT(*) as count FROM outbox GROUP BY status',
-    )
+    const rows = await db.getAllAsync<{
+      count: number
+      status: 'failed' | 'pending' | 'sent'
+    }>('SELECT status, COUNT(*) as count FROM outbox GROUP BY status')
 
     const next = { failed: 0, pending: 0, sent: 0 }
-    for (const row of rows) {
-      next[row.status] = row.count
+    for (const { status, count } of rows) {
+      next[status] = count
     }
 
     setCounts(next)
