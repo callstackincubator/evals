@@ -142,7 +142,10 @@ export default function App() {
               onPress={() => {
                 changeFilter(filter)
               }}
-              style={[styles.filterButton, isActive && styles.filterButtonActive]}
+              style={[
+                styles.filterButton,
+                isActive && styles.filterButtonActive,
+              ]}
             >
               <Text
                 style={[
@@ -157,7 +160,9 @@ export default function App() {
         })}
       </View>
 
-      {showPending ? <Text style={styles.meta}>Updating filter in background…</Text> : null}
+      {showPending ? (
+        <Text style={styles.meta}>Updating filter in background…</Text>
+      ) : null}
 
       <Suspense
         fallback={

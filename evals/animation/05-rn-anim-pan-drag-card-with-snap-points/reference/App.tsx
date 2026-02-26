@@ -38,7 +38,10 @@ function pickNearestSnapPoint(px: number, py: number): SnapPoint {
   return nearest
 }
 
-function pickSnapPointByVelocity(velocityX: number, velocityY: number): SnapPoint {
+function pickSnapPointByVelocity(
+  velocityX: number,
+  velocityY: number
+): SnapPoint {
   'worklet'
 
   let best = SNAP_POINTS[0]
@@ -71,8 +74,7 @@ export default function App() {
       translateY.value = dragStartY.value + event.translationY
     })
     .onEnd((event) => {
-      const velocityMag =
-        Math.sqrt(event.velocityX ** 2 + event.velocityY ** 2)
+      const velocityMag = Math.sqrt(event.velocityX ** 2 + event.velocityY ** 2)
       const target =
         velocityMag >= VELOCITY_THRESHOLD
           ? pickSnapPointByVelocity(event.velocityX, event.velocityY)

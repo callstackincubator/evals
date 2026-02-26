@@ -81,7 +81,9 @@ function ProjectsScreen() {
         <Text style={styles.cardTitle}>Projects</Text>
 
         {!profileId ? (
-          <Text style={styles.muted}>Waiting for profile id before fetching projects.</Text>
+          <Text style={styles.muted}>
+            Waiting for profile id before fetching projects.
+          </Text>
         ) : null}
 
         {projectsQuery.isLoading ? <Text>Loading projects…</Text> : null}

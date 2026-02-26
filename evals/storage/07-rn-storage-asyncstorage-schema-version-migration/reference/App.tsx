@@ -47,14 +47,21 @@ async function readVersion(): Promise<number> {
 }
 
 async function resetToCompatibleFallback() {
-  await AsyncStorage.multiRemove([LEGACY_PROFILE_KEY, PROFILE_V2_KEY, SETTINGS_V3_KEY])
+  await AsyncStorage.multiRemove([
+    LEGACY_PROFILE_KEY,
+    PROFILE_V2_KEY,
+    SETTINGS_V3_KEY,
+  ])
   await AsyncStorage.setItem(SCHEMA_VERSION_KEY, String(CURRENT_SCHEMA_VERSION))
 }
 
 async function migrateToV1() {
   const hasLegacyProfile = await AsyncStorage.getItem(LEGACY_PROFILE_KEY)
   if (!hasLegacyProfile) {
-    await AsyncStorage.setItem(LEGACY_PROFILE_KEY, JSON.stringify({ name: 'Guest' }))
+    await AsyncStorage.setItem(
+      LEGACY_PROFILE_KEY,
+      JSON.stringify({ name: 'Guest' })
+    )
   }
 }
 
@@ -66,21 +73,25 @@ async function migrateToV2() {
 
   const legacy = await AsyncStorage.getItem(LEGACY_PROFILE_KEY)
   const legacyPayload = safeParseRecord(legacy, { name: 'Guest' })
-  const displayName = typeof legacyPayload.name === 'string' ? legacyPayload.name : 'Guest'
+  const displayName =
+    typeof legacyPayload.name === 'string' ? legacyPayload.name : 'Guest'
 
   await AsyncStorage.setItem(
     PROFILE_V2_KEY,
     JSON.stringify({
       displayName,
       updatedAt: Date.now(),
-    }),
+    })
   )
 }
 
 async function migrateToV3() {
   const settings = await AsyncStorage.getItem(SETTINGS_V3_KEY)
   if (!settings) {
-    await AsyncStorage.setItem(SETTINGS_V3_KEY, JSON.stringify({ locale: 'en-US', theme: 'system' }))
+    await AsyncStorage.setItem(
+      SETTINGS_V3_KEY,
+      JSON.stringify({ locale: 'en-US', theme: 'system' })
+    )
   }
 }
 

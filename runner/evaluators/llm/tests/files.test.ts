@@ -28,8 +28,12 @@ describe('files helpers', () => {
     const loaded = await loadFiles(rootDir)
 
     expect(loaded.length).toBe(2)
-    expect(loaded.some((file) => file.absolutePath.endsWith('root/README.md'))).toBe(true)
-    expect(loaded.some((file) => file.absolutePath.endsWith('root/nested/App.tsx'))).toBe(true)
+    expect(
+      loaded.some((file) => file.absolutePath.endsWith('root/README.md'))
+    ).toBe(true)
+    expect(
+      loaded.some((file) => file.absolutePath.endsWith('root/nested/App.tsx'))
+    ).toBe(true)
   })
 
   test('returns empty array when directory does not exist', async () => {

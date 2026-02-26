@@ -36,7 +36,9 @@ export default function App() {
 
   const refresh = async () => {
     const db = await getInitializedDb()
-    const row = await db.getFirstAsync<{ count: number }>('SELECT COUNT(*) as count FROM tasks')
+    const row = await db.getFirstAsync<{ count: number }>(
+      'SELECT COUNT(*) as count FROM tasks'
+    )
     setTaskCount(row?.count ?? 0)
   }
 

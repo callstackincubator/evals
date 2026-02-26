@@ -15,9 +15,7 @@ const MIGRATIONS: MigrationStep[] = [
     version: 1,
   },
   {
-    sql: [
-      'ALTER TABLE notes ADD COLUMN pinned INTEGER NOT NULL DEFAULT 0',
-    ],
+    sql: ['ALTER TABLE notes ADD COLUMN pinned INTEGER NOT NULL DEFAULT 0'],
     version: 2,
   },
   {
@@ -30,13 +28,17 @@ const MIGRATIONS: MigrationStep[] = [
 
 async function ensureVersionTable(db: SQLiteDatabase) {
   await db.execAsync(
-    'CREATE TABLE IF NOT EXISTS schema_meta (id INTEGER PRIMARY KEY CHECK (id = 1), version INTEGER NOT NULL)',
+    'CREATE TABLE IF NOT EXISTS schema_meta (id INTEGER PRIMARY KEY CHECK (id = 1), version INTEGER NOT NULL)'
   )
-  await db.execAsync('INSERT OR IGNORE INTO schema_meta (id, version) VALUES (1, 0)')
+  await db.execAsync(
+    'INSERT OR IGNORE INTO schema_meta (id, version) VALUES (1, 0)'
+  )
 }
 
 async function readSchemaVersion(db: SQLiteDatabase) {
-  const row = await db.getFirstAsync<{ version: number }>('SELECT version FROM schema_meta WHERE id = 1')
+  const row = await db.getFirstAsync<{ version: number }>(
+    'SELECT version FROM schema_meta WHERE id = 1'
+  )
   return row?.version ?? 0
 }
 
@@ -53,7 +55,10 @@ async function runMigrations(db: SQLiteDatabase, migrations: MigrationStep[]) {
       for (const statement of migration.sql) {
         await db.execAsync(statement)
       }
-      await db.runAsync('UPDATE schema_meta SET version = ? WHERE id = 1', migration.version)
+      await db.runAsync(
+        'UPDATE schema_meta SET version = ? WHERE id = 1',
+        migration.version
+      )
     })
   }
 

@@ -72,8 +72,7 @@ const analytics = {
 }
 
 export default function App() {
-  const navigationRef =
-    useNavigationContainerRef<RootStackParamList>()
+  const navigationRef = useNavigationContainerRef<RootStackParamList>()
   const previousRouteNameRef = useRef<string>()
 
   const trackCurrentRoute = useCallback(() => {

@@ -10,15 +10,23 @@ import {
   type PermissionStatus,
 } from 'react-native-permissions'
 
-type SaveMode = 'saving-enabled' | 'capture-only' | 'capture-denied' | 'undetermined'
+type SaveMode =
+  | 'saving-enabled'
+  | 'capture-only'
+  | 'capture-denied'
+  | 'undetermined'
 
-const isLegacyAndroid = Platform.OS === 'android' && Number(Platform.Version) <= 28
+const isLegacyAndroid =
+  Platform.OS === 'android' && Number(Platform.Version) <= 28
 
-const LEGACY_STORAGE_PERMISSION: Permission = PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE
+const LEGACY_STORAGE_PERMISSION: Permission =
+  PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE
 
-const CAMERA_PERMISSION: Permission = Platform.OS == 'android' ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA
+const CAMERA_PERMISSION: Permission =
+  Platform.OS == 'android' ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA
 
-const IOS_PHOTO_ADD_PERMISSION: Permission = PERMISSIONS.IOS.PHOTO_LIBRARY_ADD_ONLY ?? PERMISSIONS.IOS.PHOTO_LIBRARY
+const IOS_PHOTO_ADD_PERMISSION: Permission =
+  PERMISSIONS.IOS.PHOTO_LIBRARY_ADD_ONLY ?? PERMISSIONS.IOS.PHOTO_LIBRARY
 
 function isGranted(status: PermissionStatus): boolean {
   return status === RESULTS.GRANTED || status === RESULTS.LIMITED
@@ -29,8 +37,11 @@ export default function App() {
   const [message, setMessage] = useState('')
   const [saveMode, setSaveMode] = useState<SaveMode>('undetermined')
 
-
-  const handleSaveMode = async (permission: Permission, denialMessage: string, denialSaveMode: SaveMode = 'capture-only') => {
+  const handleSaveMode = async (
+    permission: Permission,
+    denialMessage: string,
+    denialSaveMode: SaveMode = 'capture-only'
+  ) => {
     const currentPermission = await request(permission)
 
     if (!isGranted(currentPermission)) {
@@ -44,13 +55,23 @@ export default function App() {
   }
 
   const capture = async () => {
-    let canSaveToPhotos = await handleSaveMode(CAMERA_PERMISSION ,'Camera permission denied, cannot capture.', 'capture-denied')
+    let canSaveToPhotos = await handleSaveMode(
+      CAMERA_PERMISSION,
+      'Camera permission denied, cannot capture.',
+      'capture-denied'
+    )
     if (!canSaveToPhotos) return
 
     if (isLegacyAndroid) {
-      canSaveToPhotos = await handleSaveMode(LEGACY_STORAGE_PERMISSION ,'Legacy Android storage denied. Capturing without save-to-photos.')
+      canSaveToPhotos = await handleSaveMode(
+        LEGACY_STORAGE_PERMISSION,
+        'Legacy Android storage denied. Capturing without save-to-photos.'
+      )
     } else if (Platform.OS === 'ios') {
-      canSaveToPhotos = await handleSaveMode(IOS_PHOTO_ADD_PERMISSION ,'Photos permission denied. Capturing without save-to-photos.')
+      canSaveToPhotos = await handleSaveMode(
+        IOS_PHOTO_ADD_PERMISSION,
+        'Photos permission denied. Capturing without save-to-photos.'
+      )
     } else {
       setSaveMode('saving-enabled')
     }
@@ -66,11 +87,15 @@ export default function App() {
     }
 
     if (response.errorCode) {
-      setMessage(`Capture error: ${response.errorMessage ?? response.errorCode}`)
+      setMessage(
+        `Capture error: ${response.errorMessage ?? response.errorCode}`
+      )
       return
     }
 
-    const firstAsset = response.assets?.length ? response.assets?.[0] : undefined
+    const firstAsset = response.assets?.length
+      ? response.assets?.[0]
+      : undefined
     if (!firstAsset) {
       setMessage('No capture result returned.')
       return
@@ -79,7 +104,9 @@ export default function App() {
     setAsset(firstAsset)
 
     if (!canSaveToPhotos) {
-      setMessage('Capture result preserved, but not saved to photos due to permission limits.')
+      setMessage(
+        'Capture result preserved, but not saved to photos due to permission limits.'
+      )
       return
     }
 

@@ -11,7 +11,9 @@ export type Eval = {
 /*
   Discovers eval directories by scanning for requirements.yaml files.
  */
-export async function discoverEvals(pattern = DISCOVERY_PATTERN): Promise<Eval[]> {
+export async function discoverEvals(
+  pattern = DISCOVERY_PATTERN
+): Promise<Eval[]> {
   const cwd = process.cwd()
   const glob = new Glob(path.join(pattern, 'requirements.yaml'))
   const matchingRequirements: string[] = []

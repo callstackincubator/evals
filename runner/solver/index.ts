@@ -24,12 +24,14 @@ const JSON_FALLBACK_SYSTEM_PROMPT = `
 
 const solverOutputSchema = z.object({
   summary: z.string().describe('Short summary of performed work'),
-  files: z.array(
-    z.object({
-      path: z.string(),
-      content: z.string(),
-    })
-  ).min(1),
+  files: z
+    .array(
+      z.object({
+        path: z.string(),
+        content: z.string(),
+      })
+    )
+    .min(1),
 })
 
 export type SolverResult = {
@@ -128,9 +130,9 @@ function parseSolverOutputFromText(rawText: string) {
   Runs an OpenCode-backed solver and materializes generated files for judges.
 */
 export async function runSolver(params: {
-  prompt: string,
-  files: LoadedFile[],
-  workingDirectory: string,
+  prompt: string
+  files: LoadedFile[]
+  workingDirectory: string
   model: string
   timeout: number
   port?: number

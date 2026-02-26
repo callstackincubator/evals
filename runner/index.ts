@@ -13,6 +13,7 @@ import { runLlmJudgeStage } from './evaluators/llm/run'
 import { runWithConcurrency } from './solver/concurrency'
 import { runSolverStage } from './solver/pipeline'
 import { loadFiles, sanitizeSegment } from './utils/fs'
+import { createProgressReporter } from './utils/progress'
 
 const RESULTS_DIR = 'results'
 
@@ -48,6 +49,7 @@ async function main() {
   await mkdir(generatedOutputsDirectory, { recursive: true })
 
   console.log(`starting run: ${discoveredEvals.length} eval(s)`)
+  const progress = createProgressReporter(discoveredEvals.length)
 
   // Process evals concurrently while preserving stable final ordering.
   const evalRuns = await runWithConcurrency(
@@ -56,12 +58,16 @@ async function main() {
     async (evalItem, index) => {
       try {
         // Prep: Load eval files
-        const [appFiles, referenceFiles, requirements, prompt] = await Promise.all([
-          loadFiles(path.join(evalItem.evalPath, 'app')),
-          loadFiles(path.join(evalItem.evalPath, 'reference')),
-          readFile(path.join(evalItem.evalPath, 'requirements.yaml'), 'utf-8'),
-          readFile(path.join(evalItem.evalPath, 'prompt.md'), 'utf-8'),
-        ])
+        const [appFiles, referenceFiles, requirements, prompt] =
+          await Promise.all([
+            loadFiles(path.join(evalItem.evalPath, 'app')),
+            loadFiles(path.join(evalItem.evalPath, 'reference')),
+            readFile(
+              path.join(evalItem.evalPath, 'requirements.yaml'),
+              'utf-8'
+            ),
+            readFile(path.join(evalItem.evalPath, 'prompt.md'), 'utf-8'),
+          ])
 
         const generatedEvalRunDirectory = path.join(
           generatedOutputsDirectory,
@@ -82,7 +88,7 @@ async function main() {
           solverStage.files,
           referenceFiles,
           requirements,
-          cliOptions,
+          cliOptions
         )
 
         // Step 3: Compose the final per-eval result payload.
@@ -120,21 +126,30 @@ async function main() {
           scoreRatio: stageResult.score.ratio,
         }
 
-        const position = index + 1
+        progress.tick({
+          evalId: evalItem.evalId,
+          scoreRatio: stageResult.score.ratio,
+        })
 
-        console.log(
-          `[${position}/${discoveredEvals.length}] ${evalItem.evalId} ` +
-            `-> llm:${stageResult.score.ratio}`
-        )
-
-        return { kind: 'success' as const, index, result: stageResult, indexItem }
+        return {
+          kind: 'success' as const,
+          index,
+          result: stageResult,
+          indexItem,
+        }
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.stack : String(error)
+        const errorMessage =
+          error instanceof Error ? error.stack : String(error)
         console.error(`[solver-stage][${evalItem.evalId}] ${errorMessage}`)
 
         if (cliOptions.failFast) {
           throw error
         }
+
+        progress.tick({
+          evalId: evalItem.evalId,
+          error: true,
+        })
 
         return {
           kind: 'error' as const,
@@ -143,7 +158,7 @@ async function main() {
             evalId: evalItem.evalId,
             evalPath: toRelativePath(evalItem.evalPath),
           },
-          error
+          error,
         }
       }
     }
@@ -153,7 +168,9 @@ async function main() {
   type SuccessfulRun = Extract<EvalRun, { kind: 'success' }>
   type ErrorRun = Extract<EvalRun, { kind: 'error' }>
 
-  const [successfulRuns, errorRuns] = evalRuns.reduce<[SuccessfulRun[], ErrorRun[]]>(
+  const [successfulRuns, errorRuns] = evalRuns.reduce<
+    [SuccessfulRun[], ErrorRun[]]
+  >(
     ([suc, err], run) => {
       if (run.kind === 'error') {
         return [suc, err.concat(run)]
@@ -174,19 +191,22 @@ async function main() {
   const requirementsPassed = sortedSuccessfulRuns.reduce((sum, evalRun) => {
     return (
       sum +
-      evalRun.result.llmJudgeRequirements.filter((requirement) => requirement.passed)
-        .length
+      evalRun.result.llmJudgeRequirements.filter(
+        (requirement) => requirement.passed
+      ).length
     )
   }, 0)
- 
+
   const evalsErrored = errorRuns.length
-  
+
   const weightedAverageScore =
     sortedSuccessfulRuns.length === 0
       ? 0
       : roundTo(
-          sortedSuccessfulRuns.reduce((sum, run) => sum + run.result.score.ratio, 0) /
-          sortedSuccessfulRuns.length,
+          sortedSuccessfulRuns.reduce(
+            (sum, run) => sum + run.result.score.ratio,
+            0
+          ) / sortedSuccessfulRuns.length,
           4
         )
 
@@ -205,7 +225,10 @@ async function main() {
     weightedAverageScore,
   }
 
-  const summaryPath = await writeSummary(outputDirs.runDirectory, summaryPayload)
+  const summaryPath = await writeSummary(
+    outputDirs.runDirectory,
+    summaryPayload
+  )
   console.log(`run complete: ${toRelativePath(summaryPath)}`)
 }
 

@@ -69,7 +69,7 @@ function ItemsScreen() {
 
   const submit = () => {
     const nextTitle = draft.trim()
-    
+
     if (!nextTitle) {
       return
     }
@@ -85,8 +85,8 @@ function ItemsScreen() {
       <View style={styles.composer}>
         <TextInput
           onChangeText={setDraft}
-          placeholder='New item title'
-          placeholderTextColor='#94a3b8'
+          placeholder="New item title"
+          placeholderTextColor="#94a3b8"
           style={styles.input}
           value={draft}
         />

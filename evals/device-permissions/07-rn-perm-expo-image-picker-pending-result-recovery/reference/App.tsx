@@ -5,7 +5,9 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 
 type PickerState = 'idle' | 'cancelled' | 'error' | 'success'
 
-function getResultKey(result: ImagePicker.ImagePickerResult | ImagePicker.ImagePickerSuccessResult): string {
+function getResultKey(
+  result: ImagePicker.ImagePickerResult | ImagePicker.ImagePickerSuccessResult
+): string {
   if ('canceled' in result && result.canceled) {
     return 'cancelled-result'
   }
@@ -24,7 +26,12 @@ export default function App() {
   const lastHandledKey = useRef('')
 
   const handlePickerResult = useCallback(
-    (result: ImagePicker.ImagePickerResult | ImagePicker.ImagePickerSuccessResult, source: 'pending' | 'live') => {
+    (
+      result:
+        | ImagePicker.ImagePickerResult
+        | ImagePicker.ImagePickerSuccessResult,
+      source: 'pending' | 'live'
+    ) => {
       const key = getResultKey(result)
       if (key === lastHandledKey.current) {
         setMessage(`Skipped duplicate ${source} result.`)
@@ -49,7 +56,9 @@ export default function App() {
       const first = result.assets[0]
       setPickerState('success')
       setAssetSummary(`${first.fileName ?? 'unnamed'} | ${first.uri}`)
-      setMessage(`${source} picker result restored through shared success pipeline.`)
+      setMessage(
+        `${source} picker result restored through shared success pipeline.`
+      )
     },
     []
   )

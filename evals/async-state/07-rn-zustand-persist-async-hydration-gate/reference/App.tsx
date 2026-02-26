@@ -51,13 +51,19 @@ function HydrationGate() {
     return (
       <View style={styles.screen}>
         <Text style={styles.title}>Restoring session…</Text>
-        <Text style={styles.meta}>Protected UI is gated until hydration completes.</Text>
+        <Text style={styles.meta}>
+          Protected UI is gated until hydration completes.
+        </Text>
       </View>
     )
   }
 
   const card = token
-    ? { label: 'Authenticated content visible.', action: logout, button: 'Log out' }
+    ? {
+        label: 'Authenticated content visible.',
+        action: logout,
+        button: 'Log out',
+      }
     : { label: 'Public content visible.', action: login, button: 'Log in' }
 
   return (

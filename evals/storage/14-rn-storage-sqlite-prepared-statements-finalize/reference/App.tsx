@@ -17,14 +17,18 @@ function getDb() {
 }
 
 async function ensureTable(db: SQLite.SQLiteDatabase) {
-  await db.execAsync('CREATE TABLE IF NOT EXISTS notes (id TEXT PRIMARY KEY NOT NULL, body TEXT NOT NULL)')
+  await db.execAsync(
+    'CREATE TABLE IF NOT EXISTS notes (id TEXT PRIMARY KEY NOT NULL, body TEXT NOT NULL)'
+  )
 }
 
 async function insertNote(body: string) {
   const db = await getDb()
   await ensureTable(db)
 
-  const statement = await db.prepareAsync('INSERT INTO notes (id, body) VALUES ($id, $body)')
+  const statement = await db.prepareAsync(
+    'INSERT INTO notes (id, body) VALUES ($id, $body)'
+  )
   try {
     await statement.executeAsync({
       $body: body,
@@ -40,7 +44,7 @@ async function searchNotes(query: string): Promise<Note[]> {
   await ensureTable(db)
 
   const statement = await db.prepareAsync(
-    'SELECT id, body FROM notes WHERE body LIKE $query ORDER BY id DESC LIMIT 20',
+    'SELECT id, body FROM notes WHERE body LIKE $query ORDER BY id DESC LIMIT 20'
   )
 
   try {

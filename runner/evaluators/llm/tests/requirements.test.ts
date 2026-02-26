@@ -44,4 +44,23 @@ describe('loadRequirements', () => {
     expect(parsed[0]?.weight).toBe(2.5)
     expect(parsed[1]?.weight).toBeUndefined()
   })
+
+  test('parses unquoted descriptions that contain colons and !! text', async () => {
+    const rawRequirements = [
+      'version: 1',
+      'requirements:',
+      '  - id: dependency-gated-query',
+      '    description: Must gate the dependent projects query with enabled: !!profileId so it does not execute before upstream identity exists.',
+      '  - id: mutation-success-invalidates-list',
+      '    description: Must invalidate via queryClient.invalidateQueries({ queryKey: ITEMS_QUERY_KEY }) after success.',
+    ].join('\n')
+
+    const parsed = await loadRequirements(rawRequirements)
+
+    expect(parsed).toHaveLength(2)
+    expect(parsed[0]?.description).toContain('enabled: !!profileId')
+    expect(parsed[1]?.description).toContain(
+      'invalidateQueries({ queryKey: ITEMS_QUERY_KEY })'
+    )
+  })
 })

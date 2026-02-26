@@ -35,7 +35,10 @@ async function persistShardedDocument(text: string) {
     totalLength: text.length,
   }
 
-  const pairs: [string, string][] = chunkKeys.map((key, index) => [key, chunks[index]])
+  const pairs: [string, string][] = chunkKeys.map((key, index) => [
+    key,
+    chunks[index],
+  ])
   pairs.push([DOC_MANIFEST_KEY, JSON.stringify(manifest)])
 
   await AsyncStorage.multiSet(pairs)

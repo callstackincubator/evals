@@ -23,9 +23,16 @@ const INITIAL_STATUSES: CapabilityStatusMap = {
   notifications: 'denied',
 }
 
-const APP_PERMISSIONS: Record<Exclude<Capability, 'notifications'>, Permission> = {
-  camera: Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA,
-  microphone: Platform.OS === 'ios' ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO,
+const APP_PERMISSIONS: Record<
+  Exclude<Capability, 'notifications'>,
+  Permission
+> = {
+  camera:
+    Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA,
+  microphone:
+    Platform.OS === 'ios'
+      ? PERMISSIONS.IOS.MICROPHONE
+      : PERMISSIONS.ANDROID.RECORD_AUDIO,
 }
 
 const SEQUENCE: Capability[] = ['camera', 'microphone', 'notifications']
@@ -47,7 +54,8 @@ function toUiStatus(status: PermissionStatus): UiStatus {
 }
 
 export default function App() {
-  const [statuses, setStatuses] = useState<CapabilityStatusMap>(INITIAL_STATUSES)
+  const [statuses, setStatuses] =
+    useState<CapabilityStatusMap>(INITIAL_STATUSES)
   const [message, setMessage] = useState('')
 
   const refreshCapability = async (capability: Capability) => {
@@ -67,7 +75,10 @@ export default function App() {
   const requestCapability = async (capability: Capability) => {
     if (capability === 'notifications') {
       const result = await requestNotifications(['alert', 'badge', 'sound'])
-      setStatuses((prev) => ({ ...prev, notifications: toUiStatus(result.status) }))
+      setStatuses((prev) => ({
+        ...prev,
+        notifications: toUiStatus(result.status),
+      }))
       return
     }
 
@@ -86,17 +97,23 @@ export default function App() {
       await requestCapability(capability)
     }
 
-    setMessage('Finished sequenced requests. Android blocked outcomes are detected via request path.')
+    setMessage(
+      'Finished sequenced requests. Android blocked outcomes are detected via request path.'
+    )
   }
 
-  const allGranted = SEQUENCE.every((capability) => statuses[capability] === 'granted')
+  const allGranted = SEQUENCE.every(
+    (capability) => statuses[capability] === 'granted'
+  )
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Multi Permission Setup</Text>
 
       <Pressable onPress={runSequencedSetup} style={styles.button}>
-        <Text style={styles.buttonText}>Run camera → microphone → notifications</Text>
+        <Text style={styles.buttonText}>
+          Run camera → microphone → notifications
+        </Text>
       </Pressable>
 
       {SEQUENCE.map((capability) => (
@@ -112,11 +129,15 @@ export default function App() {
               <Text style={styles.secondarySmallButtonText}>Check</Text>
             </Pressable>
 
-            <Pressable onPress={() => requestCapability(capability)} style={styles.smallButton}>
+            <Pressable
+              onPress={() => requestCapability(capability)}
+              style={styles.smallButton}
+            >
               <Text style={styles.smallButtonText}>Retry</Text>
             </Pressable>
 
-            {(statuses[capability] === 'blocked' || statuses[capability] === 'denied') && (
+            {(statuses[capability] === 'blocked' ||
+              statuses[capability] === 'denied') && (
               <Pressable
                 onPress={() => openSettings()}
                 style={[styles.smallButton, styles.secondarySmallButton]}
@@ -128,7 +149,9 @@ export default function App() {
         </View>
       ))}
 
-      <Text style={styles.summary}>{allGranted ? 'All permissions granted' : 'Partial or degraded access'}</Text>
+      <Text style={styles.summary}>
+        {allGranted ? 'All permissions granted' : 'Partial or degraded access'}
+      </Text>
       <Text style={styles.message}>{message}</Text>
       <StatusBar style="auto" />
     </View>

@@ -1,19 +1,20 @@
-import { defineConfig, globalIgnores } from 'eslint/config'
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import globals from 'globals'
 
-export default defineConfig([
-  globalIgnores([
-    'results/**/*',
-    'runs/**/*',
-    'runner/solver/template/**/*',
-    '**/node_modules',
-    '**/lib',
-    '**/build',
-    '**/dist',
-    'evals/**',
-  ]),
+export default [
+  {
+    ignores: [
+      'results/**/*',
+      'runs/**/*',
+      'runner/solver/template/**/*',
+      '**/node_modules',
+      '**/lib',
+      '**/build',
+      '**/dist',
+      'evals/**',
+    ],
+  },
   eslintPluginPrettierRecommended,
   {
     plugins: {
@@ -37,4 +38,4 @@ export default defineConfig([
       'prettier/prettier': 'error',
     },
   },
-])
+]

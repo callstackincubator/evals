@@ -59,7 +59,9 @@ function SelectableListScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{`Selection mode ${selectionMode ? 'ON' : 'OFF'}`}</Text>
+      <Text
+        style={styles.title}
+      >{`Selection mode ${selectionMode ? 'ON' : 'OFF'}`}</Text>
       <Button
         title={`${selectionMode ? 'Disable' : 'Enable'} selection mode`}
         onPress={handleToggleSelectionMode}

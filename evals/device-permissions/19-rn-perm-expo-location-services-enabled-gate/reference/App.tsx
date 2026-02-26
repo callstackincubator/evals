@@ -1,18 +1,27 @@
 import * as Location from 'expo-location'
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect, useState } from 'react'
-import { AppState, Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
+import {
+  AppState,
+  Linking,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 
 type PermissionState = 'granted' | 'denied' | 'blocked' | 'unknown'
 type ServicesState = 'enabled' | 'disabled' | 'unknown'
 
 function toPermissionState(p: Location.PermissionResponse): PermissionState {
   if (p.status === Location.PermissionStatus.UNDETERMINED) return 'unknown'
-  return p.granted ? 'granted': p.canAskAgain ? 'denied' : 'blocked'
+  return p.granted ? 'granted' : p.canAskAgain ? 'denied' : 'blocked'
 }
 
 export default function App() {
-  const [permissionState, setPermissionState] = useState<PermissionState>('unknown')
+  const [permissionState, setPermissionState] =
+    useState<PermissionState>('unknown')
   const [servicesState, setServicesState] = useState<ServicesState>('unknown')
   const [coords, setCoords] = useState('')
   const [message, setMessage] = useState('')
@@ -31,10 +40,8 @@ export default function App() {
     return permissionStateValue
   }
 
-  const refreshStatus = async () => await Promise.all([
-    checkLocationPermission(),
-    checkServiceEnabledAsync(),
-  ])
+  const refreshStatus = async () =>
+    await Promise.all([checkLocationPermission(), checkServiceEnabledAsync()])
 
   const readLocation = async () => {
     setCoords('')
@@ -47,7 +54,7 @@ export default function App() {
       return
     }
 
-    if(currentPermissionState !== 'granted') {
+    if (currentPermissionState !== 'granted') {
       const permission = await Location.requestForegroundPermissionsAsync()
       setPermissionState(toPermissionState(permission))
       if (!permission.granted) {
@@ -57,15 +64,19 @@ export default function App() {
     }
 
     try {
-      const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced })
-      setCoords(`${location.coords.latitude.toFixed(5)}, ${location.coords.longitude.toFixed(5)}`)
+      const location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      })
+      setCoords(
+        `${location.coords.latitude.toFixed(5)}, ${location.coords.longitude.toFixed(5)}`
+      )
     } catch {
       setMessage('Location read failed. Please retry.')
     }
   }
 
   const openSettings = () => {
-    if(Platform.OS === 'android' && 'sendIntent' in Linking) {
+    if (Platform.OS === 'android' && 'sendIntent' in Linking) {
       Linking.sendIntent('android.settings.LOCATION_SOURCE_SETTINGS')
     } else {
       Linking.openSettings()
@@ -76,7 +87,7 @@ export default function App() {
     refreshStatus()
 
     const subscription = AppState.addEventListener('change', (status) => {
-      if(status === 'active') refreshStatus()
+      if (status === 'active') refreshStatus()
     })
 
     return () => {
@@ -84,7 +95,8 @@ export default function App() {
     }
   }, [])
 
-  const readDisabled = servicesState === 'disabled' || permissionState === 'blocked'
+  const readDisabled =
+    servicesState === 'disabled' || permissionState === 'blocked'
 
   return (
     <View style={styles.container}>
@@ -93,7 +105,9 @@ export default function App() {
       <Text style={styles.state}>Services: {servicesState}</Text>
 
       <Pressable onPress={refreshStatus} style={styles.secondaryButton}>
-        <Text style={styles.secondaryButtonText}>Refresh permission + services</Text>
+        <Text style={styles.secondaryButtonText}>
+          Refresh permission + services
+        </Text>
       </Pressable>
 
       <Pressable
@@ -113,9 +127,12 @@ export default function App() {
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Recovery guidance</Text>
         <Text style={styles.cardBody}>
-          If services are disabled, do not attempt location fetch. Ask users to enable location services first.
+          If services are disabled, do not attempt location fetch. Ask users to
+          enable location services first.
         </Text>
-        <Text style={styles.coords}>Coordinates: {coords || 'not available'}</Text>
+        <Text style={styles.coords}>
+          Coordinates: {coords || 'not available'}
+        </Text>
       </View>
 
       <Text style={styles.message}>{message}</Text>

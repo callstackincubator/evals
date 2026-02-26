@@ -18,7 +18,7 @@ function getDb() {
 
 async function ensureTable(db: SQLite.SQLiteDatabase) {
   await db.execAsync(
-    'CREATE TABLE IF NOT EXISTS ordered_writes (sequence INTEGER PRIMARY KEY NOT NULL, payload TEXT NOT NULL)',
+    'CREATE TABLE IF NOT EXISTS ordered_writes (sequence INTEGER PRIMARY KEY NOT NULL, payload TEXT NOT NULL)'
   )
 }
 
@@ -31,7 +31,7 @@ export default function App() {
     const db = await getDb()
     await ensureTable(db)
     const next = await db.getAllAsync<LogRow>(
-      'SELECT sequence, payload FROM ordered_writes ORDER BY sequence ASC',
+      'SELECT sequence, payload FROM ordered_writes ORDER BY sequence ASC'
     )
     setRows(next)
   }
@@ -48,7 +48,7 @@ export default function App() {
         await transaction.runAsync(
           'INSERT INTO ordered_writes (sequence, payload) VALUES (?, ?)',
           nextSequence,
-          payload,
+          payload
         )
 
         if (shouldFail) {

@@ -70,8 +70,8 @@ export default function App() {
     <View style={styles.screen}>
       <Text style={styles.title}>Selector stability</Text>
       <View style={styles.row}>
-        <Panel side='left' />
-        <Panel side='right' />
+        <Panel side="left" />
+        <Panel side="right" />
       </View>
     </View>
   )

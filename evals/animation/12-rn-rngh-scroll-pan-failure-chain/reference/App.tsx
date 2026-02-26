@@ -60,10 +60,10 @@ export default function App() {
     .onEnd((event) => {
       'worklet'
       const shouldOpen = rowTranslateX.value < ROW_SNAP_OPEN_THRESHOLD
-      rowTranslateX.value = withSpring(
-        shouldOpen ? ROW_OPEN_OFFSET : 0,
-        { ...ROW_SPRING_CONFIG, velocity: event.velocityX }
-      )
+      rowTranslateX.value = withSpring(shouldOpen ? ROW_OPEN_OFFSET : 0, {
+        ...ROW_SPRING_CONFIG,
+        velocity: event.velocityX,
+      })
     })
 
   const rowAnimatedStyle = useAnimatedStyle(() => {

@@ -23,16 +23,19 @@ export default function App() {
   const [items, setItems] = useState<RowItem[]>(INITIAL_ITEMS)
   const nextId = useRef(INITIAL_ITEMS.length + 1)
 
-  const renderItem = useCallback(({ item }: { item: RowItem }) => (
-    <Animated.View
-      entering={FadeInDown.duration(220)}
-      exiting={FadeOutUp.duration(180)}
-      layout={LinearTransition}
-      style={styles.row}
-    >
-      <Text style={styles.rowText}>{item.label}</Text>
-    </Animated.View>
-  ), [])
+  const renderItem = useCallback(
+    ({ item }: { item: RowItem }) => (
+      <Animated.View
+        entering={FadeInDown.duration(220)}
+        exiting={FadeOutUp.duration(180)}
+        layout={LinearTransition}
+        style={styles.row}
+      >
+        <Text style={styles.rowText}>{item.label}</Text>
+      </Animated.View>
+    ),
+    []
+  )
 
   return (
     <View style={styles.screen}>

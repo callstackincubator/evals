@@ -52,7 +52,7 @@ export async function runLlmJudgeStage(
         passedWeight: 0,
         totalWeight: 0,
         ratio: 0,
-      }
+      },
     }
   }
 
@@ -60,7 +60,12 @@ export async function runLlmJudgeStage(
 
   const prompt = buildJudgePrompt(requirements, files, referenceFiles)
 
-  const results = await runJudgeCall(prompt, cliOptions.model, cliOptions.timeout, cliOptions.port)
+  const results = await runJudgeCall(
+    prompt,
+    cliOptions.model,
+    cliOptions.timeout,
+    cliOptions.port
+  )
 
   const mappedRequirements = mapRequirementResults(
     requirements,
@@ -70,6 +75,6 @@ export async function runLlmJudgeStage(
   return {
     requirements: mappedRequirements,
     summary: results.summary,
-    score: computeScore(mappedRequirements)
+    score: computeScore(mappedRequirements),
   }
 }

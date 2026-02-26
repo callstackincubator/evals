@@ -23,7 +23,7 @@ function getDb() {
 
 async function ensureOutboxSchema(db: SQLite.SQLiteDatabase) {
   await db.execAsync(
-    'CREATE TABLE IF NOT EXISTS outbox (id TEXT PRIMARY KEY NOT NULL, payload TEXT NOT NULL, status TEXT NOT NULL, attempts INTEGER NOT NULL, next_retry_at INTEGER NOT NULL, updated_at INTEGER NOT NULL)',
+    'CREATE TABLE IF NOT EXISTS outbox (id TEXT PRIMARY KEY NOT NULL, payload TEXT NOT NULL, status TEXT NOT NULL, attempts INTEGER NOT NULL, next_retry_at INTEGER NOT NULL, updated_at INTEGER NOT NULL)'
   )
 }
 
@@ -39,7 +39,7 @@ async function enqueueMutation(payload: string) {
     'pending',
     0,
     now,
-    now,
+    now
   )
 }
 
@@ -60,7 +60,7 @@ async function replayBatch() {
     'failed',
     MAX_ATTEMPTS,
     now,
-    BATCH_SIZE,
+    BATCH_SIZE
   )
 
   for (const row of rows) {
@@ -78,11 +78,12 @@ async function replayBatch() {
           'UPDATE outbox SET status = ?, updated_at = ? WHERE id = ?',
           'sent',
           Date.now(),
-          row.id,
+          row.id
         )
       } else {
         const nextAttempts = row.attempts + 1
-        const nextStatus: OutboxRow['status'] = nextAttempts >= MAX_ATTEMPTS ? 'failed' : 'pending'
+        const nextStatus: OutboxRow['status'] =
+          nextAttempts >= MAX_ATTEMPTS ? 'failed' : 'pending'
         const nextRetryAt = Date.now() + nextAttempts * 3_000
 
         await transaction.runAsync(
@@ -91,7 +92,7 @@ async function replayBatch() {
           nextStatus,
           nextRetryAt,
           Date.now(),
-          row.id,
+          row.id
         )
       }
     })
@@ -105,9 +106,10 @@ export default function App() {
     const db = await getDb()
     await ensureOutboxSchema(db)
 
-    const rows = await db.getAllAsync<{ count: number; status: 'failed' | 'pending' | 'sent' }>(
-      'SELECT status, COUNT(*) as count FROM outbox GROUP BY status',
-    )
+    const rows = await db.getAllAsync<{
+      count: number
+      status: 'failed' | 'pending' | 'sent'
+    }>('SELECT status, COUNT(*) as count FROM outbox GROUP BY status')
 
     const next = { failed: 0, pending: 0, sent: 0 }
     for (const row of rows) {

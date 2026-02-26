@@ -1,9 +1,26 @@
-import { Camera, CameraView, PermissionResponse, type CameraMountError } from 'expo-camera'
+import {
+  Camera,
+  CameraView,
+  PermissionResponse,
+  type CameraMountError,
+} from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
 import React, { useCallback, useEffect, useState } from 'react'
-import { AppState, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
+import {
+  AppState,
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 
-type CameraState = 'checking' | 'permission-denied' | 'available' | 'unavailable' | 'mount-error'
+type CameraState =
+  | 'checking'
+  | 'permission-denied'
+  | 'available'
+  | 'unavailable'
+  | 'mount-error'
 type WebCameraType = typeof Camera & {
   isAvailableAsync(): Promise<boolean>
 }
@@ -18,37 +35,41 @@ export default function App() {
       // On other platforms it's handled natively during request and it's implicitly considered as available
       return await (Camera as WebCameraType).isAvailableAsync()
     } catch (error) {
-      console.warn('Camera availability check failed', error);
+      console.warn('Camera availability check failed', error)
       return true
     }
   }
 
-  const checkAvailability = useCallback(async (permission?: PermissionResponse) => {
-    const available = await safelyCheckCameraAvailability()
+  const checkAvailability = useCallback(
+    async (permission?: PermissionResponse) => {
+      const available = await safelyCheckCameraAvailability()
 
-    if(!available) {
-      setCameraState('unavailable')
-      return
-    }
+      if (!available) {
+        setCameraState('unavailable')
+        return
+      }
 
-    const currentPermission = permission ?? await Camera.getCameraPermissionsAsync()
-    
-    if (!currentPermission?.granted) {
-      setCameraState('permission-denied')
-      return
-    }
+      const currentPermission =
+        permission ?? (await Camera.getCameraPermissionsAsync())
 
-    if (currentPermission?.granted) {
-      setCameraState('available')
-      return
-    }
-  }, [])
+      if (!currentPermission?.granted) {
+        setCameraState('permission-denied')
+        return
+      }
+
+      if (currentPermission?.granted) {
+        setCameraState('available')
+        return
+      }
+    },
+    []
+  )
 
   useEffect(() => {
-    checkAvailability()    
+    checkAvailability()
 
     const subscription = AppState.addEventListener('change', (state) => {
-      if(state === 'active') checkAvailability()
+      if (state === 'active') checkAvailability()
     })
 
     return subscription.remove
@@ -80,9 +101,12 @@ export default function App() {
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Preview fallback</Text>
           <Text style={styles.cardBody}>
-            Permission alone is not enough. Availability and mount status must both succeed.
+            Permission alone is not enough. Availability and mount status must
+            both succeed.
           </Text>
-          {!!mountError && <Text style={styles.error}>Mount error: {mountError}</Text>}
+          {!!mountError && (
+            <Text style={styles.error}>Mount error: {mountError}</Text>
+          )}
         </View>
       )}
 
@@ -90,11 +114,19 @@ export default function App() {
         <Text style={styles.buttonText}>Request permission + retry</Text>
       </Pressable>
 
-      <Pressable onPress={() => checkAvailability()} style={styles.secondaryButton}>
-        <Text style={styles.secondaryButtonText}>Recheck camera availability</Text>
+      <Pressable
+        onPress={() => checkAvailability()}
+        style={styles.secondaryButton}
+      >
+        <Text style={styles.secondaryButtonText}>
+          Recheck camera availability
+        </Text>
       </Pressable>
 
-      <Pressable onPress={() => Linking.openSettings()} style={styles.secondaryButton}>
+      <Pressable
+        onPress={() => Linking.openSettings()}
+        style={styles.secondaryButton}
+      >
         <Text style={styles.secondaryButtonText}>Open Settings</Text>
       </Pressable>
 

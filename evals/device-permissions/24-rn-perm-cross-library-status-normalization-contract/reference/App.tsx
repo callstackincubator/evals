@@ -3,8 +3,22 @@ import * as ImagePicker from 'expo-image-picker'
 import * as Notifications from 'expo-notifications'
 import { StatusBar } from 'expo-status-bar'
 import React, { useState } from 'react'
-import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { check, checkNotifications, PERMISSIONS, RESULTS, type PermissionStatus, type Permission } from 'react-native-permissions'
+import {
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
+import {
+  check,
+  checkNotifications,
+  PERMISSIONS,
+  RESULTS,
+  type PermissionStatus,
+  type Permission,
+} from 'react-native-permissions'
 
 export type NormalizedStatus =
   | 'unavailable'
@@ -20,7 +34,8 @@ type DiagnosticRow = {
   note: string
 }
 
-const PERMISSION_CAMERA: Permission = Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA
+const PERMISSION_CAMERA: Permission =
+  Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA
 
 function mapExpoPermission(params: {
   status: Notifications.PermissionStatus
@@ -61,13 +76,14 @@ export default function App() {
   const [rows, setRows] = useState<DiagnosticRow[]>([])
 
   const runDiagnostics = async () => {
-    const [camera, media, notifications, rnCamera, rnNotifications] = await Promise.all([
-      Camera.getCameraPermissionsAsync(),
-      ImagePicker.getMediaLibraryPermissionsAsync(),
-      Notifications.getPermissionsAsync(),
-      check(PERMISSION_CAMERA),
-      checkNotifications()
-    ])
+    const [camera, media, notifications, rnCamera, rnNotifications] =
+      await Promise.all([
+        Camera.getCameraPermissionsAsync(),
+        ImagePicker.getMediaLibraryPermissionsAsync(),
+        Notifications.getPermissionsAsync(),
+        check(PERMISSION_CAMERA),
+        checkNotifications(),
+      ])
 
     const nextRows: DiagnosticRow[] = [
       {
@@ -76,7 +92,9 @@ export default function App() {
           canAskAgain: camera.canAskAgain,
           status: camera.status,
         }),
-        note: camera.granted ? 'Camera access granted' : 'Camera access not granted',
+        note: camera.granted
+          ? 'Camera access granted'
+          : 'Camera access not granted',
       },
       {
         source: 'expo-image-picker',
@@ -94,7 +112,9 @@ export default function App() {
         source: 'expo-notifications',
         normalized: mapExpoPermission({
           canAskAgain: notifications.canAskAgain,
-          provisional: notifications.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL,
+          provisional:
+            notifications.ios?.status ===
+            Notifications.IosAuthorizationStatus.PROVISIONAL,
           status: notifications.status,
         }),
         note: 'Mapped from iOS/Expo notification status model',
@@ -119,8 +139,12 @@ export default function App() {
       return 'No diagnostics run yet.'
     }
 
-    const blockedCount = rows.filter((row) => row.normalized === 'blocked').length
-    const unavailableCount = rows.filter((row) => row.normalized === 'unavailable').length
+    const blockedCount = rows.filter(
+      (row) => row.normalized === 'blocked'
+    ).length
+    const unavailableCount = rows.filter(
+      (row) => row.normalized === 'unavailable'
+    ).length
 
     return `blocked: ${blockedCount}, unavailable: ${unavailableCount}, total: ${rows.length}`
   }

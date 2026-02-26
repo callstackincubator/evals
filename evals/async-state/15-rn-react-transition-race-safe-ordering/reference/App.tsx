@@ -24,7 +24,7 @@ async function searchApi(query: string): Promise<string[]> {
 
 export default function App() {
   const latestRequestId = useRef(0)
-  
+
   const [input, setInput] = useState('')
   const [committedQuery, setCommittedQuery] = useState('')
   const [results, setResults] = useState<string[]>([])

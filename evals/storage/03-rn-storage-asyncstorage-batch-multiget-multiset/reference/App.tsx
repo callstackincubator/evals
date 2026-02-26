@@ -38,9 +38,15 @@ function mapBatchToSettings(
   const map = Object.fromEntries(pairs)
 
   return {
-    emailOptIn: parseBoolean(map[SETTINGS_KEYS.emailOptIn] ?? null, DEFAULT_SETTINGS.emailOptIn),
+    emailOptIn: parseBoolean(
+      map[SETTINGS_KEYS.emailOptIn] ?? null,
+      DEFAULT_SETTINGS.emailOptIn
+    ),
     language: map[SETTINGS_KEYS.language] ?? DEFAULT_SETTINGS.language,
-    pushOptIn: parseBoolean(map[SETTINGS_KEYS.pushOptIn] ?? null, DEFAULT_SETTINGS.pushOptIn),
+    pushOptIn: parseBoolean(
+      map[SETTINGS_KEYS.pushOptIn] ?? null,
+      DEFAULT_SETTINGS.pushOptIn
+    ),
   }
 }
 

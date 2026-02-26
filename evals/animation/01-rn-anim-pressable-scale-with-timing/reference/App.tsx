@@ -27,7 +27,7 @@ export default function App() {
         progress.value,
         [0, 1],
         [COLLAPSED_HEIGHT, EXPANDED_HEIGHT],
-        Extrapolation.CLAMP,
+        Extrapolation.CLAMP
       ),
     }
   })

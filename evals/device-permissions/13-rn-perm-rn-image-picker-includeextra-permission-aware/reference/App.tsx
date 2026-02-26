@@ -28,7 +28,6 @@ function mapPermission(status: PermissionStatus): PermissionLevel {
   return status === RESULTS.GRANTED ? 'granted' : 'denied'
 }
 
-
 export default function App() {
   const [permissionLevel, setPermissionLevel] =
     useState<PermissionLevel>('denied')

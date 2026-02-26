@@ -19,7 +19,11 @@ type StoreApi = {
 }
 
 const FETCH_DELAY_MS = 260
-const FEED_ITEMS = ['Release notes', 'Crash analytics', 'Regression triage'] as const
+const FEED_ITEMS = [
+  'Release notes',
+  'Crash analytics',
+  'Regression triage',
+] as const
 
 const ERRORS = {
   firstAttempt: 'Temporary feed error (first attempt fails by design)',

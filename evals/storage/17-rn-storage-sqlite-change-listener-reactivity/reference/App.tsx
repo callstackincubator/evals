@@ -30,7 +30,7 @@ function getDb() {
 
 async function ensureTable(db: SQLiteDatabase) {
   await db.execAsync(
-    'CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, value TEXT NOT NULL)',
+    'CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, value TEXT NOT NULL)'
   )
 }
 

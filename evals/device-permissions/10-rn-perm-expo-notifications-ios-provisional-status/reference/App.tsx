@@ -106,7 +106,6 @@ export default function App() {
     } else {
       setMessage('Upgrade declined. Provisional delivery remains active.')
     }
-
   }
 
   return (

@@ -3,7 +3,13 @@ import { StatusBar } from 'expo-status-bar'
 import React, { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-type PickerState = 'idle' | 'camera-cancelled' | 'camera-error' | 'camera-success' | 'fallback-gallery' | 'gallery-canceled'
+type PickerState =
+  | 'idle'
+  | 'camera-cancelled'
+  | 'camera-error'
+  | 'camera-success'
+  | 'fallback-gallery'
+  | 'gallery-canceled'
 
 export default function App() {
   const [pickerState, setPickerState] = useState<PickerState>('idle')
@@ -32,7 +38,9 @@ export default function App() {
     setAssetUri('')
 
     const current = await ImagePicker.getCameraPermissionsAsync()
-    const permission = current.granted ? current : await ImagePicker.requestCameraPermissionsAsync()
+    const permission = current.granted
+      ? current
+      : await ImagePicker.requestCameraPermissionsAsync()
 
     if (!permission.granted) {
       setPickerState('camera-error')
@@ -63,7 +71,9 @@ export default function App() {
       setMessage('Camera capture succeeded.')
     } catch {
       setPickerState('camera-error')
-      setMessage('Camera unavailable in this environment. Falling back to gallery.')
+      setMessage(
+        'Camera unavailable in this environment. Falling back to gallery.'
+      )
       await fallbackToGallery()
     }
   }
@@ -77,7 +87,9 @@ export default function App() {
         <Text style={styles.buttonText}>Open camera</Text>
       </Pressable>
 
-      <Text style={styles.asset}>{assetUri ? `Selected URI: ${assetUri}` : 'No asset selected yet.'}</Text>
+      <Text style={styles.asset}>
+        {assetUri ? `Selected URI: ${assetUri}` : 'No asset selected yet.'}
+      </Text>
       <Text style={styles.message}>{message}</Text>
       <StatusBar style="auto" />
     </View>

@@ -1,7 +1,14 @@
 import { CameraView, useCameraPermissions } from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect, useState } from 'react'
-import { AppState, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
+import {
+  AppState,
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 
 type FlowState = 'idle' | 'granted' | 'denied' | 'blocked' | 'requesting'
 
@@ -111,16 +118,25 @@ export default function App() {
         <Pressable
           disabled={flowState === 'requesting'}
           onPress={requestCamera}
-          style={[styles.button, flowState === 'requesting' && styles.disabledButton]}
+          style={[
+            styles.button,
+            flowState === 'requesting' && styles.disabledButton,
+          ]}
         >
           <Text style={styles.buttonText}>Request / Retry</Text>
         </Pressable>
 
-        <Pressable onPress={refreshFromPermission} style={styles.secondaryButton}>
+        <Pressable
+          onPress={refreshFromPermission}
+          style={styles.secondaryButton}
+        >
           <Text style={styles.secondaryButtonText}>Refresh state</Text>
         </Pressable>
 
-        <Pressable onPress={() => Linking.openSettings()} style={styles.secondaryButton}>
+        <Pressable
+          onPress={() => Linking.openSettings()}
+          style={styles.secondaryButton}
+        >
           <Text style={styles.secondaryButtonText}>Open settings</Text>
         </Pressable>
       </View>

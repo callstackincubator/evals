@@ -92,7 +92,7 @@ export default function App() {
         style={[
           styles.secondaryButton,
           currentStep !== 'background-denied-needs-settings' &&
-          styles.disabledButton,
+            styles.disabledButton,
         ]}
       >
         <Text style={styles.secondaryButtonText}>Open settings</Text>

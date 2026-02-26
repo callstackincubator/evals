@@ -19,8 +19,10 @@ When you run `bun runner/index.ts`, the pipeline is:
 1. Discover evals by scanning for `requirements.yaml` (`runner/utils/discovery.ts`).
 2. Load eval files (`app/`, `reference/`, `requirements.yaml`, `prompt.md`).
 3. Run solver stage (`runner/solver/pipeline.ts`):
-  - If `--solver-model` is set, model edits `app` files.
-  - If `--solver-model` is missing, runner uses `reference/` files as generated output.
+
+- If `--solver-model` is set, model edits `app` files.
+- If `--solver-model` is missing, runner uses `reference/` files as generated output.
+
 4. Run LLM judge if `--model` is provided (`runner/evaluators/llm/run.ts`).
 5. Write artifacts under `results/<run-id>/`.
 

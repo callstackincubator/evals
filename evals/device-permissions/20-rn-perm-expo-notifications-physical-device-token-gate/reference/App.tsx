@@ -4,7 +4,12 @@ import { StatusBar } from 'expo-status-bar'
 import React, { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-type RegistrationState = 'idle' | 'denied' | 'simulator' | 'registered' | 'token-error'
+type RegistrationState =
+  | 'idle'
+  | 'denied'
+  | 'simulator'
+  | 'registered'
+  | 'token-error'
 
 class TokenError extends Error {
   public code: string
@@ -17,7 +22,8 @@ class TokenError extends Error {
 }
 
 export default function App() {
-  const [registrationState, setRegistrationState] = useState<RegistrationState>('idle')
+  const [registrationState, setRegistrationState] =
+    useState<RegistrationState>('idle')
   const [token, setToken] = useState('')
   const [message, setMessage] = useState('')
   const [isRegistering, setIsRegistering] = useState(false)
@@ -49,18 +55,24 @@ export default function App() {
       const pushToken = await Notifications.getExpoPushTokenAsync()
       const tokenValue = pushToken?.data?.trim()
       if (!tokenValue) {
-        throw new TokenError('Token retrieval returned an empty token. Retry registration.')
+        throw new TokenError(
+          'Token retrieval returned an empty token. Retry registration.'
+        )
       }
 
       setToken(tokenValue)
       setRegistrationState('registered')
-      setMessage('Registration succeeded on physical device with granted permission.')
+      setMessage(
+        'Registration succeeded on physical device with granted permission.'
+      )
     } catch (error) {
       setRegistrationState('token-error')
       if (error instanceof TokenError) {
         setMessage(error.message)
       } else {
-        setMessage('Permission/device checks passed, but token retrieval failed. Retry registration.')
+        setMessage(
+          'Permission/device checks passed, but token retrieval failed. Retry registration.'
+        )
       }
     }
   }
@@ -90,17 +102,25 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.title}>Physical Device Push Gate</Text>
       <Text style={styles.state}>State: {registrationState}</Text>
-      <Text style={styles.device}>Environment: {Device.isDevice ? 'Physical' : 'Simulator/Emulator'}</Text>
+      <Text style={styles.device}>
+        Environment: {Device.isDevice ? 'Physical' : 'Simulator/Emulator'}
+      </Text>
 
       <Pressable
         disabled={isRegistering}
         onPress={register}
         style={[styles.button, isRegistering && styles.buttonDisabled]}
       >
-        <Text style={styles.buttonText}>{isRegistering ? 'Registering...' : 'Register push token'}</Text>
+        <Text style={styles.buttonText}>
+          {isRegistering ? 'Registering...' : 'Register push token'}
+        </Text>
       </Pressable>
 
-      {token ? <Text style={styles.token}>Token: {token}</Text> : <Text style={styles.fallback}>No token</Text>}
+      {token ? (
+        <Text style={styles.token}>Token: {token}</Text>
+      ) : (
+        <Text style={styles.fallback}>No token</Text>
+      )}
 
       <Text style={styles.message}>{message}</Text>
       <StatusBar style="auto" />

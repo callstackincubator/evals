@@ -1,7 +1,14 @@
 import * as Notifications from 'expo-notifications'
 import { StatusBar } from 'expo-status-bar'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { AppState, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
+import {
+  AppState,
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 
 type PermissionState =
   | 'unknown'
@@ -11,7 +18,9 @@ type PermissionState =
   | 'denied'
   | 'blocked'
 
-function mapPermissionState(permission: Notifications.NotificationPermissionsStatus): PermissionState {
+function mapPermissionState(
+  permission: Notifications.NotificationPermissionsStatus
+): PermissionState {
   switch (permission.status) {
     case Notifications.PermissionStatus.GRANTED:
       return 'granted'
@@ -25,7 +34,8 @@ function mapPermissionState(permission: Notifications.NotificationPermissionsSta
 }
 
 export default function App() {
-  const [permissionState, setPermissionState] = useState<PermissionState>('unknown')
+  const [permissionState, setPermissionState] =
+    useState<PermissionState>('unknown')
   const [message, setMessage] = useState('')
   const [hasHydrated, setHasHydrated] = useState(false)
   const isRefreshingPermissions = useRef(false)
@@ -92,7 +102,10 @@ export default function App() {
       </Pressable>
 
       {(permissionState === 'denied' || permissionState === 'blocked') && (
-        <Pressable onPress={() => Linking.openSettings()} style={styles.secondaryButton}>
+        <Pressable
+          onPress={() => Linking.openSettings()}
+          style={styles.secondaryButton}
+        >
           <Text style={styles.secondaryButtonText}>Open settings</Text>
         </Pressable>
       )}
@@ -102,7 +115,7 @@ export default function App() {
         onPress={() => setMessage('Notification-only action executed.')}
         style={[
           styles.button,
-          (!canUseNotificationFeature) && styles.disabledButton,
+          !canUseNotificationFeature && styles.disabledButton,
         ]}
       >
         <Text style={styles.buttonText}>Notification-only action</Text>

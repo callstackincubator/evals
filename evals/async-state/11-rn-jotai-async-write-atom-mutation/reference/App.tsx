@@ -60,8 +60,8 @@ export default function App() {
       <View style={styles.row}>
         <TextInput
           onChangeText={setDraft}
-          placeholder='Post title'
-          placeholderTextColor='#94a3b8'
+          placeholder="Post title"
+          placeholderTextColor="#94a3b8"
           style={styles.input}
           value={draft}
         />

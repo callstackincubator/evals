@@ -28,7 +28,7 @@ function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Button title='Edit profile' onPress={handleEditProfile} />
+      <Button title="Edit profile" onPress={handleEditProfile} />
     </View>
   )
 }
@@ -61,9 +61,14 @@ function EditScreen() {
 
   return (
     <View style={styles.container}>
-      <TextInput style={styles.input} value={name} onChangeText={setName} placeholder='Name' />
-      <Button title='Save' onPress={handleSave} />
-      <Button title='Back' onPress={handleBack} />
+      <TextInput
+        style={styles.input}
+        value={name}
+        onChangeText={setName}
+        placeholder="Name"
+      />
+      <Button title="Save" onPress={handleSave} />
+      <Button title="Back" onPress={handleBack} />
     </View>
   )
 }

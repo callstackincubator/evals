@@ -86,7 +86,11 @@ function TodosScreen() {
     return { snapshot }
   }
 
-  const onError = (_error: unknown, _todoId: string, context: ToggleContext | undefined) => {
+  const onError = (
+    _error: unknown,
+    _todoId: string,
+    context: ToggleContext | undefined
+  ) => {
     if (context?.snapshot) {
       reactQueryClient.setQueryData(TODOS_QUERY_KEY, context.snapshot)
     }
@@ -118,13 +122,17 @@ function TodosScreen() {
             onPress={handleTodoPressCallback(todo.id)}
             style={styles.row}
           >
-            <Text style={[styles.todoText, todo.done && styles.done]}>{todo.title}</Text>
+            <Text style={[styles.todoText, todo.done && styles.done]}>
+              {todo.title}
+            </Text>
           </Pressable>
         )
       })}
 
       {toggleMutation.error && (
-        <Text style={styles.error}>Toggle failed. Cache rolled back and revalidated.</Text>
+        <Text style={styles.error}>
+          Toggle failed. Cache rolled back and revalidated.
+        </Text>
       )}
     </View>
   )

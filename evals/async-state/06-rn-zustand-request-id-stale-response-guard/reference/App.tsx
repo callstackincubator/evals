@@ -78,8 +78,8 @@ export default function App() {
 
       <TextInput
         onChangeText={setQuery}
-        placeholder='Type a query'
-        placeholderTextColor='#94a3b8'
+        placeholder="Type a query"
+        placeholderTextColor="#94a3b8"
         style={styles.input}
         value={query}
       />

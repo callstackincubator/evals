@@ -51,7 +51,6 @@ export default function App() {
           style={styles.header}
         >
           <Text style={styles.title}>Shipment details</Text>
-
         </Pressable>
 
         <Animated.View style={[styles.details, detailsAnimatedStyle]}>

@@ -14,10 +14,7 @@ export async function runSolverStage(
 ) {
   if (!options.solverModel) {
     return {
-      files: await materializeFiles(
-        workingDir,
-        referenceFiles
-      ),
+      files: await materializeFiles(workingDir, referenceFiles),
       summary: 'solver skipped: using baseline as a reference',
     }
   }
@@ -33,9 +30,6 @@ export async function runSolverStage(
 
   return {
     summary: result.summary,
-    files: await materializeFiles(
-      workingDir,
-      result.files
-    ),
+    files: await materializeFiles(workingDir, result.files),
   }
 }

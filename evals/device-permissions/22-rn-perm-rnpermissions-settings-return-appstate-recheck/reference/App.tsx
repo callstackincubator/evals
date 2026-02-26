@@ -59,7 +59,7 @@ export default function App() {
     }
     setMessage(fallbackMessage)
   }, [])
-  
+
   const handleRefreshStatusError = useCallback(
     (error: unknown) => {
       handleError(error, 'Unable to check permission status.')
