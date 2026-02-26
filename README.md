@@ -4,58 +4,60 @@ A benchmark suite for evaluating how coding models solve real React Native tasks
 
 ## Quick start
 
-To run and evaluate any model locally, install and configure OpenCode first; the benchmark will use your current OpenCode default model, so check the selected model and pricing before you start.
+Install dependencies:
 
-Start OpenCode server:
 ```bash
-opencode serve [--print-logs]
+bun install
 ```
 
-Then, run the CLI:
+Run a full benchmark with explicit solver and judge models:
+
 ```bash
-bun runner/index.ts --model openai/gpt-5.3-codex --solver-model openai/gpt-4.1-mini
+bun runner/index.ts --solver-model "<solver-model>" --model "<judge-model>"
 ```
 
-To run specific eval, do:
+Run a focused subset:
+
 ```bash
-bun runner/index.ts --pattern "evals/animation/01*" --model "openai/gpt-5.3-codex" --solver-model "openai/gpt-5.3-codex"
+bun runner/index.ts --pattern "evals/animation/01*" --solver-model "<solver-model>" --model "<judge-model>"
 ```
 
 ## What this repository includes
 
 - evals under `evals/<category>/<eval-id>/`
 
-Each eval is expected to include:
+Each eval includes:
+
 - `prompt.md`
 - `requirements.yaml`
-- `app/` (baseline source context used to generate benchmark output)
-- `reference/` (judge reference context)
+- `app/` baseline input files for solver stage
+- `reference/` reference files for judge context and oracle mode
 
 ## How evaluation works
 
-For each eval:
-1. load `app/**` as baseline input
-2. run the eval prompt on that baseline to generate output to benchmark
-3. evaluate generated output with LLM judging when `--model` is provided
-4. compute weighted requirement score
+For each discovered eval:
+
+1. Load `app/`, `reference/`, `requirements.yaml`, and `prompt.md`.
+2. Run solver stage (`--solver-model`), or materialize `reference/` files if solver model is omitted.
+3. Run judge stage when `--model` is provided.
+4. Write artifacts under `results/<run-id>/`.
 
 ## Common commands
-
-Use these commands for the most common local workflows:
 
 ```bash
 bun runner/index.ts
 bun runner/index.ts --debug
+bun runner/index.ts --pattern "evals/<category>/<eval-id>/**" --debug --fail-fast
 bun lint
 ```
 
 ## Documentation
 
-All detailed guides live in [docs](./docs).
+Detailed guides live in [docs](./docs), and methodology/scoring details are in [paper/benchmark-methodology-whitepaper.tex](./paper/benchmark-methodology-whitepaper.tex).
 
 ## Contributing
 
-See `CONTRIBUTING.md` for branch naming, commit format, validation expectations, and PR workflow.
+See `AGENTS.md` for branch naming, commit format, validation expectations, and PR workflow.
 
 ## License
 
