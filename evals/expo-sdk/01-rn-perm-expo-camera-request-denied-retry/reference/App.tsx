@@ -15,12 +15,12 @@ export default function App() {
   const [permission, requestPermission, getPermission] = useCameraPermissions()
   const [requesting, setRequesting] = useState(false)
 
-  const flowState = (): FlowState => {
+  const flowState = ((): FlowState => {
     if (requesting) return 'requesting'
     if (!permission || permission.status === 'undetermined') return 'idle'
     if (permission.granted) return 'granted'
     return permission.canAskAgain ? 'denied' : 'blocked'
-  }
+  })()
 
   const refreshPermission = async () => {
     return getPermission()
