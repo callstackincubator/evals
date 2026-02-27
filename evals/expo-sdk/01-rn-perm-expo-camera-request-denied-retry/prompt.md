@@ -1,0 +1,1 @@
+Build a production-ready camera entry flow with expo-camera. Request camera access only when the user initiates it, handle all permission outcomes with clear retry/recovery UX, keep permission state accurate across app lifecycle transitions (including returning from system settings), and render camera preview only when access is currently available

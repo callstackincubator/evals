@@ -1,66 +1,44 @@
-# React Native Evals
+![React Native Evals banner](./assets/banner.jpg)
 
 A benchmark suite for evaluating how coding models solve real React Native tasks.
 
-## Quick start
+## Available Evals
 
-To run and evaluate any model locally, install and configure OpenCode first; the benchmark will use your current OpenCode default model, so check the selected model and pricing before you start.
+Groups map to top-level folders under `evals/`.
 
-Start OpenCode server:
+| Group | Path | Status |
+| --- | --- | --- |
+| animation | `evals/animation` | Active |
+| async-state | `evals/async-state` | Active | 
+| navigation | `evals/navigation` | Active |
+| react-native-apis | `evals/react-native-apis` | WIP |
+| expo-sdk | `evals/expo-sdk` | WIP |
+| nitro-modules | `evals/nitro-modules` | WIP |
+| lists | `evals/lists` | WIP |
 
-```bash
-opencode serve [--print-logs]
-```
+> Want a group that is not listed here? [Open an issue](https://github.com/callstackincubator/evals/issues/new/choose) to request it. Contributions are also welcome.
 
-Then, run the CLI:
-
-```bash
-bun runner/index.ts --model openai/gpt-5.3-codex --solver-model openai/gpt-4.1-mini
-```
-
-To run specific eval, do:
-
-```bash
-bun runner/index.ts --pattern "evals/animation/01*" --model "openai/gpt-5.3-codex" --solver-model "openai/gpt-5.3-codex"
-```
-
-## What this repository includes
-
-- evals under `evals/<category>/<eval-id>/`
-
-Each eval is expected to include:
-
-- `prompt.md`
-- `requirements.yaml`
-- `app/` (baseline source context used to generate benchmark output)
-- `reference/` (judge reference context)
-
-## How evaluation works
-
-For each eval:
-
-1. load `app/**` as baseline input
-2. run the eval prompt on that baseline to generate output to benchmark
-3. evaluate generated output with LLM judging when `--model` is provided
-4. compute weighted requirement score
-
-## Common commands
-
-Use these commands for the most common local workflows:
+## Getting Started
 
 ```bash
-bun runner/index.ts
-bun runner/index.ts --debug
-bun lint
+bun install
+bun runner/run.ts --model openai/gpt-4.1-mini --output generated/my-generated
+bun runner/judge.ts --model openai/gpt-5.3-codex --input generated/my-generated
 ```
 
-## Documentation
+For full command reference and workflows, see [docs](./docs) and [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-All detailed guides live in [docs](./docs).
+## Whitepaper
 
-## Contributing
+Methodology and scoring details are documented in the [benchmark methodology whitepaper](./paper/benchmark-methodology-whitepaper.tex).
 
-See `CONTRIBUTING.md` for branch naming, commit format, validation expectations, and PR workflow.
+The benchmark evaluates model-generated React Native implementations using requirement-based assessment. Each eval specifies a fixed task context and a set of explicit, judgeable requirements. Model outputs are judged against these requirements using file-level evidence, and per-eval scores are computed from requirement outcomes with optional weighting. Aggregate run metrics summarize performance across evals under a consistent evaluation protocol.
+
+## Requests And Contributions
+
+If you want to request new features to be evaluated, [open an issue](https://github.com/callstackincubator/evals/issues/new/choose). We are open to covering the most popular ecosystem libraries and will continue expanding coverage.
+
+Contributions are welcome. Start with [CONTRIBUTING.md](./CONTRIBUTING.md) and [`AGENTS.md`](./AGENTS.md).
 
 ## License
 

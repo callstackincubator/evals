@@ -1,50 +1,43 @@
 # Adding new category
 
-This document defines the research and design workflow for category-level eval authoring.
+This document defines the category-level authoring workflow.
 
 ## Workflow
 
-1. Read official docs first.
+1. Define category scope and baseline libraries.
+- Identify the API surface that the category should exercise.
+- Normalize library naming used in prompts, requirements, and README.
 
-- Capture core APIs, recommended patterns, and explicit caveats.
-- Save source links used for design decisions.
+2. Read official docs and recent release notes.
+- Capture source links for each core library.
+- Record dated API shifts that should become requirement constraints.
 
-2. Run a recent API change audit.
+3. Build category best-practice inventory.
+- Convert source guidance into concrete implementation expectations.
+- Keep entries deterministic and file-verifiable where possible.
 
-- Review official releases/changelogs for each core library in the category.
-- Record dated changes: new preferred APIs, deprecated/removed APIs, and behavior caveats.
-- Convert those findings into requirement policy (`MUST` and evidence-backed `MUST NOT`).
-
-3. Derive prompts from best practices.
-
-- Write prompts as normal implementation asks.
+4. Derive prompts from best practices.
+- Write prompts as forward-looking implementation asks.
 - Avoid bug-report framing.
-- Map each prompt to one primary best-practice target.
+- Map each prompt to one or more best-practice targets.
 
-4. Define deterministic requirements.
-
-- Express requirements as file-verifiable implementation checks.
+5. Define deterministic requirements.
+- Express requirements as file-verifiable checks.
 - Keep requirements atomic and concrete.
+- Use evidence-backed `MUST NOT` only for deprecations/removals/correctness caveats.
 
-5. Validate coverage with issue intelligence (secondary input).
+6. Validate diversity and overlap.
+- Keep shared subgroup requirements small.
+- Ensure each eval has implementation-specific constraints.
 
-- Review recurring GitHub issues/discussions for setup, API misuse, performance, platform parity, edge cases, and tooling.
-- Use issue clusters to test robustness coverage, not to define prompt wording.
+## Required category README artifact
 
-## Required research artifact
+Every new category should include `evals/<category>/README.md` with exactly:
 
-Every new category should include a research note in the category root (for example `evals/navigation/README.md`) that includes:
+- `category overview`
+- `library baseline and naming`
+- `best practices`
+  - official best-practice sources
+  - best-practice inventory
 
-- Official docs links used for eval design
-- Explicit best-practice inventory (with source links)
-- Issue links grouped by pain-point tags (`setup`, `API misuse`, `performance`, `platform parity`, `edge case`, `tooling`) used only to validate robustness coverage
-- Traceability from each task to at least one best-practice source
-
-## Similarity budget for technical eval sets
-
-To avoid low-signal duplicates in technical subgroups:
-
-1. Keep shared subgroup requirements to at most 2 IDs across sibling evals.
-2. Keep at least 3 implementation-specific requirements per eval that differ across siblings.
-3. Measure pairwise requirement ID overlap before finalizing the category.
-4. If overlap exceeds budget, split generic checks into subgroup baseline checks and eval-specific API flow checks.
+Keep category READMEs focused on those sections only.

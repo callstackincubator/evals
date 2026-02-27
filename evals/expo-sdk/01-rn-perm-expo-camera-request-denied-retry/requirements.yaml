@@ -1,0 +1,19 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: permission-request-on-demand
+    description: Must call `requestPermission` from `useCameraPermissions()` only from a user-triggered action (for example `Pressable.onPress`), not on initial mount.
+  - id: denied-flow-retry-and-settings
+    description: Must support denied and blocked flows by retrying with `requestPermission` and using `Linking.openSettings()` when `permission.canAskAgain` is false.
+  - id: lifecycle-permission-refresh
+    description: Must refresh permission state on app foreground with `AppState.addEventListener('change', ...)` and a permission refresh call (`getPermission` / `getCameraPermissionsAsync`).
+  - id: degraded-path-no-crash
+    description: Must render a deterministic fallback `View`/`Text` path when permission is unavailable instead of rendering `CameraView`.
+  - id: single-flight-permission-request
+    description: Must prevent concurrent permission requests by guarding `requestPermission` with an in-flight state (for example `requesting`).
+  - id: expo-camera-grant-gated-preview
+    description: Must render `CameraView` only when `permission.granted` is true, with deterministic denied/blocked fallback UI otherwise.
+  - id: implementation-expo-camera-cameraview-api
+    description: Must implement preview with `CameraView` and permission handling with `expo-camera` APIs used by the sample (`useCameraPermissions` with request/get methods, or `getCameraPermissionsAsync`/`requestCameraPermissionsAsync`).
