@@ -42,7 +42,7 @@ const solverOutputSchema = z.object({
   files: z
     .array(
       z.object({
-        path: z.string(),
+        path: z.string().min(1),
         content: z.string(),
       })
     )

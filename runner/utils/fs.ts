@@ -10,7 +10,10 @@ export type LoadedFile = {
 }
 
 export async function hashDirectory(absolutePath: string): Promise<string> {
-  const files = await readdir(absolutePath)
+  const entries = await readdir(absolutePath, { withFileTypes: true })
+  const files = entries.filter((entry) => entry.isFile()).map((entry) => entry.name)
+  files.sort()
+
   const fileContents = await Promise.all(
     files.map(async (file) => {
       const filePath = path.join(absolutePath, file)

@@ -58,7 +58,7 @@ export async function runLlmJudgeStage(
 
   const requirements = await loadRequirements(rawRequirements)
 
-  const prompt = buildJudgePrompt(requirements, files)
+  const prompt = buildJudgePrompt(requirements, files, referenceFiles)
 
   const results = await runJudgeCall(
     prompt,

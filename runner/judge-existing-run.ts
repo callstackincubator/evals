@@ -338,7 +338,7 @@ async function main() {
 
         const [generatedFiles, referenceFiles, requirements] = await Promise.all([
           loadFiles(generatedEvalDirectory),
-          loadFiles(path.join(evalItem.evalPath, 'reference')),
+          loadFiles(path.join(evalItem.evalPath, 'reference')).catch(() => []),
           readFile(path.join(evalItem.evalPath, 'requirements.yaml'), 'utf-8'),
         ])
 

@@ -74,11 +74,12 @@ const RESULTS_DIR = path.join(process.cwd(), 'results')
 const DEFAULT_GENERATOR_MODEL = 'llamacpp/GLM-4.7-Flash-GGUF:Q4_K_M'
 const DEFAULT_JUDGE_MODEL = OPENAI_CODEX_53_MODEL
 const MAX_LOG_LINES = 600
+const LOCAL_XDG_ROOT = path.join(process.cwd(), '.opencode-home')
 const LOCAL_XDG_ENV: Record<string, string> = {
-  XDG_CONFIG_HOME: '/home/lesio/evals/.opencode-home/.config',
-  XDG_DATA_HOME: '/home/lesio/evals/.opencode-home/.local/share',
-  XDG_CACHE_HOME: '/home/lesio/evals/.opencode-home/.cache',
-  XDG_STATE_HOME: '/home/lesio/evals/.opencode-home/.local/state',
+  XDG_CONFIG_HOME: path.join(LOCAL_XDG_ROOT, '.config'),
+  XDG_DATA_HOME: path.join(LOCAL_XDG_ROOT, '.local', 'share'),
+  XDG_CACHE_HOME: path.join(LOCAL_XDG_ROOT, '.cache'),
+  XDG_STATE_HOME: path.join(LOCAL_XDG_ROOT, '.local', 'state'),
 }
 
 function getOpenCodeEnvOverrides(): Record<string, string> {
