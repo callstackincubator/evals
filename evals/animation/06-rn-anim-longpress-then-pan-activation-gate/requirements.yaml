@@ -8,6 +8,6 @@ requirements:
   - id: implementation-rngh-longpress-pan-gating-contract
     description: Must implement gating in pan callbacks by checking long-press activation state before applying translation updates, and MUST NOT use legacy `useAnimatedGestureHandler`.
   - id: drag-limit-clamp-usage
-    description: `Gesture.Pan().onUpdate(...)` must clamp horizontal translation using the existing `DRAG_LIMIT` constant (bounded to `-DRAG_LIMIT` and `DRAG_LIMIT`) before assigning `translateX`.
+    description: '`Gesture.Pan().onUpdate(...)` must clamp horizontal translation using the existing `DRAG_LIMIT` constant (bounded to `-DRAG_LIMIT` and `DRAG_LIMIT`) before assigning `translateX`.'
   - id: visual-activation-feedback-card-border
     description: Must drive card style from a Reanimated shared value using `useAnimatedStyle`.
