@@ -8,20 +8,15 @@ import {
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-const PRODUCTS = [
-  { id: '42', title: 'Product 42' },
-  { id: '84', title: 'Product 84' },
-] as const
+const PRODUCT = { id: '42', title: 'Product 42' } as const
 
 function ProductsScreen() {
   const navigation = useNavigation()
 
   const handleNavigateToDetails = () => {
-    const selectedProduct = PRODUCTS[0]
-
     navigation.navigate('ProductDetails', {
-      productId: selectedProduct.id,
-      title: selectedProduct.title,
+      productId: PRODUCT.id,
+      title: PRODUCT.title,
     })
   }
   const handleNavigateToMissingProduct = () => {

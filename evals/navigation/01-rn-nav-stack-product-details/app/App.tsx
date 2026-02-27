@@ -4,10 +4,7 @@ import { createStaticNavigation, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-const PRODUCTS = [
-  { id: '42', title: 'Product 42' },
-  { id: '84', title: 'Product 84' },
-] as const
+const PRODUCT = { id: '42', title: 'Product 42' } as const
 
 function ProductsScreen() {
   const handleNavigateToDetails = () => {}
@@ -16,7 +13,6 @@ function ProductsScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Products</Text>
-      <Text>{`Items: ${PRODUCTS.map((product) => product.title).join(', ')}`}</Text>
       <Button title="Open" onPress={handleNavigateToDetails} />
       <Button
         title="Open Missing Product"
