@@ -4,8 +4,10 @@ inputs:
     - app/App.tsx
 requirements:
   - id: modal-compose-route
-    description: Must configure compose as a modal presentation route in a stack navigator.
+    description: Must create a route in the stack and present it as a modal screen (for example via native-stack `presentation` modal option).
   - id: dismiss-on-cancel
-    description: Must dismiss the modal to list context on cancel.
+    description: Cancel action in compose must dismiss back to notes (for example with `navigation.goBack()`).
   - id: dismiss-on-save
-    description: Must dismiss the modal to list context on save.
+    description: Save action in compose must add the drafted note to shared notes state/context and then dismiss back to notes.
+  - id: static-api-navigation-construction
+    description: Must construct navigation with React Navigation static API and render it via `createStaticNavigation(...)`.

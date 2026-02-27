@@ -1,47 +1,52 @@
+import React from 'react'
 import { createStaticNavigation } from '@react-navigation/native'
+import type {
+  StaticParamList,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Button, StyleSheet, Text, View } from 'react-native'
+import { Button, StyleSheet, View } from 'react-native'
 
-const SEED_ITEMS = ['all', 'mentions', 'unread']
+const NOTIFICATIONS = [
+  { id: 'n1', text: 'Welcome to the app', mentions: false, unread: false },
+  { id: 'n2', text: '@you commented on a post', mentions: true, unread: true },
+  { id: 'n3', text: 'Build finished successfully', mentions: false, unread: true },
+  { id: 'n4', text: '@you were assigned a task', mentions: true, unread: false },
+] as const
 
-async function resolveFilterParamAction() {
-  // No-op
-  return 'pending'
-}
+function HomeScreen() {
+  const openNotificationsDefault = () => {}
+  const openNotificationsMentions = () => {}
+  const openNotificationsUnread = () => {}
 
-function NotificationsHomeScreen() {
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>NotificationsHome</Text>
-      <Text style={styles.copy}>
-        Filter options are ready.
-      </Text>
-      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
+    <View style={styles.container}>
+      <Button title='Open' onPress={openNotificationsDefault} />
       <Button
-        title="Open"
-        onPress={() => resolveFilterParamAction()}
+        title='Open notifications (mentions)'
+        onPress={openNotificationsMentions}
+      />
+      <Button
+        title='Open notifications (unread)'
+        onPress={openNotificationsUnread}
       />
     </View>
   )
 }
 
-function NotificationsScreen() {
-  return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Notifications</Text>
-      <Text style={styles.copy}>
-        More details appear here.
-      </Text>
-    </View>
-  )
-}
-
 const Stack = createNativeStackNavigator({
+  id: 'root',
   screens: {
-    NotificationsHome: NotificationsHomeScreen,
-    Notifications: NotificationsScreen,
+    Home: HomeScreen,
   },
 })
+
+type RootStackParamList = StaticParamList<typeof Stack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
 
 const Navigation = createStaticNavigation(Stack)
 
@@ -50,20 +55,14 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  copy: {
-    color: '#6b7280',
-    textAlign: 'center',
-  },
-  screen: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
+  container: {
     flex: 1,
+    gap: 12,
+    alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
-    rowGap: 10,
+    padding: 24,
   },
   title: {
-    color: '#111827',
     fontSize: 20,
     fontWeight: '600',
   },

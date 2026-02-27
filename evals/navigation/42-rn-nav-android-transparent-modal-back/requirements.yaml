@@ -1,9 +1,0 @@
-version: 1
-inputs:
-  files:
-    - app/App.tsx
-requirements:
-  - id: transparent-modal-presentation
-    description: Must configure a transparent-style modal route in stack navigation.
-  - id: android-back-dismisses-modal
-    description: Must dismiss the transparent modal on Android back actions instead of leaving the modal route active.

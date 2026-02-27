@@ -8,15 +8,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
 function HomeScreen() {
-  const navigation = useNavigation()
-
-  function handleOpenProfile() {
-    navigation.navigate('Profile', { userId: '123' })
-  }
-
   return (
     <View style={styles.container}>
-      <Button title="Open" onPress={handleOpenProfile} />
+       <Text style={styles.title}>Home</Text>
     </View>
   )
 }

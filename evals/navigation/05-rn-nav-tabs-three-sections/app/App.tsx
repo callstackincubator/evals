@@ -1,18 +1,9 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { createStaticNavigation } from '@react-navigation/native'
-import { Button, StyleSheet, Text, View } from 'react-native'
-
-async function selectTabAction() {
-  // No-op
-  return 'pending'
-}
+import { StyleSheet, Text, View } from 'react-native'
 
 function HomeScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Home</Text>
-      <Text style={styles.copy}>Tab routes are available.</Text>
-      <Button title="Home" onPress={() => selectTabAction()} />
     </View>
   )
 }
@@ -21,7 +12,6 @@ function SearchScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Search</Text>
-      <Text style={styles.copy}>Tab content</Text>
     </View>
   )
 }
@@ -30,23 +20,12 @@ function ProfileScreen() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Profile</Text>
-      <Text style={styles.copy}>Tab content</Text>
     </View>
   )
 }
 
-const Tabs = createBottomTabNavigator({
-  screens: {
-    Home: HomeScreen,
-    Search: SearchScreen,
-    Profile: ProfileScreen,
-  },
-})
-
-const Navigation = createStaticNavigation(Tabs)
-
 export default function App() {
-  return <Navigation />
+  return <View />
 }
 
 const styles = StyleSheet.create({

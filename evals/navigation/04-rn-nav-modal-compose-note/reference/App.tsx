@@ -85,6 +85,7 @@ function ComposeScreen() {
 }
 
 const Stack = createNativeStackNavigator({
+  id: 'root',
   screens: {
     Notes: NotesScreen,
     Compose: ComposeScreen,

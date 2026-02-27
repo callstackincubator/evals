@@ -3,7 +3,5 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: login-to-home-transition
-    description: Must transition from login to home with a navigation action that removes login from back history.
-  - id: auth-state-driven-ui
-    description: Must include explicit auth state logic controlling access to authenticated routes.
+  - id: auth-flow-uses-static-if-guards
+    description: Must gate auth routes in the static navigator config using screen-level `if` conditions.

@@ -9,6 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
 const HomeStack = createNativeStackNavigator({
+  id: 'home-stack',
   screens: {
     Home: HomeScreen,
     ArticleDetails: ArticleDetailsScreen,
@@ -16,8 +17,12 @@ const HomeStack = createNativeStackNavigator({
 })
 
 const TabNavigator = createBottomTabNavigator({
+  id: 'bottom-tab',
   screens: {
-    HomeTab: { screen: HomeStack, options: { headerShown: false } },
+    HomeTab: { 
+      screen: HomeStack,
+      options: { headerShown: false } 
+    },
     Settings: SettingsScreen,
   },
 })
@@ -71,7 +76,7 @@ function SettingsScreen() {
   )
 }
 
-export default function Navigation06() {
+export default function App() {
   return <Navigation />
 }
 

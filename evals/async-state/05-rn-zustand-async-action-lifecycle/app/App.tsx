@@ -5,7 +5,7 @@ type FeedStatus = 'idle' | 'loading' | 'success' | 'error'
 
 export default function App() {
   const status = 'idle'
-  const items = []
+  const items = [] as string[]
 
   const statusContent = {
     idle: <Text style={styles.meta}>Tap fetch to start.</Text>,

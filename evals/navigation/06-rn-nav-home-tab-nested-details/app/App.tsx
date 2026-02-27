@@ -1,33 +1,30 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { createStaticNavigation } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { createStaticNavigation, StaticScreenProps } from '@react-navigation/native'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-async function openArticleAction() {
-  // No-op
-  return 'pending'
-}
-
 function HomeFeedScreen() {
+  const handleNavigateToArticleDetails = () => {}
+
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>HomeFeed</Text>
       <Text style={styles.copy}>Latest stories</Text>
       <Button
         title="Open"
-        onPress={() => openArticleAction()}
+        onPress={handleNavigateToArticleDetails}
       />
     </View>
   )
 }
 
-function ArticleDetailsScreen() {
+type ArticleDetailsScreenProps = StaticScreenProps<{
+  articleId: string
+}>
+
+function ArticleDetailsScreen({ route }: ArticleDetailsScreenProps) {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>ArticleDetails</Text>
-      <Text style={styles.copy}>
-        More details appear here.
-      </Text>
+      <Text>Article ID: {route.params.articleId}</Text>
     </View>
   )
 }
@@ -41,21 +38,15 @@ function SettingsScreen() {
   )
 }
 
-const HomeStack = createNativeStackNavigator({
+const TabNavigator = createBottomTabNavigator({
+  id: "bottom-tab",
   screens: {
-    HomeFeed: HomeFeedScreen,
-    ArticleDetails: ArticleDetailsScreen,
-  },
-})
-
-const Tabs = createBottomTabNavigator({
-  screens: {
-    HomeTab: HomeStack,
+    HomeTab: HomeFeedScreen,
     Settings: SettingsScreen,
   },
 })
 
-const Navigation = createStaticNavigation(Tabs)
+const Navigation = createStaticNavigation(TabNavigator)
 
 export default function App() {
   return <Navigation />

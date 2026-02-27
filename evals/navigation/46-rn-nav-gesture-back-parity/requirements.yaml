@@ -1,7 +1,0 @@
-version: 1
-inputs:
-  files:
-    - app/App.tsx
-requirements:
-  - id: back-outcome-parity
-    description: Must ensure the leave action from CriticalStep resolves through one deterministic navigation path so iOS gesture back and Android hardware back end in the same visible state.

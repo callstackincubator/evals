@@ -3,7 +3,9 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: article-param-passing
-    description: Must pass articleId params when navigating to ArticleDetails.
-  - id: implementation-nav-home-tab-nested-target-contract
-    description: Must navigate to nested Home-tab detail targets with explicit parent-child screen/params objects in the static API tree and MUST NOT rely on legacy navigationInChildEnabled.
+  - id: home-tab-uses-home-stack-with-initial-home
+    description: Must replace the Home tab screen with a nested Home stack navigator, and configure `Home` as the initial route of that stack.
+  - id: push-article-details-within-home-stack
+    description: Must push `ArticleDetails` from `Home` within the Home stack, passing `articleId` via the params.
+  - id: static-api-navigation-construction
+    description: Must construct navigation with React Navigation static API and render it via `createStaticNavigation(...)`.

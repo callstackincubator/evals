@@ -1,47 +1,44 @@
-import { createStaticNavigation } from '@react-navigation/native'
+import React from 'react'
+import {
+  createStaticNavigation,
+  StaticParamList,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-const SEED_ITEMS = ['Alice', 'Bob']
+const PEOPLE = [
+  { id: 'alice', name: 'Alice' },
+  { id: 'bob', name: 'Bob' },
+] as const
 
-async function resolveHeaderTitleAction() {
-  // No-op
-  return 'pending'
-}
+function HomeScreen() {
+  const openAlice = () => {}
+  const openBob = () => {}
 
-function PeopleScreen() {
   return (
-    <View style={styles.screen}>
+    <View style={styles.container}>
       <Text style={styles.title}>People</Text>
-      <Text style={styles.copy}>
-        Contacts are ready.
-      </Text>
-      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
-      <Button
-        title="Open"
-        onPress={() => resolveHeaderTitleAction()}
-      />
-    </View>
-  )
-}
-
-function PersonDetailsScreen() {
-  return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>PersonDetails</Text>
-      <Text style={styles.copy}>
-        More details appear here.
-      </Text>
+      <Text>{`Items: ${PEOPLE.map((person) => person.name).join(', ')}`}</Text>
+      <Button title='Open Alice' onPress={openAlice} />
+      <Button title='Open Bob' onPress={openBob} />
     </View>
   )
 }
 
 const Stack = createNativeStackNavigator({
+  id: 'root',
   screens: {
-    People: PeopleScreen,
-    PersonDetails: PersonDetailsScreen,
+    Home: HomeScreen,
   },
 })
+
+type RootStackParamList = StaticParamList<typeof Stack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
 
 const Navigation = createStaticNavigation(Stack)
 
@@ -50,21 +47,15 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  copy: {
-    color: '#6b7280',
-    textAlign: 'center',
-  },
-  screen: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
+  container: {
     flex: 1,
+    gap: 12,
+    alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
-    rowGap: 10,
+    padding: 24,
   },
   title: {
-    color: '#111827',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
   },
 })

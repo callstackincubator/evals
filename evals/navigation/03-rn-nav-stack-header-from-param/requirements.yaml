@@ -3,7 +3,11 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: header-title-from-route
-    description: Must set the stack header title from route params on the details screen.
+  - id: details-screen-present
+    description: Must define and register a Details screen route in the stack navigator.
   - id: runtime-header-update
-    description: Must configure header options in screen logic (for example via setOptions in an effect), not as a hardcoded static title.
+    description: Must set the stack header title in screen logic via `setOptions`.
+  - id: header-no-flicker
+    description: Must update header title from `useLayoutEffect` to avoid flicker on initial render.
+  - id: static-api-navigation-construction
+    description: Must construct navigation with React Navigation static API and render it via `createStaticNavigation(...)`.

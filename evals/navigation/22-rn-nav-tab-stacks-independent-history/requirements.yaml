@@ -1,9 +1,0 @@
-version: 1
-inputs:
-  files:
-    - app/App.tsx
-requirements:
-  - id: tab-history-preserved
-    description: Must preserve independent navigation history for tab flows when switching tabs.
-  - id: implementation-nav-per-tab-nested-stack-contract
-    description: Must keep each tab wired to its own nested stack contract so per-tab history remains independent without legacy navigationInChildEnabled behavior.

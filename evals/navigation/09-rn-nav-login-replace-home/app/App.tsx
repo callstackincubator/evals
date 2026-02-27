@@ -1,69 +1,96 @@
-import { createStaticNavigation } from '@react-navigation/native'
+import React, { useContext, useState } from 'react'
+
+import {
+  createStaticNavigation,
+  StaticParamList,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-const SEED_ITEMS = ['signed-out', 'signed-in']
-
-async function completeSignInAction() {
-  // No-op
-  return 'pending'
+type AuthContextValue = {
+  isSignedIn: boolean
+  signIn: () => void
+  signOut: () => void
 }
 
+const AuthContext = React.createContext<AuthContextValue | undefined>(undefined)
+
+const useAuthContext = (): AuthContextValue => {
+  const authContext = useContext(AuthContext)
+
+  if (authContext === undefined) {
+    throw new Error('Auth context not provided')
+  }
+
+  return authContext
+}
+
+const useIsSignedIn = () => {
+  const { isSignedIn } = useAuthContext()
+  return isSignedIn
+}
+
+const useIsSignedOut = () => !useIsSignedIn()
+
 function LoginScreen() {
+  const { signIn } = useAuthContext()
+
   return (
-    <View style={styles.screen}>
+    <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
-      <Text style={styles.copy}>
-        Sign-in screen is ready.
-      </Text>
-      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
-      <Button
-        title="Open"
-        onPress={() => completeSignInAction()}
-      />
+      <Button title="Open" onPress={signIn} />
     </View>
   )
 }
 
 function HomeScreen() {
+  const { signOut } = useAuthContext()
+
   return (
-    <View style={styles.screen}>
+    <View style={styles.container}>
       <Text style={styles.title}>Home</Text>
-      <Text style={styles.copy}>
-        More details appear here.
-      </Text>
+      <Button title="Sign out" onPress={signOut} />
     </View>
   )
 }
 
 const Stack = createNativeStackNavigator({
   screens: {
-    Login: LoginScreen,
     Home: HomeScreen,
   },
 })
 
+type StackParamList = StaticParamList<typeof Stack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends StackParamList {}
+  }
+}
+
 const Navigation = createStaticNavigation(Stack)
 
 export default function App() {
-  return <Navigation />
+  const [isSignedIn, setIsSignedIn] = useState(false)
+
+  const signIn = () => setIsSignedIn(true)
+  const signOut = () => setIsSignedIn(false)
+
+  return (
+    <AuthContext value={{ isSignedIn, signIn, signOut }}>
+      <Navigation />
+    </AuthContext>
+  )
 }
 
 const styles = StyleSheet.create({
-  copy: {
-    color: '#6b7280',
-    textAlign: 'center',
-  },
-  screen: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
+  container: {
     flex: 1,
+    alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
-    rowGap: 10,
+    gap: 12,
   },
   title: {
-    color: '#111827',
     fontSize: 20,
     fontWeight: '600',
   },

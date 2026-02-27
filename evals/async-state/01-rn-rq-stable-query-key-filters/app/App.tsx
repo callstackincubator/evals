@@ -7,12 +7,19 @@ const FILTER_OPTIONS = [
   'laptops',
 ] as const
 
+type Product = {
+  id: number
+  title: string
+  price: number
+}
+
 function TransactionsScreen() {
   const [filter, setFilter] = useState<typeof FILTER_OPTIONS[number]>('all')
   
   // Update these with real data and logic in later steps
   const page = 1
   const totalPages = 1
+  const products = [] as Product[]
 
   return (
     <View style={styles.screen}>
@@ -43,14 +50,13 @@ function TransactionsScreen() {
       </View>
 
       <FlatList
-        data={[]}
-        keyExtractor={(item) => item.id}
+        data={products}
         ListEmptyComponent={<Text style={styles.meta}>No rows yet.</Text>}
         renderItem={({ item }) => {
           return (
             <View style={styles.row}>
               <Text style={styles.rowTitle}>{item.title}</Text>
-              <Text style={styles.rowAmount}>${item.amount ?? '-'}</Text>
+              <Text style={styles.rowAmount}>${item.price ?? '-'}</Text>
             </View>
           )
         }}

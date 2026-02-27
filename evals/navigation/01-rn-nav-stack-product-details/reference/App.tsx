@@ -8,13 +8,20 @@ import {
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
+const PRODUCTS = [
+  { id: '42', title: 'Product 42' },
+  { id: '84', title: 'Product 84' },
+] as const
+
 function ProductsScreen() {
   const navigation = useNavigation()
 
   const handleNavigateToDetails = () => {
+    const selectedProduct = PRODUCTS[0]
+
     navigation.navigate('ProductDetails', {
-      productId: '42',
-      title: 'Product 42',
+      productId: selectedProduct.id,
+      title: selectedProduct.title,
     })
   }
   const handleNavigateToMissingProduct = () => {
@@ -55,6 +62,7 @@ function ProductDetailsScreen({ route }: ProductDetailsScreenProps) {
 }
 
 const Stack = createNativeStackNavigator({
+  id: 'root',
   screens: {
     Products: ProductsScreen,
     ProductDetails: ProductDetailsScreen,

@@ -1,0 +1,9 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: header-options-set-in-uselayouteffect
+    description: Must configure header options from screen logic using `useLayoutEffect` (for example to set `headerRight`).
+  - id: header-right-updates-screen-state
+    description: Header action wired in `headerRight` must update component state, and that updated state must be reflected in screen UI.
