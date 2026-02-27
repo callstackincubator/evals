@@ -5,9 +5,9 @@ inputs:
 requirements:
   - id: details-screen-present
     description: Must define and register a Details screen route in the stack navigator.
-  - id: runtime-header-update
-    description: Must set the stack header title in screen logic via `setOptions`.
-  - id: header-no-flicker
+  - id: implementation-header-no-flicker
     description: Must update header title from `useLayoutEffect` to avoid flicker on initial render.
-  - id: static-api-navigation-construction
+  - id: implementation-static-api-navigation-construction
     description: Must construct navigation with React Navigation static API and render it via `createStaticNavigation(...)`.
+  - id: implementation-runtime-header-update
+    description: Must set the stack header title in screen logic via `setOptions`.
