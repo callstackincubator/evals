@@ -1,9 +1,13 @@
-import { readdir, readFile } from 'node:fs/promises'
+import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises'
 import net from 'node:net'
+import { tmpdir } from 'node:os'
 import path from 'node:path'
 
+import { runJudgeCall } from './evaluators/llm/judge-client'
+import { runSolver } from './solver/index'
 import { discoverEvals } from './utils/discovery'
-import { sanitizeSegment } from './utils/fs'
+import { sanitizeSegment, type LoadedFile } from './utils/fs'
+import { OPENAI_CODEX_53_MODEL, isOpenAiModel, normalizeModelId } from './utils/model'
 
 type RunMode = 'full' | 'generate_only' | 'judge_latest'
 
@@ -59,18 +63,30 @@ type RunRequest = {
   port?: number
 }
 
+type LlmSmokeTestRequest = {
+  kind?: 'judge' | 'solver'
+  model?: string
+  timeout?: number
+  port?: number
+}
+
 const RESULTS_DIR = path.join(process.cwd(), 'results')
-const DEFAULT_MODEL = 'llamacpp/GLM-4.7-Flash-GGUF:Q4_K_M'
+const DEFAULT_GENERATOR_MODEL = 'llamacpp/GLM-4.7-Flash-GGUF:Q4_K_M'
+const DEFAULT_JUDGE_MODEL = OPENAI_CODEX_53_MODEL
 const MAX_LOG_LINES = 600
-const XDG_ENV = {
+const LOCAL_XDG_ENV: Record<string, string> = {
   XDG_CONFIG_HOME: '/home/lesio/evals/.opencode-home/.config',
   XDG_DATA_HOME: '/home/lesio/evals/.opencode-home/.local/share',
   XDG_CACHE_HOME: '/home/lesio/evals/.opencode-home/.cache',
   XDG_STATE_HOME: '/home/lesio/evals/.opencode-home/.local/state',
 }
 
-function isOpenAiModel(model: string) {
-  return model.trim().toLowerCase().startsWith('openai/')
+function getOpenCodeEnvOverrides(): Record<string, string> {
+  if (process.env.BENCH_UI_USE_LOCAL_OPENCODE_HOME !== '1') {
+    return {}
+  }
+
+  return LOCAL_XDG_ENV
 }
 
 function runUsesOpenAiModels(mode: RunMode, judgeModel: string, generatorModel: string) {
@@ -84,11 +100,13 @@ function runUsesOpenAiModels(mode: RunMode, judgeModel: string, generatorModel: 
 }
 
 function buildSpawnEnvForRun(mode: RunMode, judgeModel: string, generatorModel: string) {
+  const inheritedEnv = Object.fromEntries(
+    Object.entries(process.env).filter(([, value]) => typeof value === 'string')
+  ) as Record<string, string>
+
   const env: Record<string, string> = {
-    ...Object.fromEntries(
-      Object.entries(process.env).filter(([, value]) => typeof value === 'string')
-    ),
-    ...XDG_ENV,
+    ...inheritedEnv,
+    ...getOpenCodeEnvOverrides(),
   }
 
   let usedOpenApiKeyAlias = false
@@ -107,6 +125,8 @@ function buildSpawnEnvForRun(mode: RunMode, judgeModel: string, generatorModel: 
 }
 
 let activeRun: ActiveRunState | null = null
+let llmSmokeTestRunning = false
+let llmSmokeTestPort: number | null = null
 let lastFinishedRun: {
   id: string
   mode: RunMode
@@ -358,13 +378,184 @@ async function chooseAvailablePort(preferredPort: number, attempts = 20) {
   )
 }
 
+function applyInProcessLlmTestEnvironment(model: string) {
+  for (const [key, value] of Object.entries(getOpenCodeEnvOverrides())) {
+    process.env[key] = value
+  }
+
+  if (isOpenAiModel(model) && !process.env.OPENAI_API_KEY && process.env.OPEN_API_KEY) {
+    process.env.OPENAI_API_KEY = process.env.OPEN_API_KEY
+  }
+
+  if (isOpenAiModel(model) && !process.env.OPENAI_API_KEY) {
+    throw new Error(
+      'OPENAI_API_KEY is required for openai/* models. Set OPENAI_API_KEY before starting the Bench UI (OPEN_API_KEY is also accepted as a compatibility alias).'
+    )
+  }
+}
+
+async function resolveLlmSmokeTestPort(preferredPort: number) {
+  if (llmSmokeTestPort !== null) {
+    return llmSmokeTestPort
+  }
+
+  llmSmokeTestPort = await chooseAvailablePort(preferredPort)
+  return llmSmokeTestPort
+}
+
+function buildJudgeSmokeTestPrompt() {
+  return `
+Evaluate this React Native eval implementation against the declared requirements.
+
+Rules:
+- Use only the provided files as evidence.
+- Return one result per declared requirement id.
+- Mark passed=false if evidence is missing or contradictory.
+- Keep reasons concise and concrete.
+
+Declared requirements:
+- exports-app: The file exports a default function named App.
+
+Files to evaluate:
+
+### FILE: App.tsx
+
+\`\`\`
+export default function App() {
+  return null
+}
+\`\`\`
+`
+}
+
+async function runJudgeLlmSmokeTest(params: {
+  model: string
+  timeout: number
+  port: number
+}) {
+  const response = await runJudgeCall(
+    buildJudgeSmokeTestPrompt(),
+    params.model,
+    params.timeout,
+    params.port
+  )
+
+  return {
+    summary: response.summary ?? null,
+    requirements: response.requirements,
+  }
+}
+
+async function runSolverLlmSmokeTest(params: {
+  model: string
+  timeout: number
+  port: number
+}) {
+  const workingDirectory = await mkdtemp(path.join(tmpdir(), 'evals-ui-solver-smoke-'))
+  const files: LoadedFile[] = [
+    {
+      path: 'App.tsx',
+      absolutePath: path.join(workingDirectory, 'App.tsx'),
+      content: [
+        "import React from 'react'",
+        "import { Text } from 'react-native'",
+        '',
+        'export default function App() {',
+        "  return <Text>before</Text>",
+        '}',
+      ].join('\n'),
+    },
+  ]
+
+  try {
+    const response = await runSolver({
+      prompt: [
+        'Change the text rendered by App.tsx from "before" to "after".',
+        'Return all provided files with your modification applied.',
+      ].join('\n'),
+      files,
+      workingDirectory,
+      model: params.model,
+      timeout: params.timeout,
+      port: params.port,
+    })
+
+    return {
+      summary: response.summary ?? null,
+      files: response.files,
+    }
+  } finally {
+    await rm(workingDirectory, { recursive: true, force: true })
+  }
+}
+
+async function runLlmSmokeTestRequest(body: LlmSmokeTestRequest) {
+  const kind = body.kind
+  if (kind !== 'judge' && kind !== 'solver') {
+    throw new Error('kind must be "judge" or "solver"')
+  }
+
+  const normalizedModel = normalizeModelId(body.model)
+  if (!normalizedModel) {
+    throw new Error('model is required')
+  }
+
+  const timeout = normalizeNumber(body.timeout, 30000, 1000, 10 * 60 * 1000)
+  const requestedPort = normalizeNumber(body.port, 4103, 1, 65535)
+
+  applyInProcessLlmTestEnvironment(normalizedModel)
+  const runOnce = async () => {
+    const opencodePort = await resolveLlmSmokeTestPort(requestedPort)
+
+    const response =
+      kind === 'judge'
+        ? await runJudgeLlmSmokeTest({
+            model: normalizedModel,
+            timeout,
+            port: opencodePort,
+          })
+        : await runSolverLlmSmokeTest({
+            model: normalizedModel,
+            timeout,
+            port: opencodePort,
+          })
+
+    return {
+      ok: true,
+      kind,
+      model: normalizedModel,
+      requestedPort,
+      opencodePort,
+      timeout,
+      response,
+    }
+  }
+
+  try {
+    return await runOnce()
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    llmSmokeTestPort = null
+
+    const shouldRetry =
+      /failed to start server on port/i.test(message) ||
+      /address already in use/i.test(message)
+
+    if (!shouldRetry) {
+      throw error
+    }
+
+    return await runOnce()
+  }
+}
+
 function buildCommandFromRequest(
   request: RunRequest,
   allRuns: ResultsRunInfo[]
 ) {
   const mode = request.mode
-  const judgeModel = request.judgeModel.trim()
-  const generatorModel = request.generatorModel.trim()
+  const judgeModel = normalizeModelId(request.judgeModel) ?? ''
+  const generatorModel = normalizeModelId(request.generatorModel) ?? ''
   const selectedSourceRun = request.sourceRun?.trim() || ''
   const selectedResumeRun = request.resumeRun?.trim() || ''
   const pattern = (request.pattern?.trim() || 'evals/**/*')
@@ -595,9 +786,10 @@ async function getUiState() {
     cwd: process.cwd(),
     defaults: {
       judgeModel:
-        (latestSummaryRun?.summary?.judgeModel ?? DEFAULT_MODEL) || DEFAULT_MODEL,
+        normalizeModelId(latestSummaryRun?.summary?.judgeModel) || DEFAULT_JUDGE_MODEL,
       generatorModel:
-        (latestSummaryRun?.summary?.solverModel ?? DEFAULT_MODEL) || DEFAULT_MODEL,
+        normalizeModelId(latestSummaryRun?.summary?.solverModel) ||
+        DEFAULT_GENERATOR_MODEL,
       pattern: latestSummaryRun?.summary?.pattern ?? 'evals/**/*',
       concurrency: 2,
       timeout: 120000,
@@ -728,6 +920,14 @@ function htmlPage() {
     .btn-danger {
       background: linear-gradient(180deg, rgba(255, 141, 141, 0.2), rgba(255, 141, 141, 0.12));
       border-color: rgba(255, 141, 141, 0.35);
+    }
+    .btn-secondary {
+      background: linear-gradient(180deg, rgba(123, 199, 255, 0.16), rgba(123, 199, 255, 0.09));
+      border-color: rgba(123, 199, 255, 0.28);
+    }
+    .llm-test-output {
+      max-height: 220px;
+      overflow: auto;
     }
     .status {
       display: grid;
@@ -994,8 +1194,12 @@ function htmlPage() {
         <div class="btns">
           <button id="runBtn" class="btn-primary">Run</button>
           <button id="stopBtn" class="btn-danger">Stop</button>
+          <button id="testJudgeBtn" class="btn-secondary">Test Judge LLM</button>
+          <button id="testSolverBtn" class="btn-secondary">Test Solver LLM</button>
           <span class="subtle" id="runMsg">Idle</span>
         </div>
+        <div class="subtle" id="llmTestMsg">LLM smoke tests use tiny synthetic prompts and return JSON responses.</div>
+        <div id="llmTestOutput" class="code llm-test-output">No LLM smoke test response yet.</div>
       </div>
 
       <h2>Current Status</h2>
@@ -1058,7 +1262,11 @@ function htmlPage() {
       port: document.getElementById('port'),
       runBtn: document.getElementById('runBtn'),
       stopBtn: document.getElementById('stopBtn'),
+      testJudgeBtn: document.getElementById('testJudgeBtn'),
+      testSolverBtn: document.getElementById('testSolverBtn'),
       runMsg: document.getElementById('runMsg'),
+      llmTestMsg: document.getElementById('llmTestMsg'),
+      llmTestOutput: document.getElementById('llmTestOutput'),
       statusPill: document.getElementById('statusPill'),
       progressLabel: document.getElementById('progressLabel'),
       progressEtaLabel: document.getElementById('progressEtaLabel'),
@@ -1073,6 +1281,7 @@ function htmlPage() {
 
     let latestState = null;
     let pollId = null;
+    let llmTestBusy = false;
     let judgePreviewReqSeq = 0;
     let lastJudgePreviewKey = null;
     let pendingJudgePreviewKey = null;
@@ -1089,6 +1298,14 @@ function htmlPage() {
     function shellQuote(value) {
       if (/^[a-zA-Z0-9_./:-]+$/.test(value)) return value;
       return "'" + String(value).replace(/'/g, "'\\\\''") + "'";
+    }
+
+    function formatJson(value) {
+      try {
+        return JSON.stringify(value, null, 2);
+      } catch (err) {
+        return String(err && err.message ? err.message : err);
+      }
     }
 
     function optionsSignature(options) {
@@ -1425,6 +1642,8 @@ function htmlPage() {
       const running = Boolean(active);
       el.runBtn.disabled = running;
       el.stopBtn.disabled = !running;
+      el.testJudgeBtn.disabled = running || llmTestBusy;
+      el.testSolverBtn.disabled = running || llmTestBusy;
 
       if (running) {
         el.statusPill.innerHTML = '<span class="dot run"></span><span>running</span>';
@@ -1449,6 +1668,42 @@ function htmlPage() {
       }
       el.logs.scrollTop = el.logs.scrollHeight;
       el.runMsg.textContent = running ? 'Benchmark running...' : 'Idle';
+    }
+
+    async function runLlmSmokeTest(kind) {
+      const isJudge = kind === 'judge';
+      const model = isJudge ? el.judgeModel.value.trim() : el.generatorModel.value.trim();
+      const label = isJudge ? 'judge' : 'solver';
+      llmTestBusy = true;
+      el.testJudgeBtn.disabled = true;
+      el.testSolverBtn.disabled = true;
+      el.llmTestMsg.textContent = 'Running ' + label + ' LLM smoke test...';
+      el.llmTestOutput.textContent = 'Waiting for response...';
+
+      try {
+        const result = await postJson('/api/llm-smoke-test', {
+          kind,
+          model,
+          timeout: Number(el.timeout.value),
+          port: Number(el.port.value),
+        });
+        el.llmTestMsg.textContent =
+          label +
+          ' smoke test ok • model=' +
+          (result.model || model || 'n/a') +
+          ' • opencodePort=' +
+          String(result.opencodePort ?? 'n/a');
+        el.llmTestOutput.textContent = formatJson(result);
+      } catch (err) {
+        const message = err && err.message ? err.message : String(err);
+        el.llmTestMsg.textContent = label + ' smoke test failed';
+        el.llmTestOutput.textContent = message;
+      } finally {
+        llmTestBusy = false;
+        const running = Boolean(latestState && latestState.activeRun);
+        el.testJudgeBtn.disabled = running;
+        el.testSolverBtn.disabled = running;
+      }
     }
 
     async function fetchState() {
@@ -1522,6 +1777,14 @@ function htmlPage() {
       }
     });
 
+    el.testJudgeBtn.addEventListener('click', async () => {
+      await runLlmSmokeTest('judge');
+    });
+
+    el.testSolverBtn.addEventListener('click', async () => {
+      await runLlmSmokeTest('solver');
+    });
+
     pollId = setInterval(refresh, 2000);
     refresh();
   </script>
@@ -1587,6 +1850,35 @@ async function handleRequest(req: Request) {
         { ok: false, error: error instanceof Error ? error.message : String(error) },
         400
       )
+    }
+  }
+
+  if (req.method === 'POST' && url.pathname === '/api/llm-smoke-test') {
+    if (isRunning(activeRun)) {
+      return json(
+        { ok: false, error: 'Cannot run LLM smoke test while a benchmark run is active' },
+        409
+      )
+    }
+
+    if (llmSmokeTestRunning) {
+      return json(
+        { ok: false, error: 'An LLM smoke test is already running' },
+        409
+      )
+    }
+
+    llmSmokeTestRunning = true
+    try {
+      const body = (await req.json()) as LlmSmokeTestRequest
+      return json(await runLlmSmokeTestRequest(body))
+    } catch (error) {
+      return json(
+        { ok: false, error: error instanceof Error ? error.message : String(error) },
+        400
+      )
+    } finally {
+      llmSmokeTestRunning = false
     }
   }
 

@@ -1,24 +1,25 @@
 import { Output, generateText } from 'ai'
 import { createOpencode } from 'ai-sdk-provider-opencode-sdk'
 import { z } from 'zod'
-import { ensureOpencodeServerStarted } from 'runner/utils/opencode'
+import {
+  OPENCODE_NO_TOOLS,
+  ensureOpencodeServerStarted,
+  isRecoverableOpencodeError,
+  restartOpencodeServer,
+} from 'runner/utils/opencode'
+import {
+  JUDGE_JSON_FALLBACK_SYSTEM_PROMPT,
+  JUDGE_OPENCODE_MODEL_SETTINGS,
+  JUDGE_STRUCTURED_OUTPUT_ATTEMPTS,
+  JUDGE_JSON_FALLBACK_ATTEMPTS,
+} from 'runner/deterministic_model_config/judge'
 
-const JSON_FALLBACK_SYSTEM_PROMPT = `
-  Return only valid JSON matching this shape:
-  {
-    "summary": "optional short summary",
-    "requirements": [
-      {
-        "id": "requirement-id",
-        "passed": true,
-        "reason": "short concrete reason",
-        "evidence": ["short file/path or code evidence"],
-        "confidence": 0.8
-      }
-    ]
-  }
-  Do not include markdown fences or extra text.
-`
+const JSON_FALLBACK_SYSTEM_PROMPT = JUDGE_JSON_FALLBACK_SYSTEM_PROMPT
+
+const OPENCODE_MODEL_SETTINGS = {
+  ...JUDGE_OPENCODE_MODEL_SETTINGS,
+  tools: OPENCODE_NO_TOOLS,
+} as const
 
 const structuredOutputSchema = z.object({
   summary: z.string().optional(),
@@ -34,6 +35,17 @@ const structuredOutputSchema = z.object({
 })
 
 export type JudgeOutput = z.infer<typeof structuredOutputSchema>
+
+const STRUCTURED_OUTPUT_ATTEMPTS = JUDGE_STRUCTURED_OUTPUT_ATTEMPTS
+const JSON_FALLBACK_ATTEMPTS = JUDGE_JSON_FALLBACK_ATTEMPTS
+
+function getErrorMessage(error: unknown) {
+  return error instanceof Error ? error.message : String(error)
+}
+
+function isNoOutputGeneratedError(error: unknown) {
+  return /no output generated/i.test(getErrorMessage(error))
+}
 
 function parseJudgeOutputFromText(rawText: string) {
   const normalized = rawText.trim()
@@ -76,47 +88,97 @@ export async function runJudgeCall(
   timeout: number,
   port?: number
 ) {
-  await ensureOpencodeServerStarted({ timeout, port })
+  const runOnce = async () => {
+    await ensureOpencodeServerStarted({ timeout, port })
 
-  const provider = createOpencode({
-    autoStartServer: false,
-    port,
-  })
-
-  const judgeModel = provider(model, { createNewSession: true })
-
-  try {
-    const response = await generateText({
-      model: judgeModel,
-      prompt,
-      abortSignal: AbortSignal.timeout(timeout),
-      output: Output.object({
-        schema: structuredOutputSchema,
-        name: 'eval_requirements_result',
-        description: 'Requirement verdicts for a React Native eval',
-      }),
+    const provider = createOpencode({
+      autoStartServer: false,
+      port,
     })
 
-    return response.output
-  } catch (structuredOutputError) {
-    const { text } = await generateText({
-      model: judgeModel,
-      prompt,
-      system: JSON_FALLBACK_SYSTEM_PROMPT,
-      abortSignal: AbortSignal.timeout(timeout),
-    })
+    const createJudgeModel = () => provider(model, OPENCODE_MODEL_SETTINGS)
 
-    const parsedOutput = parseJudgeOutputFromText(text)
-    if (!parsedOutput.success) {
-      const originalMessage =
-        structuredOutputError instanceof Error
-          ? structuredOutputError.message
-          : String(structuredOutputError)
-      throw new Error(
-        `judge did not return valid requirement output (structured output failed: ${originalMessage})`
-      )
+    let structuredOutputError: unknown = null
+    for (let attempt = 1; attempt <= STRUCTURED_OUTPUT_ATTEMPTS; attempt++) {
+      try {
+        const response = await generateText({
+          model: createJudgeModel(),
+          prompt,
+          abortSignal: AbortSignal.timeout(timeout),
+          output: Output.object({
+            schema: structuredOutputSchema,
+            name: 'eval_requirements_result',
+            description: 'Requirement verdicts for a React Native eval',
+          }),
+        })
+
+        return response.output
+      } catch (error) {
+        structuredOutputError = error
+        const shouldRetry =
+          attempt < STRUCTURED_OUTPUT_ATTEMPTS && isNoOutputGeneratedError(error)
+        if (!shouldRetry) {
+          break
+        }
+      }
     }
 
-    return parsedOutput.data
+    const fallbackFailures: string[] = []
+    for (let attempt = 1; attempt <= JSON_FALLBACK_ATTEMPTS; attempt++) {
+      try {
+        const { text } = await generateText({
+          model: createJudgeModel(),
+          prompt,
+          system: JSON_FALLBACK_SYSTEM_PROMPT,
+          abortSignal: AbortSignal.timeout(timeout),
+        })
+
+        const parsedOutput = parseJudgeOutputFromText(text)
+        if (parsedOutput.success) {
+          return parsedOutput.data
+        }
+
+        const normalizedText = text.trim()
+        fallbackFailures.push(
+          normalizedText.length === 0
+            ? `fallback attempt ${attempt}: no output generated`
+            : `fallback attempt ${attempt}: invalid JSON output`
+        )
+      } catch (error) {
+        fallbackFailures.push(
+          `fallback attempt ${attempt}: ${getErrorMessage(error)}`
+        )
+      }
+    }
+
+    const originalMessage = getErrorMessage(structuredOutputError)
+    const fallbackMessage =
+      fallbackFailures.length > 0
+        ? `; fallback failed: ${fallbackFailures.join('; ')}`
+        : ''
+
+    throw new Error(
+      `judge did not return valid requirement output (structured output failed: ${originalMessage}${fallbackMessage})`
+    )
+  }
+
+  try {
+    return await runOnce()
+  } catch (error) {
+    if (!isRecoverableOpencodeError(error)) {
+      throw error
+    }
+
+    await restartOpencodeServer({ timeout, port })
+
+    try {
+      return await runOnce()
+    } catch (retryError) {
+      const originalMessage = getErrorMessage(error)
+      const retryMessage = getErrorMessage(retryError)
+      throw new Error(
+        `${retryMessage} (after OpenCode server restart; original error: ${originalMessage})`
+      )
+    }
   }
 }

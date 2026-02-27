@@ -10,12 +10,17 @@ import {
 } from './evaluators/llm/output'
 
 import { runLlmJudgeStage } from './evaluators/llm/run'
+import { materializeFiles } from './solver'
 import { runWithConcurrency } from './solver/concurrency'
 import { runSolverStage } from './solver/pipeline'
 import { loadFiles, sanitizeSegment } from './utils/fs'
+import { isLlamacppModel } from './utils/model'
+import { ensureOpencodeServerStarted } from './utils/opencode'
+import { chooseAvailablePort } from './utils/port'
 import { createProgressReporter } from './utils/progress'
 
 const RESULTS_DIR = 'results'
+const GENERATED_ARCHIVE_DIR = path.join('generated', 'full')
 
 function roundTo(value: number, decimals: number) {
   const scale = 10 ** decimals
@@ -35,18 +40,56 @@ function toRelativePath(value: string) {
 */
 async function main() {
   // Parse runtime options and choose which evals to execute.
-  const cliOptions = parseCliArgs()
+  const parsedCliOptions = parseCliArgs()
+  const requestedPort = parsedCliOptions.port ?? 4096
+  const resolvedPort = await chooseAvailablePort(requestedPort)
+  if (resolvedPort !== requestedPort) {
+    console.warn(
+      `requested OpenCode port ${requestedPort} was busy, auto-selected ${resolvedPort}`
+    )
+  }
+  const cliOptions = {
+    ...parsedCliOptions,
+    port: resolvedPort,
+  }
+
+  if (
+    isLlamacppModel(cliOptions.solverModel) &&
+    process.env.EVALS_OPENCODE_USE_USER_XDG !== '0' &&
+    !process.env.EVALS_OPENCODE_USE_USER_XDG
+  ) {
+    process.env.EVALS_OPENCODE_USE_USER_XDG = '1'
+    console.warn(
+      'local llamacpp solver detected, using user OpenCode config/auth (set EVALS_OPENCODE_USE_USER_XDG=0 to force isolated runner config)'
+    )
+  }
+
+  if (cliOptions.model || cliOptions.solverModel) {
+    await ensureOpencodeServerStarted({
+      port: cliOptions.port,
+      timeout: cliOptions.timeout,
+    })
+  }
+
   const discoveredEvals = await discoverEvals(cliOptions.pattern)
 
   // Prepare directories for generated outputs and run artifacts.
   const runId = new Date().toISOString().replace(/[:.]/g, '-')
   const startedAt = new Date().toISOString()
-  const outputDirs = await createRunOutputDirectories(RESULTS_DIR, runId)
+  const outputDirs = await createRunOutputDirectories(
+    path.join(RESULTS_DIR, runId)
+  )
   const generatedOutputsDirectory = path.join(
     outputDirs.runDirectory,
     'generated'
   )
+  const generatedArchiveDirectory = path.resolve(
+    process.cwd(),
+    GENERATED_ARCHIVE_DIR,
+    runId
+  )
   await mkdir(generatedOutputsDirectory, { recursive: true })
+  await mkdir(generatedArchiveDirectory, { recursive: true })
 
   console.log(`starting run: ${discoveredEvals.length} eval(s)`)
   const progress = createProgressReporter(discoveredEvals.length)
@@ -73,6 +116,10 @@ async function main() {
           generatedOutputsDirectory,
           sanitizeSegment(evalItem.evalId)
         )
+        const generatedEvalArchiveDirectory = path.join(
+          generatedArchiveDirectory,
+          sanitizeSegment(evalItem.evalId)
+        )
 
         // Step 1: Run solver stage.
         const solverStage = await runSolverStage(
@@ -81,6 +128,13 @@ async function main() {
           referenceFiles,
           generatedEvalRunDirectory,
           cliOptions
+        )
+        await materializeFiles(
+          generatedEvalArchiveDirectory,
+          solverStage.files.map((file) => ({
+            path: file.path,
+            content: file.content,
+          }))
         )
 
         // Step 2: Run LLM judge on the produced code
@@ -217,6 +271,7 @@ async function main() {
     judgeModel: cliOptions.model ?? null,
     solverModel: cliOptions.solverModel,
     pattern: cliOptions.pattern,
+    generatedArchivePath: toRelativePath(generatedArchiveDirectory),
     evalCount: discoveredEvals.length,
     evalsProcessed: sortedSuccessfulRuns.length,
     evalsErrored,
@@ -228,6 +283,9 @@ async function main() {
   const summaryPath = await writeSummary(
     outputDirs.runDirectory,
     summaryPayload
+  )
+  console.log(
+    `generated archive: ${toRelativePath(generatedArchiveDirectory)}`
   )
   console.log(`run complete: ${toRelativePath(summaryPath)}`)
 }

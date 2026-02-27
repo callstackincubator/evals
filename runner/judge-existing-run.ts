@@ -10,6 +10,9 @@ import {
 import { runWithConcurrency } from './solver/concurrency'
 import { discoverEvals } from './utils/discovery'
 import { loadFiles, sanitizeSegment } from './utils/fs'
+import { isLlamacppModel, normalizeModelId } from './utils/model'
+import { ensureOpencodeServerStarted } from './utils/opencode'
+import { chooseAvailablePort } from './utils/port'
 import { createProgressReporter } from './utils/progress'
 
 type SourceRunSummary = {
@@ -71,13 +74,18 @@ function parseCliArgs(argv: string[] = Bun.argv.slice(2)) {
     throw new Error('--model is required for judge-only mode')
   }
 
+  const normalizedModel = normalizeModelId(values.model)
+  if (!normalizedModel) {
+    throw new Error('--model is required for judge-only mode')
+  }
+
   return {
     sourceRun: values['source-run'],
     resumeRun: values['resume-run'] ?? undefined,
     concurrency: parsePositiveInteger(values.concurrency, '--concurrency'),
     debug: values.debug ?? false,
     failFast: values['fail-fast'] ?? false,
-    model: values.model,
+    model: normalizedModel,
     pattern: values.pattern,
     timeout: parsePositiveInteger(values.timeout, '--timeout'),
     port: values.port ? parsePositiveInteger(values.port, '--port') : undefined,
@@ -208,7 +216,7 @@ function validateResumeRunCompatibility(
 
   if (
     typeof resumeSummary?.judgeModel === 'string' &&
-    resumeSummary.judgeModel !== cliOptions.model
+    normalizeModelId(resumeSummary.judgeModel) !== cliOptions.model
   ) {
     throw new Error(
       `--resume-run judgeModel mismatch: summary has ${resumeSummary.judgeModel}, but current --model is ${cliOptions.model}`
@@ -235,7 +243,35 @@ function validateResumeRunCompatibility(
 }
 
 async function main() {
-  const cliOptions = parseCliArgs()
+  const parsedCliOptions = parseCliArgs()
+  const requestedPort = parsedCliOptions.port ?? 4096
+  const resolvedPort = await chooseAvailablePort(requestedPort)
+  if (resolvedPort !== requestedPort) {
+    console.warn(
+      `requested OpenCode port ${requestedPort} was busy, auto-selected ${resolvedPort}`
+    )
+  }
+  const cliOptions = {
+    ...parsedCliOptions,
+    port: resolvedPort,
+  }
+
+  if (
+    isLlamacppModel(cliOptions.model) &&
+    process.env.EVALS_OPENCODE_USE_USER_XDG !== '0' &&
+    !process.env.EVALS_OPENCODE_USE_USER_XDG
+  ) {
+    process.env.EVALS_OPENCODE_USE_USER_XDG = '1'
+    console.warn(
+      'local llamacpp judge detected, using user OpenCode config/auth (set EVALS_OPENCODE_USE_USER_XDG=0 to force isolated runner config)'
+    )
+  }
+
+  await ensureOpencodeServerStarted({
+    port: cliOptions.port,
+    timeout: cliOptions.timeout,
+  })
+
   const sourceRunDir = path.resolve(process.cwd(), cliOptions.sourceRun)
   const sourceGeneratedDir = path.join(sourceRunDir, 'generated')
   const sourceSummary = await tryReadSourceSummary(sourceRunDir)
@@ -257,7 +293,7 @@ async function main() {
   const startedAt = resumeSummary?.startedAt ?? new Date().toISOString()
   const outputDirs = resumeRunDir
     ? await ensureRunOutputDirectories(resumeRunDir)
-    : await createRunOutputDirectories('results', runId)
+    : await createRunOutputDirectories(path.join('results', runId))
   const persistedResultsBeforeAll = await readPersistedJudgeEvalResults(
     outputDirs.evalDirectory
   )

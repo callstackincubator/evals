@@ -1,3 +1,4 @@
+import { parseArgs as parseArgv } from 'node:util'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
@@ -6,13 +7,55 @@ import {
   stringifyGenerationManifest,
   type GenerationManifest,
 } from './utils/generation-manifest'
-import { parseRunCliArgs } from './config'
 import { runWithConcurrency } from './solver/concurrency'
 import { materializeFiles } from './solver'
 import { runSolverStage } from './solver/pipeline'
 import { discoverEvals } from './utils/discovery'
 import { partitionEvalRuns } from './utils/eval-runs'
 import { loadFiles, sanitizeSegment } from './utils/fs'
+import { normalizeModelId } from './utils/model'
+
+function parsePositiveInteger(rawValue: string, flagName: string) {
+  const parsedValue = Number.parseInt(rawValue, 10)
+  if (!Number.isInteger(parsedValue) || parsedValue <= 0) {
+    throw new Error(`${flagName} must be a positive integer`)
+  }
+
+  return parsedValue
+}
+
+function parseRunCliArgs(argv: string[] = Bun.argv.slice(2)) {
+  const { values } = parseArgv({
+    args: argv,
+    options: {
+      'concurrency': { type: 'string', default: '4' },
+      'fail-fast': { type: 'boolean', default: false },
+      'model': { type: 'string' },
+      'pattern': { type: 'string', default: 'evals/**/*' },
+      'timeout': { type: 'string', default: '120000' },
+      'port': { type: 'string' },
+      'output': { type: 'string' },
+    },
+    strict: true,
+    allowPositionals: false,
+  })
+
+  if (!values.model) {
+    throw new Error('--model is required for generation runs')
+  }
+
+  return {
+    concurrency: parsePositiveInteger(values.concurrency, '--concurrency'),
+    debug: false,
+    failFast: values['fail-fast'] ?? false,
+    model: normalizeModelId(values.model) ?? values.model,
+    solverModel: normalizeModelId(values.model) ?? values.model,
+    pattern: values.pattern,
+    timeout: parsePositiveInteger(values.timeout, '--timeout'),
+    port: values.port ? parsePositiveInteger(values.port, '--port') : undefined,
+    output: values.output,
+  }
+}
 
 function toRelativePath(value: string) {
   return path.relative(process.cwd(), value).split(path.sep).join('/')
@@ -41,8 +84,9 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
     cliOptions.concurrency,
     async (evalItem, index) => {
       try {
-        const [appFiles, prompt] = await Promise.all([
+        const [appFiles, referenceFiles, prompt] = await Promise.all([
           loadFiles(path.join(evalItem.evalPath, 'app')),
+          loadFiles(path.join(evalItem.evalPath, 'reference')).catch(() => []),
           readFile(path.join(evalItem.evalPath, 'prompt.md'), 'utf-8'),
         ])
 
@@ -59,7 +103,7 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
                 summary: 'Copied reference files',
                 files: await materializeFiles(
                   generatedEvalRunDirectory,
-                  (await loadFiles(path.join(evalItem.evalPath, 'reference'))).map(
+                  referenceFiles.map(
                     (file) => ({
                       path: file.path,
                       content: file.content,
@@ -67,11 +111,7 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
                   )
                 ),
               }
-            : await runSolverStage(prompt, appFiles, generatedEvalRunDirectory, {
-                solverModel: cliOptions.model,
-                timeout: cliOptions.timeout,
-                port: cliOptions.port,
-              })
+            : await runSolverStage(prompt, appFiles, referenceFiles, generatedEvalRunDirectory, cliOptions)
 
         const position = index + 1
         console.log(

@@ -1,5 +1,7 @@
 import { parseArgs as parseArgv } from 'node:util'
 
+import { normalizeModelId } from './utils/model'
+
 function parsePositiveInteger(rawValue: string, flagName: string) {
   const parsedValue = Number.parseInt(rawValue, 10)
   if (!Number.isInteger(parsedValue) || parsedValue <= 0) {
@@ -9,48 +11,10 @@ function parsePositiveInteger(rawValue: string, flagName: string) {
   return parsedValue
 }
 
-function parsePort(rawValue: string | undefined) {
-  return rawValue ? parsePositiveInteger(rawValue, '--port') : undefined
-}
-
 /*
-  Parses CLI flags for the standalone generation command.
+  Parses CLI flags and returns normalized runner settings.
 */
-export function parseRunCliArgs(argv: string[] = Bun.argv.slice(2)) {
-  const { values } = parseArgv({
-    args: argv,
-    options: {
-      'concurrency': { type: 'string', default: '4' },
-      'fail-fast': { type: 'boolean', default: false },
-      'model': { type: 'string' },
-      'pattern': { type: 'string', default: 'evals/**/*' },
-      'timeout': { type: 'string', default: '120000' },
-      'port': { type: 'string' },
-      'output': { type: 'string' },
-    },
-    strict: true,
-    allowPositionals: false,
-  })
-
-  if (!values.model) {
-    throw new Error('--model is required for generation runs')
-  }
-
-  return {
-    concurrency: parsePositiveInteger(values.concurrency, '--concurrency'),
-    failFast: values['fail-fast'] ?? false,
-    model: values.model,
-    pattern: values.pattern,
-    timeout: parsePositiveInteger(values.timeout, '--timeout'),
-    port: parsePort(values.port),
-    output: values.output,
-  }
-}
-
-/*
-  Parses CLI flags for the standalone LLM judge command.
-*/
-export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
+export function parseCliArgs(argv: string[] = Bun.argv.slice(2)) {
   const { values } = parseArgv({
     args: argv,
     options: {
@@ -58,30 +22,25 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
       'debug': { type: 'boolean', default: false },
       'fail-fast': { type: 'boolean', default: false },
       'model': { type: 'string' },
+      'solver-model': { type: 'string' },
+      'pattern': { type: 'string', default: 'evals/**/*' },
       'timeout': { type: 'string', default: '120000' },
       'port': { type: 'string' },
-      'input': { type: 'string' },
-      'output': { type: 'string' },
     },
     strict: true,
     allowPositionals: false,
   })
 
-  if (!values.input) {
-    throw new Error('--input is required for judge runs')
-  }
-  if (!values.model) {
-    throw new Error('--model is required for judge runs')
-  }
-
   return {
     concurrency: parsePositiveInteger(values.concurrency, '--concurrency'),
     debug: values.debug ?? false,
     failFast: values['fail-fast'] ?? false,
-    model: values.model,
+    model: normalizeModelId(values.model),
+    solverModel: normalizeModelId(values['solver-model']),
+    pattern: values.pattern,
     timeout: parsePositiveInteger(values.timeout, '--timeout'),
-    port: parsePort(values.port),
-    input: values.input,
-    output: values.output,
+    port: values.port ? parsePositiveInteger(values.port, '--port') : undefined,
   }
 }
+
+export type CliOptions = ReturnType<typeof parseCliArgs>

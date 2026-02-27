@@ -1,8 +1,8 @@
+import { parseArgs as parseArgv } from 'node:util'
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { readGenerationManifest } from './utils/generation-manifest'
-import { parseJudgeCliArgs } from './config'
 import {
   createRunOutputDirectories,
   writeDebugArtifacts,
@@ -12,6 +12,54 @@ import { runLlmJudgeStage } from './evaluators/llm/run'
 import { runWithConcurrency } from './solver/concurrency'
 import { partitionEvalRuns } from './utils/eval-runs'
 import { loadFiles, sanitizeSegment } from './utils/fs'
+import { normalizeModelId } from './utils/model'
+
+function parsePositiveInteger(rawValue: string, flagName: string) {
+  const parsedValue = Number.parseInt(rawValue, 10)
+  if (!Number.isInteger(parsedValue) || parsedValue <= 0) {
+    throw new Error(`${flagName} must be a positive integer`)
+  }
+
+  return parsedValue
+}
+
+function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
+  const { values } = parseArgv({
+    args: argv,
+    options: {
+      'concurrency': { type: 'string', default: '4' },
+      'debug': { type: 'boolean', default: false },
+      'fail-fast': { type: 'boolean', default: false },
+      'model': { type: 'string' },
+      'timeout': { type: 'string', default: '120000' },
+      'port': { type: 'string' },
+      'input': { type: 'string' },
+      'output': { type: 'string' },
+    },
+    strict: true,
+    allowPositionals: false,
+  })
+
+  if (!values.input) {
+    throw new Error('--input is required for judge runs')
+  }
+  if (!values.model) {
+    throw new Error('--model is required for judge runs')
+  }
+
+  return {
+    concurrency: parsePositiveInteger(values.concurrency, '--concurrency'),
+    debug: values.debug ?? false,
+    failFast: values['fail-fast'] ?? false,
+    model: normalizeModelId(values.model) ?? values.model,
+    solverModel: undefined as string | undefined,
+    pattern: 'evals/**/*',
+    timeout: parsePositiveInteger(values.timeout, '--timeout'),
+    port: values.port ? parsePositiveInteger(values.port, '--port') : undefined,
+    input: values.input,
+    output: values.output,
+  }
+}
 
 function roundTo(value: number, decimals: number) {
   const scale = 10 ** decimals
@@ -66,8 +114,13 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
           readFile(path.join(evalDirectory, 'prompt.md'), 'utf-8'),
         ])
 
+        const referenceFiles = await loadFiles(
+          path.join(evalDirectory, 'reference')
+        ).catch(() => [])
+
         const llmJudgeStage = await runLlmJudgeStage(
           generatedFiles,
+          referenceFiles,
           requirements,
           cliOptions
         )
