@@ -4,4 +4,12 @@ inputs:
     - app/App.tsx
 requirements:
   - id: auth-flow-uses-static-if-guards
-    description: Must gate auth routes in the static navigator config using screen-level `if` conditions.
+    description: Must define auth screens in createNativeStackNavigator static config using screen-level `if` hooks (e.g., signed-in screens vs signed-out screens).
+  - id: auth-state-single-source-of-truth
+    description: Must maintain authentication state and derive route availability from that state (signed in/out conditions).
+  - id: login-success-shows-home
+    description: After successful login, Home must become the active available route and Login must no longer be available.
+  - id: back-cannot-return-to-login-after-login
+    description: After successful login, back navigation must not return to Login.
+  - id: no-manual-auth-navigation-with-if-guards
+    description: Must not imperatively navigate to Home/SignIn for core auth transition when using `if`-guarded routes; route switch should occur from auth state change.
