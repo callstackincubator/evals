@@ -28,7 +28,7 @@ bun runner/judge.ts --model openai/gpt-5.3-codex --input generated/my-generated
 
 For full command reference and workflows, see [docs](./docs) and [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-## Research Paper
+## Whitepaper
 
 Methodology and scoring details are documented in the [benchmark methodology whitepaper](./paper/benchmark-methodology-whitepaper.tex).
 
