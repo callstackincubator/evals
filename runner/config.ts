@@ -9,6 +9,15 @@ function parsePositiveInteger(rawValue: string, flagName: string) {
   return parsedValue
 }
 
+function parseNonNegativeInteger(rawValue: string, flagName: string) {
+  const parsedValue = Number.parseInt(rawValue, 10)
+  if (!Number.isInteger(parsedValue) || parsedValue < 0) {
+    throw new Error(`${flagName} must be a non-negative integer`)
+  }
+
+  return parsedValue
+}
+
 function parsePort(rawValue: string | undefined) {
   return rawValue ? parsePositiveInteger(rawValue, '--port') : undefined
 }
@@ -22,6 +31,7 @@ export function parseRunCliArgs(argv: string[] = Bun.argv.slice(2)) {
     options: {
       'concurrency': { type: 'string', default: '4' },
       'fail-fast': { type: 'boolean', default: false },
+      'max-retries': { type: 'string', default: '1' },
       'model': { type: 'string' },
       'pattern': { type: 'string', default: 'evals/**/*' },
       'timeout': { type: 'string', default: '120000' },
@@ -39,6 +49,7 @@ export function parseRunCliArgs(argv: string[] = Bun.argv.slice(2)) {
   return {
     concurrency: parsePositiveInteger(values.concurrency, '--concurrency'),
     failFast: values['fail-fast'] ?? false,
+    maxRetries: parseNonNegativeInteger(values['max-retries'], '--max-retries'),
     model: values.model,
     pattern: values.pattern,
     timeout: parsePositiveInteger(values.timeout, '--timeout'),

@@ -18,6 +18,28 @@ function toRelativePath(value: string) {
   return path.relative(process.cwd(), value).split(path.sep).join('/')
 }
 
+async function runWithRetries<T>(
+  task: () => Promise<T>,
+  maxRetries: number,
+  onRetry: (attempt: number, error: unknown) => void
+) {
+  const maxAttempts = maxRetries + 1
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      return await task()
+    } catch (error) {
+      if (attempt >= maxAttempts) {
+        throw error
+      }
+
+      onRetry(attempt, error)
+    }
+  }
+
+  throw new Error('unexpected retry flow')
+}
+
 /*
   Generates eval outputs only (no judging), writes files under the target output
   directory, and persists a validated manifest consumed by `runner/judge.ts`.
@@ -53,25 +75,43 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
             ? relativeToEvals
             : path.relative(process.cwd(), evalItem.evalPath)
         const generatedEvalRunDirectory = path.join(outputDirectory, generatedPath)
-        const solverStage =
-          cliOptions.model === 'noop'
-            ? {
-                summary: 'Copied reference files',
-                files: await materializeFiles(
-                  generatedEvalRunDirectory,
-                  (await loadFiles(path.join(evalItem.evalPath, 'reference'))).map(
-                    (file) => ({
-                      path: file.path,
-                      content: file.content,
-                    })
-                  )
-                ),
-              }
-            : await runSolverStage(prompt, appFiles, generatedEvalRunDirectory, {
-                solverModel: cliOptions.model,
-                timeout: cliOptions.timeout,
-                port: cliOptions.port,
-              })
+        const runSingleEval = async () => {
+          if (cliOptions.model === 'noop') {
+            return {
+              summary: 'Copied reference files',
+              files: await materializeFiles(
+                generatedEvalRunDirectory,
+                (await loadFiles(path.join(evalItem.evalPath, 'reference'))).map(
+                  (file) => ({
+                    path: file.path,
+                    content: file.content,
+                  })
+                )
+              ),
+            }
+          }
+
+          return runSolverStage(prompt, appFiles, generatedEvalRunDirectory, {
+            solverModel: cliOptions.model,
+            timeout: cliOptions.timeout,
+            port: cliOptions.port,
+          })
+        }
+
+        const solverStage = await runWithRetries(
+          runSingleEval,
+          cliOptions.maxRetries,
+          (attempt, error) => {
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            const nextAttempt = attempt + 1
+            console.warn(
+              `[run-stage][${evalItem.evalId}] attempt ${attempt} failed: ${errorMessage}`
+            )
+            console.warn(
+              `[run-stage][${evalItem.evalId}] retrying (${nextAttempt}/${cliOptions.maxRetries + 1})`
+            )
+          }
+        )
 
         const position = index + 1
         console.log(
