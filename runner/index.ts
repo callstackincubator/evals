@@ -64,7 +64,9 @@ async function main() {
     )
   }
 
-  if (cliOptions.model || cliOptions.solverModel) {
+  const needsJudge = Boolean(cliOptions.model) && cliOptions.model !== 'noop'
+  const needsSolver = Boolean(cliOptions.solverModel) && cliOptions.solverModel !== 'noop'
+  if (needsJudge || needsSolver) {
     await ensureOpencodeServerStarted({
       port: cliOptions.port,
       timeout: cliOptions.timeout,

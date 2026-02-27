@@ -44,7 +44,7 @@ export async function runLlmJudgeStage(
   rawRequirements: string,
   cliOptions: CliOptions
 ) {
-  if (!cliOptions.model) {
+  if (!cliOptions.model || cliOptions.model === 'noop') {
     return {
       requirements: [],
       summary: 'llm judge skipped: no --model provided',
