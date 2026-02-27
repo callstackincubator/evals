@@ -1,19 +1,14 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-const ITEMS = ['alpha', 'beta', 'gamma']
-
-async function loadWithoutSuspenseAction() {
-  // No-op
-  return ITEMS.length
-}
-
 export default function App() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Reports</Text>
-      <Text style={styles.subtitle}>Report placeholders: {ITEMS.length}</Text>
-      <Pressable style={styles.button} onPress={() => loadWithoutSuspenseAction()}>
-        <Text style={styles.buttonText}>Open</Text>
+      <Pressable
+        onPress={() => {}}
+        style={styles.button}
+      >
+        <Text style={styles.buttonText}>Reload</Text>
       </Pressable>
     </View>
   )
@@ -21,29 +16,30 @@ export default function App() {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    alignSelf: 'flex-start',
+    backgroundColor: '#0f172a',
+    borderRadius: 8,
+    marginTop: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   buttonText: {
     color: '#fff',
     fontWeight: '600',
   },
-  screen: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    flex: 1,
-    justifyContent: 'center',
-    rowGap: 10,
+  meta: {
+    color: '#334155',
+    marginTop: 12,
   },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+  screen: {
+    backgroundColor: '#f1f5f9',
+    flex: 1,
+    paddingHorizontal: 14,
+    paddingTop: 56,
   },
   title: {
-    color: '#111827',
-    fontSize: 20,
-    fontWeight: '600',
+    color: '#0f172a',
+    fontSize: 24,
+    fontWeight: '700',
   },
 })

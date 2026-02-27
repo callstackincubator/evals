@@ -3,13 +3,13 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: dependency-gated-query
-    description: "Must gate the dependent projects query with enabled: !!profileId so it does not execute before upstream identity exists."
-  - id: explicit-upstream-and-downstream-keys
-    description: Must define distinct query keys for upstream profile and downstream projects queries.
-  - id: safe-initial-dependent-state
-    description: Before enablement, dependent query must remain in a safe pending/idle state without invalid-id network requests.
-  - id: implementation-rq-v5-object-signature
-    description: Must use TanStack Query v5 object-signature APIs (for hooks and queryClient methods) and MUST NOT use legacy positional overload calls.
-  - id: implementation-rq-dependent-enabled-contract
-    description: Must gate dependent useQuery execution with enabled derived from upstream identity and avoid invalid-id queryFn requests before enablement.
+  - id: app-is-wrapped-with-query-client-provider
+    description: App component renders `QueryClientProvider` with `client` set to `queryClient` and wraps `ProjectsScreen`
+  - id: profile-queryfn-uses-query-function-context-signal
+    description: Profile `queryFn` reads `signal` from `QueryFunctionContext` and passes it to `fetchProfile`
+  - id: projects-query-key-uses-profile-id-with-pending-fallback
+    description: Projects query uses `queryKey` array `projects` and `profileId`
+  - id: projects-query-enabled-uses-profile-id-boolean
+    description: Projects query `enabled` option is set from boolean cast of `profileId`
+  - id: projects-queryfn-destructures-userid-from-querykey
+    description: Projects `queryFn` destructures `userId` from `queryKey` and calls `fetchProjectsByUserId` with `signal`

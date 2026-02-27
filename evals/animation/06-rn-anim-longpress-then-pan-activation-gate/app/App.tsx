@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
+const DRAG_LIMIT = 170
+
 export default function App() {
   return (
     <GestureHandlerRootView style={styles.screen}>

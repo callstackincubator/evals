@@ -18,36 +18,36 @@ type StoreApi = {
   get: () => FeedStore
 }
 
-const FETCH_DELAY_MS = 260
-const FEED_ITEMS = [
-  'Release notes',
-  'Crash analytics',
-  'Regression triage',
-] as const
+async function fetchFeedItems(endpoint: string): Promise<string[]> {
+  const response = await fetch(endpoint)
 
-const ERRORS = {
-  firstAttempt: 'Temporary feed error (first attempt fails by design)',
-  unknown: 'Unknown feed error',
-} as const
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
+  }
 
-const sleep = (ms: number) =>
-  new Promise<void>((resolve) => setTimeout(resolve, ms))
+  const json = (await response.json()) as {
+    todos: Array<{ id: number; todo: string }>
+  }
+
+  return json.todos.map((item) => item.todo)
+}
 
 const fetchFeed = async ({ set, get }: StoreApi) => {
   const attempt = get().attemptCount + 1
+
   set({ attemptCount: attempt, errorMessage: null, status: 'loading' })
 
+  const endpoint =
+    attempt === 1
+      ? 'https://dummyjson.com/todos/not-found'
+      : 'https://dummyjson.com/todos?limit=3&skip=0'
+
   try {
-    await sleep(FETCH_DELAY_MS)
-
-    if (attempt === 1) {
-      throw new Error(ERRORS.firstAttempt)
-    }
-
-    set({ items: [...FEED_ITEMS], status: 'success' })
+    const items = await fetchFeedItems(endpoint)
+    set({ items, status: 'success' })
   } catch (error) {
     set({
-      errorMessage: error instanceof Error ? error.message : ERRORS.unknown,
+      errorMessage: error instanceof Error ? error.message : 'Unknown error',
       status: 'error',
     })
   }
@@ -58,7 +58,7 @@ const useFeedStore = create<FeedStore>((set, get) => ({
   errorMessage: null,
   items: [],
   status: 'idle',
-  fetchFeed: () => fetchFeed({ set, get }),
+  fetchFeed: () => fetchFeed({ get, set }),
   reset: () => {
     set({ attemptCount: 0, errorMessage: null, items: [], status: 'idle' })
   },
@@ -103,7 +103,7 @@ export default function App() {
         </Pressable>
       </View>
 
-      <Text style={styles.meta}>Status: {status}</Text>
+      <Text style={styles.meta}>Status {status}</Text>
 
       {statusContent[status]}
     </View>

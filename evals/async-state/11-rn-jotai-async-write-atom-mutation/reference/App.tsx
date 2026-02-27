@@ -16,22 +16,36 @@ const postsAtom = atom<Post[]>([])
 const submitStateAtom = atom<SubmitState>({ status: 'idle' })
 
 async function createPost(title: string): Promise<Post> {
-  await new Promise<void>((resolve) => {
-    setTimeout(resolve, 240)
+  const response = await fetch('https://dummyjson.com/posts/add', {
+    body: JSON.stringify({
+      body: 'Created from Jotai mutation',
+      title,
+      userId: 1,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
   })
 
-  if (title.toLowerCase().includes('fail')) {
-    throw new Error('Server rejected title')
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
+  }
+
+  const json = (await response.json()) as {
+    id: number
+    title: string
   }
 
   return {
-    id: `post-${Date.now()}`,
-    title,
+    id: String(json.id),
+    title: json.title,
   }
 }
 
 const submitPostAtom = atom(null, async (_, set, title: string) => {
   const nextTitle = title.trim()
+
   if (!nextTitle) {
     return
   }
@@ -66,8 +80,8 @@ export default function App() {
       <View style={styles.row}>
         <TextInput
           onChangeText={setDraft}
-          placeholder="Post title"
-          placeholderTextColor="#94a3b8"
+          placeholder='Post title'
+          placeholderTextColor='#94a3b8'
           style={styles.input}
           value={draft}
         />

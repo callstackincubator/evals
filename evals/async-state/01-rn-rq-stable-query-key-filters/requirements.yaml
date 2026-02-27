@@ -4,14 +4,12 @@ inputs:
     - app/App.tsx
 requirements:
   - id: stable-serializable-query-key
-    description: Must construct queryKey as a stable top-level array that includes filter, page, and pageSize as serializable members.
+    description: Must define a key builder (for example `buildProductsQueryKey(filter, page, pageSize)`) that returns `['products', filter, page, pageSize] as const`.
   - id: no-unstable-query-key-members
-    description: Must NOT include unstable members in query keys (for example functions or freshly-created non-stable references that change every render).
+    description: Query key entries must remain primitive/serializable (`'products'`, filter string, page number, pageSize number) with no functions or object references.
   - id: queryfn-derived-from-querykey
-    description: Must derive fetch parameters from QueryFunctionContext.queryKey in queryFn rather than from hidden mutable external state.
+    description: Must destructure `activeFilter`, `activePage`, and `activePageSize` from `QueryFunctionContext<ProductsQueryKey>.queryKey`.
   - id: implementation-rq-v5-object-signature
-    description: Must use TanStack Query v5 object-signature APIs (for hooks and queryClient methods) and MUST NOT use legacy positional overload calls.
-  - id: implementation-rq-queryfncontext-querykey-contract
-    description: Must consume QueryFunctionContext.queryKey directly in queryFn for filter/page/pageSize extraction (no hidden closure-derived fetch params).
+    description: Must use TanStack Query v5 object-form APIs (`useQuery({ ... })`, client object filters), not legacy positional signatures.
   - id: implementation-rq-placeholderdata-identity
-    description: Must preserve previous-page continuity with placeholderData identity function and MUST NOT use removed keepPreviousData option.
+    description: Must set `placeholderData` as `(previous) => previous` to keep previous page/category data visible during refetch.

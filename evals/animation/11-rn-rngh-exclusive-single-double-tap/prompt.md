@@ -1,1 +1,1 @@
-Implement a tappable card with both single-tap and double-tap behaviors.
+Implement a tappable card with both single-tap and double-tap behaviors using `react-native-gesture-handler`, with explicit tap prioritization: compose gestures exclusively so double-tap has priority, single-tap activates only after the double-tap window expires without a valid second tap, and both handlers must never fire for the same interaction.

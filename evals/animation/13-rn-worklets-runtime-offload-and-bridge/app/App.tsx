@@ -1,5 +1,9 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
+const TOTAL_BATCHES = 20
+const BATCH_SIZE = 3000
+const BRIDGE_EVERY_N_BATCHES = 4
+
 export default function App() {
   return (
     <View style={styles.screen}>

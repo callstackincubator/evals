@@ -3,13 +3,17 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: persist-middleware-with-async-storage
-    description: Must configure persist middleware with createJSONStorage(() => AsyncStorage) for async React Native persistence.
-  - id: hydration-complete-gate
-    description: Must maintain explicit hydration-complete gate (for example hasHydrated) before showing protected UI decisions.
-  - id: deterministic-pre-hydration-fallback
-    description: Must render deterministic pre-hydration fallback to avoid incorrect auth-state flashes before rehydration completes.
-  - id: implementation-zustand-v5-named-create
-    description: Must use named create import from 'zustand' (v5 style) and MUST NOT rely on removed default-export create usage.
-  - id: implementation-zustand-v5-selector-equality
-    description: Must NOT pass a custom equality function as the second argument to create-based hook selectors in v5; use useShallow or createWithEqualityFn when equality control is needed.
+  - id: zustand-persist-uses-asyncstorage-json-storage
+    description: Store uses `persist` with `createJSONStorage(() => AsyncStorage)` and persists only token state
+  - id: store-includes-hydration-and-profile-fields
+    description: Store state includes `hasHydrated` `token` `profileStatus` `profileName` and hydration setter action
+  - id: login-fetches-token-from-auth-endpoint
+    description: Login action performs `POST` request to auth login endpoint and writes returned token into store
+  - id: profile-request-uses-bearer-token-header
+    description: Profile fetch request sends `Authorization` bearer header built from persisted token
+  - id: onrehydrate-sets-hydrated-and-reloads-profile
+    description: onRehydrateStorage sets hydrated flag in success and error paths and reloads profile when token exists
+  - id: ui-has-pre-hydration-loading-branch
+    description: UI renders hydration loading branch when `hasHydrated` is false
+  - id: ui-has-profile-loading-branch-after-token
+    description: UI renders profile loading branch when token exists and `profileStatus` is loading

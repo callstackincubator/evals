@@ -9,6 +9,8 @@ type Preferences = {
   theme: 'light' | 'dark'
 }
 
+type RemoteProfileStatus = 'idle' | 'loading' | 'ready' | 'error'
+
 const STORAGE_KEY = 'user-preferences'
 
 const SAFE_DEFAULT_PREFERENCES: Preferences = {
@@ -23,15 +25,20 @@ const preferencesAtom = atomWithStorage<Preferences>(
 )
 
 const hydrationCompleteAtom = atom(false)
+const profileNameAtom = atom<string | null>(null)
+const profileStatusAtom = atom<RemoteProfileStatus>('idle')
 
 const hydratePreferencesAtom = atom(null, async (_get, set) => {
   try {
     const raw = await AsyncStorage.getItem(STORAGE_KEY)
+
     if (!raw) {
       return
     }
+
     try {
       const parsed = JSON.parse(raw) as Partial<Preferences>
+
       await set(preferencesAtom, {
         ...SAFE_DEFAULT_PREFERENCES,
         ...parsed,
@@ -44,18 +51,52 @@ const hydratePreferencesAtom = atom(null, async (_get, set) => {
   }
 })
 
+const loadProfileAtom = atom(null, async (_get, set) => {
+  set(profileStatusAtom, 'loading')
+
+  try {
+    const response = await fetch('https://dummyjson.com/users/1')
+
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`)
+    }
+
+    const json = (await response.json()) as {
+      firstName: string
+      lastName: string
+    }
+
+    set(profileNameAtom, `${json.firstName} ${json.lastName}`)
+    set(profileStatusAtom, 'ready')
+  } catch {
+    set(profileStatusAtom, 'error')
+  }
+})
+
 function PreferencesScreen() {
   const [preferences, setPreferences] = useAtom(preferencesAtom)
   const hydrationComplete = useAtomValue(hydrationCompleteAtom)
+  const profileName = useAtomValue(profileNameAtom)
+  const profileStatus = useAtomValue(profileStatusAtom)
   const hydratePreferences = useSetAtom(hydratePreferencesAtom)
+  const loadProfile = useSetAtom(loadProfileAtom)
 
   useEffect(() => {
     void hydratePreferences()
   }, [hydratePreferences])
 
+  useEffect(() => {
+    if (!hydrationComplete) {
+      return
+    }
+
+    void loadProfile()
+  }, [hydrationComplete, loadProfile])
+
   const toggleTheme = () => {
     return setPreferences(async (previous) => {
       const previousValue = await previous
+
       return {
         ...previous,
         theme: previousValue.theme === 'light' ? 'dark' : 'light',
@@ -66,6 +107,7 @@ function PreferencesScreen() {
   const toggleCompact = () => {
     return setPreferences(async (previous) => {
       const previousValue = await previous
+
       return {
         ...previous,
         compact: !previousValue.compact,
@@ -77,10 +119,7 @@ function PreferencesScreen() {
     return (
       <View style={styles.screen}>
         <Text style={styles.title}>Preferences</Text>
-        <Text style={styles.meta}>
-          Safe default: {SAFE_DEFAULT_PREFERENCES.theme} theme until rehydration
-          finishes.
-        </Text>
+        <Text style={styles.meta}>Loading persisted preferences...</Text>
       </View>
     )
   }
@@ -89,9 +128,9 @@ function PreferencesScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Preferences</Text>
       <Text style={styles.meta}>Theme: {preferences.theme}</Text>
-      <Text style={styles.meta}>
-        Compact mode: {preferences.compact ? 'on' : 'off'}
-      </Text>
+      <Text style={styles.meta}>Compact mode: {preferences.compact ? 'on' : 'off'}</Text>
+      <Text style={styles.meta}>Profile status: {profileStatus}</Text>
+      {profileName ? <Text style={styles.meta}>Profile: {profileName}</Text> : null}
 
       <Pressable onPress={toggleTheme} style={styles.button}>
         <Text style={styles.buttonText}>Toggle theme</Text>

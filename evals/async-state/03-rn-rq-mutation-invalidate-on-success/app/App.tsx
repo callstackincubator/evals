@@ -1,49 +1,86 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 
-const ITEMS = ['alpha', 'beta', 'gamma']
+function ItemsScreen() {
+  const [draft, setDraft] = useState('')
 
-async function submitMutationAction() {
-  // No-op
-  return ITEMS.length
+  const data = []
+
+  return (
+    <View style={styles.screen}>
+      <Text style={styles.title}>Items</Text>
+
+      <View style={styles.composer}>
+        <TextInput
+          onChangeText={setDraft}
+          placeholder='New item title'
+          placeholderTextColor='#94a3b8'
+          style={styles.input}
+          value={draft}
+        />
+        <Pressable onPress={() => {}} style={styles.button}>
+          <Text style={styles.buttonText}>Create</Text>
+        </Pressable>
+      </View>
+
+      {data.map((item) => {
+        return (
+          <View key={item.id} style={styles.row}>
+            <Text>{item.title}</Text>
+          </View>
+        )
+      })}
+    </View>
+  )
 }
 
 export default function App() {
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Items</Text>
-      <Text style={styles.subtitle}>Draft items: {ITEMS.length}</Text>
-      <Pressable style={styles.button} onPress={() => submitMutationAction()}>
-        <Text style={styles.buttonText}>Open</Text>
-      </Pressable>
-    </View>
+    <ItemsScreen />
   )
 }
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
+    backgroundColor: '#0f172a',
+    borderRadius: 8,
+    justifyContent: 'center',
     paddingHorizontal: 14,
-    paddingVertical: 10,
   },
   buttonText: {
     color: '#fff',
     fontWeight: '600',
   },
-  screen: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    flex: 1,
-    justifyContent: 'center',
-    rowGap: 10,
+  composer: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 12,
   },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+  input: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    color: '#0f172a',
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  row: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    marginBottom: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  screen: {
+    backgroundColor: '#e2e8f0',
+    flex: 1,
+    paddingHorizontal: 14,
+    paddingTop: 56,
   },
   title: {
-    color: '#111827',
-    fontSize: 20,
-    fontWeight: '600',
+    color: '#0f172a',
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 12,
   },
 })

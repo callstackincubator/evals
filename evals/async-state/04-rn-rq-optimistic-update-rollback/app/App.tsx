@@ -1,49 +1,67 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-const ITEMS = ['alpha', 'beta', 'gamma']
+function TodosScreen() {
+  const data = []
 
-async function applyOptimisticUpdateAction() {
-  // No-op
-  return ITEMS.length
-}
-
-export default function App() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Todo List</Text>
-      <Text style={styles.subtitle}>Todo entries: {ITEMS.length}</Text>
-      <Pressable style={styles.button} onPress={() => applyOptimisticUpdateAction()}>
-        <Text style={styles.buttonText}>Open</Text>
-      </Pressable>
+
+      {data.map((todo) => {
+        return (
+          <Pressable
+            key={todo.id}
+            onPress={() => {}}
+            style={styles.row}
+          >
+            <Text style={[styles.todoText, todo.done && styles.done]}>{todo.title}</Text>
+          </Pressable>
+        )
+      })}
+
+      <Text style={styles.error}>Toggle failed. Cache rolled back and revalidated.</Text>
     </View>
   )
 }
 
+
+export default function App() {
+  return (
+    <TodosScreen />
+  )
+}
+
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+  done: {
+    color: '#64748b',
+    textDecorationLine: 'line-through',
   },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
+  error: {
+    color: '#b91c1c',
+    marginTop: 12,
+  },
+  row: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    marginBottom: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
   },
   screen: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#e2e8f0',
     flex: 1,
-    justifyContent: 'center',
-    rowGap: 10,
-  },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+    paddingHorizontal: 14,
+    paddingTop: 56,
   },
   title: {
-    color: '#111827',
-    fontSize: 20,
-    fontWeight: '600',
+    color: '#0f172a',
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 12,
+  },
+  todoText: {
+    color: '#0f172a',
+    fontSize: 15,
+    fontWeight: '500',
   },
 })

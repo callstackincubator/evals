@@ -3,13 +3,11 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: async-read-atom-source
-    description: Must represent async data source as an async read atom (atom(async () => ...)) consumed via useAtomValue.
-  - id: suspense-boundary-for-async-atom
-    description: Must consume async read atom under a Suspense boundary with explicit fallback UI.
-  - id: no-duplicate-manual-loading-flag
-    description: Must avoid redundant component-level loading flags that duplicate async atom + Suspense behavior.
-  - id: implementation-jotai-v2-entrypoints
-    description: Must use Jotai v2 entrypoints from 'jotai' and 'jotai/utils' for core and utility APIs.
-  - id: implementation-jotai-no-v1-removed-utils
-    description: Must NOT rely on removed Jotai v1 APIs such as waitForAll, abortableAtom, or Provider initialValues/scope props.
+  - id: profile-uses-async-read-atom
+    description: Profile data source is modeled as a Jotai async read atom with `atom(async () => ...)`
+  - id: profile-fetch-uses-endpoint-and-status-guard
+    description: Profile read atom fetches from the users endpoint
+  - id: profile-consumer-reads-atom-value
+    description: Profile content reads the async atom through `useAtomValue`
+  - id: suspense-boundary-renders-loading-fallback
+    description: Profile consumer is rendered under `Suspense` with explicit loading fallback UI

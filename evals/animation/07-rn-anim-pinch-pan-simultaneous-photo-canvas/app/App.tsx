@@ -1,6 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
+const MAX_SCALE = 3
+const MIN_SCALE = 1
+const VIEWPORT_SIZE = 280
+
 export default function App() {
   return (
     <GestureHandlerRootView style={styles.screen}>

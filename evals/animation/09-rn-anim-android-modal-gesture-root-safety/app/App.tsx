@@ -1,6 +1,9 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
+const SHEET_HEIGHT = 320
+const CLOSE_THRESHOLD = 140
+
 export default function App() {
   return (
     <GestureHandlerRootView style={styles.screen}>

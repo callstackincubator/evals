@@ -7,94 +7,78 @@ import {
   useQuery,
 } from '@tanstack/react-query'
 
-type TransactionType = 'income' | 'expense'
-type TransactionFilter = 'all' | TransactionType
+const FILTER_OPTIONS = [
+  'all',
+  'smartphones',
+  'laptops',
+] as const
 
-type Transaction = {
-  id: string
+type ProductFilter = typeof FILTER_OPTIONS[number]
+
+type Product = {
+  id: number
   title: string
-  amount: number
-  type: TransactionType
+  price: number
 }
 
-type TransactionsResponse = {
-  items: Transaction[]
+type ProductsResponse = {
+  items: Product[]
   page: number
   totalPages: number
 }
 
-type TransactionsQueryKey = readonly [
-  'transactions',
-  TransactionFilter,
-  number,
-  number,
-]
+type ProductsQueryKey = readonly ['products', ProductFilter, number, number]
 
-const PAGE_SIZE = 4
-
-const FILTER_OPTIONS: readonly TransactionFilter[] = [
-  'all',
-  'income',
-  'expense',
-]
-
-const DATA: Transaction[] = [
-  { amount: 4200, id: 't-1', title: 'Payroll', type: 'income' },
-  { amount: 140, id: 't-2', title: 'Groceries', type: 'expense' },
-  { amount: 95, id: 't-3', title: 'Fuel', type: 'expense' },
-  { amount: 80, id: 't-4', title: 'Dining', type: 'expense' },
-  { amount: 230, id: 't-5', title: 'Freelance payout', type: 'income' },
-  { amount: 60, id: 't-6', title: 'Transit card', type: 'expense' },
-  { amount: 900, id: 't-7', title: 'Bonus', type: 'income' },
-  { amount: 35, id: 't-8', title: 'Coffee supplies', type: 'expense' },
-  { amount: 320, id: 't-9', title: 'Tax refund', type: 'income' },
-  { amount: 125, id: 't-10', title: 'Utilities', type: 'expense' },
-]
+const PAGE_SIZE = 10
 
 const queryClient = new QueryClient()
 
-function wait(ms: number, signal?: AbortSignal) {
-  return new Promise<void>((resolve, reject) => {
-    const timer = setTimeout(resolve, ms)
-    signal?.addEventListener('abort', () => {
-      clearTimeout(timer)
-      reject(new DOMException('Aborted', 'AbortError'))
-    })
-  })
-}
-
-function buildTransactionsQueryKey(
-  filter: TransactionFilter,
+function buildProductsQueryKey(
+  filter: ProductFilter,
   page: number,
   pageSize: number
-): TransactionsQueryKey {
-  return ['transactions', filter, page, pageSize] as const
+): ProductsQueryKey {
+  return ['products', filter, page, pageSize] as const
 }
 
-async function fetchTransactions(
-  filter: TransactionFilter,
+async function fetchProducts(
+  filter: ProductFilter,
   page: number,
   pageSize: number,
   signal?: AbortSignal
-) {
-  await wait(220, signal)
+): Promise<ProductsResponse> {
+  const skip = (page - 1) * pageSize
 
-  const filtered =
-    filter === 'all' ? DATA : DATA.filter((item) => item.type === filter)
+  const endpoint =
+    filter === 'all'
+      ? `https://dummyjson.com/products?limit=${pageSize}&skip=${skip}`
+      : `https://dummyjson.com/products/category/${encodeURIComponent(filter)}?limit=${pageSize}&skip=${skip}`
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
-  const safePage = Math.min(page, totalPages)
-  const start = (safePage - 1) * pageSize
+  const response = await fetch(endpoint, { signal })
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
+  }
+
+  const json = (await response.json()) as {
+    products: Product[]
+    total: number
+    skip: number
+    limit: number
+  }
+
+  const totalPages = Math.max(1, Math.ceil(json.total / json.limit))
+  const resolvedPage = Math.floor(json.skip / json.limit) + 1
 
   return {
-    items: filtered.slice(start, start + pageSize),
-    page: safePage,
+    items: json.products,
+    page: resolvedPage,
     totalPages,
-  } satisfies TransactionsResponse
+  }
 }
 
-function TransactionsScreen() {
-  const [filter, setFilter] = useState<TransactionFilter>('all')
+function ProductsScreen() {
+  const [filter, setFilter] = useState<ProductFilter>('all')
   const [page, setPage] = useState(1)
 
   const { data, isFetching, isLoading } = useQuery({
@@ -102,22 +86,22 @@ function TransactionsScreen() {
     queryFn: ({
       queryKey: [, activeFilter, activePage, activePageSize],
       signal,
-    }: QueryFunctionContext<TransactionsQueryKey>) => {
-      return fetchTransactions(activeFilter, activePage, activePageSize, signal)
+    }: QueryFunctionContext<ProductsQueryKey>) => {
+      return fetchProducts(activeFilter, activePage, activePageSize, signal)
     },
-    queryKey: buildTransactionsQueryKey(filter, page, PAGE_SIZE),
+    queryKey: buildProductsQueryKey(filter, page, PAGE_SIZE),
   })
 
   const totalPages = data?.totalPages ?? 1
 
-  const setNextFilter = (nextFilter: TransactionFilter) => {
+  const setNextFilter = (nextFilter: ProductFilter) => {
     setFilter(nextFilter)
     setPage(1)
   }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Transactions</Text>
+      <Text style={styles.title}>Products</Text>
 
       <View style={styles.filterRow}>
         {FILTER_OPTIONS.map((candidate) => {
@@ -153,12 +137,13 @@ function TransactionsScreen() {
 
       <FlatList
         data={data?.items ?? []}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => String(item.id)}
+        ListEmptyComponent={<Text style={styles.meta}>No rows yet.</Text>}
         renderItem={({ item }) => {
           return (
             <View style={styles.row}>
               <Text style={styles.rowTitle}>{item.title}</Text>
-              <Text style={styles.rowAmount}>${item.amount}</Text>
+              <Text style={styles.rowAmount}>${item.price}</Text>
             </View>
           )
         }}
@@ -199,7 +184,7 @@ function TransactionsScreen() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TransactionsScreen />
+      <ProductsScreen />
     </QueryClientProvider>
   )
 }
