@@ -4,4 +4,12 @@ inputs:
     - app/App.tsx
 requirements:
   - id: tab-lazy-loading
-    description: Must set `lazy` parameter on each tab screen to enable lazy loading.
+    description: Must set `lazy: true` on tab screens so non-visited tabs are rendered only on first visit.
+  - id: tab-initial-route-defined
+    description: Must define `initialRouteName` on the bottom tab navigator to make the initially rendered tab explicit.
+  - id: tab-navigator-uses-bottom-tabs
+    description: Must implement tabs with `createBottomTabNavigator` (not stack/drawer/top-tabs) for this flow.
+  - id: no-eager-tab-render-config
+    description: Must not disable lazy behavior via `lazy: false` on any tab screen or shared `screenOptions`.
+  - id: static-tab-config
+    description: Must declare tab screens in navigator config (with per-screen options) rather than conditionally rendering tab content outside the tab navigator.
