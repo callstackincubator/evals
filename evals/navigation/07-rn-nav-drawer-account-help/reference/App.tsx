@@ -22,6 +22,7 @@ function HelpScreen() {
 }
 
 const Drawer = createDrawerNavigator({
+  id: 'root',
   screens: {
     Account: AccountScreen,
     Help: HelpScreen,

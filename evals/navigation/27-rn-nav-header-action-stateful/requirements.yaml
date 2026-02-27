@@ -1,9 +1,0 @@
-version: 1
-inputs:
-  files:
-    - app/App.tsx
-requirements:
-  - id: header-bookmark-action
-    description: Must provide a stateful header action for bookmark toggling on the current route.
-  - id: ui-state-sync
-    description: Must synchronize visible screen UI with the bookmark state changed from header action.

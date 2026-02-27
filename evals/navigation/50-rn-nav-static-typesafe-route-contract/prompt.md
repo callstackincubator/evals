@@ -1,1 +1,0 @@
-Implement a small navigation graph with TypeScript route typing. Define a Home screen and a Details screen that requires an itemId param, and ensure route params are consumed through typed screen props.

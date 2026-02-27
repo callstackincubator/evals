@@ -1,69 +1,91 @@
-import { createStaticNavigation } from '@react-navigation/native'
+import React, {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useState,
+} from 'react'
+import {
+  createStaticNavigation,
+  StaticParamList,
+  useNavigation,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-const SEED_ITEMS = ['Standup notes', 'Release checklist']
-
-async function openComposeModalAction() {
-  // No-op
-  return 'pending'
+interface NotesContextValue {
+  notes: string[]
+  addNote: (note: string) => void
 }
 
-function NotesScreen() {
+const NotesContext = createContext<NotesContextValue>({
+  notes: [],
+  addNote: () => {},
+})
+
+function NotesProvider({ children }: PropsWithChildren) {
+  const [notes] = useState<string[]>([])
+
+  const addNote: NotesContextValue['addNote'] = () => {}
+
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Notes</Text>
-      <Text style={styles.copy}>
-        Recent notes are ready.
-      </Text>
-      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
-      <Button
-        title="Open"
-        onPress={() => openComposeModalAction()}
-      />
-    </View>
+    <NotesContext.Provider value={{ notes, addNote }}>
+      {children}
+    </NotesContext.Provider>
   )
 }
 
-function ComposeNoteScreen() {
+function NotesScreen() {
+  const { notes } = useContext(NotesContext)
+
+  const handleAddNote = () => {}
+
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>ComposeNote</Text>
-      <Text style={styles.copy}>
-        More details appear here.
-      </Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Notes</Text>
+      <Button title='Open' onPress={handleAddNote} />
+      {notes.length === 0 ? (
+        <Text>No notes yet</Text>
+      ) : (
+        notes.map((note) => <Text key={note}>{note}</Text>)
+      )}
     </View>
   )
 }
 
 const Stack = createNativeStackNavigator({
+  id: 'root',
   screens: {
     Notes: NotesScreen,
-    ComposeNote: ComposeNoteScreen,
   },
 })
+
+type RootStackParamList = StaticParamList<typeof Stack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
 
 const Navigation = createStaticNavigation(Stack)
 
 export default function App() {
-  return <Navigation />
+  return (
+    <NotesProvider>
+      <Navigation />
+    </NotesProvider>
+  )
 }
 
 const styles = StyleSheet.create({
-  copy: {
-    color: '#6b7280',
-    textAlign: 'center',
-  },
-  screen: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
+  container: {
     flex: 1,
+    gap: 12,
+    alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
-    rowGap: 10,
+    padding: 24,
   },
   title: {
-    color: '#111827',
     fontSize: 20,
     fontWeight: '600',
   },

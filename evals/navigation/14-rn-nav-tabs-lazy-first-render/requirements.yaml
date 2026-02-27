@@ -1,0 +1,7 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: tab-lazy-loading
+    description: Must set `lazy` parameter on each tab screen to enable lazy loading.

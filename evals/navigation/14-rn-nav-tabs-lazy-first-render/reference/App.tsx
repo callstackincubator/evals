@@ -33,9 +33,24 @@ const TabNavigator = createBottomTabNavigator({
   id: 'root',
   initialRouteName: 'Home',
   screens: {
-    Home: HomeScreen,
-    Search: SearchScreen,
-    Profile: ProfileScreen,
+    Home: {
+      screen: HomeScreen,
+      options: {
+        lazy: true,
+      },
+    },
+    Search: {
+      screen: SearchScreen,
+      options: {
+        lazy: true,
+      },
+    },
+    Profile: {
+      screen: ProfileScreen,
+      options: {
+        lazy: true,
+      },
+    },
   },
 })
 

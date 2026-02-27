@@ -1,9 +1,0 @@
-version: 1
-inputs:
-  files:
-    - app/App.tsx
-requirements:
-  - id: protected-route-deep-link-gating
-    description: Must defer navigation to a protected route when the user is unauthenticated.
-  - id: resume-target-post-auth
-    description: Must navigate to the originally intended destination after successful authentication.

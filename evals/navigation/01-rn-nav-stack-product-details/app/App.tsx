@@ -1,47 +1,45 @@
-import { createStaticNavigation } from '@react-navigation/native'
+import React from 'react'
+import type { StaticParamList } from '@react-navigation/native'
+import { createStaticNavigation, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-const SEED_ITEMS = ['Product 42', 'Product 84']
-
-async function openProductDetailsAction() {
-  // No-op
-  return 'pending'
-}
+const PRODUCTS = [
+  { id: '42', title: 'Product 42' },
+  { id: '84', title: 'Product 84' },
+] as const
 
 function ProductsScreen() {
+  const handleNavigateToDetails = () => {}
+  const handleNavigateToMissingProduct = () => {}
+
   return (
-    <View style={styles.screen}>
+    <View style={styles.container}>
       <Text style={styles.title}>Products</Text>
-      <Text style={styles.copy}>
-        Product list is ready. Choose an item to continue.
-      </Text>
-      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
+      <Text>{`Items: ${PRODUCTS.map((product) => product.title).join(', ')}`}</Text>
+      <Button title="Open" onPress={handleNavigateToDetails} />
       <Button
-        title="Open"
-        onPress={() => openProductDetailsAction()}
+        title="Open Missing Product"
+        onPress={handleNavigateToMissingProduct}
       />
     </View>
   )
 }
 
-function ProductDetailsScreen() {
-  return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>ProductDetails</Text>
-      <Text style={styles.copy}>
-        More details appear here.
-      </Text>
-    </View>
-  )
-}
-
 const Stack = createNativeStackNavigator({
+  id: 'root',
   screens: {
     Products: ProductsScreen,
-    ProductDetails: ProductDetailsScreen,
   },
 })
+
+type RootStackParamList = StaticParamList<typeof Stack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
 
 const Navigation = createStaticNavigation(Stack)
 
@@ -50,20 +48,14 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  copy: {
-    color: '#6b7280',
-    textAlign: 'center',
-  },
-  screen: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
+  container: {
     flex: 1,
+    gap: 12,
+    alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
-    rowGap: 10,
+    padding: 24,
   },
   title: {
-    color: '#111827',
     fontSize: 20,
     fontWeight: '600',
   },

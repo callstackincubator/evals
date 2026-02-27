@@ -1,9 +1,0 @@
-version: 1
-inputs:
-  files:
-    - app/App.tsx
-requirements:
-  - id: typed-param-list-contract
-    description: Must define a typed param list contract and include Details with required itemId params.
-  - id: typed-screen-param-consumption
-    description: Must consume itemId through typed route or screen props in Details screen logic.

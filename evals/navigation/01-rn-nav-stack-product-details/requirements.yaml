@@ -3,9 +3,13 @@ inputs:
   files:
     - app/App.tsx
 requirements:
+  - id: product-details-screen-present
+    description: Must define and register a ProductDetails screen route in the stack navigator.
   - id: details-title-param
     description: Must pass a title param when navigating from list to product details.
   - id: product-id-fallback
     description: Must handle missing productId with a deterministic fallback display instead of showing stale or undefined values.
   - id: implementation-use-use-navigation
     description: Must use useNavigation to get the navigation object.
+  - id: static-api-navigation-construction
+    description: Must construct navigation with React Navigation static API and render it via `createStaticNavigation(...)`.

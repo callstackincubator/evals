@@ -1,25 +1,34 @@
 import React, { useLayoutEffect } from 'react'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Button, StyleSheet, Text, View } from 'react-native'
 import {
   createStaticNavigation,
   StaticParamList,
   StaticScreenProps,
   useNavigation,
 } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { Button, StyleSheet, Text, View } from 'react-native'
+
+const PEOPLE = [
+  { id: 'alice', name: 'Alice' },
+  { id: 'bob', name: 'Bob' },
+] as const
 
 function HomeScreen() {
   const navigation = useNavigation()
+
   const openAlice = () => {
-    navigation.navigate('Details', { name: 'Alice' })
+    navigation.navigate('Details', { name: PEOPLE[0].name })
   }
   const openBob = () => {
-    navigation.navigate('Details', { name: 'Bob' })
+    navigation.navigate('Details', { name: PEOPLE[1].name })
   }
+
   return (
     <View style={styles.container}>
-      <Button title="Open" onPress={openAlice} />
-      <Button title="Open Bob" onPress={openBob} />
+      <Text style={styles.title}>People</Text>
+      <Text>{`Items: ${PEOPLE.map((person) => person.name).join(', ')}`}</Text>
+      <Button title='Open Alice' onPress={openAlice} />
+      <Button title='Open Bob' onPress={openBob} />
     </View>
   )
 }
@@ -44,6 +53,7 @@ function DetailsScreen({ route }: DetailsScreenProps) {
 }
 
 const Stack = createNativeStackNavigator({
+  id: 'root',
   screens: {
     Home: HomeScreen,
     Details: DetailsScreen,

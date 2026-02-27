@@ -4,6 +4,8 @@ inputs:
     - app/App.tsx
 requirements:
   - id: three-tab-routes
-    description: Must define three bottom tab routes named Home, Search, Profile.
+    description: Must define three bottom tab routes named Home, Search, Profile using `createBottomTabNavigator` from `@react-navigation/bottom-tabs`.
   - id: explicit-initial-tab
     description: Must explicitly set Home as the initial tab route.
+  - id: static-api-navigation-construction
+    description: Must construct navigation with React Navigation static API and render it via `createStaticNavigation(...)`.

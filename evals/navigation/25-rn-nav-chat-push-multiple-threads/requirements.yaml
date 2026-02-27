@@ -1,9 +1,0 @@
-version: 1
-inputs:
-  files:
-    - app/App.tsx
-requirements:
-  - id: thread-push-multiple-instances
-    description: Must allow opening multiple Thread route instances with different thread IDs in history at the same time.
-  - id: thread-param-rendering
-    description: Must render thread-specific state from route params for each pushed instance.

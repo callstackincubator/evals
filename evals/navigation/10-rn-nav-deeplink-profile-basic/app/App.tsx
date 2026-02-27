@@ -1,69 +1,60 @@
-import { createStaticNavigation } from '@react-navigation/native'
+import {
+  createStaticNavigation,
+  StaticParamList,
+  StaticScreenProps,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Button, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 
-const SEED_ITEMS = ['userId: 123']
-
-async function parseProfileDeepLinkAction() {
-  // No-op
-  return 'pending'
-}
-
-function EntryScreen() {
+function HomeScreen() {
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Entry</Text>
-      <Text style={styles.copy}>
-        Profile entry is ready.
-      </Text>
-      <Text style={styles.copy}>Items: {SEED_ITEMS.join(', ')}</Text>
-      <Button
-        title="Open"
-        onPress={() => parseProfileDeepLinkAction()}
-      />
+    <View style={styles.container}>
+       <Text style={styles.title}>Home</Text>
     </View>
   )
 }
 
-function ProfileScreen() {
+type ProfileProps = StaticScreenProps<{ userId: string }>
+
+function ProfileScreen({ route }: ProfileProps) {
   return (
-    <View style={styles.screen}>
+    <View style={styles.container}>
       <Text style={styles.title}>Profile</Text>
-      <Text style={styles.copy}>
-        More details appear here.
-      </Text>
+      <Text>userId: {route.params.userId}</Text>
     </View>
   )
 }
 
-const Stack = createNativeStackNavigator({
+const RootStack = createNativeStackNavigator({
   screens: {
-    Entry: EntryScreen,
+    Home: HomeScreen,
     Profile: ProfileScreen,
   },
 })
 
-const Navigation = createStaticNavigation(Stack)
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(RootStack)
 
 export default function App() {
   return <Navigation />
 }
 
 const styles = StyleSheet.create({
-  copy: {
-    color: '#6b7280',
-    textAlign: 'center',
-  },
-  screen: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
+  container: {
     flex: 1,
+    alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
-    rowGap: 10,
+    gap: 12,
+    padding: 24,
   },
   title: {
-    color: '#111827',
     fontSize: 20,
     fontWeight: '600',
   },

@@ -1,9 +1,0 @@
-version: 1
-inputs:
-  files:
-    - app/App.tsx
-requirements:
-  - id: navigation-state-persistence
-    description: Must persist navigation state on route changes.
-  - id: storage-read-write-path
-    description: Must restore navigation state through NavigationContainer initialState during startup.
