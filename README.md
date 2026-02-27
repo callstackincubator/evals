@@ -1,67 +1,44 @@
 # React Native Evals
 
-A benchmark suite for evaluating how coding models solve real React Native tasks.
+React Native Evals is a benchmark for evaluating how coding models implement real React Native tasks.
 
-## Quick start
+## Available Evals
 
-Install dependencies:
+Groups map to top-level folders under `evals/`.
+
+| Group | Path | Status |
+| --- | --- | --- |
+| animation | `evals/animation` | Active |
+| async-state | `evals/async-state` | Active | 
+| navigation | `evals/navigation` | Active |
+| react-native-apis | `evals/react-native-apis` | WIP |
+| expo-sdk | `evals/expo-sdk` | WIP |
+| nitro-modules | `evals/nitro-modules` | WIP |
+| lists | `evals/lists` | WIP |
+
+> Want a group that is not listed here? [Open an issue](https://github.com/callstackincubator/evals/issues/new/choose) to request it. Contributions are also welcome.
+
+## Getting Started
 
 ```bash
 bun install
-```
-
-Then, generate outputs:
-```bash
 bun runner/run.ts --model openai/gpt-4.1-mini --output generated/my-generated
-```
-Default output path is `generated/<model>-<timestamp>`.
-
-To generate a reference baseline (no solver call), use `noop`:
-```bash
-bun runner/run.ts --model noop
-```
-
-Judge the generated outputs:
-```bash
 bun runner/judge.ts --model openai/gpt-5.3-codex --input generated/my-generated
 ```
-Default judge output path is `runs/<input-folder>/` with per-eval files in `runs/<input-folder>/evals/`.
 
-Run a focused subset:
+For full command reference and workflows, see [docs](./docs) and [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-```bash
-bun runner/run.ts --pattern "evals/animation/01*" --model "openai/gpt-5.3-codex" --output generated/my-generated
-bun runner/judge.ts --model "openai/gpt-5.3-codex" --input generated/my-generated
-```
+## Research Paper
 
-## What this repository includes
+Methodology and scoring details are documented in the [benchmark methodology whitepaper](./paper/benchmark-methodology-whitepaper.tex).
 
-- evals under `evals/<category>/<eval-id>/`
+The benchmark evaluates model-generated React Native implementations using requirement-based assessment. Each eval specifies a fixed task context and a set of explicit, judgeable requirements. Model outputs are judged against these requirements using file-level evidence, and per-eval scores are computed from requirement outcomes with optional weighting. Aggregate run metrics summarize performance across evals under a consistent evaluation protocol.
 
-Each eval includes:
+## Requests And Contributions
 
-- `prompt.md`
-- `requirements.yaml`
-- `app/` baseline input files for solver stage
-- `reference/` reference files for judge context and oracle mode
+If you want to request new features to be evaluated, [open an issue](https://github.com/callstackincubator/evals/issues/new/choose). We are open to covering the most popular ecosystem libraries and will continue expanding coverage.
 
-## Common commands
-
-```bash
-bun runner/run.ts --model openai/gpt-4.1-mini
-bun runner/run.ts --model noop --output generated/reference-generated
-bun runner/judge.ts --input generated/reference-generated --model openai/gpt-5.3-codex
-bun runner/judge.ts --input generated/reference-generated --model openai/gpt-5.3-codex --debug
-bun lint
-```
-
-## Documentation
-
-Detailed guides live in [docs](./docs), and methodology/scoring details are in [paper/benchmark-methodology-whitepaper.tex](./paper/benchmark-methodology-whitepaper.tex).
-
-## Contributing
-
-See `AGENTS.md` for branch naming, commit format, validation expectations, and PR workflow.
+Contributions are welcome. Start with [CONTRIBUTING.md](./CONTRIBUTING.md) and [`AGENTS.md`](./AGENTS.md).
 
 ## License
 

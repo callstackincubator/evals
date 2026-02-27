@@ -41,12 +41,3 @@ Every new category should include `evals/<category>/README.md` with exactly:
   - best-practice inventory
 
 Keep category READMEs focused on those sections only.
-
-## Similarity budget for technical eval sets
-
-To avoid low-signal duplicates in technical subgroups:
-
-1. Keep shared subgroup requirements to at most 2 IDs across sibling evals.
-2. Keep at least 3 implementation-specific requirements per eval that differ across siblings.
-3. Measure pairwise requirement ID overlap before finalizing the category.
-4. If overlap exceeds budget, split generic checks into subgroup baseline checks and eval-specific API flow checks.
