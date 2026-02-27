@@ -1,6 +1,8 @@
 # React Native Evals
 
-React Native Evals is a benchmark for evaluating how coding models implement real React Native tasks.
+![React Native Evals banner](./assets/banner.jpg)
+
+A benchmark suite for evaluating how coding models solve real React Native tasks.
 
 ## Available Evals
 
