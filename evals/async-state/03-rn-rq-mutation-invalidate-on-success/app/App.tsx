@@ -1,10 +1,15 @@
 import { useState } from 'react'
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 
+type TodoItem = {
+  id: number
+  title: string
+}
+
 function ItemsScreen() {
   const [draft, setDraft] = useState('')
 
-  const data = []
+  const data = [] as TodoItem[]
 
   return (
     <View style={styles.screen}>

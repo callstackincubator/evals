@@ -1,7 +1,13 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
+type Todo = {
+  id: string
+  title: string
+  done: boolean
+}
+
 function TodosScreen() {
-  const data = []
+  const data = [] as Todo[]
 
   return (
     <View style={styles.screen}>

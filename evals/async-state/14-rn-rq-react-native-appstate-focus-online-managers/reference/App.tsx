@@ -69,7 +69,7 @@ function useReactQueryLifecycleBridge() {
 
   const addOnNetInfoChangeListener = () => {
     return NetInfo.addEventListener((state) => {
-      const nextOnline = state.isConnected && state.isInternetReachable !== false
+      const nextOnline = Boolean(state.isConnected && state.isInternetReachable !== false)
       setIsOnline(nextOnline)
       onlineManager.setOnline(nextOnline)
     })

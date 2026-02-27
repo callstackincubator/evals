@@ -137,9 +137,9 @@ function TodosScreen() {
         )
       })}
 
-      {toggleMutation.error && (
+      {toggleMutation.error ? (
         <Text style={styles.error}>Toggle failed. Cache rolled back and revalidated.</Text>
-      )}
+      ) : null}
     </View>
   )
 }
