@@ -346,8 +346,10 @@ export function isRecoverableOpencodeError(error: unknown) {
     return false
   }
 
+  // "No output generated" is a model behavior issue, not a server issue.
+  // It is handled by in-loop retries inside the judge/solver callers,
+  // so do NOT restart the server for it.
   return (
-    /no output generated/i.test(message) ||
     /incorrect api key provided/i.test(message) ||
     /invalid_api_key/i.test(message) ||
     /providerautherror/i.test(message) ||

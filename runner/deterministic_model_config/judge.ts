@@ -33,5 +33,5 @@ export const JUDGE_OPENCODE_MODEL_SETTINGS = {
 } as const
 
 /* Retry / fallback strategy */
-export const JUDGE_STRUCTURED_OUTPUT_ATTEMPTS = 2
-export const JUDGE_JSON_FALLBACK_ATTEMPTS = 2
+export const JUDGE_STRUCTURED_OUTPUT_ATTEMPTS = 3
+export const JUDGE_JSON_FALLBACK_ATTEMPTS = 3

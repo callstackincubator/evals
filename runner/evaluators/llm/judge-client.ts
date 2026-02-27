@@ -114,7 +114,11 @@ export async function runJudgeCall(
 
         return response.output
       } catch (error) {
-        structuredOutputError = error
+        const finishReason = (error as { finishReason?: string })?.finishReason
+        const detail = finishReason ? ` (finishReason=${finishReason})` : ''
+        structuredOutputError = new Error(
+          `${getErrorMessage(error)}${detail} [attempt ${attempt}/${STRUCTURED_OUTPUT_ATTEMPTS}]`
+        )
         const shouldRetry =
           attempt < STRUCTURED_OUTPUT_ATTEMPTS && isNoOutputGeneratedError(error)
         if (!shouldRetry) {
@@ -126,23 +130,28 @@ export async function runJudgeCall(
     const fallbackFailures: string[] = []
     for (let attempt = 1; attempt <= JSON_FALLBACK_ATTEMPTS; attempt++) {
       try {
-        const { text } = await generateText({
+        const response = await generateText({
           model: createJudgeModel(),
           prompt,
           system: JSON_FALLBACK_SYSTEM_PROMPT,
           abortSignal: AbortSignal.timeout(timeout),
         })
 
+        const text = response.text ?? ''
         const parsedOutput = parseJudgeOutputFromText(text)
         if (parsedOutput.success) {
           return parsedOutput.data
         }
 
         const normalizedText = text.trim()
+        const finishReason = response.finishReason ?? 'unknown'
+        const usage = response.usage
+          ? `in=${response.usage.inputTokens ?? '?'},out=${response.usage.outputTokens ?? '?'}`
+          : 'n/a'
         fallbackFailures.push(
           normalizedText.length === 0
-            ? `fallback attempt ${attempt}: no output generated`
-            : `fallback attempt ${attempt}: invalid JSON output`
+            ? `fallback attempt ${attempt}: no output generated (finishReason=${finishReason}, usage=${usage})`
+            : `fallback attempt ${attempt}: invalid JSON output (finishReason=${finishReason}, len=${normalizedText.length})`
         )
       } catch (error) {
         fallbackFailures.push(
