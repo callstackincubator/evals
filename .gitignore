@@ -4,6 +4,10 @@ node_modules/
 # runner outputs
 results/*
 !results/.gitkeep
+generated/*
+!generated/.gitkeep
+runs/*
+!runs/.gitkeep
 
 # local env
 .env

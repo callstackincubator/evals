@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { readGenerationManifest } from './utils/generation-manifest'
@@ -20,6 +20,15 @@ function roundTo(value: number, decimals: number) {
 
 function toRelativePath(value: string) {
   return path.relative(process.cwd(), value).split(path.sep).join('/')
+}
+
+function getEvalResultSubdirectory(generatedPath: string) {
+  const normalizedPath = generatedPath.replace(/\\/g, '/').replace(/^\/+/, '')
+  const parentDirectory = path.posix.dirname(normalizedPath)
+  if (parentDirectory === '.' || parentDirectory.startsWith('..')) {
+    return ''
+  }
+  return parentDirectory
 }
 
 /*
@@ -94,8 +103,16 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
         }
 
         const resultFileName = `${sanitizeSegment(stageResult.evalId)}.json`
+        const resultSubdirectory = getEvalResultSubdirectory(
+          manifestEval.generatedPath
+        )
+        const resultDirectory = path.join(
+          outputDirectories.evalDirectory,
+          resultSubdirectory
+        )
+        await mkdir(resultDirectory, { recursive: true })
         await writeFile(
-          path.join(outputDirectories.evalDirectory, resultFileName),
+          path.join(resultDirectory, resultFileName),
           JSON.stringify(stageResult, null, 2),
           'utf8'
         )
