@@ -10,22 +10,22 @@ export function buildJudgePrompt(
 ) {
   const requirementsBlock = requirements
     .map((requirement) => {
-      const weightText =
-        requirement.weight !== undefined
-          ? ` (weight: ${requirement.weight})`
-          : ''
-      return `- ${requirement.id}${weightText}: ${requirement.description}`
+      return `
+        <requirement>
+          <id>${requirement.id}</id>
+          <weight>${requirement.weight}</weight>
+          <description>${requirement.description}</description>
+        </requirement>
+      `
     })
-    .join('\n')
+    .join('\n\n')
 
   const filesBlock = files
     .map((file) => {
       return `
-        ### FILE: ${file.path}
-
-        \`\`\`
-        ${file.content}
-        \`\`\`
+        <file>
+          ${file.content}
+        </file>
       `
     })
     .join('\n\n')
@@ -41,9 +41,13 @@ export function buildJudgePrompt(
     - Keep reasons concise, concrete, and technically specific.
 
     Acceptance criteria:
-    ${requirementsBlock}
+    <requirements>
+      ${requirementsBlock}
+    </requirements>
 
     Submitted files:
-    ${filesBlock}
+    <files>
+      ${filesBlock}
+    </files>
   `
 }

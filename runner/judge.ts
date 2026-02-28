@@ -11,7 +11,7 @@ import {
 import { runLlmJudgeStage } from './evaluators/llm/run'
 import { runWithConcurrency } from './solver/concurrency'
 import { partitionEvalRuns } from './utils/eval-runs'
-import { loadFiles, sanitizeSegment } from './utils/fs'
+import { loadFile, loadFiles, sanitizeSegment } from './utils/fs'
 
 function roundTo(value: number, decimals: number) {
   const scale = 10 ** decimals
@@ -66,8 +66,10 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
           readFile(path.join(evalDirectory, 'prompt.md'), 'utf-8'),
         ])
 
+        const packageJson = await loadFile(path.join(__dirname, '../../../testbench/package.json'))
+
         const llmJudgeStage = await runLlmJudgeStage(
-          generatedFiles,
+          [packageJson, ...generatedFiles],
           requirements,
           cliOptions
         )

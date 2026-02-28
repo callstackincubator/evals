@@ -4,7 +4,7 @@ import { z } from 'zod'
 const requirementSchema = z.object({
   id: z.string().min(1),
   description: z.string().min(1),
-  weight: z.number().positive().optional(),
+  weight: z.number().positive().optional().default(1),
 })
 
 const requirementsSchema = z.object({
