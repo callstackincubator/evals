@@ -39,6 +39,28 @@ function formatUnknownError(error: unknown) {
   return String(error)
 }
 
+async function runWithRetries<T>(
+  task: () => Promise<T>,
+  maxRetries: number,
+  onRetry: (attempt: number, error: unknown) => void
+) {
+  const maxAttempts = maxRetries + 1
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      return await task()
+    } catch (error) {
+      if (attempt >= maxAttempts) {
+        throw error
+      }
+
+      onRetry(attempt, error)
+    }
+  }
+
+  throw new Error('unexpected retry flow')
+}
+
 /*
   Runs LLM judging only (no generation), validates the input manifest from
   `runner/run.ts`, and writes per-eval judge outputs plus aggregate summary.
@@ -87,10 +109,21 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
           path.resolve(__dirname, '../testbench/package.json')
         )
 
-        const llmJudgeStage = await runLlmJudgeStage(
-          [packageJson, ...generatedFiles],
-          requirements,
-          cliOptions
+        const llmJudgeStage = await runWithRetries(
+          () =>
+            runLlmJudgeStage(
+              [packageJson, ...generatedFiles],
+              requirements,
+              cliOptions
+            ),
+          cliOptions.maxRetries,
+          (attempt, error) => {
+            const errorMessage =
+              error instanceof Error ? error.message : String(error)
+            console.warn(
+              `[judge-stage][${manifestEval.evalId}] attempt ${attempt}/${cliOptions.maxRetries} failed: ${errorMessage}`
+            )
+          }
         )
 
         const stageResult = {
