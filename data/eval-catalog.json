@@ -1,0 +1,4755 @@
+{
+  "version": "1.0.0",
+  "categories": [
+    {
+      "id": "animation",
+      "name": "Animation",
+      "iconKey": "film-slate",
+      "order": 1,
+      "evals": [
+        {
+          "id": "animation-01",
+          "name": "01 stress-flow",
+          "prompt": "Build a React Native animation solution for stress flow. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r2",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r3",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "animation-02",
+          "name": "02 interaction-loop",
+          "prompt": "Build a React Native animation solution for interaction loop. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r2",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r3",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r4",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r5",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r6",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "animation-03",
+          "name": "03 resilience-check",
+          "prompt": "Build a React Native animation solution for resilience check. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r2",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r3",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r4",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r5",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r6",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r7",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r8",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r9",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "animation-04",
+          "name": "04 state-sync",
+          "prompt": "Build a React Native animation solution for state sync. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r2",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r3",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r4",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "animation-05",
+          "name": "05 latency-guard",
+          "prompt": "Build a React Native animation solution for latency guard. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r2",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r3",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r4",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r5",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r6",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r7",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "animation-06",
+          "name": "06 regression-watch",
+          "prompt": "Build a React Native animation solution for regression watch. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r2",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r3",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r4",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r5",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r6",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r7",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r8",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r9",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r10",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "animation-07",
+          "name": "07 ui-feedback",
+          "prompt": "Build a React Native animation solution for ui feedback. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r2",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r3",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r4",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r5",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "animation-08",
+          "name": "08 recovery-path",
+          "prompt": "Build a React Native animation solution for recovery path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r2",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r3",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r4",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r5",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r6",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r7",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r8",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "animation-09",
+          "name": "09 baseline-scenario",
+          "prompt": "Build a React Native animation solution for baseline scenario. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r2",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r3",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "animation-10",
+          "name": "10 edge-case-path",
+          "prompt": "Build a React Native animation solution for edge case path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r2",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r3",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r4",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r5",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r6",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "animation-11",
+          "name": "11 stress-flow",
+          "prompt": "Build a React Native animation solution for stress flow. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r2",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r3",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r4",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r5",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r6",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r7",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r8",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r9",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "animation-12",
+          "name": "12 interaction-loop",
+          "prompt": "Build a React Native animation solution for interaction loop. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r2",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r3",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r4",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "animation-13",
+          "name": "13 resilience-check",
+          "prompt": "Build a React Native animation solution for resilience check. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r2",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r3",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r4",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r5",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r6",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r7",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "animation-14",
+          "name": "14 state-sync",
+          "prompt": "Build a React Native animation solution for state sync. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r2",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r3",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r4",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r5",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r6",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r7",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r8",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r9",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r10",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "animation-15",
+          "name": "15 latency-guard",
+          "prompt": "Build a React Native animation solution for latency guard. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r2",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r3",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r4",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r5",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "animation-16",
+          "name": "16 regression-watch",
+          "prompt": "Build a React Native animation solution for regression watch. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r2",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r3",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r4",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r5",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r6",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r7",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r8",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "async-state",
+      "name": "Async State",
+      "iconKey": "arrows-clockwise",
+      "order": 2,
+      "evals": [
+        {
+          "id": "async-state-01",
+          "name": "01 interaction-loop",
+          "prompt": "Build a React Native async state solution for interaction loop. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r2",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r3",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r4",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r5",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r6",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r7",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r8",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "async-state-02",
+          "name": "02 resilience-check",
+          "prompt": "Build a React Native async state solution for resilience check. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r2",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r3",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "async-state-03",
+          "name": "03 state-sync",
+          "prompt": "Build a React Native async state solution for state sync. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r2",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r3",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r4",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r5",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r6",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "async-state-04",
+          "name": "04 latency-guard",
+          "prompt": "Build a React Native async state solution for latency guard. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r2",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r3",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r4",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r5",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r6",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r7",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r8",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r9",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "async-state-05",
+          "name": "05 regression-watch",
+          "prompt": "Build a React Native async state solution for regression watch. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r2",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r3",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r4",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "async-state-06",
+          "name": "06 ui-feedback",
+          "prompt": "Build a React Native async state solution for ui feedback. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r2",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r3",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r4",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r5",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r6",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r7",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "async-state-07",
+          "name": "07 recovery-path",
+          "prompt": "Build a React Native async state solution for recovery path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r2",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r3",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r4",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r5",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r6",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r7",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r8",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r9",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r10",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "async-state-08",
+          "name": "08 baseline-scenario",
+          "prompt": "Build a React Native async state solution for baseline scenario. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r2",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r3",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r4",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r5",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "async-state-09",
+          "name": "09 edge-case-path",
+          "prompt": "Build a React Native async state solution for edge case path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r2",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r3",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r4",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r5",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r6",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r7",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r8",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "async-state-10",
+          "name": "10 stress-flow",
+          "prompt": "Build a React Native async state solution for stress flow. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r2",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r3",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "async-state-11",
+          "name": "11 interaction-loop",
+          "prompt": "Build a React Native async state solution for interaction loop. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r2",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r3",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r4",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r5",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r6",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "async-state-12",
+          "name": "12 resilience-check",
+          "prompt": "Build a React Native async state solution for resilience check. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r2",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r3",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r4",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r5",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r6",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r7",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r8",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r9",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "async-state-13",
+          "name": "13 state-sync",
+          "prompt": "Build a React Native async state solution for state sync. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r2",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r3",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r4",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "async-state-14",
+          "name": "14 latency-guard",
+          "prompt": "Build a React Native async state solution for latency guard. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r2",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r3",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r4",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r5",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r6",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r7",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "async-state-15",
+          "name": "15 regression-watch",
+          "prompt": "Build a React Native async state solution for regression watch. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r2",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r3",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r4",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r5",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r6",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r7",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r8",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r9",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r10",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "async-state-16",
+          "name": "16 ui-feedback",
+          "prompt": "Build a React Native async state solution for ui feedback. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r2",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r3",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r4",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r5",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "permissions",
+      "name": "Permissions",
+      "iconKey": "shield-check",
+      "order": 3,
+      "evals": [
+        {
+          "id": "permissions-01",
+          "name": "01 resilience-check",
+          "prompt": "Build a React Native permissions solution for resilience check. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r2",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r3",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r4",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r5",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "permissions-02",
+          "name": "02 state-sync",
+          "prompt": "Build a React Native permissions solution for state sync. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r2",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r3",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r4",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r5",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r6",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r7",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r8",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "permissions-03",
+          "name": "03 latency-guard",
+          "prompt": "Build a React Native permissions solution for latency guard. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r2",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r3",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "permissions-04",
+          "name": "04 regression-watch",
+          "prompt": "Build a React Native permissions solution for regression watch. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r2",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r3",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r4",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r5",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r6",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "permissions-05",
+          "name": "05 ui-feedback",
+          "prompt": "Build a React Native permissions solution for ui feedback. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r2",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r3",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r4",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r5",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r6",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r7",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r8",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r9",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "permissions-06",
+          "name": "06 recovery-path",
+          "prompt": "Build a React Native permissions solution for recovery path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r2",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r3",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r4",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "permissions-07",
+          "name": "07 baseline-scenario",
+          "prompt": "Build a React Native permissions solution for baseline scenario. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r2",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r3",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r4",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r5",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r6",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r7",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "permissions-08",
+          "name": "08 edge-case-path",
+          "prompt": "Build a React Native permissions solution for edge case path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r2",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r3",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r4",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r5",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r6",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r7",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r8",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r9",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r10",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "permissions-09",
+          "name": "09 stress-flow",
+          "prompt": "Build a React Native permissions solution for stress flow. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r2",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r3",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r4",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r5",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "permissions-10",
+          "name": "10 interaction-loop",
+          "prompt": "Build a React Native permissions solution for interaction loop. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r2",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r3",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r4",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r5",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r6",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r7",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r8",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "permissions-11",
+          "name": "11 resilience-check",
+          "prompt": "Build a React Native permissions solution for resilience check. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r2",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r3",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "permissions-12",
+          "name": "12 state-sync",
+          "prompt": "Build a React Native permissions solution for state sync. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r2",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r3",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r4",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r5",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r6",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "permissions-13",
+          "name": "13 latency-guard",
+          "prompt": "Build a React Native permissions solution for latency guard. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r2",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r3",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r4",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r5",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r6",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r7",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r8",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r9",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "permissions-14",
+          "name": "14 regression-watch",
+          "prompt": "Build a React Native permissions solution for regression watch. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r2",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r3",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r4",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "permissions-15",
+          "name": "15 ui-feedback",
+          "prompt": "Build a React Native permissions solution for ui feedback. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r2",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r3",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r4",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r5",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r6",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r7",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "permissions-16",
+          "name": "16 recovery-path",
+          "prompt": "Build a React Native permissions solution for recovery path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r2",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r3",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r4",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r5",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r6",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r7",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r8",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r9",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r10",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "permissions-17",
+          "name": "17 baseline-scenario",
+          "prompt": "Build a React Native permissions solution for baseline scenario. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r2",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r3",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r4",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r5",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "permissions-18",
+          "name": "18 edge-case-path",
+          "prompt": "Build a React Native permissions solution for edge case path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r2",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r3",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r4",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r5",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r6",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r7",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r8",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "permissions-19",
+          "name": "19 stress-flow",
+          "prompt": "Build a React Native permissions solution for stress flow. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r2",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r3",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "permissions-20",
+          "name": "20 interaction-loop",
+          "prompt": "Build a React Native permissions solution for interaction loop. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r2",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r3",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r4",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r5",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r6",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "permissions-21",
+          "name": "21 resilience-check",
+          "prompt": "Build a React Native permissions solution for resilience check. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r2",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r3",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r4",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r5",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r6",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r7",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r8",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r9",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "permissions-22",
+          "name": "22 state-sync",
+          "prompt": "Build a React Native permissions solution for state sync. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r2",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r3",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r4",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "permissions-23",
+          "name": "23 latency-guard",
+          "prompt": "Build a React Native permissions solution for latency guard. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r2",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r3",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r4",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r5",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r6",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r7",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "permissions-24",
+          "name": "24 regression-watch",
+          "prompt": "Build a React Native permissions solution for regression watch. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r2",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r3",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r4",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r5",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r6",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r7",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r8",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r9",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r10",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lists",
+      "name": "Lists",
+      "iconKey": "list-bullets",
+      "order": 4,
+      "evals": [
+        {
+          "id": "lists-01",
+          "name": "01 state-sync",
+          "prompt": "Build a React Native lists solution for state sync. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r2",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r3",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r4",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r5",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r6",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r7",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r8",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r9",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r10",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "lists-02",
+          "name": "02 latency-guard",
+          "prompt": "Build a React Native lists solution for latency guard. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r2",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r3",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r4",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r5",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "lists-03",
+          "name": "03 regression-watch",
+          "prompt": "Build a React Native lists solution for regression watch. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r2",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r3",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r4",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r5",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r6",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r7",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r8",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "lists-04",
+          "name": "04 ui-feedback",
+          "prompt": "Build a React Native lists solution for ui feedback. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r2",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r3",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "lists-05",
+          "name": "05 recovery-path",
+          "prompt": "Build a React Native lists solution for recovery path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r2",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r3",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r4",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r5",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r6",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "lists-06",
+          "name": "06 baseline-scenario",
+          "prompt": "Build a React Native lists solution for baseline scenario. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r2",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r3",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r4",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r5",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r6",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r7",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r8",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r9",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "lists-07",
+          "name": "07 edge-case-path",
+          "prompt": "Build a React Native lists solution for edge case path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r2",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r3",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r4",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "lists-08",
+          "name": "08 stress-flow",
+          "prompt": "Build a React Native lists solution for stress flow. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r2",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r3",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r4",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r5",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r6",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r7",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "lists-09",
+          "name": "09 interaction-loop",
+          "prompt": "Build a React Native lists solution for interaction loop. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r2",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r3",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r4",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r5",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r6",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r7",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r8",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r9",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r10",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "lists-10",
+          "name": "10 resilience-check",
+          "prompt": "Build a React Native lists solution for resilience check. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r2",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r3",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r4",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r5",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "lists-11",
+          "name": "11 state-sync",
+          "prompt": "Build a React Native lists solution for state sync. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r2",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r3",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r4",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r5",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r6",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r7",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r8",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "lists-12",
+          "name": "12 latency-guard",
+          "prompt": "Build a React Native lists solution for latency guard. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r2",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r3",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "lists-13",
+          "name": "13 regression-watch",
+          "prompt": "Build a React Native lists solution for regression watch. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r2",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r3",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r4",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r5",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r6",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "lists-14",
+          "name": "14 ui-feedback",
+          "prompt": "Build a React Native lists solution for ui feedback. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r2",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r3",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r4",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r5",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r6",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r7",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r8",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r9",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "lists-15",
+          "name": "15 recovery-path",
+          "prompt": "Build a React Native lists solution for recovery path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r2",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r3",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r4",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "lists-16",
+          "name": "16 baseline-scenario",
+          "prompt": "Build a React Native lists solution for baseline scenario. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r2",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r3",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r4",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r5",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r6",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r7",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "lists-17",
+          "name": "17 edge-case-path",
+          "prompt": "Build a React Native lists solution for edge case path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r2",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r3",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r4",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r5",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r6",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r7",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r8",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r9",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r10",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "lists-18",
+          "name": "18 stress-flow",
+          "prompt": "Build a React Native lists solution for stress flow. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r2",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r3",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r4",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r5",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "navigation",
+      "name": "Navigation",
+      "iconKey": "compass",
+      "order": 5,
+      "evals": [
+        {
+          "id": "navigation-01",
+          "name": "01 latency-guard",
+          "prompt": "Build a React Native navigation solution for latency guard. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r2",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r3",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r4",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r5",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r6",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r7",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "navigation-02",
+          "name": "02 regression-watch",
+          "prompt": "Build a React Native navigation solution for regression watch. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r2",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r3",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r4",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r5",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r6",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r7",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r8",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r9",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r10",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "navigation-03",
+          "name": "03 ui-feedback",
+          "prompt": "Build a React Native navigation solution for ui feedback. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r2",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r3",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r4",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r5",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "navigation-04",
+          "name": "04 recovery-path",
+          "prompt": "Build a React Native navigation solution for recovery path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r2",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r3",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r4",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r5",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r6",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r7",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r8",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "navigation-05",
+          "name": "05 baseline-scenario",
+          "prompt": "Build a React Native navigation solution for baseline scenario. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r2",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r3",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "navigation-06",
+          "name": "06 edge-case-path",
+          "prompt": "Build a React Native navigation solution for edge case path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r2",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r3",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r4",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r5",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r6",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "navigation-07",
+          "name": "07 stress-flow",
+          "prompt": "Build a React Native navigation solution for stress flow. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r2",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r3",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r4",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r5",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r6",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r7",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r8",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r9",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "navigation-08",
+          "name": "08 interaction-loop",
+          "prompt": "Build a React Native navigation solution for interaction loop. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r2",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r3",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r4",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "navigation-09",
+          "name": "09 resilience-check",
+          "prompt": "Build a React Native navigation solution for resilience check. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r2",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r3",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r4",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r5",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r6",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r7",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "navigation-10",
+          "name": "10 state-sync",
+          "prompt": "Build a React Native navigation solution for state sync. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r2",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r3",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r4",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r5",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r6",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r7",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r8",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r9",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r10",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "navigation-11",
+          "name": "11 latency-guard",
+          "prompt": "Build a React Native navigation solution for latency guard. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r2",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r3",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r4",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r5",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "navigation-12",
+          "name": "12 regression-watch",
+          "prompt": "Build a React Native navigation solution for regression watch. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r2",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r3",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r4",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r5",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r6",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r7",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r8",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "navigation-13",
+          "name": "13 ui-feedback",
+          "prompt": "Build a React Native navigation solution for ui feedback. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r2",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r3",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "navigation-14",
+          "name": "14 recovery-path",
+          "prompt": "Build a React Native navigation solution for recovery path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r2",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r3",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r4",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r5",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r6",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "navigation-15",
+          "name": "15 baseline-scenario",
+          "prompt": "Build a React Native navigation solution for baseline scenario. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r2",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r3",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r4",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r5",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r6",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r7",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r8",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r9",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "navigation-16",
+          "name": "16 edge-case-path",
+          "prompt": "Build a React Native navigation solution for edge case path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r2",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r3",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r4",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "navigation-17",
+          "name": "17 stress-flow",
+          "prompt": "Build a React Native navigation solution for stress flow. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r2",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r3",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r4",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r5",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r6",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r7",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "navigation-18",
+          "name": "18 interaction-loop",
+          "prompt": "Build a React Native navigation solution for interaction loop. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r2",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r3",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r4",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r5",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r6",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r7",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r8",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r9",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r10",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "navigation-19",
+          "name": "19 resilience-check",
+          "prompt": "Build a React Native navigation solution for resilience check. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r2",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r3",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r4",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r5",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "navigation-20",
+          "name": "20 state-sync",
+          "prompt": "Build a React Native navigation solution for state sync. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r2",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r3",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r4",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r5",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r6",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r7",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r8",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "navigation-21",
+          "name": "21 latency-guard",
+          "prompt": "Build a React Native navigation solution for latency guard. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r2",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r3",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "navigation-22",
+          "name": "22 regression-watch",
+          "prompt": "Build a React Native navigation solution for regression watch. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r2",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r3",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r4",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r5",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r6",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "navigation-23",
+          "name": "23 ui-feedback",
+          "prompt": "Build a React Native navigation solution for ui feedback. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r2",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r3",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r4",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r5",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r6",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r7",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r8",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r9",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "navigation-24",
+          "name": "24 recovery-path",
+          "prompt": "Build a React Native navigation solution for recovery path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r2",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r3",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r4",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "navigation-25",
+          "name": "25 baseline-scenario",
+          "prompt": "Build a React Native navigation solution for baseline scenario. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r2",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r3",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r4",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r5",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r6",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r7",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "navigation-26",
+          "name": "26 edge-case-path",
+          "prompt": "Build a React Native navigation solution for edge case path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r2",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r3",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r4",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r5",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r6",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r7",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r8",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r9",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r10",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "navigation-27",
+          "name": "27 stress-flow",
+          "prompt": "Build a React Native navigation solution for stress flow. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r2",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r3",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r4",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r5",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "navigation-28",
+          "name": "28 interaction-loop",
+          "prompt": "Build a React Native navigation solution for interaction loop. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r2",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r3",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r4",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r5",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r6",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r7",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r8",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "navigation-29",
+          "name": "29 resilience-check",
+          "prompt": "Build a React Native navigation solution for resilience check. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r2",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r3",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "navigation-30",
+          "name": "30 state-sync",
+          "prompt": "Build a React Native navigation solution for state sync. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r2",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r3",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r4",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r5",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r6",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "navigation-31",
+          "name": "31 latency-guard",
+          "prompt": "Build a React Native navigation solution for latency guard. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r2",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r3",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r4",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r5",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r6",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r7",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r8",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r9",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "navigation-32",
+          "name": "32 regression-watch",
+          "prompt": "Build a React Native navigation solution for regression watch. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r2",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r3",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r4",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "navigation-33",
+          "name": "33 ui-feedback",
+          "prompt": "Build a React Native navigation solution for ui feedback. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r2",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r3",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r4",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r5",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r6",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r7",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "navigation-34",
+          "name": "34 recovery-path",
+          "prompt": "Build a React Native navigation solution for recovery path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r2",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r3",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r4",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r5",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r6",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r7",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r8",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r9",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r10",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "navigation-35",
+          "name": "35 baseline-scenario",
+          "prompt": "Build a React Native navigation solution for baseline scenario. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r2",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r3",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r4",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r5",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "navigation-36",
+          "name": "36 edge-case-path",
+          "prompt": "Build a React Native navigation solution for edge case path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r2",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r3",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r4",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r5",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r6",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r7",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r8",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "navigation-37",
+          "name": "37 stress-flow",
+          "prompt": "Build a React Native navigation solution for stress flow. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r2",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r3",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "navigation-38",
+          "name": "38 interaction-loop",
+          "prompt": "Build a React Native navigation solution for interaction loop. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r2",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r3",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r4",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r5",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r6",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "navigation-39",
+          "name": "39 resilience-check",
+          "prompt": "Build a React Native navigation solution for resilience check. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r2",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r3",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r4",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r5",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r6",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r7",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r8",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r9",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "navigation-40",
+          "name": "40 state-sync",
+          "prompt": "Build a React Native navigation solution for state sync. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r2",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r3",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r4",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "navigation-41",
+          "name": "41 latency-guard",
+          "prompt": "Build a React Native navigation solution for latency guard. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r2",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r3",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r4",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r5",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r6",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r7",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "navigation-42",
+          "name": "42 regression-watch",
+          "prompt": "Build a React Native navigation solution for regression watch. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r2",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r3",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r4",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r5",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r6",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r7",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r8",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r9",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r10",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "navigation-43",
+          "name": "43 ui-feedback",
+          "prompt": "Build a React Native navigation solution for ui feedback. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r2",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r3",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r4",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r5",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "navigation-44",
+          "name": "44 recovery-path",
+          "prompt": "Build a React Native navigation solution for recovery path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r2",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r3",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r4",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r5",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r6",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r7",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r8",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "navigation-45",
+          "name": "45 baseline-scenario",
+          "prompt": "Build a React Native navigation solution for baseline scenario. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r2",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r3",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "navigation-46",
+          "name": "46 edge-case-path",
+          "prompt": "Build a React Native navigation solution for edge case path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r2",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r3",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r4",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r5",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r6",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "navigation-47",
+          "name": "47 stress-flow",
+          "prompt": "Build a React Native navigation solution for stress flow. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r2",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r3",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r4",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r5",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r6",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r7",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r8",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r9",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "navigation-48",
+          "name": "48 interaction-loop",
+          "prompt": "Build a React Native navigation solution for interaction loop. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r2",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r3",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r4",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "navigation-49",
+          "name": "49 resilience-check",
+          "prompt": "Build a React Native navigation solution for resilience check. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r2",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r3",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r4",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r5",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r6",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r7",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "navigation-50",
+          "name": "50 state-sync",
+          "prompt": "Build a React Native navigation solution for state sync. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r2",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r3",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r4",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r5",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r6",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r7",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r8",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r9",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r10",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "storage",
+      "name": "Storage",
+      "iconKey": "database",
+      "order": 6,
+      "evals": [
+        {
+          "id": "storage-01",
+          "name": "01 regression-watch",
+          "prompt": "Build a React Native storage solution for regression watch. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r2",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r3",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r4",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "storage-02",
+          "name": "02 ui-feedback",
+          "prompt": "Build a React Native storage solution for ui feedback. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r2",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r3",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r4",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r5",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r6",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r7",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "storage-03",
+          "name": "03 recovery-path",
+          "prompt": "Build a React Native storage solution for recovery path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r2",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r3",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r4",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r5",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r6",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r7",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r8",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r9",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r10",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "storage-04",
+          "name": "04 baseline-scenario",
+          "prompt": "Build a React Native storage solution for baseline scenario. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r2",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r3",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r4",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r5",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "storage-05",
+          "name": "05 edge-case-path",
+          "prompt": "Build a React Native storage solution for edge case path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r2",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r3",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r4",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r5",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r6",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r7",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r8",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "storage-06",
+          "name": "06 stress-flow",
+          "prompt": "Build a React Native storage solution for stress flow. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r2",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r3",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            }
+          ]
+        },
+        {
+          "id": "storage-07",
+          "name": "07 interaction-loop",
+          "prompt": "Build a React Native storage solution for interaction loop. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r2",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r3",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r4",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r5",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r6",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "storage-08",
+          "name": "08 resilience-check",
+          "prompt": "Build a React Native storage solution for resilience check. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r2",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r3",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r4",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r5",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r6",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r7",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r8",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r9",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "storage-09",
+          "name": "09 state-sync",
+          "prompt": "Build a React Native storage solution for state sync. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r2",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r3",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r4",
+              "text": "Includes clear error handling and fallback UI."
+            }
+          ]
+        },
+        {
+          "id": "storage-10",
+          "name": "10 latency-guard",
+          "prompt": "Build a React Native storage solution for latency guard. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r2",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r3",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r4",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r5",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r6",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r7",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "storage-11",
+          "name": "11 regression-watch",
+          "prompt": "Build a React Native storage solution for regression watch. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r2",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r3",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r4",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r5",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r6",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r7",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r8",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r9",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r10",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "storage-12",
+          "name": "12 ui-feedback",
+          "prompt": "Build a React Native storage solution for ui feedback. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r2",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r3",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r4",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r5",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "storage-13",
+          "name": "13 recovery-path",
+          "prompt": "Build a React Native storage solution for recovery path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r2",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r3",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r4",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r5",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r6",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r7",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r8",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "storage-14",
+          "name": "14 baseline-scenario",
+          "prompt": "Build a React Native storage solution for baseline scenario. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Implements the core scenario without runtime errors."
+            },
+            {
+              "id": "r2",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r3",
+              "text": "Displays expected UI feedback for user actions."
+            }
+          ]
+        },
+        {
+          "id": "storage-15",
+          "name": "15 edge-case-path",
+          "prompt": "Build a React Native storage solution for edge case path. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Handles loading and idle states correctly."
+            },
+            {
+              "id": "r2",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r3",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r4",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r5",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r6",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "storage-16",
+          "name": "16 stress-flow",
+          "prompt": "Build a React Native storage solution for stress flow. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Displays expected UI feedback for user actions."
+            },
+            {
+              "id": "r2",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r3",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r4",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r5",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r6",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r7",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r8",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r9",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        },
+        {
+          "id": "storage-17",
+          "name": "17 interaction-loop",
+          "prompt": "Build a React Native storage solution for interaction loop. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Maintains predictable state transitions."
+            },
+            {
+              "id": "r2",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r3",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r4",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            }
+          ]
+        },
+        {
+          "id": "storage-18",
+          "name": "18 resilience-check",
+          "prompt": "Build a React Native storage solution for resilience check. Include reliable error handling and production-safe behavior.",
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Avoids unnecessary re-renders in typical usage."
+            },
+            {
+              "id": "r2",
+              "text": "Handles edge cases and invalid inputs gracefully."
+            },
+            {
+              "id": "r3",
+              "text": "Preserves behavior across Android and iOS parity checks."
+            },
+            {
+              "id": "r4",
+              "text": "Keeps side effects isolated and cancelable."
+            },
+            {
+              "id": "r5",
+              "text": "Includes clear error handling and fallback UI."
+            },
+            {
+              "id": "r6",
+              "text": "Respects accessibility and keyboard interaction basics."
+            },
+            {
+              "id": "r7",
+              "text": "Implements the core scenario without runtime errors."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

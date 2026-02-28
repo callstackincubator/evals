@@ -1,0 +1,6 @@
+<svg width="186" height="32" viewBox="0 0 186 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="5" fill="#18181B"/>
+  <path d="M10 8H22V11H13V14H21V17H13V24H10V8Z" fill="#A78BFA"/>
+  <path d="M16 8H22V11H19V24H16V8Z" fill="#8232FF"/>
+  <text x="42" y="22" fill="#18181B" font-family="Geist, Arial, sans-serif" font-size="16" font-weight="700">Callstack</text>
+</svg>
