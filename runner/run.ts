@@ -18,6 +18,14 @@ function toRelativePath(value: string) {
   return path.relative(process.cwd(), value).split(path.sep).join('/')
 }
 
+function formatUnknownError(error: unknown) {
+  if (error instanceof Error) {
+    return error.stack ?? error.message ?? error.name
+  }
+
+  return String(error)
+}
+
 async function runWithRetries<T>(
   task: () => Promise<T>,
   maxRetries: number,
@@ -125,7 +133,7 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
           },
         }
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.stack : String(error)
+        const errorMessage = formatUnknownError(error)
         console.error(`[run-stage][${evalItem.evalId}] ${errorMessage}`)
 
         if (cliOptions.failFast) {
@@ -171,7 +179,7 @@ if (import.meta.main) {
     await runGenerationEntry()
     process.exit(0)
   } catch (error) {
-    console.error(error instanceof Error ? error.message : String(error))
+    console.error(formatUnknownError(error))
     process.exit(1)
   }
 }
