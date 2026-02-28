@@ -103,12 +103,8 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
           cliOptions.maxRetries,
           (attempt, error) => {
             const errorMessage = error instanceof Error ? error.message : String(error)
-            const nextAttempt = attempt + 1
             console.warn(
-              `[run-stage][${evalItem.evalId}] attempt ${attempt} failed: ${errorMessage}`
-            )
-            console.warn(
-              `[run-stage][${evalItem.evalId}] retrying (${nextAttempt}/${cliOptions.maxRetries + 1})`
+              `[run-stage][${evalItem.evalId}] attempt ${attempt}/${cliOptions.maxRetries} failed: ${errorMessage}`
             )
           }
         )
