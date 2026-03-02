@@ -31,6 +31,36 @@ function getEvalResultSubdirectory(generatedPath: string) {
   return parentDirectory
 }
 
+function formatUnknownError(error: unknown) {
+  if (error instanceof Error) {
+    return error.stack ?? error.message ?? error.name
+  }
+
+  return String(error)
+}
+
+async function runWithRetries<T>(
+  task: () => Promise<T>,
+  maxRetries: number,
+  onRetry: (attempt: number, error: unknown) => void
+) {
+  const maxAttempts = maxRetries + 1
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      return await task()
+    } catch (error) {
+      if (attempt >= maxAttempts) {
+        throw error
+      }
+
+      onRetry(attempt, error)
+    }
+  }
+
+  throw new Error('unexpected retry flow')
+}
+
 /*
   Runs LLM judging only (no generation), validates the input manifest from
   `runner/run.ts`, and writes per-eval judge outputs plus aggregate summary.
@@ -75,12 +105,25 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
           readFile(path.join(evalDirectory, 'prompt.md'), 'utf-8'),
         ])
 
-        const packageJson = await loadFile(path.join(__dirname, '../../../testbench/package.json'))
+        const packageJson = await loadFile(
+          path.resolve(__dirname, '../testbench/package.json')
+        )
 
-        const llmJudgeStage = await runLlmJudgeStage(
-          [packageJson, ...generatedFiles],
-          requirements,
-          cliOptions
+        const llmJudgeStage = await runWithRetries(
+          () =>
+            runLlmJudgeStage(
+              [packageJson, ...generatedFiles],
+              requirements,
+              cliOptions
+            ),
+          cliOptions.maxRetries,
+          (attempt, error) => {
+            const errorMessage =
+              error instanceof Error ? error.message : String(error)
+            console.warn(
+              `[judge-stage][${manifestEval.evalId}] attempt ${attempt}/${cliOptions.maxRetries} failed: ${errorMessage}`
+            )
+          }
         )
 
         const stageResult = {
@@ -125,7 +168,7 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
 
         return { kind: 'success' as const, index, result: stageResult }
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.stack : String(error)
+        const errorMessage = formatUnknownError(error)
         console.error(`[judge-stage][${manifestEval.evalId}] ${errorMessage}`)
 
         if (cliOptions.failFast) {
@@ -195,7 +238,7 @@ if (import.meta.main) {
     await runJudgeEntry()
     process.exit(0)
   } catch (error) {
-    console.error(error instanceof Error ? error.message : String(error))
+    console.error(formatUnknownError(error))
     process.exit(1)
   }
 }
