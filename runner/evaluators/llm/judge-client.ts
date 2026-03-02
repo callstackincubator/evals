@@ -1,6 +1,10 @@
 import { Output, generateText } from 'ai'
 import { createOpencode } from 'ai-sdk-provider-opencode-sdk'
 import { z } from 'zod'
+import {
+  collectOpencodeSessionSnapshot,
+  type OpencodeSessionSnapshot,
+} from 'runner/utils/opencode-session'
 import { ensureOpencodeServerStarted } from 'runner/utils/opencode'
 
 const JSON_FALLBACK_SYSTEM_PROMPT = `
@@ -34,6 +38,30 @@ const structuredOutputSchema = z.object({
 })
 
 export type JudgeOutput = z.infer<typeof structuredOutputSchema>
+
+type JudgeCallResult = {
+  output: JudgeOutput
+  opencodeSession?: OpencodeSessionSnapshot
+}
+
+function asRecord(value: unknown) {
+  if (typeof value !== 'object' || value === null) {
+    return undefined
+  }
+
+  return value as Record<string, unknown>
+}
+
+function extractOpencodeSessionId(response: unknown) {
+  const responseRecord = asRecord(response)
+  const providerMetadata = asRecord(responseRecord?.providerMetadata)
+  const opencodeMetadata = asRecord(providerMetadata?.opencode)
+
+  const maybeSessionId =
+    opencodeMetadata?.sessionId ?? opencodeMetadata?.sessionID
+
+  return typeof maybeSessionId === 'string' ? maybeSessionId : undefined
+}
 
 function parseJudgeOutputFromText(rawText: string) {
   const normalized = rawText.trim()
@@ -74,8 +102,9 @@ export async function runJudgeCall(
   prompt: string,
   model: string,
   timeout: number,
-  port?: number
-) {
+  port?: number,
+  directory?: string
+): Promise<JudgeCallResult> {
   await ensureOpencodeServerStarted({ timeout, port })
 
   const provider = createOpencode({
@@ -97,16 +126,23 @@ export async function runJudgeCall(
       }),
     })
 
-    return response.output
+    return {
+      output: response.output,
+      opencodeSession: await collectOpencodeSessionSnapshot({
+        sessionId: extractOpencodeSessionId(response),
+        port,
+        directory,
+      }),
+    }
   } catch (structuredOutputError) {
-    const { text } = await generateText({
+    const fallbackResponse = await generateText({
       model: judgeModel,
       prompt,
       system: JSON_FALLBACK_SYSTEM_PROMPT,
       abortSignal: AbortSignal.timeout(timeout),
     })
 
-    const parsedOutput = parseJudgeOutputFromText(text)
+    const parsedOutput = parseJudgeOutputFromText(fallbackResponse.text)
     if (!parsedOutput.success) {
       const originalMessage =
         structuredOutputError instanceof Error
@@ -117,6 +153,13 @@ export async function runJudgeCall(
       )
     }
 
-    return parsedOutput.data
+    return {
+      output: parsedOutput.data,
+      opencodeSession: await collectOpencodeSessionSnapshot({
+        sessionId: extractOpencodeSessionId(fallbackResponse),
+        port,
+        directory,
+      }),
+    }
   }
 }

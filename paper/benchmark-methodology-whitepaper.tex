@@ -211,10 +211,15 @@ Each run writes artifacts to deterministic generation and judge directories:
   \item \texttt{runs/<input-folder>/evals/<eval-id>.json}: per-eval judge results (written as each eval completes)
   \item \texttt{runs/<input-folder>/summary.json}: aggregate judge summary (written at end)
   \item generated artifacts and \texttt{manifest.json}: written by generation CLI to a user-selected output directory (default: \texttt{generated/<model>-<run-id>})
+  \item per-eval OpenCode session snapshots:
+  \begin{itemize}
+    \item generation: \texttt{<generated-eval-dir>/opencode-session.solver.json}
+    \item judging: \texttt{runs/<input-folder>/evals/<eval-id>.opencode-session.judge.json}
+  \end{itemize}
   \item optional debug artifacts when \texttt{----debug} is enabled
 \end{itemize}
 
-Per-eval results include solver and judge model identifiers, mapped requirement verdicts, per-eval score, and generated file list.
+Per-eval results include solver and judge model identifiers, mapped requirement verdicts, per-eval score, generated file list, and optional \texttt{judgeSessionArtifactPath} when session capture succeeds. The generation \texttt{manifest.json} includes optional \texttt{solverSessionArtifactPath} per eval.
 
 \section{Recommended Reporting Protocol}
 For comparative studies, report at minimum:

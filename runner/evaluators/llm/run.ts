@@ -8,6 +8,7 @@ type LlmJudgeStageOptions = {
   model: string
   timeout: number
   port?: number
+  directory?: string
 }
 
 // todo: this could be handled by structured output to make sure all requirements are satisfied
@@ -52,16 +53,23 @@ export async function runLlmJudgeStage(
 
   const prompt = buildJudgePrompt(requirements, files)
 
-  const results = await runJudgeCall(prompt, cliOptions.model, cliOptions.timeout, cliOptions.port)
+  const judgeCall = await runJudgeCall(
+    prompt,
+    cliOptions.model,
+    cliOptions.timeout,
+    cliOptions.port,
+    cliOptions.directory
+  )
 
   const mappedRequirements = mapRequirementResults(
     requirements,
-    results.requirements
+    judgeCall.output.requirements
   )
 
   return {
     requirements: mappedRequirements,
-    summary: results.summary,
-    score: computeScore(mappedRequirements)
+    summary: judgeCall.output.summary,
+    score: computeScore(mappedRequirements),
+    opencodeSession: judgeCall.opencodeSession,
   }
 }
