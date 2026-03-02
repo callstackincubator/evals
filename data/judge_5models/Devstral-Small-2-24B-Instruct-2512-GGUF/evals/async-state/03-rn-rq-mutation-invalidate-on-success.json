@@ -1,0 +1,72 @@
+{
+  "evalId": "03-rn-rq-mutation-invalidate-on-success",
+  "evalPath": "evals/async-state/03-rn-rq-mutation-invalidate-on-success",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Devstral-Small-2-24B-Instruct-2512-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "app-is-wrapped-with-query-client-provider",
+      "description": "App component renders `QueryClientProvider` with `client` set to `queryClient` and wraps `ItemsScreen`",
+      "weight": 1,
+      "passed": false,
+      "reason": "App component renders only <ItemsScreen /> with no QueryClientProvider or queryClient instance visible anywhere in the submitted files.",
+      "evidence": [
+        "export default function App() { return (<ItemsScreen />) }"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "items-queryfn-uses-query-function-context-signal",
+      "description": "Items `queryFn` reads `signal` from `QueryFunctionContext` and passes it to `fetchItems`",
+      "weight": 1,
+      "passed": false,
+      "reason": "queryFn is defined as a plain async arrow function with no parameters; it does not destructure or use QueryFunctionContext signal, and does not pass a signal to any fetch call.",
+      "evidence": [
+        "queryFn: async () => { const response = await fetch('https://dummyjson.com/todos?limit=10&skip=0') }"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "create-mutation-uses-usemutation-object-form",
+      "description": "Create flow uses `useMutation` object form with `mutationFn` set to `createItem`",
+      "weight": 1,
+      "passed": true,
+      "reason": "useMutation is called with an object literal containing mutationFn as an inline async function that performs the create POST request.",
+      "evidence": [
+        "const mutation = useMutation({ mutationFn: async (title: string) => { ... } })"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "create-mutation-invalidates-items-key-on-success",
+      "description": "Mutation `onSuccess` calls `reactQueryClient.invalidateQueries`",
+      "weight": 1,
+      "passed": true,
+      "reason": "onSuccess callback calls queryClient.invalidateQueries with the todos query key.",
+      "evidence": [
+        "onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['todos'] }) }"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "create-button-disabled-is-bound-to-mutation-pending",
+      "description": "Create button `disabled` prop uses `isPending` from mutation",
+      "weight": 1,
+      "passed": true,
+      "reason": "Pressable has disabled={mutation.isPending} directly bound to the mutation's isPending state.",
+      "evidence": [
+        "<Pressable onPress={() => mutation.mutate(draft)} style={styles.button} disabled={mutation.isPending}>"
+      ],
+      "confidence": 0.99
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 5,
+    "ratio": 0.6
+  },
+  "outputFiles": [
+    "workspace/parallel/temp/App.tsx",
+    "workspace/parallel/temp/package.json"
+  ]
+}

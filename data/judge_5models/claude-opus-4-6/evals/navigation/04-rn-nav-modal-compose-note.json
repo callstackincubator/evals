@@ -1,0 +1,64 @@
+{
+  "evalId": "04-rn-nav-modal-compose-note",
+  "evalPath": "evals/navigation/04-rn-nav-modal-compose-note",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "anthropic/claude-opus-4-6",
+  "llmJudgeRequirements": [
+    {
+      "id": "modal-compose-route",
+      "description": "Must create a route in the stack and present it as a modal screen (for example via native-stack `presentation` modal option).",
+      "weight": 1,
+      "passed": true,
+      "reason": "Compose screen is registered inside a group with `screenOptions: { presentation: 'modal' }` in the native-stack navigator.",
+      "evidence": [
+        "Modal: { screenOptions: { presentation: 'modal' }, screens: { Compose: { screen: ComposeScreen, ... } } }"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "dismiss-on-cancel",
+      "description": "Cancel action in compose must dismiss back to notes (for example with `navigation.goBack()`).",
+      "weight": 1,
+      "passed": true,
+      "reason": "handleCancel calls `navigation.goBack()`, which dismisses the modal back to the Notes screen.",
+      "evidence": [
+        "const handleCancel = () => { navigation.goBack() }",
+        "<Button title=\"Cancel\" onPress={handleCancel} />"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "dismiss-on-save",
+      "description": "Save action in compose must add the drafted note to shared notes state/context and then dismiss back to notes.",
+      "weight": 1,
+      "passed": true,
+      "reason": "handleSave calls `addNote(text)` (updating shared NotesContext state) and then `navigation.goBack()` to dismiss.",
+      "evidence": [
+        "const handleSave = () => { addNote(text); navigation.goBack() }",
+        "<Button title=\"Save\" onPress={handleSave} />"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "static-api-navigation-construction",
+      "description": "Must construct navigation with React Navigation static API and render it via `createStaticNavigation(...)`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Navigator is constructed with `createNativeStackNavigator({...})` (static API) and rendered via `createStaticNavigation(Stack)`.",
+      "evidence": [
+        "const Stack = createNativeStackNavigator({ id: 'root', groups: { ... } })",
+        "const Navigation = createStaticNavigation(Stack)",
+        "<Navigation />"
+      ],
+      "confidence": 0.99
+    }
+  ],
+  "score": {
+    "passedWeight": 4,
+    "totalWeight": 4,
+    "ratio": 1
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

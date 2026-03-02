@@ -1,0 +1,61 @@
+{
+  "evalId": "03-rn-nav-stack-header-from-param",
+  "evalPath": "evals/navigation/03-rn-nav-stack-header-from-param",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/gpt-oss-20b-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "details-screen-present",
+      "description": "Must define and register a Details screen route in the stack navigator.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Details screen is registered in the static stack navigator screens object.",
+      "evidence": [
+        "screens: { Home: HomeScreen, Details: DetailsScreen }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "implementation-header-no-flicker",
+      "description": "Must update header title from `useLayoutEffect` to avoid flicker on initial render.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Header title is set inside useEffect, not useLayoutEffect, which does not prevent the initial render flicker.",
+      "evidence": [
+        "React.useEffect(() => { navigation.setOptions({ title: name ?? '' }); }, [name, navigation]);"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "implementation-static-api-navigation-construction",
+      "description": "Must construct navigation with React Navigation static API and render it via `createStaticNavigation(...)`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "createNativeStackNavigator is called with a static config object and the result is passed to createStaticNavigation.",
+      "evidence": [
+        "const Stack = createNativeStackNavigator({ id: 'root', screens: { ... } })",
+        "const Navigation = createStaticNavigation(Stack);"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "implementation-runtime-header-update",
+      "description": "Must set the stack header title in screen logic via `setOptions`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "DetailsScreen calls navigation.setOptions({ title: name }) at runtime to update the stack header title.",
+      "evidence": [
+        "navigation.setOptions({ title: name ?? '' })"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 4,
+    "ratio": 0.75
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

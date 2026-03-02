@@ -1,0 +1,51 @@
+{
+  "evalId": "13-rn-worklets-runtime-offload-and-bridge",
+  "evalPath": "evals/animation/13-rn-worklets-runtime-offload-and-bridge",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Qwen3.5-35B-A3B-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "create-and-use-worklet-runtime",
+      "description": "Must create a dedicated runtime with `createWorkletRuntime(...)` and schedule compute onto it with `scheduleOnRuntime(runtime, worklet, ...)`, not deprecated `runOnRuntime`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "No createWorkletRuntime or scheduleOnRuntime calls found. Code uses Worklets.useWorklet() which is not the required API.",
+      "evidence": [
+        "const heavyComputeWorklet = Worklets.useWorklet(() => { ... })"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "schedule-on-rn-bridge",
+      "description": "Must bridge runtime results back to React with `scheduleOnRN(...)` from `react-native-worklets` and MUST NOT use deprecated `runOnJS`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Uses deprecated runOnJS imported from react-native-worklets-core instead of scheduleOnRN from react-native-worklets.",
+      "evidence": [
+        "import { runOnJS, Worklets } from 'react-native-worklets-core'",
+        "runOnJS(updateUI)(batchProgress, ...)"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "bounded-bridge-frequency",
+      "description": "Must gate `scheduleOnRN` calls behind an explicit cadence condition (for example modulo/batch checkpoints plus final batch) instead of calling `scheduleOnRN` on every compute iteration.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Although a modulo cadence condition exists, the bridge call uses runOnJS (not scheduleOnRN), so the gating condition applies to the wrong API and does not satisfy the requirement.",
+      "evidence": [
+        "(batch + 1) % BRIDGE_EVERY_N_BATCHES === 0 || batch === TOTAL_BATCHES - 1",
+        "runOnJS(updateUI)(batchProgress, ...)"
+      ],
+      "confidence": 0.95
+    }
+  ],
+  "score": {
+    "passedWeight": 0,
+    "totalWeight": 3,
+    "ratio": 0
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

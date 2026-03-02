@@ -1,0 +1,100 @@
+{
+  "evalId": "01-rn-perm-expo-camera-request-denied-retry",
+  "evalPath": "evals/expo-sdk/01-rn-perm-expo-camera-request-denied-retry",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Qwen3.5-35B-A3B-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "permission-request-on-demand",
+      "description": "Must call `requestPermission` from `useCameraPermissions()` only from a user-triggered action (for example `Pressable.onPress`), not on initial mount.",
+      "weight": 1,
+      "passed": true,
+      "reason": "requestPermission is called only inside handleRequestPermission and handleRetryPermission, both wired to Pressable.onPress handlers, never on mount.",
+      "evidence": [
+        "<Pressable style={styles.button} onPress={handleRequestPermission}>",
+        "const handleRetryPermission = () => { requestPermission() }"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "denied-flow-retry-and-settings",
+      "description": "Must support denied and blocked flows by retrying with `requestPermission` and using `Linking.openSettings()` when `permission.canAskAgain` is false.",
+      "weight": 1,
+      "passed": false,
+      "reason": "The 'limited' state (canAskAgain=false) calls handleOpenSettings which only shows an Alert with an empty onPress stub `() => {}` instead of calling Linking.openSettings(). handleOpenSettingsIOS/Android with Linking.openSettings() are defined but never called.",
+      "evidence": [
+        "{ text: 'Open Settings', onPress: () => { } }",
+        "const handleOpenSettingsIOS = () => { const Linking = require('react-native').Linking; Linking.openSettings() } // never called"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "lifecycle-permission-refresh",
+      "description": "Must refresh permission state on app foreground with `AppState.addEventListener('change', ...)` and a permission refresh call (`getPermission` / `getCameraPermissionsAsync`).",
+      "weight": 1,
+      "passed": false,
+      "reason": "No AppState.addEventListener('change', ...) is used. The second useEffect uses Camera.addCameraPermissionsListener which is not an AppState-based foreground refresh and is not a standard expo-camera API for permission refresh on app foreground.",
+      "evidence": [
+        "No AppState import or usage anywhere in the file",
+        "Camera.addCameraPermissionsListener used instead"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "degraded-path-no-crash",
+      "description": "Must render a deterministic fallback `View`/`Text` path when permission is unavailable instead of rendering `CameraView`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "When permission is not granted, renderPermissionScreen returns a View/Text fallback for undetermined, denied, and limited states. The camera is never rendered without granted state.",
+      "evidence": [
+        "{permissionState === 'granted' ? renderCameraView() : renderPermissionScreen()}",
+        "renderPermissionScreen returns View+Text nodes for all non-granted states"
+      ],
+      "confidence": 0.98
+    },
+    {
+      "id": "single-flight-permission-request",
+      "description": "Must prevent concurrent permission requests by guarding `requestPermission` with an in-flight state (for example `requesting`).",
+      "weight": 1,
+      "passed": false,
+      "reason": "No in-flight/requesting guard state exists. Multiple rapid presses on the permission buttons would trigger concurrent requestPermission calls.",
+      "evidence": [
+        "const handleRequestPermission = async () => { const result = await requestPermission() ... }",
+        "No 'requesting' or loading state variable declared"
+      ],
+      "confidence": 0.97
+    },
+    {
+      "id": "expo-camera-grant-gated-preview",
+      "description": "Must render `CameraView` only when `permission.granted` is true, with deterministic denied/blocked fallback UI otherwise.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Camera (CameraView equivalent) is rendered only when permissionState === 'granted' and isForeground is true; all other states render fallback UI.",
+      "evidence": [
+        "if (!isForeground || permissionState !== 'granted') { return null }",
+        "{permissionState === 'granted' ? renderCameraView() : renderPermissionScreen()}"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "implementation-expo-camera-cameraview-api",
+      "description": "Must implement preview with `CameraView` and permission handling with `expo-camera` APIs used by the sample (`useCameraPermissions` with request/get methods, or `getCameraPermissionsAsync`/`requestCameraPermissionsAsync`).",
+      "weight": 1,
+      "passed": false,
+      "reason": "Uses the legacy Camera component and CameraType from 'expo-camera' instead of the modern CameraView API. The package.json also does not list expo-camera as a dependency.",
+      "evidence": [
+        "import { Camera, CameraType, useCameraPermissions } from 'expo-camera'",
+        "package.json has no 'expo-camera' entry in dependencies"
+      ],
+      "confidence": 0.92
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 7,
+    "ratio": 0.4286
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

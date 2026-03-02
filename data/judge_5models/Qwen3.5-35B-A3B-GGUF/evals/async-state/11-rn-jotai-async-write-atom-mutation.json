@@ -1,0 +1,78 @@
+{
+  "evalId": "11-rn-jotai-async-write-atom-mutation",
+  "evalPath": "evals/async-state/11-rn-jotai-async-write-atom-mutation",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Qwen3.5-35B-A3B-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "submit-mutation-is-async-write-atom",
+      "description": "Submit flow is implemented as a writable async Jotai atom action",
+      "weight": 1,
+      "passed": true,
+      "reason": "submitPostAtom is defined as atom(null, async (get, set) => {...}), which is a writable async Jotai atom action pattern.",
+      "evidence": [
+        "const submitPostAtom = atom(null, async (get, set) => {"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "composer-uses-draft-posts-and-submit-state-atoms",
+      "description": "Screen state includes separate atoms for draft text posts list and submit lifecycle",
+      "weight": 1,
+      "passed": false,
+      "reason": "There is a draftAtom for a single draft object and a submitLifecycleAtom, but no separate atom representing a list of draft text posts. postsAtom holds submitted posts, not drafts. The requirement asks for a 'draft text posts list' atom distinct from the submit lifecycle atom.",
+      "evidence": [
+        "const draftAtom = atom<{ title: string; body: string }>({ title: '', body: '' })",
+        "const postsAtom = atom<Post[]>([])",
+        "const submitLifecycleAtom = atom<SubmitState>('idle')"
+      ],
+      "confidence": 0.8
+    },
+    {
+      "id": "submit-lifecycle-handles-pending-success-error",
+      "description": "Submit action writes pending then commits success or error lifecycle state",
+      "weight": 1,
+      "passed": true,
+      "reason": "The async write sets 'submitting' before the fetch, 'success' on resolution, and 'error' in the catch block, covering all three lifecycle states.",
+      "evidence": [
+        "set(submitLifecycleAtom, 'submitting')",
+        "set(submitLifecycleAtom, 'success')",
+        "set(submitLifecycleAtom, 'error')"
+      ],
+      "confidence": 0.97
+    },
+    {
+      "id": "submit-success-commits-created-post-and-resets-draft",
+      "description": "Successful mutation appends or prepends created post data and clears draft input atom",
+      "weight": 1,
+      "passed": true,
+      "reason": "On success, the created post is appended to postsAtom and draftAtom is reset to empty strings.",
+      "evidence": [
+        "set(postsAtom, (prev) => [...prev, { id: String(data.id), title: data.title }])",
+        "set(draftAtom, { title: '', body: '' })"
+      ],
+      "confidence": 0.97
+    },
+    {
+      "id": "submit-ui-dispatches-write-atom",
+      "description": "Submit button triggers the async write atom through `useSetAtom` or `useAtom` dispatch",
+      "weight": 1,
+      "passed": false,
+      "reason": "The submit button calls submitPostAtom.write(null) directly, which is not valid Jotai API. The atom should be dispatched via useSetAtom or the setter from useAtom. Neither useSetAtom nor a useAtom-derived setter for submitPostAtom is used in the component.",
+      "evidence": [
+        "submitPostAtom.write(null).finally(...)",
+        "const [draft, setDraft] = useAtom(draftAtom)",
+        "const [submitLifecycle, setSubmitLifecycle] = useAtom(submitLifecycleAtom)"
+      ],
+      "confidence": 0.95
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 5,
+    "ratio": 0.6
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

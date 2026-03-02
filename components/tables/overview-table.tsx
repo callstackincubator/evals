@@ -2,16 +2,26 @@
 
 import type { CategoryDefinition, ModelSummary } from "@/lib/types/evals";
 import { cn, formatPct } from "@/lib/utils";
-import {
-  DeltaBadge,
-  getPodiumRowStyle,
-  ModelLogoSquare,
-  RankBadge,
-} from "@/components/tables/table-badges";
+import { getPodiumRowStyle, ModelLogoSquare, RankBadge } from "@/components/tables/table-badges";
 
 interface OverviewTableProps {
   categories: CategoryDefinition[];
   models: ModelSummary[];
+}
+
+function CountPill({ value, tone }: { value: number; tone: "pass" | "fail" }) {
+  const pass = tone === "pass";
+
+  return (
+    <span
+      className={cn(
+        "inline-flex min-w-16 items-center justify-center border border-transparent px-2 py-1 font-mono text-xs font-medium",
+        pass ? "bg-emerald-500/15 text-emerald-300" : "bg-rose-500/15 text-rose-300",
+      )}
+    >
+      {value}
+    </span>
+  );
 }
 
 export function OverviewTable({ categories, models }: OverviewTableProps) {
@@ -21,13 +31,12 @@ export function OverviewTable({ categories, models }: OverviewTableProps) {
         <thead className="sticky top-0 z-10 bg-zinc-900/95">
           <tr className="border-b border-zinc-800 text-left text-xs uppercase tracking-wide text-zinc-400">
             <th className="px-4 py-3 font-semibold">Model</th>
-            <th className="px-4 py-3 font-semibold">Overall (V/C)</th>
-            <th className="px-4 py-3 font-semibold">Delta</th>
+            <th className="px-4 py-3 text-center font-semibold">Overall</th>
             {categories.map((category) => (
-              <th key={category.id} className="px-4 py-3 font-semibold whitespace-nowrap">
-                {category.name} (V/C)
-              </th>
+              <th key={category.id} className="px-4 py-3 text-center font-semibold whitespace-nowrap">{category.name}</th>
             ))}
+            <th className="px-4 py-3 text-center font-semibold">Passed</th>
+            <th className="px-4 py-3 text-center font-semibold">Failed</th>
           </tr>
         </thead>
 
@@ -51,24 +60,25 @@ export function OverviewTable({ categories, models }: OverviewTableProps) {
                   <span>{model.label}</span>
                 </div>
               </td>
-              <td className="px-4 py-5 text-zinc-300">
-                {formatPct(model.variants.vanilla.overallScorePct)} / {" "}
-                {formatPct(model.variants.callstack.overallScorePct)}
-              </td>
-              <td className="px-4 py-5">
-                <DeltaBadge value={model.deltaOverallPct} />
+              <td className="px-4 py-5 text-center font-mono text-zinc-300">
+                {formatPct(model.overallScorePct)}
               </td>
 
               {categories.map((category) => {
-                const vanilla = model.variants.vanilla.categories[category.id].scorePct;
-                const callstack = model.variants.callstack.categories[category.id].scorePct;
+                const score = model.categories[category.id]?.scorePct ?? 0;
 
                 return (
-                  <td key={`${model.id}-${category.id}`} className="px-4 py-5 text-zinc-300 whitespace-nowrap">
-                    {formatPct(vanilla)} / {formatPct(callstack)}
+                  <td key={`${model.id}-${category.id}`} className="px-4 py-5 text-center font-mono text-zinc-300 whitespace-nowrap">
+                    {formatPct(score)}
                   </td>
                 );
               })}
+              <td className="px-4 py-5 text-center">
+                <CountPill value={model.requirementsPassed} tone="pass" />
+              </td>
+              <td className="px-4 py-5 text-center">
+                <CountPill value={model.requirementsTotal - model.requirementsPassed} tone="fail" />
+              </td>
             </tr>
           );
           })}

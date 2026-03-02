@@ -1,0 +1,63 @@
+{
+  "evalId": "10-rn-jotai-loadable-async-atom-no-suspense",
+  "evalPath": "evals/async-state/10-rn-jotai-loadable-async-atom-no-suspense",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "anthropic/claude-opus-4-6",
+  "llmJudgeRequirements": [
+    {
+      "id": "reports-source-is-async-atom",
+      "description": "Reports are sourced from a Jotai async atom and include a refresh trigger read via `get`",
+      "weight": 1,
+      "passed": true,
+      "reason": "reportsAsyncAtom is defined as atom(async (get) => ...) and calls get(reportsRefreshAtom) to subscribe to the refresh trigger.",
+      "evidence": [
+        "atoms/reports: const reportsAsyncAtom = atom(async (get) => { get(reportsRefreshAtom); ... })"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "non-suspense-loadable-helper-construction",
+      "description": "Implementation includes a helper that adapts an async atom using Jotai `unwrap` plus a derived `atom((get) => ...)` read function with try/catch error capture",
+      "weight": 1,
+      "passed": false,
+      "reason": "The helper uses a plain derived atom with try/catch, but does NOT use Jotai `unwrap`. The requirement explicitly calls for `unwrap` to adapt the async atom.",
+      "evidence": [
+        "atoms/reports: reportsStateAtom = atom<ReportsState>((get) => { try { const data = get(reportsAsyncAtom); ... } catch ... })",
+        "No import or usage of `unwrap` from jotai anywhere in submitted files."
+      ],
+      "confidence": 0.97
+    },
+    {
+      "id": "loadable-helper-state-shape-and-branching",
+      "description": "Helper returns explicit loadable objects for loading data and error states (including payload for data/error), and UI branches directly on that returned state shape",
+      "weight": 1,
+      "passed": true,
+      "reason": "Helper returns explicit {status:'loading'}, {status:'success', data}, and {status:'error', error} objects. UI branches on state.status with loading spinner, error message with state.error payload, and FlatList with state.data.",
+      "evidence": [
+        "atoms/reports: ReportsLoading, ReportsSuccess, ReportsError interfaces; return { status: 'loading' }, { status: 'success', data }, { status: 'error', error }",
+        "App.tsx: state.status === 'loading', state.status === 'error' (renders state.error), state.status === 'success' (renders state.data)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "reload-action-triggers-refetch",
+      "description": "Reload action updates the refresh trigger atom through `useSetAtom` or `useAtom` dispatch",
+      "weight": 1,
+      "passed": true,
+      "reason": "useSetAtom(reportsRefreshAtom) is used; handleReload calls setRefresh((c) => c + 1) which increments the refresh trigger atom, causing reportsAsyncAtom to re-execute.",
+      "evidence": [
+        "App.tsx: const setRefresh = useSetAtom(reportsRefreshAtom); const handleReload = () => { setRefresh((c) => c + 1) }"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 4,
+    "ratio": 0.75
+  },
+  "outputFiles": [
+    "App.tsx",
+    "atoms/reports.ts"
+  ]
+}

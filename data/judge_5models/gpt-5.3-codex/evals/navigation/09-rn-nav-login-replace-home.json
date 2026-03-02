@@ -1,0 +1,78 @@
+{
+  "evalId": "09-rn-nav-login-replace-home",
+  "evalPath": "evals/navigation/09-rn-nav-login-replace-home",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "openai/gpt-5.3-codex",
+  "llmJudgeRequirements": [
+    {
+      "id": "auth-flow-uses-static-if-guards",
+      "description": "Must define auth screens in createNativeStackNavigator static config using screen-level `if` hooks (e.g., signed-in screens vs signed-out screens).",
+      "weight": 1,
+      "passed": true,
+      "reason": "createNativeStackNavigator is called with a static config object; Login has `if: useIsSignedOut` and Home has `if: useIsSignedIn`, exactly matching the screen-level `if` hook pattern.",
+      "evidence": [
+        "const Stack = createNativeStackNavigator({ screens: { Login: { if: useIsSignedOut, screen: LoginScreen }, Home: { if: useIsSignedIn, screen: HomeScreen } } })"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "auth-state-single-source-of-truth",
+      "description": "Must maintain authentication state and derive route availability from that state (signed in/out conditions).",
+      "weight": 1,
+      "passed": true,
+      "reason": "`isSignedIn` boolean in App's useState is the sole auth state; `useIsSignedIn` and `useIsSignedOut` derive from it via AuthContext, and screen availability is derived from those hooks.",
+      "evidence": [
+        "const [isSignedIn, setIsSignedIn] = useState(false)",
+        "const useIsSignedIn = () => { const { isSignedIn } = useAuthContext(); return isSignedIn }",
+        "const useIsSignedOut = () => !useIsSignedIn()"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "login-success-shows-home",
+      "description": "After successful login, Home must become the active available route and Login must no longer be available.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Pressing 'Sign in' calls `signIn` which sets `isSignedIn` to true; this makes `useIsSignedIn` return true (Home's `if` guard passes) and `useIsSignedOut` return false (Login's `if` guard fails), so Home becomes the only available route.",
+      "evidence": [
+        "const signIn = () => setIsSignedIn(true)",
+        "Home: { if: useIsSignedIn, screen: HomeScreen }",
+        "Login: { if: useIsSignedOut, screen: LoginScreen }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "back-cannot-return-to-login-after-login",
+      "description": "After successful login, back navigation must not return to Login.",
+      "weight": 1,
+      "passed": true,
+      "reason": "When `isSignedIn` becomes true, the Login screen is removed from the navigator entirely via its `if: useIsSignedOut` guard. React Navigation's static `if`-guard mechanism removes the screen from the stack, so there is no Login entry to navigate back to.",
+      "evidence": [
+        "Login: { if: useIsSignedOut, screen: LoginScreen }",
+        "createStaticNavigation(Stack)"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "no-manual-auth-navigation-with-if-guards",
+      "description": "Must not imperatively navigate to Home/SignIn for core auth transition when using `if`-guarded routes; route switch should occur from auth state change.",
+      "weight": 1,
+      "passed": true,
+      "reason": "No `navigation.navigate`, `navigation.replace`, `router.push`, or any other imperative navigation call is present in the file. Auth transition is driven purely by state change causing `if` guards to re-evaluate.",
+      "evidence": [
+        "signIn = () => setIsSignedIn(true)",
+        "signOut = () => setIsSignedIn(false)",
+        "No navigation.navigate or similar calls found anywhere in the file"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 5,
+    "totalWeight": 5,
+    "ratio": 1
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "evalId": "01-rn-nav-stack-product-details",
+  "evalPath": "evals/navigation/01-rn-nav-stack-product-details",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/gpt-oss-20b-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "product-details-screen-present",
+      "description": "Must define and register a ProductDetails screen route in the stack navigator.",
+      "weight": 1,
+      "passed": true,
+      "reason": "ProductDetails is defined as a screen component and registered in StackScreens.screens.ProductDetails",
+      "evidence": [
+        "screens: { Products: ProductsScreen, ProductDetails: ProductDetailsScreen }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "details-title-param",
+      "description": "Must pass a title param when navigating from list to product details.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Navigation to ProductDetails passes a product object param but no title param",
+      "evidence": [
+        "navigation.navigate('ProductDetails', { product: PRODUCT })"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "product-id-fallback",
+      "description": "Must handle missing productId with a deterministic fallback display instead of showing stale or undefined values.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Missing product is handled with a deterministic fallback text 'No product provided.' instead of rendering undefined values",
+      "evidence": [
+        "product ? (<View>...</View>) : (<Text>No product provided.</Text>)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "implementation-use-use-navigation",
+      "description": "Must use useNavigation to get the navigation object.",
+      "weight": 1,
+      "passed": true,
+      "reason": "useNavigation() is called in both ProductDetailsScreen and ProductsScreen to obtain the navigation object",
+      "evidence": [
+        "const navigation = useNavigation() in ProductDetailsScreen",
+        "const navigation = useNavigation() in ProductsScreen"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "static-api-navigation-construction",
+      "description": "Must construct navigation with React Navigation static API and render it via `createStaticNavigation(...)`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "createStaticNavigation is called on a plain object (StackScreens) rather than on a navigator created with createNativeStackNavigator's static API; the Stack navigator instance is created but never passed to createStaticNavigation",
+      "evidence": [
+        "const Stack = createNativeStackNavigator<RootStackParamList>()",
+        "const Navigation = createStaticNavigation(StackScreens) — StackScreens is a plain object, not the Stack navigator"
+      ],
+      "confidence": 0.9
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 5,
+    "ratio": 0.6
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

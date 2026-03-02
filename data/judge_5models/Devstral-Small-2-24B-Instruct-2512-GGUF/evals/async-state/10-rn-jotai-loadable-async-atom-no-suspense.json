@@ -1,0 +1,66 @@
+{
+  "evalId": "10-rn-jotai-loadable-async-atom-no-suspense",
+  "evalPath": "evals/async-state/10-rn-jotai-loadable-async-atom-no-suspense",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Devstral-Small-2-24B-Instruct-2512-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "reports-source-is-async-atom",
+      "description": "Reports are sourced from a Jotai async atom and include a refresh trigger read via `get`",
+      "weight": 1,
+      "passed": false,
+      "reason": "Reports are sourced from a synchronous state-machine atom (reportsAtom) holding idle/loading/success/error state. The async atom (reportsDataAtom) merely reads from reportsAtom and does not perform the fetch itself. There is no refresh trigger atom read via get.",
+      "evidence": [
+        "reportsAtom = atom<{state: 'idle'|'loading'|'success'|'error'; data: any[]; error: Error|null}>({state:'idle',...})",
+        "reportsDataAtom = atom(async (get) => { const {state,error} = get(reportsAtom) ... }) — delegates back to sync atom, no fetch, no refresh trigger"
+      ],
+      "confidence": 0.97
+    },
+    {
+      "id": "non-suspense-loadable-helper-construction",
+      "description": "Implementation includes a helper that adapts an async atom using Jotai `unwrap` plus a derived `atom((get) => ...)` read function with try/catch error capture",
+      "weight": 1,
+      "passed": false,
+      "reason": "No use of Jotai `unwrap` anywhere in the file. The reportsDataAtom is an async derived atom with try/catch absent from it; actual try/catch lives in fetchReports and the useEffect/handleReload imperative calls, not in a derived atom((get)=>...) with try/catch error capture.",
+      "evidence": [
+        "No import or usage of `unwrap` from 'jotai'",
+        "reportsDataAtom has no try/catch block; fetchReports has one but is not the required helper pattern"
+      ],
+      "confidence": 0.98
+    },
+    {
+      "id": "loadable-helper-state-shape-and-branching",
+      "description": "Helper returns explicit loadable objects for loading data and error states (including payload for data/error), and UI branches directly on that returned state shape",
+      "weight": 1,
+      "passed": false,
+      "reason": "There is no dedicated loadable helper atom returning explicit {state,data/error} loadable objects. The UI branches on reportsData.state but reportsData comes from an async derived atom that reads a manually managed state-machine atom, not a loadable helper. The 'idle' state is also surfaced (neither loading nor error nor data), which is not part of a standard loadable shape.",
+      "evidence": [
+        "reportsData.state === 'loading'",
+        "reportsData.state === 'error'",
+        "reportsData.state === 'success'",
+        "No helper atom wrapping an async atom with unwrap to produce loadable objects"
+      ],
+      "confidence": 0.92
+    },
+    {
+      "id": "reload-action-triggers-refetch",
+      "description": "Reload action updates the refresh trigger atom through `useSetAtom` or `useAtom` dispatch",
+      "weight": 1,
+      "passed": false,
+      "reason": "Reload is handled imperatively via handleReload which calls fetchReports() directly and then calls setReports. There is no refresh trigger atom; useSetAtom is not used (useAtom is used but to manage the state-machine atom, not to increment/toggle a refresh trigger).",
+      "evidence": [
+        "const handleReload = () => { setReports({state:'loading',...}); fetchReports().then(...).catch(...) }",
+        "No refreshTrigger atom or equivalent; no useSetAtom import or call"
+      ],
+      "confidence": 0.97
+    }
+  ],
+  "score": {
+    "passedWeight": 0,
+    "totalWeight": 4,
+    "ratio": 0
+  },
+  "outputFiles": [
+    "workspace/parallel/temp/App.tsx"
+  ]
+}

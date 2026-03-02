@@ -1,0 +1,68 @@
+{
+  "evalId": "05-rn-anim-pan-drag-card-with-snap-points",
+  "evalPath": "evals/animation/05-rn-anim-pan-drag-card-with-snap-points",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "openai/gpt-5.3-codex",
+  "llmJudgeRequirements": [
+    {
+      "id": "gesture-handler-pan-api",
+      "description": "Must define drag with `Gesture.Pan()` and attach it via `GestureDetector` under `GestureHandlerRootView` from `react-native-gesture-handler`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Gesture.Pan() is defined and attached via GestureDetector; the root is wrapped in GestureHandlerRootView, all imported from react-native-gesture-handler.",
+      "evidence": [
+        "import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler'",
+        "const panGesture = Gesture.Pan()",
+        "<GestureHandlerRootView style={styles.root}>",
+        "<GestureDetector gesture={panGesture}>"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "implementation-rngh-pan-gesturebuilder-contract",
+      "description": "Must implement drag with `Gesture.Pan()` builder callbacks (`onBegin`/`onUpdate`/`onEnd`) and MUST NOT use legacy `useAnimatedGestureHandler`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Uses builder-style .onStart(), .onUpdate(), .onEnd() callbacks on Gesture.Pan(). No useAnimatedGestureHandler usage anywhere in the file.",
+      "evidence": [
+        "Gesture.Pan().onStart(...).onUpdate(...).onEnd(...)",
+        "No import or usage of useAnimatedGestureHandler"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "translation-shared-value",
+      "description": "Must store translation in Reanimated shared values (`translateX`/`translateY`) and update them in pan callbacks, then apply via `useAnimatedStyle` transform.",
+      "weight": 1,
+      "passed": true,
+      "reason": "translateX is a shared value created with useSharedValue(0), updated inside onUpdate and onEnd callbacks, and applied via useAnimatedStyle transform.",
+      "evidence": [
+        "const translateX = useSharedValue(0)",
+        "translateX.value = clampValue(next, minSnap, maxSnap) // in onUpdate",
+        "translateX.value = withSpring(...) // in onEnd",
+        "useAnimatedStyle(() => ({ transform: [{ translateX: translateX.value }] }))"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "deterministic-snap-on-release",
+      "description": "Pan `onEnd` must compute a snap target from explicit velocity/position decision logic and animate shared values to that target with `withTiming(...)`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "onEnd computes a snap target from velocity/position logic (FLING_VELOCITY_THRESHOLD check, findDirectionalSnapPoint/findClosestSnapPoint) but animates with withSpring, not withTiming as required.",
+      "evidence": [
+        "translateX.value = withSpring(target, { damping: 18, mass: 0.9, stiffness: 180, velocity: event.velocityX })",
+        "withTiming is never imported or used"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 4,
+    "ratio": 0.75
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

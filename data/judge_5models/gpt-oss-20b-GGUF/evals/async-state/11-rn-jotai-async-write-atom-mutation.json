@@ -1,0 +1,77 @@
+{
+  "evalId": "11-rn-jotai-async-write-atom-mutation",
+  "evalPath": "evals/async-state/11-rn-jotai-async-write-atom-mutation",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/gpt-oss-20b-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "submit-mutation-is-async-write-atom",
+      "description": "Submit flow is implemented as a writable async Jotai atom action",
+      "weight": 1,
+      "passed": true,
+      "reason": "createPostAtom is defined as atom(null, async (_get, set, draft) => {...}), a writable async Jotai atom action.",
+      "evidence": [
+        "const createPostAtom = atom(null, async (_get, set, draft: string) => {"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "composer-uses-draft-posts-and-submit-state-atoms",
+      "description": "Screen state includes separate atoms for draft text posts list and submit lifecycle",
+      "weight": 1,
+      "passed": true,
+      "reason": "Separate atoms exist for draft text (draftAtom), posts list (postsAtom), and submit lifecycle state (isLoadingAtom, errorAtom).",
+      "evidence": [
+        "const draftAtom = atom('')",
+        "const postsAtom = atom<Post[]>([])",
+        "const isLoadingAtom = atom(false)",
+        "const errorAtom = atom<string | null>(null)"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "submit-lifecycle-handles-pending-success-error",
+      "description": "Submit action writes pending then commits success or error lifecycle state",
+      "weight": 1,
+      "passed": false,
+      "reason": "createPostAtom never calls set(isLoadingAtom, true) for pending or set(isLoadingAtom, false) for completion. isLoadingAtom is declared but never written inside the async atom, so pending state is not managed by the atom itself.",
+      "evidence": [
+        "const createPostAtom = atom(null, async (_get, set, draft: string) => { try { ... } catch { set(errorAtom, err.message) } }) // no set(isLoadingAtom, ...) calls"
+      ],
+      "confidence": 0.97
+    },
+    {
+      "id": "submit-success-commits-created-post-and-resets-draft",
+      "description": "Successful mutation appends or prepends created post data and clears draft input atom",
+      "weight": 1,
+      "passed": false,
+      "reason": "The atom appends the created post via set(postsAtom, ...) on success, but draft reset (setDraft('')) happens in the component handler outside the atom, not inside the write atom itself.",
+      "evidence": [
+        "set(postsAtom, (prev) => [...prev, { id: String(id), title }])",
+        "await createPost(draft); setDraft('') // reset is in component, not in atom"
+      ],
+      "confidence": 0.92
+    },
+    {
+      "id": "submit-ui-dispatches-write-atom",
+      "description": "Submit button triggers the async write atom through `useSetAtom` or `useAtom` dispatch",
+      "weight": 1,
+      "passed": true,
+      "reason": "The component uses useAtom(createPostAtom) to get the dispatch function and calls it in the submit handler; Pressable's onPress triggers handleSave which dispatches the atom.",
+      "evidence": [
+        "const [, createPost] = useAtom(createPostAtom)",
+        "const handleSave = async () => { ... await createPost(draft) }",
+        "<Pressable onPress={handleSave}"
+      ],
+      "confidence": 0.99
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 5,
+    "ratio": 0.6
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

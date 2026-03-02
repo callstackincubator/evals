@@ -1,0 +1,53 @@
+{
+  "evalId": "13-rn-worklets-runtime-offload-and-bridge",
+  "evalPath": "evals/animation/13-rn-worklets-runtime-offload-and-bridge",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/gpt-oss-20b-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "create-and-use-worklet-runtime",
+      "description": "Must create a dedicated runtime with `createWorkletRuntime(...)` and schedule compute onto it with `scheduleOnRuntime(runtime, worklet, ...)`, not deprecated `runOnRuntime`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "createWorkletRuntime is called correctly, but the runtime is used via runOnRuntimeAsync instead of the required scheduleOnRuntime(runtime, worklet, ...).",
+      "evidence": [
+        "import { createWorkletRuntime, runOnRuntimeAsync, runOnJS } from 'react-native-worklets'",
+        "await runOnRuntimeAsync(workletRuntime, computeWorklet, ...)"
+      ],
+      "confidence": 0.97
+    },
+    {
+      "id": "schedule-on-rn-bridge",
+      "description": "Must bridge runtime results back to React with `scheduleOnRN(...)` from `react-native-worklets` and MUST NOT use deprecated `runOnJS`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Results are bridged back to React using the deprecated runOnJS, not the required scheduleOnRN from react-native-worklets.",
+      "evidence": [
+        "import { ..., runOnJS } from 'react-native-worklets'",
+        "runOnJS(onProgress)(i + 1, sum)",
+        "runOnJS(onProgress)(totalBatches, sum)"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "bounded-bridge-frequency",
+      "description": "Must gate `scheduleOnRN` calls behind an explicit cadence condition (for example modulo/batch checkpoints plus final batch) instead of calling `scheduleOnRN` on every compute iteration.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Bridge calls are gated by a modulo condition (every BRIDGE_EVERY_N_BATCHES=4 batches) plus a final call after the last batch, preventing per-iteration bridging.",
+      "evidence": [
+        "if ((i + 1) % bridgeEvery === 0) { runOnJS(onProgress)(i + 1, sum); }",
+        "runOnJS(onProgress)(totalBatches, sum); // final call after loop"
+      ],
+      "confidence": 0.95
+    }
+  ],
+  "score": {
+    "passedWeight": 1,
+    "totalWeight": 3,
+    "ratio": 0.3333
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

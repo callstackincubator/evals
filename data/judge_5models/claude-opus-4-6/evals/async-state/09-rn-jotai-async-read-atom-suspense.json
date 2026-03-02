@@ -1,0 +1,60 @@
+{
+  "evalId": "09-rn-jotai-async-read-atom-suspense",
+  "evalPath": "evals/async-state/09-rn-jotai-async-read-atom-suspense",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "anthropic/claude-opus-4-6",
+  "llmJudgeRequirements": [
+    {
+      "id": "profile-uses-async-read-atom",
+      "description": "Profile data source is modeled as a Jotai async read atom with `atom(async () => ...)`",
+      "weight": 1,
+      "passed": true,
+      "reason": "profileAtom is defined with `atom(async () => ...)` — a Jotai async read atom.",
+      "evidence": [
+        "const profileAtom = atom(async () => { ... })"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "profile-fetch-uses-endpoint-and-status-guard",
+      "description": "Profile read atom fetches from the users endpoint",
+      "weight": 1,
+      "passed": true,
+      "reason": "The async atom fetches from 'https://dummyjson.com/users/1', which is the users endpoint.",
+      "evidence": [
+        "const response = await fetch('https://dummyjson.com/users/1')"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "profile-consumer-reads-atom-value",
+      "description": "Profile content reads the async atom through `useAtomValue`",
+      "weight": 1,
+      "passed": true,
+      "reason": "ProfileCard reads the async atom via `useAtomValue(profileAtom)`.",
+      "evidence": [
+        "const profile = useAtomValue(profileAtom)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "suspense-boundary-renders-loading-fallback",
+      "description": "Profile consumer is rendered under `Suspense` with explicit loading fallback UI",
+      "weight": 1,
+      "passed": true,
+      "reason": "ProfileCard is wrapped in <Suspense> with a fallback containing ActivityIndicator and a loading text.",
+      "evidence": [
+        "<Suspense fallback={<View ...><ActivityIndicator .../><Text ...>Loading profile…</Text></View>}><ProfileCard /></Suspense>"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 4,
+    "totalWeight": 4,
+    "ratio": 1
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

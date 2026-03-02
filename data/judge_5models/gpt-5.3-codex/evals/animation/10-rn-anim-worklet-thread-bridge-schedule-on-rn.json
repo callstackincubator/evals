@@ -1,0 +1,64 @@
+{
+  "evalId": "10-rn-anim-worklet-thread-bridge-schedule-on-rn",
+  "evalPath": "evals/animation/10-rn-anim-worklet-thread-bridge-schedule-on-rn",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "openai/gpt-5.3-codex",
+  "llmJudgeRequirements": [
+    {
+      "id": "ui-thread-worklet-computation",
+      "description": "Must run animation-critical computation in UI-runtime worklets (for example `useDerivedValue`/worklet functions) over shared values.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Animation logic runs inside a plain worklet function dispatched via runOnUI, not via useDerivedValue or a reaction over shared values. No useSharedValue/useDerivedValue is used anywhere.",
+      "evidence": [
+        "App.tsx: runOnUI((...) => { 'worklet'; ... requestAnimationFrame(tick) })",
+        "No import or usage of useSharedValue, useDerivedValue, or useAnimatedReaction"
+      ],
+      "confidence": 0.97
+    },
+    {
+      "id": "schedule-on-ui-dispatch",
+      "description": "Must dispatch start/stop or control worklet functions from React runtime using `scheduleOnUI(...)` from `react-native-worklets` and MUST NOT use deprecated `runOnUI`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Dispatching to the UI thread uses the deprecated runOnUI instead of the required scheduleOnUI from react-native-worklets.",
+      "evidence": [
+        "App.tsx: import { runOnJS, runOnUI } from 'react-native-worklets'",
+        "App.tsx: runOnUI(...) used in startProgressOnUI useMemo"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "controlled-bridge-to-react-runtime",
+      "description": "Must bridge UI-runtime checkpoint updates back to React via `scheduleOnRN(...)` from `react-native-worklets` and MUST NOT use deprecated `runOnJS`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Bridging back to the React runtime uses the deprecated runOnJS instead of the required scheduleOnRN from react-native-worklets.",
+      "evidence": [
+        "App.tsx: runOnJS(checkpointCallback)(nextCheckpoint)",
+        "App.tsx: runOnJS(completeCallback)()"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "throttled-or-bounded-react-updates",
+      "description": "Must gate `scheduleOnRN(...)` behind explicit bucket/checkpoint logic in a UI worklet reaction (for example `useAnimatedReaction`) instead of calling it every frame.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Although checkpoint updates are gated on nextCheckpoint > lastCheckpoint (bucket logic), the bridge call is still made with deprecated runOnJS rather than scheduleOnRN, and there is no useAnimatedReaction wrapping the gating logic as required.",
+      "evidence": [
+        "App.tsx: if (nextCheckpoint > lastCheckpoint) { lastCheckpoint = nextCheckpoint; runOnJS(checkpointCallback)(nextCheckpoint) }",
+        "No useAnimatedReaction present in the file"
+      ],
+      "confidence": 0.95
+    }
+  ],
+  "score": {
+    "passedWeight": 0,
+    "totalWeight": 4,
+    "ratio": 0
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

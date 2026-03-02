@@ -1,0 +1,52 @@
+{
+  "evalId": "06-rn-nav-home-tab-nested-details",
+  "evalPath": "evals/navigation/06-rn-nav-home-tab-nested-details",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Devstral-Small-2-24B-Instruct-2512-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "home-tab-uses-home-stack-with-initial-home",
+      "description": "Must replace the Home tab screen with a nested Home stack navigator, and configure `Home` as the initial route of that stack.",
+      "weight": 1,
+      "passed": false,
+      "reason": "The Home stack's initial route is 'HomeFeed', not 'Home' as required. The screen is named HomeFeedScreen and registered as 'HomeFeed', not 'Home'.",
+      "evidence": [
+        "screens: { HomeFeed: HomeFeedScreen, ArticleDetails: ArticleDetailsScreen }"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "push-article-details-within-home-stack",
+      "description": "Must push `ArticleDetails` from `Home` within the Home stack, passing `articleId` via the params.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Navigation to ArticleDetails uses Navigation.navigate with a nested callback instead of a direct stack push from within the Home screen. Additionally, the initial screen is 'HomeFeed' not 'Home', and the navigation is triggered from HomeFeedScreen rather than a 'Home' screen. The articleId param is passed correctly though.",
+      "evidence": [
+        "Navigation.navigate('HomeTab', (screen) => { screen.navigate('ArticleDetails', { articleId: '123' }) })",
+        "screens: { HomeFeed: HomeFeedScreen, ... }"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "id": "static-api-navigation-construction",
+      "description": "Must construct navigation with React Navigation static API and render it via `createStaticNavigation(...)`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Navigation is constructed using the React Navigation static API: createBottomTabNavigator and createStackNavigator are called with config objects, and the result is passed to createStaticNavigation, which is rendered as <Navigation />.",
+      "evidence": [
+        "import { createStaticNavigation, StaticScreenProps } from '@react-navigation/native'",
+        "const Navigation = createStaticNavigation(TabNavigator)",
+        "export default function App() { return <Navigation /> }"
+      ],
+      "confidence": 0.99
+    }
+  ],
+  "score": {
+    "passedWeight": 1,
+    "totalWeight": 3,
+    "ratio": 0.3333
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

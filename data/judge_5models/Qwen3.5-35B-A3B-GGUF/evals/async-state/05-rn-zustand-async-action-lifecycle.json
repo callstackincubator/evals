@@ -1,0 +1,75 @@
+{
+  "evalId": "05-rn-zustand-async-action-lifecycle",
+  "evalPath": "evals/async-state/05-rn-zustand-async-action-lifecycle",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Qwen3.5-35B-A3B-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "zustand-create-store-hook",
+      "description": "Store hook is created with `create` from `zustand`",
+      "weight": 1,
+      "passed": true,
+      "reason": "FeedStore.ts imports `create` from `zustand` and calls `create<FeedState>(...)` to produce the hook.",
+      "evidence": [
+        "store/FeedStore.ts: `import { create } from 'zustand'`",
+        "store/FeedStore.ts: `export const useFeedStore = create<FeedState>(...)`"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "async-action-sets-loading-before-await",
+      "description": "Async fetch action calls `set` to write loading state before awaiting network work",
+      "weight": 1,
+      "passed": true,
+      "reason": "`fetchFeed` calls `set({ status: 'loading', error: null })` synchronously before the `await fetch(...)` call.",
+      "evidence": [
+        "store/FeedStore.ts: `set({ status: 'loading', error: null })` precedes `await fetch(...)`"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "async-action-success-and-error-branches",
+      "description": "Async fetch action writes success data and error state through `set` in separate branches",
+      "weight": 1,
+      "passed": true,
+      "reason": "The try block calls `set({ items: data.todos, status: 'success' })` and the catch block calls `set({ status: 'error', error: ... })` as separate branches.",
+      "evidence": [
+        "store/FeedStore.ts: try branch sets `status: 'success'`",
+        "store/FeedStore.ts: catch branch sets `status: 'error'`"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "retry-path-calls-same-store-action",
+      "description": "Error UI retry trigger calls the same async store action used by initial fetch",
+      "weight": 1,
+      "passed": false,
+      "reason": "The error UI's Retry button calls `reset` (which only resets state to idle) rather than `fetchFeed`, so it does not re-trigger the async fetch action.",
+      "evidence": [
+        "App.tsx error branch: `<Pressable onPress={reset} ...>Retry</Pressable>`"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "status-driven-ui-branching",
+      "description": "UI output branches by lifecycle status values for idle loading success and error",
+      "weight": 1,
+      "passed": true,
+      "reason": "A `statusContent` map keyed by all four lifecycle values (`idle`, `loading`, `success`, `error`) is defined and rendered via `statusContent[status]`.",
+      "evidence": [
+        "App.tsx: `const statusContent = { idle: ..., loading: ..., success: ..., error: ... } satisfies Record<FeedStatus, React.ReactNode>`",
+        "App.tsx: `{statusContent[status]}`"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 4,
+    "totalWeight": 5,
+    "ratio": 0.8
+  },
+  "outputFiles": [
+    "App.tsx",
+    "store/FeedStore.ts"
+  ]
+}

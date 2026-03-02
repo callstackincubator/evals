@@ -1,0 +1,75 @@
+{
+  "evalId": "07-rn-anim-pinch-pan-simultaneous-photo-canvas",
+  "evalPath": "evals/animation/07-rn-anim-pinch-pan-simultaneous-photo-canvas",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "openai/gpt-5.3-codex",
+  "llmJudgeRequirements": [
+    {
+      "id": "simultaneous-pinch-and-pan",
+      "description": "Must compose `Gesture.Pinch()` and `Gesture.Pan()` with `Gesture.Simultaneous(...)` from `react-native-gesture-handler`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Gesture.Pinch() and Gesture.Pan() are composed with Gesture.Simultaneous(pinch, pan) and passed to GestureDetector.",
+      "evidence": [
+        "const composedGesture = Gesture.Simultaneous(pinch, pan)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "scale-and-translation-shared-values",
+      "description": "Must store zoom and translation in Reanimated shared values (`scale`, `translateX`, `translateY`) and apply them through `useAnimatedStyle` transform.",
+      "weight": 1,
+      "passed": true,
+      "reason": "scale, translateX, translateY are declared as useSharedValue and applied via useAnimatedStyle transform array.",
+      "evidence": [
+        "const scale = useSharedValue(1)",
+        "const translateX = useSharedValue(0)",
+        "const translateY = useSharedValue(0)",
+        "useAnimatedStyle(() => ({ transform: [{ scale: scale.value }, { translateX: translateX.value }, { translateY: translateY.value }] }))"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "min-scale-clamp-usage",
+      "description": "Must clamp zoom using the existing `MIN_SCALE` constant inside `Gesture.Pinch().onUpdate(...)`",
+      "weight": 1,
+      "passed": true,
+      "reason": "MIN_SCALE is used as the lower bound in clamp inside Pinch().onUpdate.",
+      "evidence": [
+        "const nextScale = clamp(scaleStart.value * event.scale, MIN_SCALE, MAX_SCALE)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "max-scale-clamp-usage",
+      "description": "Must clamp zoom using the existing `MAX_SCALE` constant inside `Gesture.Pinch().onUpdate(...)`",
+      "weight": 1,
+      "passed": true,
+      "reason": "MAX_SCALE is used as the upper bound in clamp inside Pinch().onUpdate.",
+      "evidence": [
+        "const nextScale = clamp(scaleStart.value * event.scale, MIN_SCALE, MAX_SCALE)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "viewport-size-pan-bounds-usage",
+      "description": "Must use the existing `VIEWPORT_SIZE` to constrain movement while zoomed inside `Gesture.Pan().onUpdate(...)`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "VIEWPORT_SIZE is used inside getPanLimit to compute translation bounds, which is called inside Pan().onUpdate to clamp translateX and translateY.",
+      "evidence": [
+        "const getPanLimit = (scale: number) => { 'worklet'; return Math.max(0, (VIEWPORT_SIZE * scale - VIEWPORT_SIZE) / 2) }",
+        "const limit = getPanLimit(scale.value) inside pan.onUpdate"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 5,
+    "totalWeight": 5,
+    "ratio": 1
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

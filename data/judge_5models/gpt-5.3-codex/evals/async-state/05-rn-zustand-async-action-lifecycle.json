@@ -1,0 +1,75 @@
+{
+  "evalId": "05-rn-zustand-async-action-lifecycle",
+  "evalPath": "evals/async-state/05-rn-zustand-async-action-lifecycle",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "openai/gpt-5.3-codex",
+  "llmJudgeRequirements": [
+    {
+      "id": "zustand-create-store-hook",
+      "description": "Store hook is created with `create` from `zustand`",
+      "weight": 1,
+      "passed": true,
+      "reason": "Store is created via `create<FeedStore>(...)` imported from 'zustand' and assigned to `useFeedStore`.",
+      "evidence": [
+        "import { create } from 'zustand'",
+        "const useFeedStore = create<FeedStore>((set, get) => ({...}))"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "async-action-sets-loading-before-await",
+      "description": "Async fetch action calls `set` to write loading state before awaiting network work",
+      "weight": 1,
+      "passed": true,
+      "reason": "`fetchFeed` calls `set({ status: 'loading', error: null, ... })` synchronously before the first `await fetch(...)` call.",
+      "evidence": [
+        "set({ status: 'loading', error: null, lastRequest: { limit, skip } })",
+        "const response = await fetch(...)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "async-action-success-and-error-branches",
+      "description": "Async fetch action writes success data and error state through `set` in separate branches",
+      "weight": 1,
+      "passed": true,
+      "reason": "try branch calls `set({ status: 'success', items: mappedItems, error: null })` and catch branch calls `set({ status: 'error', error: message, items: [] })` as separate code paths.",
+      "evidence": [
+        "set({ status: 'success', items: mappedItems, error: null })",
+        "set({ status: 'error', error: message, items: [] })"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "retry-path-calls-same-store-action",
+      "description": "Error UI retry trigger calls the same async store action used by initial fetch",
+      "weight": 1,
+      "passed": true,
+      "reason": "`retry` reads `lastRequest` from state and delegates directly to `get().fetchFeed(limit, skip)`, which is the same async store action used by the initial fetch button.",
+      "evidence": [
+        "retry: async () => { const { limit, skip } = get().lastRequest; await get().fetchFeed(limit, skip) }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "status-driven-ui-branching",
+      "description": "UI output branches by lifecycle status values for idle loading success and error",
+      "weight": 1,
+      "passed": true,
+      "reason": "`statusContent` is a record keyed by all four `FeedStatus` values ('idle', 'loading', 'success', 'error'), each mapping to distinct React nodes, and `{statusContent[status]}` renders the active branch.",
+      "evidence": [
+        "const statusContent = { idle: ..., loading: ..., success: ..., error: ... } satisfies Record<FeedStatus, React.ReactNode>",
+        "{statusContent[status]}"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 5,
+    "totalWeight": 5,
+    "ratio": 1
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

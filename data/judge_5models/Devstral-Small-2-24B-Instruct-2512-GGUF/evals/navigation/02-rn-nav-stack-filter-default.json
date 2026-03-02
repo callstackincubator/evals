@@ -1,0 +1,73 @@
+{
+  "evalId": "02-rn-nav-stack-filter-default",
+  "evalPath": "evals/navigation/02-rn-nav-stack-filter-default",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Devstral-Small-2-24B-Instruct-2512-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "notifications-screen-present",
+      "description": "Must define and register a Notifications screen route in the stack navigator.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Notifications screen is defined as NotificationsScreen and registered in the stack navigator under the key 'Notifications'.",
+      "evidence": [
+        "screens: { Home: HomeScreen, Notifications: NotificationsScreen }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "optional-filter-param",
+      "description": "Must model filter as an optional navigation param for the notifications screen.",
+      "weight": 1,
+      "passed": true,
+      "reason": "filter is accessed via optional chaining on params (`Navigation.useStaticRoute().params ?? { filter: 'all' }`), making it effectively optional. No explicit type annotation forces it as required.",
+      "evidence": [
+        "const { filter } = Navigation.useStaticRoute().params ?? { filter: 'all' }"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "default-filter-all",
+      "description": "Must default filter to all when the param is absent.",
+      "weight": 1,
+      "passed": true,
+      "reason": "When params is absent/undefined, the nullish coalescing fallback sets filter to 'all'.",
+      "evidence": [
+        "Navigation.useStaticRoute().params ?? { filter: 'all' }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "render-filter-value",
+      "description": "Must render the normalized filter value in the screen UI.",
+      "weight": 1,
+      "passed": true,
+      "reason": "The filter value is rendered directly in the UI inside a Text component as 'Notifications: {filter}'.",
+      "evidence": [
+        "<Text style={styles.title}>Notifications: {filter}</Text>"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "static-api-navigation-construction",
+      "description": "Must construct navigation with React Navigation static API and render it via `createStaticNavigation(...)`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "createStaticNavigation is imported from @react-navigation/native, used to construct Navigation, and rendered as <Navigation /> in App.",
+      "evidence": [
+        "import { createStaticNavigation } from '@react-navigation/native'",
+        "const Navigation = createStaticNavigation(Stack)",
+        "return <Navigation />"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 5,
+    "totalWeight": 5,
+    "ratio": 1
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

@@ -2,30 +2,19 @@
 
 import { type Dispatch, type SetStateAction, useMemo, useState } from "react";
 import { Check, X } from "@phosphor-icons/react";
-import type { CategoryDefinition, EvalScore, ModelSummary } from "@/lib/types/evals";
+import type { CategoryDefinition, CategoryScore, EvalScore, ModelSummary } from "@/lib/types/evals";
 import { cn, formatPct } from "@/lib/utils";
-import {
-  DeltaBadge,
-  getPodiumRowStyle,
-  ModelLogoSquare,
-  RankBadge,
-} from "@/components/tables/table-badges";
+import { getPodiumRowStyle, ModelLogoSquare, RankBadge } from "@/components/tables/table-badges";
 
 interface CategoryDrilldownTableProps {
   category: CategoryDefinition;
   models: ModelSummary[];
 }
 
-interface EvalRow {
-  vanilla: EvalScore;
-  callstack: EvalScore;
-}
-
 interface SelectedEvalDetails {
   modelId: string;
   modelLabel: string;
-  vanilla: EvalScore;
-  callstack: EvalScore;
+  evalItem: EvalScore;
 }
 
 function RequirementStatusPill({ status }: { status: "pass" | "fail" }) {
@@ -44,52 +33,61 @@ function RequirementStatusPill({ status }: { status: "pass" | "fail" }) {
   );
 }
 
+function CountPill({ value, tone }: { value: number; tone: "pass" | "fail" }) {
+  const pass = tone === "pass";
+
+  return (
+    <span
+      className={cn(
+        "inline-flex min-w-16 items-center justify-center border border-transparent px-2 py-1 font-mono text-xs font-medium",
+        pass ? "bg-emerald-500/15 text-emerald-300" : "bg-rose-500/15 text-rose-300",
+      )}
+    >
+      {value}
+    </span>
+  );
+}
+
 function SharedColumns() {
   return (
     <colgroup>
-      <col className="w-[38%]" />
-      <col className="w-[14%]" />
-      <col className="w-[14%]" />
-      <col className="w-[12%]" />
-      <col className="w-[20%]" />
+      <col className="w-[52%]" />
+      <col className="w-[16%]" />
+      <col className="w-[16%]" />
+      <col className="w-[16%]" />
     </colgroup>
   );
 }
 
+function emptyCategory(category: CategoryDefinition): CategoryScore {
+  return {
+    categoryId: category.id,
+    categoryName: category.name,
+    iconKey: category.iconKey,
+    evalCount: 0,
+    evals: [],
+    passedWeight: 0,
+    totalWeight: 0,
+    scorePct: 0,
+  };
+}
+
 export function CategoryDrilldownTable({ category, models }: CategoryDrilldownTableProps) {
-  const [expandedModels, setExpandedModels] = useState<Record<string, boolean>>({});
+  const [expandedModelId, setExpandedModelId] = useState<string | null>(null);
   const [selectedEval, setSelectedEval] = useState<SelectedEvalDetails | null>(null);
 
   const rows = useMemo(() => {
-    return models.map((model) => {
-      const vanillaCategory = model.variants.vanilla.categories[category.id];
-      const callstackCategory = model.variants.callstack.categories[category.id];
-      const callstackByEvalId = new Map(
-        callstackCategory.evals.map((evalItem) => [evalItem.evalId, evalItem]),
-      );
-
-      const evalRows: EvalRow[] = vanillaCategory.evals.map((evalItem) => ({
-        vanilla: evalItem,
-        callstack: callstackByEvalId.get(evalItem.evalId) ?? evalItem,
-      }));
-
-      return {
-        model,
-        vanillaCategory,
-        callstackCategory,
-        evalRows,
-      };
-    })
-      .sort(
-        (left, right) =>
-          Math.max(right.vanillaCategory.scorePct, right.callstackCategory.scorePct) -
-          Math.max(left.vanillaCategory.scorePct, left.callstackCategory.scorePct),
-      )
+    return models
+      .map((model) => {
+        const categoryScore = model.categories[category.id] ?? emptyCategory(category);
+        return { model, categoryScore };
+      })
+      .sort((left, right) => right.categoryScore.scorePct - left.categoryScore.scorePct)
       .map((row, index) => ({
         ...row,
         rank: index + 1,
       }));
-  }, [category.id, models]);
+  }, [category, models]);
 
   return (
     <>
@@ -100,16 +98,15 @@ export function CategoryDrilldownTable({ category, models }: CategoryDrilldownTa
           <thead className="sticky top-0 z-10 bg-zinc-900/95">
             <tr className="border-b border-zinc-800 text-left text-xs uppercase tracking-wide text-zinc-400">
               <th className="px-4 py-3 font-semibold">Model</th>
-              <th className="px-4 py-3 font-semibold">Vanilla</th>
-              <th className="px-4 py-3 font-semibold">Callstack</th>
-              <th className="px-4 py-3 font-semibold">Delta</th>
-              <th className="px-4 py-3 font-semibold">Req stats (V/C)</th>
+              <th className="px-4 py-3 text-center font-semibold">Score</th>
+              <th className="px-4 py-3 text-center font-semibold">Passed</th>
+              <th className="px-4 py-3 text-center font-semibold">Failed</th>
             </tr>
           </thead>
 
           <tbody>
-            {rows.map(({ rank, model, vanillaCategory, callstackCategory, evalRows }) => {
-              const isModelExpanded = Boolean(expandedModels[model.id]);
+            {rows.map(({ rank, model, categoryScore }) => {
+              const isModelExpanded = expandedModelId === model.id;
 
               return (
                 <FragmentRow
@@ -118,19 +115,13 @@ export function CategoryDrilldownTable({ category, models }: CategoryDrilldownTa
                   rank={rank}
                   isModelExpanded={isModelExpanded}
                   onToggleModel={() =>
-                    setExpandedModels((prev) => ({
-                      ...prev,
-                      [model.id]: !prev[model.id],
-                    }))
+                    setExpandedModelId((prev) => (prev === model.id ? null : model.id))
                   }
                   modelLabel={model.label}
-                  vanillaScore={vanillaCategory.scorePct}
-                  callstackScore={callstackCategory.scorePct}
-                  vanillaPassed={vanillaCategory.passedRequirements}
-                  vanillaTotal={vanillaCategory.totalRequirements}
-                  callstackPassed={callstackCategory.passedRequirements}
-                  callstackTotal={callstackCategory.totalRequirements}
-                  evalRows={evalRows}
+                  score={categoryScore.scorePct}
+                  passedWeight={categoryScore.passedWeight}
+                  totalWeight={categoryScore.totalWeight}
+                  evalRows={categoryScore.evals}
                   selectedEval={selectedEval}
                   setSelectedEval={setSelectedEval}
                 />
@@ -140,10 +131,7 @@ export function CategoryDrilldownTable({ category, models }: CategoryDrilldownTa
         </table>
       </div>
 
-      <EvalDetailsDrawer
-        selectedEval={selectedEval}
-        onClose={() => setSelectedEval(null)}
-      />
+      <EvalDetailsDrawer selectedEval={selectedEval} onClose={() => setSelectedEval(null)} />
     </>
   );
 }
@@ -154,13 +142,10 @@ interface FragmentRowProps {
   isModelExpanded: boolean;
   onToggleModel: () => void;
   modelLabel: string;
-  vanillaScore: number;
-  callstackScore: number;
-  vanillaPassed: number;
-  vanillaTotal: number;
-  callstackPassed: number;
-  callstackTotal: number;
-  evalRows: EvalRow[];
+  score: number;
+  passedWeight: number;
+  totalWeight: number;
+  evalRows: EvalScore[];
   selectedEval: SelectedEvalDetails | null;
   setSelectedEval: Dispatch<SetStateAction<SelectedEvalDetails | null>>;
 }
@@ -171,12 +156,9 @@ function FragmentRow({
   isModelExpanded,
   onToggleModel,
   modelLabel,
-  vanillaScore,
-  callstackScore,
-  vanillaPassed,
-  vanillaTotal,
-  callstackPassed,
-  callstackTotal,
+  score,
+  passedWeight,
+  totalWeight,
   evalRows,
   selectedEval,
   setSelectedEval,
@@ -206,49 +188,37 @@ function FragmentRow({
             <span>{modelLabel}</span>
           </div>
         </td>
-        <td className="px-4 py-5 text-zinc-300">{formatPct(vanillaScore)}</td>
-        <td className="px-4 py-5 text-zinc-300">{formatPct(callstackScore)}</td>
-        <td className="px-4 py-5">
-          <DeltaBadge value={callstackScore - vanillaScore} />
+        <td className="px-4 py-5 text-center font-mono text-zinc-300">{formatPct(score)}</td>
+        <td className="px-4 py-5 text-center whitespace-nowrap">
+          <CountPill value={passedWeight} tone="pass" />
         </td>
-        <td className="px-4 py-5 text-zinc-300 whitespace-nowrap">
-          {vanillaPassed}/{vanillaTotal} | {callstackPassed}/{callstackTotal}
+        <td className="px-4 py-5 text-center whitespace-nowrap">
+          <CountPill value={totalWeight - passedWeight} tone="fail" />
         </td>
       </tr>
 
       {isModelExpanded && (
         <tr className="border-b border-zinc-800 bg-zinc-900/70">
-          <td colSpan={5} className="p-0">
+          <td colSpan={4} className="p-0">
             <div className="overflow-hidden border-t border-zinc-800 bg-zinc-900">
               <table className="min-w-full table-fixed border-collapse text-sm">
                 <SharedColumns />
 
-                <thead className="bg-zinc-800 text-zinc-400">
-                  <tr className="border-b border-zinc-800 text-left text-xs uppercase tracking-wide">
-                    <th className="px-4 py-2">Eval</th>
-                    <th className="px-4 py-2">Vanilla</th>
-                    <th className="px-4 py-2">Callstack</th>
-                    <th className="px-4 py-2">Delta</th>
-                    <th className="px-4 py-2">Req stats (V/C)</th>
-                  </tr>
-                </thead>
-
                 <tbody>
-                  {evalRows.map(({ vanilla, callstack }) => {
+                  {evalRows.map((evalItem) => {
                     const isSelected =
-                      selectedEval?.modelId === modelId && selectedEval.vanilla.evalId === vanilla.evalId;
+                      selectedEval?.modelId === modelId && selectedEval.evalItem.evalId === evalItem.evalId;
 
                     return (
                       <tr
-                        key={`${modelId}:${vanilla.evalId}`}
+                        key={`${modelId}:${evalItem.evalId}`}
                         role="button"
                         tabIndex={0}
                         onClick={() =>
                           setSelectedEval({
                             modelId,
                             modelLabel,
-                            vanilla,
-                            callstack,
+                            evalItem,
                           })
                         }
                         onKeyDown={(event) => {
@@ -257,8 +227,7 @@ function FragmentRow({
                             setSelectedEval({
                               modelId,
                               modelLabel,
-                              vanilla,
-                              callstack,
+                              evalItem,
                             });
                           }
                         }}
@@ -267,19 +236,13 @@ function FragmentRow({
                           isSelected && "bg-zinc-800/60",
                         )}
                       >
-                        <td className="px-4 py-5 text-zinc-100">
-                          <div className="flex items-center gap-3">
-                            <span>{vanilla.name}</span>
-                          </div>
+                        <td className="px-4 py-5 text-zinc-100">{evalItem.name}</td>
+                        <td className="px-4 py-5 text-center font-mono text-zinc-300">{formatPct(evalItem.scorePct)}</td>
+                        <td className="px-4 py-5 text-center whitespace-nowrap">
+                          <CountPill value={evalItem.passedWeight} tone="pass" />
                         </td>
-                        <td className="px-4 py-5 text-zinc-300">{formatPct(vanilla.scorePct)}</td>
-                        <td className="px-4 py-5 text-zinc-300">{formatPct(callstack.scorePct)}</td>
-                        <td className="px-4 py-5">
-                          <DeltaBadge value={callstack.scorePct - vanilla.scorePct} />
-                        </td>
-                        <td className="px-4 py-5 text-zinc-300 whitespace-nowrap">
-                          {vanilla.passedRequirements}/{vanilla.totalRequirements} | {" "}
-                          {callstack.passedRequirements}/{callstack.totalRequirements}
+                        <td className="px-4 py-5 text-center whitespace-nowrap">
+                          <CountPill value={evalItem.totalWeight - evalItem.passedWeight} tone="fail" />
                         </td>
                       </tr>
                     );
@@ -316,7 +279,7 @@ function EvalDetailsDrawer({ selectedEval, onClose }: EvalDetailsDrawerProps) {
       <aside className="fixed inset-y-0 right-0 z-40 w-full max-w-2xl border-l border-zinc-800 bg-zinc-950">
         <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-3">
           <div>
-            <h3 className="text-base font-semibold text-zinc-100">{selectedEval.vanilla.name}</h3>
+            <h3 className="text-base font-semibold text-zinc-100">{selectedEval.evalItem.name}</h3>
             <p className="text-sm text-zinc-400">{selectedEval.modelLabel}</p>
           </div>
 
@@ -331,39 +294,23 @@ function EvalDetailsDrawer({ selectedEval, onClose }: EvalDetailsDrawerProps) {
         </div>
 
         <div className="no-scrollbar h-[calc(100%-65px)] overflow-auto p-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Prompt</p>
-          <pre className="mt-2 overflow-auto border border-zinc-800 bg-zinc-900 p-3 text-xs leading-relaxed text-zinc-200 whitespace-pre-wrap">
-            {selectedEval.vanilla.prompt}
-          </pre>
-
-          <div className="mt-4 border border-zinc-800 bg-zinc-950">
+          <div className="mt-2 border border-zinc-800 bg-zinc-950">
             <table className="min-w-full border-collapse text-sm">
               <thead className="bg-zinc-900 text-zinc-400">
                 <tr className="border-b border-zinc-800 text-left text-xs uppercase tracking-wide">
                   <th className="px-3 py-2">Requirement</th>
-                  <th className="px-3 py-2">Vanilla</th>
-                  <th className="px-3 py-2">Callstack</th>
+                  <th className="px-3 py-2">Status</th>
                 </tr>
               </thead>
               <tbody>
-                {selectedEval.vanilla.requirements.map((requirement) => {
-                  const callstackRequirement =
-                    selectedEval.callstack.requirements.find(
-                      (item) => item.requirementId === requirement.requirementId,
-                    ) ?? requirement;
-
-                  return (
-                    <tr key={requirement.requirementId} className="border-b border-zinc-800/80">
-                      <td className="px-3 py-2 text-zinc-200">{requirement.text}</td>
-                      <td className="px-3 py-2">
-                        <RequirementStatusPill status={requirement.status} />
-                      </td>
-                      <td className="px-3 py-2">
-                        <RequirementStatusPill status={callstackRequirement.status} />
-                      </td>
-                    </tr>
-                  );
-                })}
+                {selectedEval.evalItem.requirements.map((requirement) => (
+                  <tr key={requirement.requirementId} className="border-b border-zinc-800/80">
+                    <td className="px-3 py-2 text-zinc-200">{requirement.description}</td>
+                    <td className="px-3 py-2">
+                      <RequirementStatusPill status={requirement.status} />
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

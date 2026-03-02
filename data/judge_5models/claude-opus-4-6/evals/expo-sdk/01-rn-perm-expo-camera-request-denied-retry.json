@@ -1,0 +1,100 @@
+{
+  "evalId": "01-rn-perm-expo-camera-request-denied-retry",
+  "evalPath": "evals/expo-sdk/01-rn-perm-expo-camera-request-denied-retry",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "anthropic/claude-opus-4-6",
+  "llmJudgeRequirements": [
+    {
+      "id": "permission-request-on-demand",
+      "description": "Must call `requestPermission` from `useCameraPermissions()` only from a user-triggered action (for example `Pressable.onPress`), not on initial mount.",
+      "weight": 1,
+      "passed": true,
+      "reason": "requestPermission is only called inside handleOpen (triggered by Pressable.onPress) and inside the AppState listener (foreground refresh), never directly on mount.",
+      "evidence": [
+        "handleOpen is bound to Pressable onPress",
+        "No useEffect calls requestPermission on initial mount unconditionally"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "denied-flow-retry-and-settings",
+      "description": "Must support denied and blocked flows by retrying with `requestPermission` and using `Linking.openSettings()` when `permission.canAskAgain` is false.",
+      "weight": 1,
+      "passed": false,
+      "reason": "The denied branch only shows 'Open Settings' and 'Go Back'; it does not offer a retry via requestPermission when permission.canAskAgain is true. Both retryable-denied and blocked cases are collapsed into a single 'denied' flow state with no retry button.",
+      "evidence": [
+        "flow === 'denied' renders only handleOpenSettings and handleBack buttons",
+        "No Pressable calling requestPermission in the denied UI"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "lifecycle-permission-refresh",
+      "description": "Must refresh permission state on app foreground with `AppState.addEventListener('change', ...)` and a permission refresh call (`getPermission` / `getCameraPermissionsAsync`).",
+      "weight": 1,
+      "passed": true,
+      "reason": "AppState.addEventListener('change', ...) is used in a useEffect to detect foreground transitions and calls requestPermission() to refresh permission status.",
+      "evidence": [
+        "AppState.addEventListener('change', ...) in second useEffect",
+        "requestPermission() called when nextAppState === 'active'"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "degraded-path-no-crash",
+      "description": "Must render a deterministic fallback `View`/`Text` path when permission is unavailable instead of rendering `CameraView`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "When permission is not granted, the component renders fallback View/Text UI (idle/requesting screen or denied screen) without rendering CameraView.",
+      "evidence": [
+        "CameraView only rendered when flow === 'granted' && permission?.granted",
+        "Separate View+Text fallback branches for denied and idle states"
+      ],
+      "confidence": 0.98
+    },
+    {
+      "id": "single-flight-permission-request",
+      "description": "Must prevent concurrent permission requests by guarding `requestPermission` with an in-flight state (for example `requesting`).",
+      "weight": 1,
+      "passed": false,
+      "reason": "The 'requesting' flow state disables the Pressable button, but the AppState listener unconditionally calls requestPermission() even while flow === 'requesting', allowing a concurrent in-flight request from foreground events.",
+      "evidence": [
+        "AppState listener calls requestPermission() without checking flow state",
+        "disabled={flow === 'requesting'} only guards the button, not the AppState path"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "expo-camera-grant-gated-preview",
+      "description": "Must render `CameraView` only when `permission.granted` is true, with deterministic denied/blocked fallback UI otherwise.",
+      "weight": 1,
+      "passed": true,
+      "reason": "CameraView is rendered only inside the branch guarded by both flow === 'granted' && permission?.granted; all other paths render Text/View fallback UI.",
+      "evidence": [
+        "if (flow === 'granted' && permission?.granted) { return <CameraView ... /> }",
+        "Separate denied and idle fallback renders"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "implementation-expo-camera-cameraview-api",
+      "description": "Must implement preview with `CameraView` and permission handling with `expo-camera` APIs used by the sample (`useCameraPermissions` with request/get methods, or `getCameraPermissionsAsync`/`requestCameraPermissionsAsync`).",
+      "weight": 1,
+      "passed": true,
+      "reason": "CameraView and useCameraPermissions are imported from 'expo-camera' and used for preview and permission handling respectively.",
+      "evidence": [
+        "import { CameraView, useCameraPermissions } from 'expo-camera'",
+        "const [permission, requestPermission] = useCameraPermissions()"
+      ],
+      "confidence": 0.99
+    }
+  ],
+  "score": {
+    "passedWeight": 5,
+    "totalWeight": 7,
+    "ratio": 0.7143
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "evalId": "12-rn-nav-unsaved-edit-confirm",
+  "evalPath": "evals/navigation/12-rn-nav-unsaved-edit-confirm",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "anthropic/claude-opus-4-6",
+  "llmJudgeRequirements": [
+    {
+      "id": "prevent-leave-when-dirty",
+      "description": "Must derive an explicit dirty state for the edit form (for example comparing current input vs last saved value) and only block leaving when that state is dirty.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Dirty state is explicitly derived by comparing `name` (current input) with `savedName` (last saved value): `const hasUnsavedChanges = name !== savedName`.",
+      "evidence": [
+        "const hasUnsavedChanges = name !== savedName",
+        "usePreventRemove(hasUnsavedChanges, ...)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "usepreventremove-hook",
+      "description": "Must intercept native-stack back/remove actions with `usePreventRemove(...)` on the edit screen.",
+      "weight": 1,
+      "passed": true,
+      "reason": "`usePreventRemove` is imported from `@react-navigation/native` and called inside `EditScreen` with `hasUnsavedChanges` as the guard condition.",
+      "evidence": [
+        "import { usePreventRemove } from '@react-navigation/native'",
+        "usePreventRemove(hasUnsavedChanges, ({ data }) => { ... })"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "explicit-confirm-path",
+      "description": "Must show an explicit confirmation choice when leaving with unsaved changes and resume on confirm (for example by dispatching `data.action`).",
+      "weight": 1,
+      "passed": true,
+      "reason": "An `Alert.alert` confirmation dialog is shown when leaving with unsaved changes; pressing 'Discard' dispatches `data.action` to resume the navigation action.",
+      "evidence": [
+        "Alert.alert('Discard changes?', ...)",
+        "onPress: () => navigation.dispatch(data.action)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "no-confirm-when-clean",
+      "description": "Must allow leaving the edit screen without a confirmation prompt when there are no unsaved changes.",
+      "weight": 1,
+      "passed": true,
+      "reason": "`usePreventRemove` is passed `hasUnsavedChanges` which is `false` when `name === savedName`, so no interception occurs and the user can leave freely when there are no unsaved changes.",
+      "evidence": [
+        "usePreventRemove(hasUnsavedChanges, ...)",
+        "const hasUnsavedChanges = name !== savedName"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 4,
+    "totalWeight": 4,
+    "ratio": 1
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

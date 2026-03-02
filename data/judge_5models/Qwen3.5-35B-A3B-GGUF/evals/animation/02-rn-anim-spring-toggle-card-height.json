@@ -1,0 +1,50 @@
+{
+  "evalId": "02-rn-anim-spring-toggle-card-height",
+  "evalPath": "evals/animation/02-rn-anim-spring-toggle-card-height",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Qwen3.5-35B-A3B-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "deterministic-collapsed-expanded-states",
+      "description": "Must represent collapsed/expanded states with a Reanimated progress shared value (for example `0`/`1`) and map it to card height via `interpolate(...)` in `useAnimatedStyle`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "useAnimatedStyle maps isExpanded to height via a ternary conditional (isExpanded.value === 1 ? 100 : 0) rather than interpolate(...), so height is not interpolated across the 0–1 range during the spring animation.",
+      "evidence": [
+        "height: isExpanded.value === 1 ? 100 : 0"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "spring-driven-transition",
+      "description": "Header press must toggle the progress shared value between collapsed/expanded states using `withSpring(...)` from `react-native-reanimated`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Header press calls toggleCard which sets isExpanded.value = withSpring(...), correctly toggling between 0 and 1 using a spring animation.",
+      "evidence": [
+        "isExpanded.value = withSpring(isExpanded.value === 0 ? 1 : 0)"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "no-react-layout-jump",
+      "description": "Card/details visuals must be driven by Reanimated animated styles (`Animated.View` + `useAnimatedStyle`) instead of direct non-animated React style toggles.",
+      "weight": 1,
+      "passed": false,
+      "reason": "animatedDetailsStyle is applied to a plain View, not an Animated.View. Animated styles from useAnimatedStyle must be applied to Reanimated's Animated.View to be driven by the worklet runtime without layout jumps.",
+      "evidence": [
+        "<View style={[styles.detailsContainer, animatedDetailsStyle]}>",
+        "import { StyleSheet, Text, View, TouchableOpacity } from 'react-native' — Animated is never imported from react-native-reanimated"
+      ],
+      "confidence": 0.98
+    }
+  ],
+  "score": {
+    "passedWeight": 1,
+    "totalWeight": 3,
+    "ratio": 0.3333
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

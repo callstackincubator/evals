@@ -1,0 +1,52 @@
+{
+  "evalId": "03-rn-anim-layout-enter-exit-list-items",
+  "evalPath": "evals/animation/03-rn-anim-layout-enter-exit-list-items",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Devstral-Small-2-24B-Instruct-2512-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "animated-entering-for-new-items",
+      "description": "Row container must set Reanimated `entering={...}` animation (for example `FadeInDown`) on `Animated.View`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Animated.View sets entering={SlideInDown}, a Reanimated entering animation.",
+      "evidence": [
+        "<Animated.View entering={SlideInDown} exiting={SlideOutUp} layout={Layout} style={styles.row}>"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "animated-exiting-for-removed-items",
+      "description": "Row container must set Reanimated `exiting={...}` animation (for example `FadeOutUp`) on `Animated.View`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Animated.View sets exiting={SlideOutUp}, a Reanimated exiting animation.",
+      "evidence": [
+        "<Animated.View entering={SlideInDown} exiting={SlideOutUp} layout={Layout} style={styles.row}>"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "stable-item-identity",
+      "description": "List rendering must use stable row identity via `keyExtractor`/`key` from persistent item IDs so entering/exiting animations bind to the correct row instances.",
+      "weight": 1,
+      "passed": true,
+      "reason": "FlatList uses keyExtractor={(item) => item.id} with persistent string IDs (e.g. 'row-1', 'row-2') assigned at creation and never mutated.",
+      "evidence": [
+        "keyExtractor={(item) => item.id}",
+        "{ id: 'row-1', label: 'Audit gestures' }",
+        "const id = `row-${nextId.current}`"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 3,
+    "ratio": 1
+  },
+  "outputFiles": [
+    "workspace/parallel/temp/App.tsx",
+    "workspace/parallel/temp/App_backup.tsx"
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "evalId": "05-rn-anim-pan-drag-card-with-snap-points",
+  "evalPath": "evals/animation/05-rn-anim-pan-drag-card-with-snap-points",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/gpt-oss-20b-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "gesture-handler-pan-api",
+      "description": "Must define drag with `Gesture.Pan()` and attach it via `GestureDetector` under `GestureHandlerRootView` from `react-native-gesture-handler`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Uses legacy `PanGestureHandler` component instead of `Gesture.Pan()` with `GestureDetector` under `GestureHandlerRootView`.",
+      "evidence": [
+        "import { PanGestureHandler } from 'react-native-gesture-handler'",
+        "<PanGestureHandler onGestureEvent={gestureHandler}>"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "implementation-rngh-pan-gesturebuilder-contract",
+      "description": "Must implement drag with `Gesture.Pan()` builder callbacks (`onBegin`/`onUpdate`/`onEnd`) and MUST NOT use legacy `useAnimatedGestureHandler`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Uses `useAnimatedGestureHandler` (explicitly prohibited) with `onStart`/`onActive`/`onEnd` callbacks instead of `Gesture.Pan()` builder with `onBegin`/`onUpdate`/`onEnd`.",
+      "evidence": [
+        "import { ..., useAnimatedGestureHandler } from 'react-native-reanimated'",
+        "const gestureHandler = useAnimatedGestureHandler({ onStart, onActive, onEnd })"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "translation-shared-value",
+      "description": "Must store translation in Reanimated shared values (`translateX`/`translateY`) and update them in pan callbacks, then apply via `useAnimatedStyle` transform.",
+      "weight": 1,
+      "passed": false,
+      "reason": "While `translateX` is a shared value and `useAnimatedStyle` applies it correctly, only `translateX` is used — `translateY` is absent. More critically, the shared values are updated inside the prohibited `useAnimatedGestureHandler` callbacks rather than in `Gesture.Pan()` builder callbacks.",
+      "evidence": [
+        "const translateX = useSharedValue(0)",
+        "No translateY shared value present",
+        "Updates occur inside useAnimatedGestureHandler, not Gesture.Pan() callbacks"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "deterministic-snap-on-release",
+      "description": "Pan `onEnd` must compute a snap target from explicit velocity/position decision logic and animate shared values to that target with `withTiming(...)`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Snap logic is in `useAnimatedGestureHandler`'s `onEnd` and uses `withSpring` instead of the required `withTiming`. No `Gesture.Pan().onEnd()` builder callback exists.",
+      "evidence": [
+        "translateX.value = withSpring(target, { damping: 20 })",
+        "No withTiming usage anywhere in the file",
+        "onEnd lives inside useAnimatedGestureHandler, not Gesture.Pan()"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 0,
+    "totalWeight": 4,
+    "ratio": 0
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

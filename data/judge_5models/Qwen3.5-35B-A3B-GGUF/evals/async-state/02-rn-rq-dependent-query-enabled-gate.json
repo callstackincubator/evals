@@ -1,0 +1,71 @@
+{
+  "evalId": "02-rn-rq-dependent-query-enabled-gate",
+  "evalPath": "evals/async-state/02-rn-rq-dependent-query-enabled-gate",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Qwen3.5-35B-A3B-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "app-is-wrapped-with-query-client-provider",
+      "description": "App component renders `QueryClientProvider` with `client` set to `queryClient` and wraps `ProjectsScreen`",
+      "weight": 1,
+      "passed": true,
+      "reason": "App returns QueryClientProvider with client={queryClient} wrapping ProjectsScreen",
+      "evidence": [
+        "<QueryClientProvider client={queryClient}><ProjectsScreen /></QueryClientProvider>"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "profile-queryfn-uses-query-function-context-signal",
+      "description": "Profile `queryFn` reads `signal` from `QueryFunctionContext` and passes it to `fetchProfile`",
+      "weight": 1,
+      "passed": false,
+      "reason": "Profile queryFn is a plain async arrow function with no parameters; it does not destructure signal from QueryFunctionContext nor passes it to any fetch call",
+      "evidence": [
+        "queryFn: async () => { const response = await fetch('https://dummyjson.com/users/1') }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "projects-query-key-uses-profile-id-with-pending-fallback",
+      "description": "Projects query uses `queryKey` array `projects` and `profileId`",
+      "weight": 1,
+      "passed": false,
+      "reason": "The query intended as 'projects' uses queryKey ['todos', userId], not ['projects', profileId]",
+      "evidence": [
+        "queryKey: ['todos', userId]"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "projects-query-enabled-uses-profile-id-boolean",
+      "description": "Projects query `enabled` option is set from boolean cast of `profileId`",
+      "weight": 1,
+      "passed": false,
+      "reason": "enabled is set to `userId !== undefined` (a non-strict inequality check) rather than a boolean cast `!!profileId` or `Boolean(profileId)`",
+      "evidence": [
+        "enabled: userId !== undefined"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "projects-queryfn-destructures-userid-from-querykey",
+      "description": "Projects `queryFn` destructures `userId` from `queryKey` and calls `fetchProjectsByUserId` with `signal`",
+      "weight": 1,
+      "passed": false,
+      "reason": "The projects/todos queryFn does not destructure userId from queryKey; it captures userId from outer closure scope and does not pass signal to fetch",
+      "evidence": [
+        "queryFn: async () => { const response = await fetch(`https://dummyjson.com/todos/user/${userId}`) }"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 1,
+    "totalWeight": 5,
+    "ratio": 0.2
+  },
+  "outputFiles": [
+    "workspace/parallel2/temp/App.tsx"
+  ]
+}

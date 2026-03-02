@@ -1,0 +1,71 @@
+{
+  "evalId": "02-rn-rq-dependent-query-enabled-gate",
+  "evalPath": "evals/async-state/02-rn-rq-dependent-query-enabled-gate",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "openai/gpt-5.3-codex",
+  "llmJudgeRequirements": [
+    {
+      "id": "app-is-wrapped-with-query-client-provider",
+      "description": "App component renders `QueryClientProvider` with `client` set to `queryClient` and wraps `ProjectsScreen`",
+      "weight": 1,
+      "passed": true,
+      "reason": "App renders QueryClientProvider with client={queryClient} wrapping ProjectsScreen",
+      "evidence": [
+        "<QueryClientProvider client={queryClient}><ProjectsScreen /></QueryClientProvider>"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "profile-queryfn-uses-query-function-context-signal",
+      "description": "Profile `queryFn` reads `signal` from `QueryFunctionContext` and passes it to `fetchProfile`",
+      "weight": 1,
+      "passed": false,
+      "reason": "Profile queryFn is an arrow function with no parameters; it does not destructure signal from QueryFunctionContext nor pass it to the fetch call",
+      "evidence": [
+        "queryFn: () => fetchJson<Profile>('https://dummyjson.com/users/1')"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "projects-query-key-uses-profile-id-with-pending-fallback",
+      "description": "Projects query uses `queryKey` array `projects` and `profileId`",
+      "weight": 1,
+      "passed": false,
+      "reason": "Projects query uses key ['relatedRows', profileId] not ['projects', profileId]",
+      "evidence": [
+        "queryKey: ['relatedRows', profileId]"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "projects-query-enabled-uses-profile-id-boolean",
+      "description": "Projects query `enabled` option is set from boolean cast of `profileId`",
+      "weight": 1,
+      "passed": false,
+      "reason": "enabled is set via typeof check (typeof profileId === 'number') rather than a boolean cast (!!profileId or Boolean(profileId))",
+      "evidence": [
+        "enabled: typeof profileId === 'number'"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "projects-queryfn-destructures-userid-from-querykey",
+      "description": "Projects `queryFn` destructures `userId` from `queryKey` and calls `fetchProjectsByUserId` with `signal`",
+      "weight": 1,
+      "passed": false,
+      "reason": "Projects queryFn closes over profileId directly; it does not destructure userId from queryKey and does not accept or pass a signal",
+      "evidence": [
+        "queryFn: () => fetchJson<RelatedRowsResponse>(`https://dummyjson.com/todos/user/${profileId}`)"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 1,
+    "totalWeight": 5,
+    "ratio": 0.2
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

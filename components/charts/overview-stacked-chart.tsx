@@ -4,14 +4,15 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
-import { ChartTooltipCard } from "@/components/charts/chart-tooltip";
+import { ModelAxisTick } from "@/components/charts/model-axis-tick";
+import { ModelLogoSquare } from "@/components/tables/table-badges";
 import { CATEGORY_COLORS } from "@/lib/colors/category-colors";
+import { formatPct } from "@/lib/utils";
 import type { CategoryDefinition, ModelSummary } from "@/lib/types/evals";
 
 interface OverviewStackedChartProps {
@@ -20,7 +21,6 @@ interface OverviewStackedChartProps {
 }
 
 interface TooltipPayloadItem {
-  dataKey?: string;
   payload?: Record<string, string | number>;
 }
 
@@ -35,11 +35,17 @@ function buildOverviewRows(categories: CategoryDefinition[], models: ModelSummar
   return models.map((model) => {
     const row: Record<string, number | string> = {
       model: model.label,
+      modelId: model.id,
+      overall: model.overallScorePct,
     };
+    const totalWeight = Object.values(model.categories).reduce(
+      (acc, categoryScore) => acc + categoryScore.totalWeight,
+      0,
+    );
 
     for (const category of categories) {
-      row[`vanilla_${category.id}`] = model.variants.vanilla.categories[category.id].scorePct;
-      row[`callstack_${category.id}`] = model.variants.callstack.categories[category.id].scorePct;
+      const passedWeight = model.categories[category.id]?.passedWeight ?? 0;
+      row[category.id] = totalWeight > 0 ? (passedWeight / totalWeight) * 100 : 0;
     }
 
     return row;
@@ -51,13 +57,13 @@ function OverviewTooltipContent({ active, label, payload, categories }: Overview
     return null;
   }
 
-  const firstEntry = payload[0];
-  const dataKey = String(firstEntry.dataKey ?? "");
-  const variant = dataKey.startsWith("callstack_") ? "callstack" : "vanilla";
-  const row = firstEntry.payload ?? {};
+  const row = payload[0].payload ?? {};
+  const modelId = String(row.modelId ?? "");
+  const modelLabel = String(label ?? "");
+  const overallScore = Number(row.overall ?? 0);
 
   const rows = categories.map((category) => {
-    const value = Number(row[`${variant}_${category.id}`] ?? 0);
+    const value = Number(row[category.id] ?? 0);
 
     return {
       label: category.name,
@@ -67,15 +73,35 @@ function OverviewTooltipContent({ active, label, payload, categories }: Overview
   });
 
   return (
-    <ChartTooltipCard
-      title={`${String(label ?? "")} - ${variant === "callstack" ? "Callstack" : "Vanilla"}`}
-      rows={rows}
-    />
+    <div
+      className="min-w-56 border border-zinc-700 bg-zinc-950/95 px-3 py-2 shadow-xl"
+      style={{ animation: "tooltip-fade-in 120ms ease-out" }}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-1.5">
+          <ModelLogoSquare modelId={modelId} modelLabel={modelLabel} />
+          <p className="truncate text-xs font-semibold text-zinc-100">{modelLabel}</p>
+        </div>
+        <span className="font-mono text-xs text-zinc-100">{formatPct(overallScore)}</span>
+      </div>
+      <div className="mt-2 space-y-1.5">
+        {rows.map((item) => (
+          <div key={item.label} className="flex items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-1.5 text-zinc-300">
+              <span className="h-2.5 w-2.5 border border-zinc-700" style={{ backgroundColor: item.color }} />
+              <span>{item.label}</span>
+            </div>
+            <span className="font-mono text-zinc-100">{formatPct(item.value)}</span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
 export function OverviewStackedChart({ categories, models }: OverviewStackedChartProps) {
   const rows = buildOverviewRows(categories, models);
+  const modelIdByLabel = Object.fromEntries(models.map((model) => [model.label, model.id]));
 
   return (
     <div className="h-full min-h-[420px] border border-zinc-800 bg-zinc-950 p-4">
@@ -88,8 +114,8 @@ export function OverviewStackedChart({ categories, models }: OverviewStackedChar
               tickLine={false}
               axisLine={false}
               interval={0}
-              height={42}
-              tick={{ fill: "#a1a1aa", fontSize: 14 }}
+              height={56}
+              tick={<ModelAxisTick modelIdByLabel={modelIdByLabel} />}
             />
             <YAxis
               domain={[0, 100]}
@@ -101,33 +127,18 @@ export function OverviewStackedChart({ categories, models }: OverviewStackedChar
               tick={{ fill: "#a1a1aa", fontSize: 12 }}
             />
             <Tooltip
-              shared={false}
               isAnimationActive={false}
               cursor={{ fill: "rgba(255,255,255,0.03)" }}
               wrapperStyle={{ pointerEvents: "none" }}
               content={<OverviewTooltipContent categories={categories} />}
             />
-            <Legend wrapperStyle={{ color: "#d4d4d8" }} />
-
             {categories.map((category) => (
               <Bar
-                key={`vanilla_${category.id}`}
-                dataKey={`vanilla_${category.id}`}
-                stackId="vanilla"
+                key={category.id}
+                dataKey={category.id}
+                stackId="overall"
                 fill={CATEGORY_COLORS[category.id] ?? "#71717a"}
-                name={`${category.name} (vanilla)`}
-                radius={[0, 0, 0, 0]}
-              />
-            ))}
-
-            {categories.map((category) => (
-              <Bar
-                key={`callstack_${category.id}`}
-                dataKey={`callstack_${category.id}`}
-                stackId="callstack"
-                fill={CATEGORY_COLORS[category.id] ?? "#71717a"}
-                fillOpacity={0.45}
-                name={`${category.name} (callstack)`}
+                name={category.name}
               />
             ))}
           </BarChart>

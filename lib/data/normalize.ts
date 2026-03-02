@@ -1,172 +1,191 @@
 import {
+  type CategoryDefinition,
+  type CategoryScore,
   type DashboardData,
-  type EvalCatalog,
-  type EvalResult,
-  type ModelEntry,
-  type ModelResults,
-  type RequirementStatus,
-  type VariantSummary,
+  type EvalScore,
+  type JudgeDataset,
+  type ModelSummary,
+  type RequirementScore,
 } from "@/lib/types/evals";
-import {
-  calculateCategoryScore,
-  calculateDelta,
-  calculateEvalScore,
-  calculateOverallScore,
-} from "@/lib/scoring/calculate-scores";
+import { calculateEvalScore } from "@/lib/scoring/calculate-scores";
 
-type VariantName = "vanilla" | "callstack";
+const CATEGORY_ORDER: Record<string, number> = {
+  navigation: 1,
+  animation: 2,
+  "async-state": 3,
+  "expo-sdk": 4,
+};
 
-function summarizeVariant(
-  catalog: EvalCatalog,
-  model: ModelEntry,
-  variantName: VariantName,
-  warnings: string[],
-): VariantSummary {
-  const variant = model.variants[variantName];
-  const evalResultMap = new Map<string, EvalResult>();
+const CATEGORY_LABELS: Record<string, string> = {
+  navigation: "Navigation",
+  animation: "Animation",
+  "async-state": "Async State",
+  "expo-sdk": "Expo SDK",
+};
 
-  for (const evalResult of variant.evalResults) {
-    evalResultMap.set(evalResult.evalId, evalResult);
+function titleCaseWord(word: string): string {
+  if (word.length === 0) {
+    return word;
   }
 
-  const knownEvalIds = new Set<string>();
+  return word[0].toUpperCase() + word.slice(1);
+}
 
-  const categories = Object.fromEntries(
-    catalog.categories.map((category) => {
-      const evalScores = category.evals.map((evalDef) => {
-        knownEvalIds.add(evalDef.id);
-
-        const evalResult = evalResultMap.get(evalDef.id);
-        const requirementResultMap = new Map(
-          (evalResult?.requirementResults ?? []).map((result) => [
-            result.requirementId,
-            result.status,
-          ]),
-        );
-
-        for (const result of evalResult?.requirementResults ?? []) {
-          const knownRequirement = evalDef.requirements.some(
-            (requirement) => requirement.id === result.requirementId,
-          );
-
-          if (!knownRequirement) {
-            warnings.push(
-              `${model.id}/${variantName}/${evalDef.id}: unknown requirement ${result.requirementId}`,
-            );
-          }
-        }
-
-        const requirements = evalDef.requirements.map((requirement) => {
-          let status = requirementResultMap.get(requirement.id);
-
-          if (!status) {
-            warnings.push(
-              `${model.id}/${variantName}/${evalDef.id}: missing result for ${requirement.id} (counted as fail)`,
-            );
-            status = "fail";
-          }
-
-          return {
-            requirementId: requirement.id,
-            text: requirement.text,
-            status: status as RequirementStatus,
-          };
-        });
-
-        const passedRequirements = requirements.filter((item) => item.status === "pass").length;
-        const totalRequirements = requirements.length;
-
-        return {
-          evalId: evalDef.id,
-          name: evalDef.name,
-          prompt: evalDef.prompt,
-          requirements,
-          passedRequirements,
-          totalRequirements,
-          scorePct: calculateEvalScore(passedRequirements, totalRequirements),
-        };
-      });
-
-      const passedRequirements = evalScores.reduce(
-        (acc, evalScore) => acc + evalScore.passedRequirements,
-        0,
-      );
-      const totalRequirements = evalScores.reduce(
-        (acc, evalScore) => acc + evalScore.totalRequirements,
-        0,
-      );
-
-      return [
-        category.id,
-        {
-          categoryId: category.id,
-          categoryName: category.name,
-          iconKey: category.iconKey,
-          evalCount: category.evals.length,
-          evals: evalScores,
-          passedRequirements,
-          totalRequirements,
-          scorePct: calculateCategoryScore(evalScores.map((item) => item.scorePct)),
-        },
-      ];
-    }),
-  ) as VariantSummary["categories"];
-
-  for (const evalResult of variant.evalResults) {
-    if (!knownEvalIds.has(evalResult.evalId)) {
-      warnings.push(`${model.id}/${variantName}: unknown eval ${evalResult.evalId}`);
-    }
+function humanizeCategoryId(categoryId: string): string {
+  if (CATEGORY_LABELS[categoryId]) {
+    return CATEGORY_LABELS[categoryId];
   }
 
-  const categoryValues = Object.values(categories);
+  return categoryId
+    .split("-")
+    .map((part) => titleCaseWord(part))
+    .join(" ");
+}
 
-  const passedRequirements = categoryValues.reduce(
-    (acc, category) => acc + category.passedRequirements,
-    0,
-  );
-  const totalRequirements = categoryValues.reduce(
-    (acc, category) => acc + category.totalRequirements,
-    0,
-  );
+function evalNameFromId(evalId: string): string {
+  const withoutPrefix = evalId.replace(/^\d+-/, "");
+  return withoutPrefix
+    .split("-")
+    .map((part) => part.toUpperCase() === part ? part : titleCaseWord(part))
+    .join(" ");
+}
 
+function categoryIdFromEvalPath(evalPath: string): string {
+  const parts = evalPath.split("/");
+  return parts[1] ?? "uncategorized";
+}
+
+function toRequirementScore(status: boolean, requirementId: string, description: string, confidence?: number): RequirementScore {
   return {
-    categories,
-    passedRequirements,
-    totalRequirements,
-    overallScorePct: calculateOverallScore(
-      categoryValues.map((category) => ({
-        scorePct: category.scorePct,
-        evalCount: category.evalCount,
-      })),
-    ),
+    requirementId,
+    description,
+    status: status ? "pass" : "fail",
+    confidence,
   };
 }
 
-export function normalizeDashboardData(catalog: EvalCatalog, modelResults: ModelResults): DashboardData {
-  const warnings: string[] = [];
+function buildCategories(models: JudgeDataset["models"]): CategoryDefinition[] {
+  const categoryCounts = new Map<string, number>();
 
-  const models = modelResults.models
-    .map((model) => {
-      const vanilla = summarizeVariant(catalog, model, "vanilla", warnings);
-      const callstack = summarizeVariant(catalog, model, "callstack", warnings);
+  for (const model of models) {
+    for (const evalResult of model.evals) {
+      const categoryId = categoryIdFromEvalPath(evalResult.evalPath);
+      categoryCounts.set(categoryId, (categoryCounts.get(categoryId) ?? 0) + 1);
+    }
+  }
 
-      return {
-        id: model.id,
-        label: model.label,
-        variants: {
-          vanilla,
-          callstack,
-        },
-        deltaOverallPct: calculateDelta(vanilla.overallScorePct, callstack.overallScorePct),
-        maxOverallScorePct: Math.max(vanilla.overallScorePct, callstack.overallScorePct),
-      };
-    })
-    .sort((left, right) => right.maxOverallScorePct - left.maxOverallScorePct);
+  const modelCount = models.length;
+
+  return Array.from(categoryCounts.entries())
+    .map(([categoryId, totalEvalCount]) => ({
+      id: categoryId,
+      name: humanizeCategoryId(categoryId),
+      iconKey: categoryId,
+      order: CATEGORY_ORDER[categoryId] ?? 999,
+      evalCount: Math.round(totalEvalCount / modelCount),
+    }))
+    .sort((left, right) => left.order - right.order || left.name.localeCompare(right.name));
+}
+
+function summarizeModel(
+  model: JudgeDataset["models"][number],
+  categories: CategoryDefinition[],
+  warnings: string[],
+): ModelSummary {
+  const categoryMap = new Map<string, CategoryScore>();
+
+  for (const category of categories) {
+    categoryMap.set(category.id, {
+      categoryId: category.id,
+      categoryName: category.name,
+      iconKey: category.iconKey,
+      evalCount: 0,
+      evals: [],
+      passedWeight: 0,
+      totalWeight: 0,
+      scorePct: 0,
+    });
+  }
+
+  for (const evalResult of model.evals) {
+    const categoryId = categoryIdFromEvalPath(evalResult.evalPath);
+    const category = categoryMap.get(categoryId);
+
+    if (!category) {
+      warnings.push(`${model.modelId}: unknown category ${categoryId} from ${evalResult.evalPath}`);
+      continue;
+    }
+
+    const requirements = evalResult.llmJudgeRequirements.map((requirement) =>
+      toRequirementScore(
+        requirement.passed,
+        requirement.id,
+        requirement.description,
+        requirement.confidence,
+      ),
+    );
+
+    const evalScore: EvalScore = {
+      evalId: evalResult.evalId,
+      evalPath: evalResult.evalPath,
+      name: evalNameFromId(evalResult.evalId),
+      outputFiles: evalResult.outputFiles,
+      requirements,
+      passedWeight: evalResult.score.passedWeight,
+      totalWeight: evalResult.score.totalWeight,
+      scorePct: calculateEvalScore(evalResult.score.passedWeight, evalResult.score.totalWeight),
+    };
+
+    category.evals.push(evalScore);
+    category.evalCount += 1;
+    category.passedWeight += evalResult.score.passedWeight;
+    category.totalWeight += evalResult.score.totalWeight;
+  }
+
+  for (const category of categoryMap.values()) {
+    if (category.totalWeight <= 0) {
+      warnings.push(`${model.modelId}/${category.categoryId}: totalWeight is 0`);
+      category.scorePct = 0;
+      continue;
+    }
+
+    category.scorePct = calculateEvalScore(category.passedWeight, category.totalWeight);
+    category.evals.sort((left, right) => left.evalId.localeCompare(right.evalId));
+  }
 
   return {
-    catalog,
-    generatedAt: modelResults.generatedAt,
-    sourceRepoUrl: modelResults.sourceRepoUrl,
+    id: model.modelId,
+    label: model.label,
+    solverModel: model.summary.solverModel,
+    overallScorePct: model.summary.weightedAverageScore * 100,
+    requirementsPassed: model.summary.requirementsPassed,
+    requirementsTotal: model.summary.requirementsTotal,
+    categories: Object.fromEntries(categoryMap.entries()),
+  };
+}
+
+export function normalizeDashboardData(dataset: JudgeDataset): DashboardData {
+  const warnings: string[] = [];
+  const categories = buildCategories(dataset.models);
+
+  const models = dataset.models
+    .map((model) => summarizeModel(model, categories, warnings))
+    .sort((left, right) => right.overallScorePct - left.overallScorePct);
+
+  const judgeModel = dataset.models[0]?.summary.judgeModel ?? "unknown";
+  const runStartedAt = dataset.models
+    .map((model) => model.summary.startedAt)
+    .sort()[0] ?? "";
+  const runFinishedAt = dataset.models
+    .map((model) => model.summary.finishedAt)
+    .sort()
+    .at(-1) ?? "";
+
+  return {
+    categories,
+    judgeModel,
+    runStartedAt,
+    runFinishedAt,
     warnings,
     models,
   };

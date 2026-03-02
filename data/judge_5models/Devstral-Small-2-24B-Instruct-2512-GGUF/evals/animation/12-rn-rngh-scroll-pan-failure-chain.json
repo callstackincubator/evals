@@ -1,0 +1,74 @@
+{
+  "evalId": "12-rn-rngh-scroll-pan-failure-chain",
+  "evalPath": "evals/animation/12-rn-rngh-scroll-pan-failure-chain",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Devstral-Small-2-24B-Instruct-2512-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "explicit-gesture-failure-chain",
+      "description": "Must define scroll-vs-swipe arbitration with `react-native-gesture-handler` by creating a `Gesture.Native()` scroll gesture and wiring it to row pan via explicit external-gesture relation APIs (for example `simultaneousWithExternalGesture` or `requireExternalGestureToFail`).",
+      "weight": 1,
+      "passed": false,
+      "reason": "No Gesture.Native() scroll gesture is created, and no simultaneousWithExternalGesture or requireExternalGestureToFail call is present. The pan gesture is used standalone inside a plain ScrollView with no explicit arbitration wiring.",
+      "evidence": [
+        "panGesture is constructed with only .activeOffsetX, .failOffsetY, .onStart, .onUpdate, .onEnd — no Native() gesture, no external-gesture relation API"
+      ],
+      "confidence": 0.98
+    },
+    {
+      "id": "implementation-rngh-failure-chain-contract",
+      "description": "Must implement swipe handling with `Gesture.Pan()` and `GestureDetector` using current builder callbacks (`onBegin`/`onUpdate`/`onEnd`) and MUST NOT use legacy `useAnimatedGestureHandler`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Swipe handling uses Gesture.Pan() wrapped in GestureDetector with builder-style callbacks onStart/onUpdate/onEnd. No useAnimatedGestureHandler is present anywhere in the file.",
+      "evidence": [
+        "Gesture.Pan().activeOffsetX(...).failOffsetY(...).onStart(...).onUpdate(...).onEnd(...)",
+        "GestureDetector gesture={panGesture}"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "bounded-swipe-translation-clamp",
+      "description": "Pan `onUpdate` must bound horizontal translation with an explicit clamp path (for example `clamp(...)` or equivalent min/max logic) before assigning the row translate shared value.",
+      "weight": 1,
+      "passed": false,
+      "reason": "onUpdate only guards against positive translationX with an if-check (allowing only leftward swipe) but applies no upper bound clamp — translateX.value is assigned raw event.translationX with no Math.max/Math.min/clamp to cap it at ROW_OPEN_OFFSET.",
+      "evidence": [
+        "if (event.translationX < 0) { translateX.value = event.translationX }"
+      ],
+      "confidence": 0.92
+    },
+    {
+      "id": "horizontal-pan-with-vertical-scroll-activation",
+      "description": "Must configure `Gesture.Pan().activeOffsetX(...)` with explicit numeric thresholds so horizontal movement is required before swipe activation.",
+      "weight": 1,
+      "passed": true,
+      "reason": "activeOffsetX is configured with explicit symmetric numeric thresholds [14, -14], requiring horizontal movement before pan activates.",
+      "evidence": [
+        ".activeOffsetX([PAN_ACTIVATE_HORIZONTAL_PX, -PAN_ACTIVATE_HORIZONTAL_PX])",
+        "const PAN_ACTIVATE_HORIZONTAL_PX = 14"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "no-dead-zone-interaction-continued",
+      "description": "Must configure `Gesture.Pan().failOffsetY(...)` with explicit numeric thresholds so vertical movement fails pan and hands interaction back to scroll.",
+      "weight": 1,
+      "passed": true,
+      "reason": "failOffsetY is configured with explicit symmetric numeric thresholds [-10, 10], so vertical movement beyond ±10px fails the pan and defers to scroll.",
+      "evidence": [
+        ".failOffsetY([-PAN_FAIL_VERTICAL_PX, PAN_FAIL_VERTICAL_PX])",
+        "const PAN_FAIL_VERTICAL_PX = 10"
+      ],
+      "confidence": 0.99
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 5,
+    "ratio": 0.6
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

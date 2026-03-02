@@ -1,0 +1,101 @@
+{
+  "evalId": "01-rn-perm-expo-camera-request-denied-retry",
+  "evalPath": "evals/expo-sdk/01-rn-perm-expo-camera-request-denied-retry",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/gpt-oss-20b-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "permission-request-on-demand",
+      "description": "Must call `requestPermission` from `useCameraPermissions()` only from a user-triggered action (for example `Pressable.onPress`), not on initial mount.",
+      "weight": 1,
+      "passed": true,
+      "reason": "requestCameraPermissionsAsync is called only inside requestCameraPermissionAction, which is bound to Pressable.onPress. Not called on mount.",
+      "evidence": [
+        "<Pressable style={styles.button} onPress={requestCameraPermissionAction}>"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "denied-flow-retry-and-settings",
+      "description": "Must support denied and blocked flows by retrying with `requestPermission` and using `Linking.openSettings()` when `permission.canAskAgain` is false.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Linking.openSettings() is shown for both 'denied' and 'blocked' statuses, but the requirement specifies using canAskAgain to gate the settings flow. The code checks string status values instead of permission.canAskAgain, so the logic does not correctly distinguish retry vs settings scenarios.",
+      "evidence": [
+        "permission === 'denied' || permission === 'blocked'",
+        "No reference to canAskAgain anywhere in the file"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "lifecycle-permission-refresh",
+      "description": "Must refresh permission state on app foreground with `AppState.addEventListener('change', ...)` and a permission refresh call (`getPermission` / `getCameraPermissionsAsync`).",
+      "weight": 1,
+      "passed": true,
+      "reason": "AppState.addEventListener('change', handleAppStateChange) is set up in useEffect, and handleAppStateChange calls checkPermission() when transitioning from background/inactive to active.",
+      "evidence": [
+        "AppState.addEventListener('change', handleAppStateChange)",
+        "if (appState.match(/inactive|background/) && nextAppState === 'active') { checkPermission(); }"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "degraded-path-no-crash",
+      "description": "Must render a deterministic fallback `View`/`Text` path when permission is unavailable instead of rendering `CameraView`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "When permission is not 'granted', the component renders a View/Text fallback instead of the camera. Handles null, denied, and blocked states deterministically.",
+      "evidence": [
+        "if (permission === 'granted') { return <Camera ... />; }",
+        "return (<View style={styles.screen}>...</View>);"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "single-flight-permission-request",
+      "description": "Must prevent concurrent permission requests by guarding `requestPermission` with an in-flight state (for example `requesting`).",
+      "weight": 1,
+      "passed": false,
+      "reason": "There is no in-flight/requesting guard around requestCameraPermissionAction. Rapid multiple presses can trigger concurrent requestCameraPermissionsAsync calls.",
+      "evidence": [
+        "const requestCameraPermissionAction = async () => { const { status } = await Camera.requestCameraPermissionsAsync(); ... }",
+        "No requesting state variable or guard present"
+      ],
+      "confidence": 0.98
+    },
+    {
+      "id": "expo-camera-grant-gated-preview",
+      "description": "Must render `CameraView` only when `permission.granted` is true, with deterministic denied/blocked fallback UI otherwise.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Preview uses <Camera> (legacy API) not <CameraView>. The gate on permission.granted is also string-based ('granted') rather than using the boolean .granted property from useCameraPermissions.",
+      "evidence": [
+        "import { Camera } from 'expo-camera';",
+        "if (permission === 'granted') { return <Camera style={StyleSheet.absoluteFill} />; }"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "implementation-expo-camera-cameraview-api",
+      "description": "Must implement preview with `CameraView` and permission handling with `expo-camera` APIs used by the sample (`useCameraPermissions` with request/get methods, or `getCameraPermissionsAsync`/`requestCameraPermissionsAsync`).",
+      "weight": 1,
+      "passed": false,
+      "reason": "Uses legacy Camera component and Camera.getCameraPermissionsAsync/Camera.requestCameraPermissionsAsync from expo-camera, not the required CameraView and useCameraPermissions hook pattern specified by the acceptance criteria.",
+      "evidence": [
+        "import { Camera } from 'expo-camera';",
+        "Camera.getCameraPermissionsAsync()",
+        "Camera.requestCameraPermissionsAsync()",
+        "No import of CameraView or useCameraPermissions"
+      ],
+      "confidence": 0.98
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 7,
+    "ratio": 0.4286
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

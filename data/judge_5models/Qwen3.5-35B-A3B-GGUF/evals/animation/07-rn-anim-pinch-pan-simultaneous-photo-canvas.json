@@ -1,0 +1,73 @@
+{
+  "evalId": "07-rn-anim-pinch-pan-simultaneous-photo-canvas",
+  "evalPath": "evals/animation/07-rn-anim-pinch-pan-simultaneous-photo-canvas",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Qwen3.5-35B-A3B-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "simultaneous-pinch-and-pan",
+      "description": "Must compose `Gesture.Pinch()` and `Gesture.Pan()` with `Gesture.Simultaneous(...)` from `react-native-gesture-handler`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Gesture.Simultaneous(pinchGesture, panGesture) is passed directly to GestureDetector",
+      "evidence": [
+        "GestureDetector gesture={Gesture.Simultaneous(pinchGesture, panGesture)}"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "scale-and-translation-shared-values",
+      "description": "Must store zoom and translation in Reanimated shared values (`scale`, `translateX`, `translateY`) and apply them through `useAnimatedStyle` transform.",
+      "weight": 1,
+      "passed": false,
+      "reason": "scale is a dedicated shared value, but translateX/translateY are not separate shared values — translation is stored as a single object shared value `offset` with x/y fields, not as `translateX` and `translateY` named shared values",
+      "evidence": [
+        "const offset = useSharedValue({ x: 0, y: 0 })",
+        "{ translateX: offset.value.x }, { translateY: offset.value.y }"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "id": "min-scale-clamp-usage",
+      "description": "Must clamp zoom using the existing `MIN_SCALE` constant inside `Gesture.Pinch().onUpdate(...)`",
+      "weight": 1,
+      "passed": true,
+      "reason": "MIN_SCALE is used in Math.max(MIN_SCALE, ...) inside Gesture.Pinch().onUpdate",
+      "evidence": [
+        "scale.value = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale.value * e.scale))"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "max-scale-clamp-usage",
+      "description": "Must clamp zoom using the existing `MAX_SCALE` constant inside `Gesture.Pinch().onUpdate(...)`",
+      "weight": 1,
+      "passed": true,
+      "reason": "MAX_SCALE is used in Math.min(MAX_SCALE, ...) inside Gesture.Pinch().onUpdate",
+      "evidence": [
+        "scale.value = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale.value * e.scale))"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "viewport-size-pan-bounds-usage",
+      "description": "Must use the existing `VIEWPORT_SIZE` to constrain movement while zoomed inside `Gesture.Pan().onUpdate(...)`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "VIEWPORT_SIZE is only used in onFinalize to snap back after release, not inside onUpdate to constrain movement while dragging",
+      "evidence": [
+        "panGesture.onUpdate only modifies offset by e.changeX/e.changeY with no VIEWPORT_SIZE check",
+        "VIEWPORT_SIZE appears only in onFinalize: const halfContent = (VIEWPORT_SIZE * scale.value - VIEWPORT_SIZE) / 2"
+      ],
+      "confidence": 0.95
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 5,
+    "ratio": 0.6
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

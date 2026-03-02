@@ -1,0 +1,74 @@
+{
+  "evalId": "06-rn-zustand-request-id-stale-response-guard",
+  "evalPath": "evals/async-state/06-rn-zustand-request-id-stale-response-guard",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Devstral-Small-2-24B-Instruct-2512-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "zustand-create-store-hook",
+      "description": "Store hook is created with `create` from `zustand`",
+      "weight": 1,
+      "passed": true,
+      "reason": "`create` from `zustand` is imported and used to create `useSearchStore`",
+      "evidence": [
+        "SearchStore: import { create } from 'zustand'",
+        "const useSearchStore = create<SearchState>(...)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "request-identity-state-is-tracked",
+      "description": "Store state must include `activeRequestId`",
+      "weight": 1,
+      "passed": false,
+      "reason": "Store state type `SearchState` and initial state object do not include an `activeRequestId` field; only `query`, `results`, `isLoading`, and `error` are present",
+      "evidence": [
+        "type SearchState = { query, results, isLoading, error, search }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "request-identity-is-incremented-before-fetch",
+      "description": "Must write `activeRequestId` through `set` before fetch",
+      "weight": 1,
+      "passed": false,
+      "reason": "No numeric `activeRequestId` is incremented and written via `set` before the fetch call; the code only calls `set({ query, isLoading: true, error: null })`",
+      "evidence": [
+        "set({ query, isLoading: true, error: null }) — no activeRequestId increment"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "search-request-uses-encoded-query-endpoint",
+      "description": "Search fetch uses `encodeURIComponent` for query",
+      "weight": 1,
+      "passed": true,
+      "reason": "`encodeURIComponent(query)` is used when constructing the fetch URL",
+      "evidence": [
+        "`https://dummyjson.com/products/search?q=${encodeURIComponent(query)}&limit=${limit}`"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "stale-request-guard-runs-after-async-work",
+      "description": "After async fetch, must compare `activeRequestId` with local request id and return on mismatch",
+      "weight": 1,
+      "passed": false,
+      "reason": "After the await, the code compares `get().query === query` (string equality) rather than comparing a numeric `activeRequestId` captured before the fetch against the current store value",
+      "evidence": [
+        "if (get().query === query) { set(...) }",
+        "if (get().query === query && error.name !== 'AbortError')"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 2,
+    "totalWeight": 5,
+    "ratio": 0.4
+  },
+  "outputFiles": [
+    "App.tsx",
+    "SearchStore.ts"
+  ]
+}

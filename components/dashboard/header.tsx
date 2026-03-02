@@ -1,22 +1,26 @@
 "use client";
 
-import { GithubLogo, WarningCircle } from "@phosphor-icons/react";
+import { WarningCircle } from "@phosphor-icons/react";
 import { CallstackLogo } from "@/components/dashboard/callstack-logo";
 import { NavigationCategories, type DashboardTabId } from "@/components/dashboard/nav-categories";
 import type { CategoryDefinition } from "@/lib/types/evals";
+
+const RESULTS_REPO_URL = "https://github.com/callstack/rn-evals-results";
 
 interface DashboardHeaderProps {
   categories: CategoryDefinition[];
   activeTab: DashboardTabId;
   onTabChange: (tabId: DashboardTabId) => void;
-  generatedAt: string;
-  sourceRepoUrl: string;
+  runStartedAt: string;
+  runFinishedAt: string;
   warningCount: number;
 }
 
-function formatGeneratedAt(generatedAt: string): string {
-  const date = new Date(generatedAt);
-
+function formatDate(dateValue: string): string {
+  const date = new Date(dateValue);
+  if (Number.isNaN(date.getTime())) {
+    return "Unknown";
+  }
   return new Intl.DateTimeFormat("en-US", {
     month: "long",
     day: "2-digit",
@@ -28,15 +32,15 @@ export function DashboardHeader({
   categories,
   activeTab,
   onTabChange,
-  generatedAt,
-  sourceRepoUrl,
+  runStartedAt,
+  runFinishedAt,
   warningCount,
 }: DashboardHeaderProps) {
   return (
     <header className="border-b border-zinc-800 bg-zinc-950 px-4 py-3 md:px-6">
       <div className="flex items-center justify-between gap-4">
         <div className="flex min-w-0 flex-1 items-center gap-4">
-          <CallstackLogo className="h-5 text-zinc-300" />
+          <CallstackLogo className="h-5 text-white" />
           <NavigationCategories
             categories={categories}
             activeTab={activeTab}
@@ -51,15 +55,27 @@ export function DashboardHeader({
               Warnings: {warningCount}
             </span>
           )}
-          <span className="text-zinc-400">Generated: {formatGeneratedAt(generatedAt)}</span>
+          <span className="text-zinc-400">Last run: {formatDate(runFinishedAt || runStartedAt)}</span>
           <a
-            href={sourceRepoUrl}
+            href={RESULTS_REPO_URL}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex h-9 items-center gap-2 border border-zinc-800 bg-zinc-900 px-3 font-medium text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-zinc-100"
+            className="inline-flex h-9 items-center gap-2 border border-zinc-100 bg-zinc-100 px-3 font-medium text-zinc-900 transition-colors hover:bg-white"
           >
-            <GithubLogo size={16} />
-            GitHub
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path d="M5 2H9V4H7V6H5V2Z" fill="currentColor" />
+              <path d="M5 12H3V6H5V12Z" fill="currentColor" />
+              <path d="M7 14H5V12H7V14Z" fill="currentColor" />
+              <path fillRule="evenodd" clipRule="evenodd" d="M9 16V14H7V16H3V14H1V16H3V18H7V22H9V18H11V16H9ZM9 16V18H7V16H9Z" fill="currentColor" />
+              <path d="M15 4V6H9V4H15Z" fill="currentColor" />
+              <path d="M19 6H17V4H15V2H19V6Z" fill="currentColor" />
+              <path d="M19 12V6H21V12H19Z" fill="currentColor" />
+              <path d="M17 14V12H19V14H17Z" fill="currentColor" />
+              <path d="M15 16V14H17V16H15Z" fill="currentColor" />
+              <path d="M15 18H13V16H15V18Z" fill="currentColor" />
+              <path d="M15 18H17V22H15V18Z" fill="currentColor" />
+            </svg>
+            Check Github
           </a>
         </div>
       </div>

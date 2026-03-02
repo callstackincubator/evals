@@ -1,0 +1,70 @@
+{
+  "evalId": "10-rn-anim-worklet-thread-bridge-schedule-on-rn",
+  "evalPath": "evals/animation/10-rn-anim-worklet-thread-bridge-schedule-on-rn",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Qwen3.5-35B-A3B-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "ui-thread-worklet-computation",
+      "description": "Must run animation-critical computation in UI-runtime worklets (for example `useDerivedValue`/worklet functions) over shared values.",
+      "weight": 1,
+      "passed": true,
+      "reason": "computeCheckpoint and computeFillWidth are defined as worklets via Worklets.createWorklet and called inside useAnimatedReaction and useAnimatedStyle, running computation in UI-runtime over shared values.",
+      "evidence": [
+        "const computeCheckpoint = Worklets.createWorklet((progress: number): number => { 'worklet' ... })",
+        "const computeFillWidth = Worklets.createWorklet((progress: number): number => { 'worklet' ... })",
+        "useAnimatedReaction(() => { const currentCheckpoint = computeCheckpoint(progress.value) ... })"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "id": "schedule-on-ui-dispatch",
+      "description": "Must dispatch start/stop or control worklet functions from React runtime using `scheduleOnUI(...)` from `react-native-worklets` and MUST NOT use deprecated `runOnUI`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "No usage of scheduleOnUI from react-native-worklets anywhere in the submission. Animation is started directly from the React event handler by mutating progress.value with withTiming, not dispatched via scheduleOnUI. The deprecated runOnUI is also absent, but the required API is simply not used.",
+      "evidence": [
+        "progress.value = withTiming(100, { duration: 2000 }, ...) — called directly in startAnimation React handler",
+        "No import or call of scheduleOnUI in any file",
+        "package.json has no 'react-native-worklets' dependency (only 'react-native-worklets-core' via indirect use)"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "controlled-bridge-to-react-runtime",
+      "description": "Must bridge UI-runtime checkpoint updates back to React via `scheduleOnRN(...)` from `react-native-worklets` and MUST NOT use deprecated `runOnJS`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Bridge back to React runtime uses the deprecated runOnJS (from react-native-reanimated and react-native-worklets), not scheduleOnRN from react-native-worklets.",
+      "evidence": [
+        "import { ..., runOnJS, ... } from 'react-native-reanimated'",
+        "runOnJS(setCheckpoint)(result) in useAnimatedReaction",
+        "import { runOnJS, ... } from 'react-native-worklets' in AnimatedWorklet.ts",
+        "runOnJS(onComplete)(progress, currentCheckpoint) in AnimatedWorklet.ts",
+        "No import or call of scheduleOnRN anywhere"
+      ],
+      "confidence": 0.98
+    },
+    {
+      "id": "throttled-or-bounded-react-updates",
+      "description": "Must gate `scheduleOnRN(...)` behind explicit bucket/checkpoint logic in a UI worklet reaction (for example `useAnimatedReaction`) instead of calling it every frame.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Checkpoint gating logic exists inside useAnimatedReaction (result !== previous && result > lastCheckpointRef.current), but the bridge call is runOnJS, not scheduleOnRN. The requirement explicitly requires gating behind scheduleOnRN calls; since scheduleOnRN is never used, this criterion cannot be satisfied.",
+      "evidence": [
+        "if (result !== previous && result > lastCheckpointRef.current) { runOnJS(setCheckpoint)(result) }",
+        "No scheduleOnRN usage anywhere in submission"
+      ],
+      "confidence": 0.92
+    }
+  ],
+  "score": {
+    "passedWeight": 1,
+    "totalWeight": 4,
+    "ratio": 0.25
+  },
+  "outputFiles": [
+    "App.tsx",
+    "AnimatedWorklet.ts"
+  ]
+}

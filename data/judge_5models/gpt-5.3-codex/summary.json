@@ -1,0 +1,15 @@
+{
+  "runId": "2026-02-28T20-10-15-634Z",
+  "startedAt": "2026-02-28T20:10:15.634Z",
+  "finishedAt": "2026-02-28T20:24:03.087Z",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "openai/gpt-5.3-codex",
+  "pattern": "evals/**/*",
+  "inputGeneratedArtifacts": "generated/gpt-5.3-codex",
+  "evalCount": 40,
+  "evalsProcessed": 40,
+  "evalsErrored": 0,
+  "requirementsTotal": 170,
+  "requirementsPassed": 134,
+  "weightedAverageScore": 0.7968
+}

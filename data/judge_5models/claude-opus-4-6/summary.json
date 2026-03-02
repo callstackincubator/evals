@@ -1,0 +1,15 @@
+{
+  "runId": "2026-02-28T19-56-29-473Z",
+  "startedAt": "2026-02-28T19:56:29.473Z",
+  "finishedAt": "2026-02-28T20:10:15.536Z",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "anthropic/claude-opus-4-6",
+  "pattern": "evals/**/*",
+  "inputGeneratedArtifacts": "generated/claude-opus-4-6",
+  "evalCount": 40,
+  "evalsProcessed": 40,
+  "evalsErrored": 0,
+  "requirementsTotal": 170,
+  "requirementsPassed": 137,
+  "weightedAverageScore": 0.8195
+}

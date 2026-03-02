@@ -1,0 +1,76 @@
+{
+  "evalId": "05-rn-zustand-async-action-lifecycle",
+  "evalPath": "evals/async-state/05-rn-zustand-async-action-lifecycle",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/gpt-oss-20b-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "zustand-create-store-hook",
+      "description": "Store hook is created with `create` from `zustand`",
+      "weight": 1,
+      "passed": true,
+      "reason": "Store is created via `create<FeedStore>(...)` imported from 'zustand'.",
+      "evidence": [
+        "import create from 'zustand'",
+        "const useFeedStore = create<FeedStore>((set, get) => ({...}))"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "async-action-sets-loading-before-await",
+      "description": "Async fetch action calls `set` to write loading state before awaiting network work",
+      "weight": 1,
+      "passed": true,
+      "reason": "`set({ status: 'loading' })` is called synchronously before the `await fetch(...)` call.",
+      "evidence": [
+        "set({ status: 'loading' })",
+        "const response = await fetch(...)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "async-action-success-and-error-branches",
+      "description": "Async fetch action writes success data and error state through `set` in separate branches",
+      "weight": 1,
+      "passed": true,
+      "reason": "try block sets `status: 'success'` with items data; catch block sets `status: 'error'` as separate branches.",
+      "evidence": [
+        "set({ items: [...get().items, ...newItems], status: 'success' })",
+        "catch (e) { set({ status: 'error' }) }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "retry-path-calls-same-store-action",
+      "description": "Error UI retry trigger calls the same async store action used by initial fetch",
+      "weight": 1,
+      "passed": true,
+      "reason": "Error UI retry Pressable calls `fetchFeed()` — the same async store action used by the initial fetch button.",
+      "evidence": [
+        "<Pressable onPress={() => fetchFeed()} style={styles.retryButton}>",
+        "<Pressable onPress={() => fetchFeed()} style={styles.button}>"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "status-driven-ui-branching",
+      "description": "UI output branches by lifecycle status values for idle loading success and error",
+      "weight": 1,
+      "passed": true,
+      "reason": "`statusContent` map defines distinct React nodes for all four lifecycle values ('idle', 'loading', 'success', 'error') and is indexed by `status` to render the correct branch.",
+      "evidence": [
+        "const statusContent = { idle: ..., loading: ..., success: ..., error: ... } satisfies Record<FeedStatus, React.ReactNode>",
+        "{statusContent[status]}"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 5,
+    "totalWeight": 5,
+    "ratio": 1
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "evalId": "02-rn-anim-spring-toggle-card-height",
+  "evalPath": "evals/animation/02-rn-anim-spring-toggle-card-height",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "anthropic/claude-opus-4-6",
+  "llmJudgeRequirements": [
+    {
+      "id": "deterministic-collapsed-expanded-states",
+      "description": "Must represent collapsed/expanded states with a Reanimated progress shared value (for example `0`/`1`) and map it to card height via `interpolate(...)` in `useAnimatedStyle`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "animatedHeight is a shared value toggled between 0 and 1, but height is computed as `animatedHeight.value * 100` (direct multiplication) rather than via `interpolate(animatedHeight, [0,1], [collapsedHeight, expandedHeight])`. The requirement explicitly demands interpolate() usage.",
+      "evidence": [
+        "height: animatedHeight.value * 100"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "spring-driven-transition",
+      "description": "Header press must toggle the progress shared value between collapsed/expanded states using `withSpring(...)` from `react-native-reanimated`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Header press calls toggleExpand which sets both shared values using withSpring(...) with explicit spring config (damping, stiffness, mass).",
+      "evidence": [
+        "animatedHeight.value = withSpring(next ? 1 : 0, { damping: 15, stiffness: 120, mass: 1 })",
+        "animatedOpacity.value = withSpring(next ? 1 : 0, ...)"
+      ],
+      "confidence": 0.98
+    },
+    {
+      "id": "no-react-layout-jump",
+      "description": "Card/details visuals must be driven by Reanimated animated styles (`Animated.View` + `useAnimatedStyle`) instead of direct non-animated React style toggles.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Card details are wrapped in Animated.View with useAnimatedStyle driving both height and opacity; no conditional rendering or direct React style toggle is used for the details panel.",
+      "evidence": [
+        "<Animated.View style={[styles.detailsWrapper, detailsAnimatedStyle]}>",
+        "const detailsAnimatedStyle = useAnimatedStyle(() => ({ height: animatedHeight.value * 100, opacity: animatedOpacity.value }))"
+      ],
+      "confidence": 0.97
+    }
+  ],
+  "score": {
+    "passedWeight": 2,
+    "totalWeight": 3,
+    "ratio": 0.6667
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

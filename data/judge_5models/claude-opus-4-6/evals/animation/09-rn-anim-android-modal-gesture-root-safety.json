@@ -1,0 +1,86 @@
+{
+  "evalId": "09-rn-anim-android-modal-gesture-root-safety",
+  "evalPath": "evals/animation/09-rn-anim-android-modal-gesture-root-safety",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "anthropic/claude-opus-4-6",
+  "llmJudgeRequirements": [
+    {
+      "id": "modal-gesture-root-view-setup",
+      "description": "Must render modal gesture content under `GestureHandlerRootView` (or `gestureHandlerRootHOC`) in the `Modal` subtree for Android gesture handling.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Modal subtree wraps its content in a dedicated GestureHandlerRootView",
+      "evidence": [
+        "<Modal ...><GestureHandlerRootView style={{ flex: 1 }}>..."
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "gesture-control-inside-modal",
+      "description": "Modal content must include an RNGH gesture control using `Gesture.*` (for example `Gesture.Pan()`) attached with `GestureDetector`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Gesture.Pan() is created and attached via GestureDetector inside GestureSheet, which is rendered inside the Modal",
+      "evidence": [
+        "const panGesture = Gesture.Pan()",
+        "<GestureDetector gesture={panGesture}>"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "implementation-rngh-modal-root-boundary-contract",
+      "description": "Must implement modal gesture logic with current RNGH builder callbacks (`onUpdate`/`onEnd`) and MUST NOT use legacy `useAnimatedGestureHandler`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Uses builder-style .onUpdate() and .onEnd() callbacks; no useAnimatedGestureHandler present anywhere in the file",
+      "evidence": [
+        ".onUpdate((event) => {",
+        ".onEnd((event) => {"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "close-threshold-dismiss-branch",
+      "description": "Pan `onEnd` must use `CLOSE_THRESHOLD` to decide between modal dismiss and snap-back.",
+      "weight": 1,
+      "passed": true,
+      "reason": "onEnd explicitly checks event.translationY > CLOSE_THRESHOLD to decide between dismiss and snap-back",
+      "evidence": [
+        "if (event.translationY > CLOSE_THRESHOLD) {",
+        "const CLOSE_THRESHOLD = 140"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "schedule-on-rn-modal-dismiss-bridge",
+      "description": "Dismiss state updates from gesture/worklet context must call `scheduleOnRN(...)` and MUST NOT use deprecated `runOnJS`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Dismiss is bridged via runOnJS(onDismiss)(), not scheduleOnRN; runOnJS is explicitly imported and used",
+      "evidence": [
+        "import { ..., runOnJS } from 'react-native-reanimated'",
+        "runOnJS(onDismiss)()"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "no-platform-specific-breakage-path",
+      "description": "GestureDetector and its gesture-driven modal sheet must remain descendants of the modal `GestureHandlerRootView` boundary (no detached modal gesture path).",
+      "weight": 1,
+      "passed": true,
+      "reason": "GestureDetector and GestureSheet are rendered as descendants of the Modal-scoped GestureHandlerRootView; no detached gesture path exists",
+      "evidence": [
+        "<GestureHandlerRootView style={{ flex: 1 }}><View style={styles.overlay}>...<GestureSheet /></View></GestureHandlerRootView>"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 5,
+    "totalWeight": 6,
+    "ratio": 0.8333
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

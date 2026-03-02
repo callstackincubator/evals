@@ -1,0 +1,64 @@
+{
+  "evalId": "06-rn-anim-longpress-then-pan-activation-gate",
+  "evalPath": "evals/animation/06-rn-anim-longpress-then-pan-activation-gate",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "openai/gpt-5.3-codex",
+  "llmJudgeRequirements": [
+    {
+      "id": "composed-gesture-sequence",
+      "description": "Must compose `Gesture.LongPress()` and `Gesture.Pan()` with RNGH composition APIs (for example `Gesture.Simultaneous(...)`) so drag is gated by long-press activation.",
+      "weight": 1,
+      "passed": true,
+      "reason": "LongPress and Pan gestures are composed with Gesture.Simultaneous(longPressGesture, panGesture), gating drag activation on long-press.",
+      "evidence": [
+        "const gesture = Gesture.Simultaneous(longPressGesture, panGesture)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "implementation-rngh-longpress-pan-gating-contract",
+      "description": "Must implement gating in pan callbacks by checking long-press activation state before applying translation updates, and MUST NOT use legacy `useAnimatedGestureHandler`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Pan.onUpdate checks isUnlocked.value < 0.5 before applying translation; no useAnimatedGestureHandler is used anywhere.",
+      "evidence": [
+        "if (isUnlocked.value < 0.5) { return; }",
+        "no useAnimatedGestureHandler import or usage"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "drag-limit-clamp-usage",
+      "description": "`Gesture.Pan().onUpdate(...)` must clamp horizontal translation using the existing `DRAG_LIMIT` constant (bounded to `-DRAG_LIMIT` and `DRAG_LIMIT`) before assigning `translateX`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "clampX worklet enforces Math.max(-DRAG_LIMIT, Math.min(DRAG_LIMIT, value)) and is called in Pan.onUpdate when assigning translateX.value.",
+      "evidence": [
+        "const DRAG_LIMIT = 170",
+        "return Math.max(-DRAG_LIMIT, Math.min(DRAG_LIMIT, value))",
+        "translateX.value = clampX(startX.value + event.translationX)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "visual-activation-feedback-card-border",
+      "description": "Must drive card style from a Reanimated shared value using `useAnimatedStyle`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "cardAnimatedStyle is produced by useAnimatedStyle driven by the isUnlocked shared value and applied to the Animated.View card, including animated borderColor.",
+      "evidence": [
+        "const cardAnimatedStyle = useAnimatedStyle(() => { const borderColor = interpolateColor(isUnlocked.value, ...)",
+        "<Animated.View style={[styles.card, cardAnimatedStyle]}>"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 4,
+    "totalWeight": 4,
+    "ratio": 1
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

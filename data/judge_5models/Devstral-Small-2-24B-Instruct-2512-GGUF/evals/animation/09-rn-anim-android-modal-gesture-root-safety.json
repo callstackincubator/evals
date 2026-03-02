@@ -1,0 +1,85 @@
+{
+  "evalId": "09-rn-anim-android-modal-gesture-root-safety",
+  "evalPath": "evals/animation/09-rn-anim-android-modal-gesture-root-safety",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Devstral-Small-2-24B-Instruct-2512-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "modal-gesture-root-view-setup",
+      "description": "Must render modal gesture content under `GestureHandlerRootView` (or `gestureHandlerRootHOC`) in the `Modal` subtree for Android gesture handling.",
+      "weight": 1,
+      "passed": false,
+      "reason": "No GestureHandlerRootView or gestureHandlerRootHOC is used anywhere in the component tree. The modal overlay is a plain View, not wrapped in GestureHandlerRootView.",
+      "evidence": [
+        "App.tsx: overlay uses <View style={styles.overlay}>, no GestureHandlerRootView import or usage found"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "gesture-control-inside-modal",
+      "description": "Modal content must include an RNGH gesture control using `Gesture.*` (for example `Gesture.Pan()`) attached with `GestureDetector`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Gesture.Pan() is created and attached via GestureDetector wrapping the modal Animated.View.",
+      "evidence": [
+        "App.tsx: const panGesture = Gesture.Pan()",
+        "App.tsx: <GestureDetector gesture={panGesture}>"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "implementation-rngh-modal-root-boundary-contract",
+      "description": "Must implement modal gesture logic with current RNGH builder callbacks (`onUpdate`/`onEnd`) and MUST NOT use legacy `useAnimatedGestureHandler`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Uses builder-style callbacks onStart/onUpdate/onEnd. No useAnimatedGestureHandler present.",
+      "evidence": [
+        "App.tsx: .onStart(...).onUpdate(...).onEnd(...)",
+        "no useAnimatedGestureHandler import or usage"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "close-threshold-dismiss-branch",
+      "description": "Pan `onEnd` must use `CLOSE_THRESHOLD` to decide between modal dismiss and snap-back.",
+      "weight": 1,
+      "passed": true,
+      "reason": "onEnd checks event.translationY > CLOSE_THRESHOLD to dismiss and < CLOSE_THRESHOLD to spring back.",
+      "evidence": [
+        "App.tsx: const shouldClose = event.translationY > CLOSE_THRESHOLD",
+        "App.tsx: const shouldSpringBack = event.translationY < CLOSE_THRESHOLD"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "schedule-on-rn-modal-dismiss-bridge",
+      "description": "Dismiss state updates from gesture/worklet context must call `scheduleOnRN(...)` and MUST NOT use deprecated `runOnJS`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "closeModal() is called directly from the onEnd worklet context without scheduleOnRN or runOnJS. Neither scheduleOnRN nor runOnJS is imported or used anywhere.",
+      "evidence": [
+        "App.tsx onEnd: if (shouldClose) { closeModal() } — no scheduleOnRN or runOnJS wrapping"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "no-platform-specific-breakage-path",
+      "description": "GestureDetector and its gesture-driven modal sheet must remain descendants of the modal `GestureHandlerRootView` boundary (no detached modal gesture path).",
+      "weight": 1,
+      "passed": false,
+      "reason": "GestureDetector is not a descendant of any GestureHandlerRootView boundary. Without a GestureHandlerRootView in the modal subtree, Android gesture routing is broken, making the gesture path detached.",
+      "evidence": [
+        "App.tsx: no GestureHandlerRootView wrapping the overlay or modal content"
+      ],
+      "confidence": 0.97
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 6,
+    "ratio": 0.5
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

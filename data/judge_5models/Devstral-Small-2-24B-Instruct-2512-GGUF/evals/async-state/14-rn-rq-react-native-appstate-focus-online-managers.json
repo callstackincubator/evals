@@ -1,0 +1,55 @@
+{
+  "evalId": "14-rn-rq-react-native-appstate-focus-online-managers",
+  "evalPath": "evals/async-state/14-rn-rq-react-native-appstate-focus-online-managers",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Devstral-Small-2-24B-Instruct-2512-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "appstate-focusmanager-integration",
+      "description": "Must map React Native `AppState` transitions to `focusManager.setFocused(...)` by subscribing to `change` events via `addEventListener`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "AppState 'change' events call queryClient.invalidateQueries instead of focusManager.setFocused(...). Neither focusManager import nor setFocused call is present anywhere in the submission.",
+      "evidence": [
+        "const handleAppStateChange = (nextAppState: string) => { if (nextAppState === 'active') { queryClient.invalidateQueries({ queryKey: ['inbox'] }) } }",
+        "No import of focusManager from @tanstack/react-query"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "connectivity-onlinemanager-integration",
+      "description": "Must map connectivity signals to `onlineManager.setOnline(...)` by subscribing to connectivity changes via `NetInfo.addEventListener` and using conservative online detection (`isConnected` + `isInternetReachable`).",
+      "weight": 1,
+      "passed": false,
+      "reason": "NetInfo.addEventListener is used but routes to queryClient.invalidateQueries, not onlineManager.setOnline(...). onlineManager is never imported or referenced. Additionally, the connectivity handler only checks isConnected, not the required conjunction of isConnected && isInternetReachable.",
+      "evidence": [
+        "const handleConnectivityChange = (state: NetInfo.State) => { if (state.isConnected) { queryClient.invalidateQueries({ queryKey: ['inbox'] }) } }",
+        "No import of onlineManager from @tanstack/react-query",
+        "isInternetReachable not checked"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "implementation-rq-v5-object-signature",
+      "description": "Must use TanStack Query v5 object-form APIs for query hooks and client methods.",
+      "weight": 1,
+      "passed": true,
+      "reason": "useQuery is called with object-form { queryFn, queryKey }, and queryClient.invalidateQueries is called with object-form { queryKey }. @tanstack/react-query v5 is declared in dependencies.",
+      "evidence": [
+        "useQuery({ queryFn: fetchInbox, queryKey: ['inbox'] as const })",
+        "queryClient.invalidateQueries({ queryKey: ['inbox'] })",
+        "\"@tanstack/react-query\": \"^5.90.21\""
+      ],
+      "confidence": 0.97
+    }
+  ],
+  "score": {
+    "passedWeight": 1,
+    "totalWeight": 3,
+    "ratio": 0.3333
+  },
+  "outputFiles": [
+    "workspace/parallel/temp/App.tsx",
+    "workspace/parallel/temp/package.json"
+  ]
+}

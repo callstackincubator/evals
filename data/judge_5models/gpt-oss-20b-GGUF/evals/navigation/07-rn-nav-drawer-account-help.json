@@ -1,0 +1,66 @@
+{
+  "evalId": "07-rn-nav-drawer-account-help",
+  "evalPath": "evals/navigation/07-rn-nav-drawer-account-help",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/gpt-oss-20b-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "uses-drawer-navigator-api",
+      "description": "Must create the root navigator with `createDrawerNavigator` from `@react-navigation/drawer`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "createDrawerNavigator is imported from @react-navigation/drawer and called to create the Drawer navigator.",
+      "evidence": [
+        "import { createDrawerNavigator } from '@react-navigation/drawer';",
+        "const Drawer = createDrawerNavigator();"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "drawer-registers-account-and-help",
+      "description": "Must register both `Account` and `Help` as drawer screen routes in the drawer navigator config.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Both Account and Help are registered as Drawer.Screen children inside Drawer.Navigator.",
+      "evidence": [
+        "<Drawer.Screen name=\"Account\" component={AccountScreen} />",
+        "<Drawer.Screen name=\"Help\" component={HelpScreen} />"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "app-renders-static-drawer-navigation",
+      "description": "Must build navigation from the drawer tree via `createStaticNavigation(...)` and render that navigation component from `App`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "createStaticNavigation is called with no arguments and its result is only used as a ref source; the returned static navigation component is never rendered. Instead the app renders NavigationContainer with dynamic JSX children, which is the dynamic API pattern, not the static API pattern.",
+      "evidence": [
+        "const navigation = createStaticNavigation();",
+        "<NavigationContainer ref={navigation.ref}>",
+        "App returns NavigationContainer wrapping Drawer.Navigator JSX, not the component returned by createStaticNavigation"
+      ],
+      "confidence": 0.97
+    },
+    {
+      "id": "static-api-navigation-construction",
+      "description": "Must construct navigation with React Navigation static API and render it via `createStaticNavigation(...)`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "The static API requires passing the root navigator config (e.g. createDrawerNavigator({screens:{...}})) to createStaticNavigation and rendering the result. Instead, createStaticNavigation() is called with no arguments and the dynamic NavigationContainer + JSX tree pattern is used.",
+      "evidence": [
+        "const navigation = createStaticNavigation();",
+        "No navigator config object passed to createStaticNavigation",
+        "NavigationContainer with JSX children is rendered instead of the static navigation component"
+      ],
+      "confidence": 0.97
+    }
+  ],
+  "score": {
+    "passedWeight": 2,
+    "totalWeight": 4,
+    "ratio": 0.5
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

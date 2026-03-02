@@ -1,86 +1,89 @@
 import { z } from "zod";
 
-export const requirementStatusSchema = z.enum(["pass", "fail"]);
+export const judgeSummarySchema = z.object({
+  runId: z.string().min(1),
+  startedAt: z.string().datetime(),
+  finishedAt: z.string().datetime(),
+  judgeModel: z.string().min(1),
+  solverModel: z.string().min(1),
+  pattern: z.string().min(1),
+  inputGeneratedArtifacts: z.string().min(1),
+  evalCount: z.number().int().nonnegative(),
+  evalsProcessed: z.number().int().nonnegative(),
+  evalsErrored: z.number().int().nonnegative(),
+  requirementsTotal: z.number().int().nonnegative(),
+  requirementsPassed: z.number().int().nonnegative(),
+  weightedAverageScore: z.number().min(0).max(1),
+});
 
-export const requirementDefinitionSchema = z.object({
+export const judgeRequirementSchema = z.object({
   id: z.string().min(1),
-  text: z.string().min(1),
+  description: z.string().min(1),
+  weight: z.number().nonnegative(),
+  passed: z.boolean(),
+  reason: z.string().min(1),
+  evidence: z.array(z.string()),
+  confidence: z.number().min(0).max(1).optional(),
 });
 
-export const evalDefinitionSchema = z.object({
-  id: z.string().min(1),
-  name: z.string().min(1),
-  prompt: z.string().min(1),
-  requirements: z.array(requirementDefinitionSchema).min(3).max(10),
+export const judgeEvalScoreSchema = z.object({
+  passedWeight: z.number().nonnegative(),
+  totalWeight: z.number().positive(),
+  ratio: z.number().min(0).max(1),
 });
 
-export const categoryDefinitionSchema = z.object({
-  id: z.string().min(1),
-  name: z.string().min(1),
-  iconKey: z.string().min(1),
-  order: z.number().int().nonnegative(),
-  evals: z.array(evalDefinitionSchema).min(1),
-});
-
-export const evalCatalogSchema = z.object({
-  version: z.string().min(1),
-  categories: z.array(categoryDefinitionSchema).min(1),
-});
-
-export const requirementResultSchema = z.object({
-  requirementId: z.string().min(1),
-  status: requirementStatusSchema,
-});
-
-export const evalResultSchema = z.object({
+export const judgeEvalResultSchema = z.object({
   evalId: z.string().min(1),
-  requirementResults: z.array(requirementResultSchema),
+  evalPath: z.string().min(1),
+  judgeModel: z.string().min(1),
+  solverModel: z.string().min(1),
+  llmJudgeRequirements: z.array(judgeRequirementSchema),
+  score: judgeEvalScoreSchema,
+  outputFiles: z.array(z.string()).default([]),
 });
 
-export const modelVariantResultsSchema = z.object({
-  evalResults: z.array(evalResultSchema),
-});
-
-export const modelEntrySchema = z.object({
-  id: z.string().min(1),
+export const judgeModelRunSchema = z.object({
+  modelId: z.string().min(1),
   label: z.string().min(1),
-  variants: z.object({
-    vanilla: modelVariantResultsSchema,
-    callstack: modelVariantResultsSchema,
-  }),
+  summary: judgeSummarySchema,
+  evals: z.array(judgeEvalResultSchema),
 });
 
-export const modelResultsSchema = z.object({
+export const judgeDatasetSchema = z.object({
   version: z.string().min(1),
-  generatedAt: z.string().datetime(),
-  sourceRepoUrl: z.string().url(),
-  models: z.array(modelEntrySchema).min(1),
+  models: z.array(judgeModelRunSchema).min(1),
 });
 
-export type RequirementStatus = z.infer<typeof requirementStatusSchema>;
-export type RequirementDefinition = z.infer<typeof requirementDefinitionSchema>;
-export type EvalDefinition = z.infer<typeof evalDefinitionSchema>;
-export type CategoryDefinition = z.infer<typeof categoryDefinitionSchema>;
-export type EvalCatalog = z.infer<typeof evalCatalogSchema>;
-export type RequirementResult = z.infer<typeof requirementResultSchema>;
-export type EvalResult = z.infer<typeof evalResultSchema>;
-export type ModelVariantResults = z.infer<typeof modelVariantResultsSchema>;
-export type ModelEntry = z.infer<typeof modelEntrySchema>;
-export type ModelResults = z.infer<typeof modelResultsSchema>;
+export type JudgeSummary = z.infer<typeof judgeSummarySchema>;
+export type JudgeRequirement = z.infer<typeof judgeRequirementSchema>;
+export type JudgeEvalScore = z.infer<typeof judgeEvalScoreSchema>;
+export type JudgeEvalResult = z.infer<typeof judgeEvalResultSchema>;
+export type JudgeModelRun = z.infer<typeof judgeModelRunSchema>;
+export type JudgeDataset = z.infer<typeof judgeDatasetSchema>;
+
+export interface CategoryDefinition {
+  id: string;
+  name: string;
+  iconKey: string;
+  order: number;
+  evalCount: number;
+}
 
 export interface RequirementScore {
   requirementId: string;
-  text: string;
-  status: RequirementStatus;
+  description: string;
+  status: "pass" | "fail";
+  confidence?: number;
 }
 
 export interface EvalScore {
   evalId: string;
+  evalPath: string;
   name: string;
-  prompt: string;
+  outputFiles: string[];
   requirements: RequirementScore[];
-  passedRequirements: number;
-  totalRequirements: number;
+  passedWeight: number;
+  totalWeight: number;
   scorePct: number;
 }
 
@@ -90,33 +93,26 @@ export interface CategoryScore {
   iconKey: string;
   evalCount: number;
   evals: EvalScore[];
-  passedRequirements: number;
-  totalRequirements: number;
+  passedWeight: number;
+  totalWeight: number;
   scorePct: number;
-}
-
-export interface VariantSummary {
-  overallScorePct: number;
-  passedRequirements: number;
-  totalRequirements: number;
-  categories: Record<string, CategoryScore>;
 }
 
 export interface ModelSummary {
   id: string;
   label: string;
-  variants: {
-    vanilla: VariantSummary;
-    callstack: VariantSummary;
-  };
-  deltaOverallPct: number;
-  maxOverallScorePct: number;
+  solverModel: string;
+  overallScorePct: number;
+  requirementsPassed: number;
+  requirementsTotal: number;
+  categories: Record<string, CategoryScore>;
 }
 
 export interface DashboardData {
-  catalog: EvalCatalog;
-  generatedAt: string;
-  sourceRepoUrl: string;
+  categories: CategoryDefinition[];
+  judgeModel: string;
+  runStartedAt: string;
+  runFinishedAt: string;
   warnings: string[];
   models: ModelSummary[];
 }

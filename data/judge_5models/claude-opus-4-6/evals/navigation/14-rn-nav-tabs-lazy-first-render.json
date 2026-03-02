@@ -1,0 +1,50 @@
+{
+  "evalId": "14-rn-nav-tabs-lazy-first-render",
+  "evalPath": "evals/navigation/14-rn-nav-tabs-lazy-first-render",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "anthropic/claude-opus-4-6",
+  "llmJudgeRequirements": [
+    {
+      "id": "tab-lazy-loading",
+      "description": "Must set `lazy` to `true` on tab screens so non-visited tabs are rendered only on first visit.",
+      "weight": 1,
+      "passed": true,
+      "reason": "screenOptions sets `lazy: true` on the bottom tab navigator, ensuring non-visited tabs are only rendered on first visit.",
+      "evidence": [
+        "screenOptions: { lazy: true }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "tab-initial-route-defined",
+      "description": "Must define `initialRouteName` on the bottom tab navigator to make the initially rendered tab explicit.",
+      "weight": 1,
+      "passed": true,
+      "reason": "`initialRouteName: 'Home'` is explicitly set on the createBottomTabNavigator config object.",
+      "evidence": [
+        "initialRouteName: 'Home'"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "tab-navigator-uses-bottom-tabs",
+      "description": "Must implement tabs with `createBottomTabNavigator` (not stack/drawer/top-tabs) for this flow.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Navigator is created with `createBottomTabNavigator` imported from `@react-navigation/bottom-tabs`.",
+      "evidence": [
+        "import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'",
+        "const TabNavigator = createBottomTabNavigator({...})"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 3,
+    "ratio": 1
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

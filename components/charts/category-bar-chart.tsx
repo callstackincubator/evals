@@ -5,14 +5,15 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
-  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
-import { ChartTooltipCard } from "@/components/charts/chart-tooltip";
+import { ModelAxisTick } from "@/components/charts/model-axis-tick";
+import { ModelLogoSquare } from "@/components/tables/table-badges";
 import { CATEGORY_COLORS } from "@/lib/colors/category-colors";
+import { formatPct } from "@/lib/utils";
 import type { CategoryDefinition, ModelSummary } from "@/lib/types/evals";
 
 interface CategoryBarChartProps {
@@ -21,6 +22,7 @@ interface CategoryBarChartProps {
 }
 
 interface TooltipPayloadItem {
+  payload?: Record<string, string | number>;
   name?: string;
   value?: number | string;
   color?: string;
@@ -37,30 +39,39 @@ function CategoryTooltipContent({ active, label, payload }: CategoryTooltipProps
     return null;
   }
 
+  const row = payload[0].payload ?? {};
+  const modelId = String(row.modelId ?? "");
+  const modelLabel = String(label ?? "");
+  const score = Number(row.score ?? 0);
+
   return (
-    <ChartTooltipCard
-      title={String(label ?? "")}
-      rows={payload.map((entry) => ({
-        label: String(entry.name ?? ""),
-        value: Number(entry.value ?? 0),
-        color: entry.color ?? "#71717a",
-      }))}
-    />
+    <div
+      className="min-w-56 border border-zinc-700 bg-zinc-950/95 px-3 py-2 shadow-xl"
+      style={{ animation: "tooltip-fade-in 120ms ease-out" }}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-1.5">
+          <ModelLogoSquare modelId={modelId} modelLabel={modelLabel} />
+          <p className="truncate text-xs font-semibold text-zinc-100">{modelLabel}</p>
+        </div>
+        <span className="font-mono text-xs text-zinc-100">{formatPct(score)}</span>
+      </div>
+    </div>
   );
 }
 
 export function CategoryBarChart({ category, models }: CategoryBarChartProps) {
   const rows = models
     .map((model) => ({
+      modelId: model.id,
       model: model.label,
-      vanilla: model.variants.vanilla.categories[category.id].scorePct,
-      callstack: model.variants.callstack.categories[category.id].scorePct,
+      score: model.categories[category.id]?.scorePct ?? 0,
     }))
-    .sort((left, right) => Math.max(right.vanilla, right.callstack) - Math.max(left.vanilla, left.callstack));
+    .sort((left, right) => right.score - left.score);
+  const modelIdByLabel = Object.fromEntries(models.map((model) => [model.label, model.id]));
   const baseColor = CATEGORY_COLORS[category.id] ?? "#71717a";
-  const allScores = rows.flatMap((row) => [row.vanilla, row.callstack]);
-  const minScore = Math.min(...allScores);
-  const maxScore = Math.max(...allScores);
+  const minScore = rows.length > 0 ? Math.min(...rows.map((row) => row.score)) : 0;
+  const maxScore = rows.length > 0 ? Math.max(...rows.map((row) => row.score)) : 100;
 
   const opacityForScore = (score: number) => {
     if (maxScore === minScore) {
@@ -82,8 +93,8 @@ export function CategoryBarChart({ category, models }: CategoryBarChartProps) {
               tickLine={false}
               axisLine={false}
               interval={0}
-              height={42}
-              tick={{ fill: "#a1a1aa", fontSize: 14 }}
+              height={56}
+              tick={<ModelAxisTick modelIdByLabel={modelIdByLabel} />}
             />
             <YAxis
               domain={[0, 100]}
@@ -100,22 +111,12 @@ export function CategoryBarChart({ category, models }: CategoryBarChartProps) {
               wrapperStyle={{ pointerEvents: "none" }}
               content={<CategoryTooltipContent />}
             />
-            <Legend wrapperStyle={{ color: "#d4d4d8" }} />
-            <Bar dataKey="vanilla" fill={baseColor} name="Vanilla">
+            <Bar dataKey="score" fill={baseColor} name="Score">
               {rows.map((row) => (
                 <Cell
-                  key={`vanilla-${row.model}`}
+                  key={`score-${row.model}`}
                   fill={baseColor}
-                  fillOpacity={opacityForScore(row.vanilla) * 0.85}
-                />
-              ))}
-            </Bar>
-            <Bar dataKey="callstack" fill={baseColor} name="Callstack">
-              {rows.map((row) => (
-                <Cell
-                  key={`callstack-${row.model}`}
-                  fill={baseColor}
-                  fillOpacity={opacityForScore(row.callstack)}
+                  fillOpacity={opacityForScore(row.score)}
                 />
               ))}
             </Bar>

@@ -1,0 +1,72 @@
+{
+  "evalId": "02-rn-rq-dependent-query-enabled-gate",
+  "evalPath": "evals/async-state/02-rn-rq-dependent-query-enabled-gate",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/gpt-oss-20b-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "app-is-wrapped-with-query-client-provider",
+      "description": "App component renders `QueryClientProvider` with `client` set to `queryClient` and wraps `ProjectsScreen`",
+      "weight": 1,
+      "passed": true,
+      "reason": "App returns QueryClientProvider with client={queryClient} wrapping ProjectsScreen",
+      "evidence": [
+        "<QueryClientProvider client={queryClient}><ProjectsScreen /></QueryClientProvider>"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "profile-queryfn-uses-query-function-context-signal",
+      "description": "Profile `queryFn` reads `signal` from `QueryFunctionContext` and passes it to `fetchProfile`",
+      "weight": 1,
+      "passed": false,
+      "reason": "fetchProfile accepts no arguments and ignores QueryFunctionContext; signal is never destructured or passed",
+      "evidence": [
+        "queryFn: fetchProfile",
+        "const fetchProfile = async () => {"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "projects-query-key-uses-profile-id-with-pending-fallback",
+      "description": "Projects query uses `queryKey` array `projects` and `profileId`",
+      "weight": 1,
+      "passed": false,
+      "reason": "Projects query uses key ['todos', profileQuery.data?.id] not ['projects', profileId]",
+      "evidence": [
+        "queryKey: ['todos', profileQuery.data?.id]"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "projects-query-enabled-uses-profile-id-boolean",
+      "description": "Projects query `enabled` option is set from boolean cast of `profileId`",
+      "weight": 1,
+      "passed": false,
+      "reason": "enabled uses !!profileQuery.data?.id directly, not a standalone profileId variable",
+      "evidence": [
+        "enabled: !!profileQuery.data?.id"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "projects-queryfn-destructures-userid-from-querykey",
+      "description": "Projects `queryFn` destructures `userId` from `queryKey` and calls `fetchProjectsByUserId` with `signal`",
+      "weight": 1,
+      "passed": false,
+      "reason": "queryFn is an arrow function calling fetchTodos with profileQuery.data!.id; no QueryFunctionContext destructuring and fetchProjectsByUserId is never called",
+      "evidence": [
+        "queryFn: () => fetchTodos(profileQuery.data!.id)"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 1,
+    "totalWeight": 5,
+    "ratio": 0.2
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

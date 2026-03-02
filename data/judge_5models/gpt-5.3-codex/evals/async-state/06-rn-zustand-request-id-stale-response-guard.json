@@ -1,0 +1,76 @@
+{
+  "evalId": "06-rn-zustand-request-id-stale-response-guard",
+  "evalPath": "evals/async-state/06-rn-zustand-request-id-stale-response-guard",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "openai/gpt-5.3-codex",
+  "llmJudgeRequirements": [
+    {
+      "id": "zustand-create-store-hook",
+      "description": "Store hook is created with `create` from `zustand`",
+      "weight": 1,
+      "passed": true,
+      "reason": "Store is created with `create` imported from `zustand` and assigned to `useSearchStore`.",
+      "evidence": [
+        "import { create } from 'zustand'",
+        "const useSearchStore = create<SearchStore>(...)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "request-identity-state-is-tracked",
+      "description": "Store state must include `activeRequestId`",
+      "weight": 1,
+      "passed": true,
+      "reason": "`activeRequestId` is declared in the `SearchStore` type and initialised to `0` in the store state.",
+      "evidence": [
+        "activeRequestId: number",
+        "activeRequestId: 0"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "request-identity-is-incremented-before-fetch",
+      "description": "Must write `activeRequestId` through `set` before fetch",
+      "weight": 1,
+      "passed": true,
+      "reason": "`nextRequestId` is computed by incrementing `activeRequestId`, then written via `set({ activeRequestId: nextRequestId, ... })` before the `await fetch(...)` call.",
+      "evidence": [
+        "const nextRequestId = get().activeRequestId + 1",
+        "set({ activeRequestId: nextRequestId, ... })",
+        "const response = await fetch(...)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "search-request-uses-encoded-query-endpoint",
+      "description": "Search fetch uses `encodeURIComponent` for query",
+      "weight": 1,
+      "passed": true,
+      "reason": "The fetch URL uses `encodeURIComponent(query)` to encode the search query parameter.",
+      "evidence": [
+        "`https://dummyjson.com/products/search?q=${encodeURIComponent(query)}&limit=${limit}`"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "stale-request-guard-runs-after-async-work",
+      "description": "After async fetch, must compare `activeRequestId` with local request id and return on mismatch",
+      "weight": 1,
+      "passed": true,
+      "reason": "After `await response.json()`, the code compares `get().activeRequestId !== nextRequestId` and returns early on mismatch. The same guard is repeated in the catch block.",
+      "evidence": [
+        "if (get().activeRequestId !== nextRequestId) { return }",
+        "placed after `const data = (await response.json())`"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 5,
+    "totalWeight": 5,
+    "ratio": 1
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

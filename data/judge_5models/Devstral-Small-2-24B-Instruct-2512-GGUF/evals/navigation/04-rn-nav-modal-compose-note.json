@@ -1,0 +1,66 @@
+{
+  "evalId": "04-rn-nav-modal-compose-note",
+  "evalPath": "evals/navigation/04-rn-nav-modal-compose-note",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Devstral-Small-2-24B-Instruct-2512-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "modal-compose-route",
+      "description": "Must create a route in the stack and present it as a modal screen (for example via native-stack `presentation` modal option).",
+      "weight": 1,
+      "passed": false,
+      "reason": "ComposeScreen is rendered inside a plain React Native <Modal> component, not registered as a native-stack route with presentation:'modal'. The createNativeStackNavigator is instantiated but no screens are declared via the static API (no `screens` config object), so there is no 'Compose' route in the stack at all.",
+      "evidence": [
+        "const Stack = createNativeStackNavigator<RootStackParamList>() — no screens property configured",
+        "const Navigation = createStaticNavigation(Stack as any) — cast used, no static screen definitions",
+        "<Modal visible animationType='slide'> — uses RN Modal, not navigator presentation option"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "dismiss-on-cancel",
+      "description": "Cancel action in compose must dismiss back to notes (for example with `navigation.goBack()`).",
+      "weight": 1,
+      "passed": true,
+      "reason": "handleCancel calls navigation.goBack(), satisfying the dismiss requirement for the cancel action.",
+      "evidence": [
+        "const handleCancel = () => { navigation.goBack() }"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "dismiss-on-save",
+      "description": "Save action in compose must add the drafted note to shared notes state/context and then dismiss back to notes.",
+      "weight": 1,
+      "passed": true,
+      "reason": "handleSave calls addNote(note) to add the note to shared context state and then calls navigation.goBack() to dismiss.",
+      "evidence": [
+        "const handleSave = () => { if (note.trim()) { addNote(note); navigation.goBack() } }",
+        "addNote updates NotesContext state shared across screens"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "static-api-navigation-construction",
+      "description": "Must construct navigation with React Navigation static API and render it via `createStaticNavigation(...)`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "createStaticNavigation is imported and called, but the navigator is not configured with the static API's screens definition object. The stack is created with the dynamic API (createNativeStackNavigator) and cast with 'as any' to bypass type checking, with no screens registered statically. This is not a valid static API construction.",
+      "evidence": [
+        "const Stack = createNativeStackNavigator<RootStackParamList>() — dynamic API, no static screens config",
+        "const Navigation = createStaticNavigation(Stack as any) — 'as any' cast circumvents static API requirements",
+        "No screen components registered via { screens: { Notes: NotesScreen, Compose: ComposeScreen } } pattern"
+      ],
+      "confidence": 0.92
+    }
+  ],
+  "score": {
+    "passedWeight": 2,
+    "totalWeight": 4,
+    "ratio": 0.5
+  },
+  "outputFiles": [
+    "App.tsx",
+    "package.json"
+  ]
+}

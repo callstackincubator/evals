@@ -1,0 +1,51 @@
+{
+  "evalId": "14-rn-rq-react-native-appstate-focus-online-managers",
+  "evalPath": "evals/async-state/14-rn-rq-react-native-appstate-focus-online-managers",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "openai/gpt-5.3-codex",
+  "llmJudgeRequirements": [
+    {
+      "id": "appstate-focusmanager-integration",
+      "description": "Must map React Native `AppState` transitions to `focusManager.setFocused(...)` by subscribing to `change` events via `addEventListener`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "useReactQueryAppLifecycleSync subscribes to AppState 'change' events via addEventListener and calls focusManager.setFocused(nextState === 'active') in the callback.",
+      "evidence": [
+        "AppState.addEventListener('change', (nextState) => { focusManager.setFocused(nextState === 'active') })"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "connectivity-onlinemanager-integration",
+      "description": "Must map connectivity signals to `onlineManager.setOnline(...)` by subscribing to connectivity changes via `NetInfo.addEventListener` and using conservative online detection (`isConnected` + `isInternetReachable`).",
+      "weight": 1,
+      "passed": true,
+      "reason": "NetInfo.addEventListener is used to subscribe to connectivity changes; online state is determined conservatively using both isConnected and isInternetReachable via the getIsOnline helper, which is then passed to onlineManager.setOnline.",
+      "evidence": [
+        "NetInfo.addEventListener((state) => { onlineManager.setOnline(getIsOnline(state)) })",
+        "function getIsOnline(state: NetInfoState): boolean { return Boolean(state.isConnected) && state.isInternetReachable !== false }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "implementation-rq-v5-object-signature",
+      "description": "Must use TanStack Query v5 object-form APIs for query hooks and client methods.",
+      "weight": 1,
+      "passed": true,
+      "reason": "useQuery is called with the object-form API ({ queryFn, queryKey }), and QueryClient is instantiated with the object-form defaultOptions. Package.json declares @tanstack/react-query ^5.90.21.",
+      "evidence": [
+        "useQuery({ queryFn: () => fetchInbox(FEED_LIMIT, FEED_SKIP), queryKey: ['inbox', FEED_LIMIT, FEED_SKIP] as const })",
+        "\"@tanstack/react-query\": \"^5.90.21\""
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 3,
+    "ratio": 1
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

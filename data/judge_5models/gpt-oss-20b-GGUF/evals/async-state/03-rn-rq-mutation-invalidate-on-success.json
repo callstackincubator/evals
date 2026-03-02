@@ -1,0 +1,72 @@
+{
+  "evalId": "03-rn-rq-mutation-invalidate-on-success",
+  "evalPath": "evals/async-state/03-rn-rq-mutation-invalidate-on-success",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/gpt-oss-20b-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "app-is-wrapped-with-query-client-provider",
+      "description": "App component renders `QueryClientProvider` with `client` set to `queryClient` and wraps `ItemsScreen`",
+      "weight": 1,
+      "passed": true,
+      "reason": "App returns QueryClientProvider with client={queryClient} wrapping ItemsScreen",
+      "evidence": [
+        "<QueryClientProvider client={queryClient}><ItemsScreen /></QueryClientProvider>"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "items-queryfn-uses-query-function-context-signal",
+      "description": "Items `queryFn` reads `signal` from `QueryFunctionContext` and passes it to `fetchItems`",
+      "weight": 1,
+      "passed": false,
+      "reason": "queryFn is a plain async function; it does not destructure signal from QueryFunctionContext nor pass it to the fetch call",
+      "evidence": [
+        "useQuery<TodoItem[]>(['todos'], async () => { const res = await fetch(...) })"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "create-mutation-uses-usemutation-object-form",
+      "description": "Create flow uses `useMutation` object form with `mutationFn` set to `createItem`",
+      "weight": 1,
+      "passed": false,
+      "reason": "useMutation is called with positional arguments (fn, options) — the v4 signature — not the v5 object form { mutationFn: createItem }; also uses an inline function instead of a named createItem reference",
+      "evidence": [
+        "useMutation(async ({ title }) => { ... }, { onSuccess: ... })"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "create-mutation-invalidates-items-key-on-success",
+      "description": "Mutation `onSuccess` calls `reactQueryClient.invalidateQueries`",
+      "weight": 1,
+      "passed": false,
+      "reason": "onSuccess calls refetch() instead of reactQueryClient.invalidateQueries; no invalidateQueries call exists anywhere in the file",
+      "evidence": [
+        "onSuccess: () => { refetch(); setDraft('') }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "create-button-disabled-is-bound-to-mutation-pending",
+      "description": "Create button `disabled` prop uses `isPending` from mutation",
+      "weight": 1,
+      "passed": false,
+      "reason": "disabled prop uses createMutation.isLoading (v4 property) not isPending (v5 property)",
+      "evidence": [
+        "disabled={createMutation.isLoading}",
+        "if (trimmed.length === 0 || createMutation.isLoading) return"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 1,
+    "totalWeight": 5,
+    "ratio": 0.2
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

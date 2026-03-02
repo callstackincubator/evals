@@ -1,0 +1,28 @@
+{
+  "evalId": "13-rn-nav-focus-refresh-inbox",
+  "evalPath": "evals/navigation/13-rn-nav-focus-refresh-inbox",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "anthropic/claude-opus-4-6",
+  "llmJudgeRequirements": [
+    {
+      "id": "focus-effect-structure",
+      "description": "Must implement focus logic using `useFocusEffect`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "useFocusEffect is imported from @react-navigation/native and used inside InboxScreen, wrapping a useCallback that increments refreshCount on every focus event.",
+      "evidence": [
+        "import { createStaticNavigation, useFocusEffect } from '@react-navigation/native'",
+        "useFocusEffect(useCallback(() => { setRefreshCount((prev) => prev + 1) }, []))"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 1,
+    "totalWeight": 1,
+    "ratio": 1
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

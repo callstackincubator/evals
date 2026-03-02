@@ -1,0 +1,104 @@
+{
+  "evalId": "07-rn-zustand-persist-async-hydration-gate",
+  "evalPath": "evals/async-state/07-rn-zustand-persist-async-hydration-gate",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/gpt-oss-20b-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "zustand-persist-uses-asyncstorage-json-storage",
+      "description": "Store uses `persist` with `createJSONStorage(() => AsyncStorage)` and persists only token state",
+      "weight": 1,
+      "passed": false,
+      "reason": "Persist config uses legacy `getStorage: () => AsyncStorage` instead of the required `storage: createJSONStorage(() => AsyncStorage)`. The `createJSONStorage` wrapper is never imported or used.",
+      "evidence": [
+        "authStore: getStorage: () => AsyncStorage",
+        "no import of createJSONStorage anywhere in submitted files"
+      ],
+      "confidence": 0.97
+    },
+    {
+      "id": "store-includes-hydration-and-profile-fields",
+      "description": "Store state includes `hasHydrated` `token` `profileStatus` `profileName` and hydration setter action",
+      "weight": 1,
+      "passed": false,
+      "reason": "Store uses `isHydrated` instead of the required `hasHydrated`, and `loadingProfile` (boolean) instead of the required `profileStatus` field. `profileName` is also absent; the profile name is stored in `profile`. No explicit hydration setter action (e.g. `setHasHydrated`) is present.",
+      "evidence": [
+        "authStore: isHydrated: false",
+        "authStore: loadingProfile: boolean",
+        "authStore: profile: string | null (not profileName)",
+        "no setHasHydrated or equivalent exported action"
+      ],
+      "confidence": 0.97
+    },
+    {
+      "id": "login-fetches-token-from-auth-endpoint",
+      "description": "Login action performs `POST` request to auth login endpoint and writes returned token into store",
+      "weight": 1,
+      "passed": true,
+      "reason": "Login action POSTs to `https://dummyjson.com/auth/login` with credentials and writes the returned `accessToken`/`token` into store via `set({ token })`.",
+      "evidence": [
+        "authStore: fetch('https://dummyjson.com/auth/login', { method: 'POST', ... })",
+        "authStore: set({ token })"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "profile-request-uses-bearer-token-header",
+      "description": "Profile fetch request sends `Authorization` bearer header built from persisted token",
+      "weight": 1,
+      "passed": true,
+      "reason": "Both the login flow and the rehydration flow fetch the profile endpoint with `Authorization: Bearer ${token}` header built from the persisted token.",
+      "evidence": [
+        "authStore login: headers: { Authorization: `Bearer ${token}` }",
+        "authStore onRehydrateStorage: headers: { Authorization: `Bearer ${token}` }"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "onrehydrate-sets-hydrated-and-reloads-profile",
+      "description": "onRehydrateStorage sets hydrated flag in success and error paths and reloads profile when token exists",
+      "weight": 1,
+      "passed": false,
+      "reason": "`onRehydrateStorage` sets `isHydrated` (not `hasHydrated`) only in the success path of the outer callback; there is no error path that sets the hydrated flag when rehydration itself fails (the outer function returned receives an optional error argument which is ignored). The profile reload on existing token is present.",
+      "evidence": [
+        "authStore onRehydrateStorage: state?.setState({ isHydrated: true }) — only in success callback",
+        "no `(state, error) =>` signature handling the error argument to still set hydrated flag"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "ui-has-pre-hydration-loading-branch",
+      "description": "UI renders hydration loading branch when `hasHydrated` is false",
+      "weight": 1,
+      "passed": false,
+      "reason": "UI checks `isHydrated` (not `hasHydrated`) and renders a loading view when false. Because the field name in both store and UI is `isHydrated` (not the required `hasHydrated`), this criterion as specified is not satisfied.",
+      "evidence": [
+        "App.tsx: const { isHydrated } = useAuthStore(...)",
+        "App.tsx: if (!isHydrated) { return <View>...</View> }"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "ui-has-profile-loading-branch-after-token",
+      "description": "UI renders profile loading branch when token exists and `profileStatus` is loading",
+      "weight": 1,
+      "passed": false,
+      "reason": "UI renders `loadingProfile && <Text>Loading profile...</Text>` regardless of whether a token exists; there is no branch that is conditional on `token && profileStatus === 'loading'`. The required `profileStatus` field does not exist in the store; a boolean `loadingProfile` is used instead.",
+      "evidence": [
+        "App.tsx: {loadingProfile && <Text style={styles.meta}>Loading profile...</Text>}",
+        "no check for token existence before rendering the loading branch",
+        "store has no profileStatus field"
+      ],
+      "confidence": 0.95
+    }
+  ],
+  "score": {
+    "passedWeight": 2,
+    "totalWeight": 7,
+    "ratio": 0.2857
+  },
+  "outputFiles": [
+    "App.tsx",
+    "src/store/authStore.ts"
+  ]
+}

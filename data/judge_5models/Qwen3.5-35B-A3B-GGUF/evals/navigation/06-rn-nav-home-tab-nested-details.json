@@ -1,0 +1,49 @@
+{
+  "evalId": "06-rn-nav-home-tab-nested-details",
+  "evalPath": "evals/navigation/06-rn-nav-home-tab-nested-details",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Qwen3.5-35B-A3B-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "home-tab-uses-home-stack-with-initial-home",
+      "description": "Must replace the Home tab screen with a nested Home stack navigator, and configure `Home` as the initial route of that stack.",
+      "weight": 1,
+      "passed": false,
+      "reason": "judge did not return a result for this requirement",
+      "evidence": []
+    },
+    {
+      "id": "push-article-details-within-home-stack",
+      "description": "Must push `ArticleDetails` from `Home` within the Home stack, passing `articleId` via the params.",
+      "weight": 1,
+      "passed": true,
+      "reason": "HomeFeedScreen calls navigation.navigate('ArticleDetails', { articleId: '123' }), and ArticleDetails is defined within HomeStack, fulfilling the push with articleId param requirement.",
+      "evidence": [
+        "navigation.navigate('ArticleDetails', { articleId: '123' })",
+        "HomeStack screens include ArticleDetails: ArticleDetailsScreen"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "static-api-navigation-construction",
+      "description": "Must construct navigation with React Navigation static API and render it via `createStaticNavigation(...)`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "createStaticNavigator is used for HomeStack, createBottomTabNavigator with static config for TabNavigator, and createStaticNavigation(TabNavigator) renders the navigation tree.",
+      "evidence": [
+        "import { createStaticNavigation, createStaticNavigator } from '@react-navigation/native'",
+        "const Navigation = createStaticNavigation(TabNavigator)",
+        "export default function App() { return <Navigation /> }"
+      ],
+      "confidence": 0.98
+    }
+  ],
+  "score": {
+    "passedWeight": 2,
+    "totalWeight": 3,
+    "ratio": 0.6667
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

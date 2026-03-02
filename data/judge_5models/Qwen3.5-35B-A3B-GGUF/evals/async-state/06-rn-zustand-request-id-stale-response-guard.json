@@ -1,0 +1,74 @@
+{
+  "evalId": "06-rn-zustand-request-id-stale-response-guard",
+  "evalPath": "evals/async-state/06-rn-zustand-request-id-stale-response-guard",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Qwen3.5-35B-A3B-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "zustand-create-store-hook",
+      "description": "Store hook is created with `create` from `zustand`",
+      "weight": 1,
+      "passed": true,
+      "reason": "useSearchStore is created via `create` imported from 'zustand'",
+      "evidence": [
+        "import { create } from 'zustand'",
+        "const useSearchStore = create<SearchState>(...)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "request-identity-state-is-tracked",
+      "description": "Store state must include `activeRequestId`",
+      "weight": 1,
+      "passed": false,
+      "reason": "Store state uses `requestVersion` instead of the required `activeRequestId`",
+      "evidence": [
+        "requestVersion: 0",
+        "type SearchState = { ... requestVersion: number ... }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "request-identity-is-incremented-before-fetch",
+      "description": "Must write `activeRequestId` through `set` before fetch",
+      "weight": 1,
+      "passed": false,
+      "reason": "Request identity is incremented and written via set before fetch, but uses `requestVersion` not `activeRequestId`",
+      "evidence": [
+        "const currentVersion = get().requestVersion + 1",
+        "set({ loading: true, error: null, requestVersion: currentVersion })"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "search-request-uses-encoded-query-endpoint",
+      "description": "Search fetch uses `encodeURIComponent` for query",
+      "weight": 1,
+      "passed": true,
+      "reason": "Fetch URL uses encodeURIComponent(query) for the search query parameter",
+      "evidence": [
+        "`https://dummyjson.com/products/search?q=${encodeURIComponent(query)}&limit=10`"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "stale-request-guard-runs-after-async-work",
+      "description": "After async fetch, must compare `activeRequestId` with local request id and return on mismatch",
+      "weight": 1,
+      "passed": true,
+      "reason": "After await fetch, compares get().requestVersion === currentVersion and skips state update on mismatch",
+      "evidence": [
+        "if (get().requestVersion === currentVersion) { set({ results: data.products || [], loading: false }) }"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 5,
+    "ratio": 0.6
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "evalId": "11-rn-rngh-exclusive-single-double-tap",
+  "evalPath": "evals/animation/11-rn-rngh-exclusive-single-double-tap",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/gpt-oss-20b-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "rngh-gesturedetector-usage",
+      "description": "Must render the tap target under `GestureHandlerRootView` and attach gestures with `GestureDetector gesture={...}` from `react-native-gesture-handler`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Uses TapGestureHandler (legacy component) instead of GestureDetector with gesture={...} prop. GestureDetector is never imported or rendered.",
+      "evidence": [
+        "import { GestureHandlerRootView, TapGestureHandler, State } from 'react-native-gesture-handler'",
+        "<TapGestureHandler ref={doubleTapRef} onHandlerStateChange={onDoubleTap} numberOfTaps={2}>"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "implementation-rngh-exclusive-tap-contract",
+      "description": "Must define both gestures with `Gesture.Tap()` builders (`singleTap` and `doubleTap`) using current builder callbacks (`onEnd`) and MUST NOT use legacy `useAnimatedGestureHandler`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "No Gesture.Tap() builders used. Gestures are defined via TapGestureHandler components with onHandlerStateChange callbacks, not via Gesture.Tap().onEnd(...) builder pattern.",
+      "evidence": [
+        "const onDoubleTap = (event) => { if (event.nativeEvent.state === State.ACTIVATED)",
+        "TapGestureHandler ... onHandlerStateChange={onDoubleTap}"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "schedule-on-rn-tap-outcome-bridge",
+      "description": "Must call `scheduleOnRN(...)` inside tap `onEnd` success paths to update React state and MUST NOT use deprecated `runOnJS`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "scheduleOnRN is never called anywhere in the submission. Tap callbacks use plain JS functions with console.log only, no React state updates bridged via scheduleOnRN.",
+      "evidence": [
+        "console.log('Double tap detected')",
+        "console.log('Single tap detected')"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "exclusive-tap-composition",
+      "description": "Must compose taps with `Gesture.Exclusive(doubleTap, singleTap)` so exclusivity is defined by RNGH composition APIs.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Gesture.Exclusive() is never used. Exclusivity is implemented via the legacy waitFor={doubleTapRef} ref prop on TapGestureHandler.",
+      "evidence": [
+        "<TapGestureHandler ref={singleTapRef} waitFor={doubleTapRef} onHandlerStateChange={onSingleTap} numberOfTaps={1}>"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "deterministic-tap-outcomes",
+      "description": "Must configure tap-recognition windows via `Gesture.Tap().numberOfTaps(2).maxDelay(...)` for double tap and `Gesture.Tap().numberOfTaps(1)` for single tap, with explicit duration limits via `maxDuration(...)`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "No .numberOfTaps(), .maxDelay(), or .maxDuration() builder calls exist. The legacy numberOfTaps prop is used on TapGestureHandler components, but maxDelay and maxDuration are absent entirely.",
+      "evidence": [
+        "<TapGestureHandler ref={doubleTapRef} onHandlerStateChange={onDoubleTap} numberOfTaps={2}>",
+        "<TapGestureHandler ref={singleTapRef} waitFor={doubleTapRef} onHandlerStateChange={onSingleTap} numberOfTaps={1}>"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 0,
+    "totalWeight": 5,
+    "ratio": 0
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

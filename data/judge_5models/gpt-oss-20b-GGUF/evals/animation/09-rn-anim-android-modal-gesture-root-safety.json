@@ -1,0 +1,86 @@
+{
+  "evalId": "09-rn-anim-android-modal-gesture-root-safety",
+  "evalPath": "evals/animation/09-rn-anim-android-modal-gesture-root-safety",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/gpt-oss-20b-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "modal-gesture-root-view-setup",
+      "description": "Must render modal gesture content under `GestureHandlerRootView` (or `gestureHandlerRootHOC`) in the `Modal` subtree for Android gesture handling.",
+      "weight": 1,
+      "passed": false,
+      "reason": "No GestureHandlerRootView or gestureHandlerRootHOC wrapping the Modal subtree. The Modal content is wrapped only by PanGestureHandler.",
+      "evidence": [
+        "<Modal visible={visible} transparent animationType=\"none\"><PanGestureHandler ...>"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "gesture-control-inside-modal",
+      "description": "Modal content must include an RNGH gesture control using `Gesture.*` (for example `Gesture.Pan()`) attached with `GestureDetector`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Uses legacy PanGestureHandler component instead of the required Gesture.Pan() builder API attached via GestureDetector.",
+      "evidence": [
+        "import { PanGestureHandler, State } from 'react-native-gesture-handler'",
+        "No Gesture.Pan() or GestureDetector found"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "implementation-rngh-modal-root-boundary-contract",
+      "description": "Must implement modal gesture logic with current RNGH builder callbacks (`onUpdate`/`onEnd`) and MUST NOT use legacy `useAnimatedGestureHandler`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Uses legacy onHandlerStateChange callback and Animated.event instead of the required onUpdate/onEnd builder callbacks. useAnimatedGestureHandler is not used, but the required new API is also absent.",
+      "evidence": [
+        "const onHandlerStateChange = ({ nativeEvent }) => {",
+        "const onGestureEvent = Animated.event(...)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "close-threshold-dismiss-branch",
+      "description": "Pan `onEnd` must use `CLOSE_THRESHOLD` to decide between modal dismiss and snap-back.",
+      "weight": 1,
+      "passed": false,
+      "reason": "CLOSE_THRESHOLD check exists but is inside the legacy onHandlerStateChange handler, not inside a Pan onEnd builder callback as required.",
+      "evidence": [
+        "if (nativeEvent.translationY > CLOSE_THRESHOLD) {",
+        "onHandlerStateChange (legacy API)"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "schedule-on-rn-modal-dismiss-bridge",
+      "description": "Dismiss state updates from gesture/worklet context must call `scheduleOnRN(...)` and MUST NOT use deprecated `runOnJS`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "No scheduleOnRN call anywhere in the file. State updates (setVisible) are called directly in a JS callback, not from a worklet context.",
+      "evidence": [
+        "setVisible(false) called directly in onHandlerStateChange",
+        "No scheduleOnRN import or usage"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "no-platform-specific-breakage-path",
+      "description": "GestureDetector and its gesture-driven modal sheet must remain descendants of the modal `GestureHandlerRootView` boundary (no detached modal gesture path).",
+      "weight": 1,
+      "passed": false,
+      "reason": "No GestureHandlerRootView boundary exists in the Modal subtree; GestureDetector is not used at all, so the required containment hierarchy is entirely absent.",
+      "evidence": [
+        "Modal contains only PanGestureHandler, no GestureHandlerRootView or GestureDetector"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 0,
+    "totalWeight": 6,
+    "ratio": 0
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

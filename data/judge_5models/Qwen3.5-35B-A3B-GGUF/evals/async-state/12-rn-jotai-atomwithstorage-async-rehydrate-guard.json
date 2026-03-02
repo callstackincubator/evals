@@ -1,0 +1,87 @@
+{
+  "evalId": "12-rn-jotai-atomwithstorage-async-rehydrate-guard",
+  "evalPath": "evals/async-state/12-rn-jotai-atomwithstorage-async-rehydrate-guard",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Qwen3.5-35B-A3B-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "preferences-use-atomwithstorage-with-asyncstorage",
+      "description": "Preferences persistence uses `atomWithStorage` with `createJSONStorage(() => AsyncStorage)`",
+      "weight": 1,
+      "passed": true,
+      "reason": "preferencesAtom is created with atomWithStorage and createJSONStorage(() => AsyncStorage) as the third argument.",
+      "evidence": [
+        "const preferencesAtom = atomWithStorage<Preferences>(STORAGE_KEY, SAFE_DEFAULT_PREFERENCES, createJSONStorage(() => AsyncStorage))"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "hydration-complete-state-is-explicit",
+      "description": "Hydration completion is tracked in dedicated atom state",
+      "weight": 1,
+      "passed": false,
+      "reason": "Hydration completion is tracked via a local useState hook, not in a dedicated Jotai atom state.",
+      "evidence": [
+        "const [hydrated, setHydrated] = useState(false)"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "pre-hydration-ui-is-gated",
+      "description": "Preference-dependent content is gated behind a deterministic pre-hydration UI branch",
+      "weight": 1,
+      "passed": false,
+      "reason": "The loading branch only gates the profile/loading text, but preference-dependent content (Theme and Compact mode text, toggle buttons) is rendered unconditionally regardless of hydration state.",
+      "evidence": [
+        "<Text style={styles.meta}>Theme: {preferences.theme}</Text>",
+        "<Text style={styles.meta}>Compact mode: {preferences.compact ? 'on' : 'off'}</Text>",
+        "!hydrated ? <Text>Loading...</Text> : profile ? ... : null"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "hydration-flow-runs-before-profile-load",
+      "description": "Hydration action runs first and profile loading is triggered only after hydration completes",
+      "weight": 1,
+      "passed": true,
+      "reason": "Profile fetch is inside a useEffect that depends on `hydrated`, and only runs when hydrated is true, which is set in a prior useEffect.",
+      "evidence": [
+        "useEffect(() => { setHydrated(true) }, [])",
+        "useEffect(() => { if (hydrated) { fetch('https://dummyjson.com/users/1')... } }, [hydrated])"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "id": "profile-preview-fetches-and-maps-name",
+      "description": "Post-hydration profile load fetches the users endpoint and builds preview text from `firstName` and `lastName`",
+      "weight": 1,
+      "passed": true,
+      "reason": "Fetches https://dummyjson.com/users/1 and maps data.firstName and data.lastName into profile state, which is then rendered as 'Profile: {firstName} {lastName}'.",
+      "evidence": [
+        "fetch('https://dummyjson.com/users/1').then(res => res.json()).then(data => { setProfile({ firstName: data.firstName, lastName: data.lastName }) })",
+        "Profile: {profile.firstName} {profile.lastName}"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "preference-updates-use-functional-updater",
+      "description": "Preference toggle actions update persisted state through functional atom updater paths",
+      "weight": 1,
+      "passed": true,
+      "reason": "Both toggleTheme and toggleCompact call setPreferences with a functional updater ((previous) => ...) that derives new state from previous state.",
+      "evidence": [
+        "setPreferences((previous) => ({ ...previous, theme: previous.theme === 'light' ? 'dark' : 'light' }))",
+        "setPreferences((previous) => ({ ...previous, compact: !previous.compact }))"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 4,
+    "totalWeight": 6,
+    "ratio": 0.6667
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

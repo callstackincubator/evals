@@ -1,0 +1,53 @@
+{
+  "evalId": "04-rn-anim-scroll-linked-collapsing-header",
+  "evalPath": "evals/animation/04-rn-anim-scroll-linked-collapsing-header",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "anthropic/claude-opus-4-6",
+  "llmJudgeRequirements": [
+    {
+      "id": "animated-scroll-handler-source",
+      "description": "Must capture scroll offset with Reanimated `useAnimatedScrollHandler(...)` attached to `Animated.ScrollView onScroll`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "useAnimatedScrollHandler captures contentOffset.y into scrollY shared value; the handler is passed to Animated.ScrollView onScroll prop.",
+      "evidence": [
+        "const scrollHandler = useAnimatedScrollHandler({ onScroll: (event) => { scrollY.value = event.contentOffset.y } })",
+        "<Animated.ScrollView ... onScroll={scrollHandler} scrollEventThrottle={16}>"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "interpolated-header-transform-or-opacity",
+      "description": "Must compute header visuals in `useAnimatedStyle` using `interpolate(...)` from the shared scroll value (for example height and/or opacity).",
+      "weight": 1,
+      "passed": true,
+      "reason": "headerAnimatedStyle uses useAnimatedStyle with interpolate on scrollY.value to compute height; subtitleAnimatedStyle also interpolates opacity from scrollY.value.",
+      "evidence": [
+        "const headerAnimatedStyle = useAnimatedStyle(() => { const height = interpolate(scrollY.value, [0, COLLAPSE_DISTANCE], [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT], Extrapolation.CLAMP) return { height } })",
+        "const subtitleAnimatedStyle = useAnimatedStyle(() => { const opacity = interpolate(scrollY.value, ...) })"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "clamped-header-range",
+      "description": "Interpolation for header collapse must use clamped extrapolation (`Extrapolation.CLAMP`) with explicit input/output ranges.",
+      "weight": 1,
+      "passed": true,
+      "reason": "All interpolate calls for header collapse use explicit [0, COLLAPSE_DISTANCE] input ranges with corresponding output ranges and Extrapolation.CLAMP as the fourth argument.",
+      "evidence": [
+        "interpolate(scrollY.value, [0, COLLAPSE_DISTANCE], [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT], Extrapolation.CLAMP)",
+        "interpolate(scrollY.value, [0, COLLAPSE_DISTANCE], [1, 0.8], Extrapolation.CLAMP)",
+        "interpolate(scrollY.value, [0, COLLAPSE_DISTANCE * 0.5], [1, 0], Extrapolation.CLAMP)"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 3,
+    "ratio": 1
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

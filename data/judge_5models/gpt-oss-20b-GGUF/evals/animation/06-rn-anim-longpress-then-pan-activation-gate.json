@@ -1,0 +1,68 @@
+{
+  "evalId": "06-rn-anim-longpress-then-pan-activation-gate",
+  "evalPath": "evals/animation/06-rn-anim-longpress-then-pan-activation-gate",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/gpt-oss-20b-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "composed-gesture-sequence",
+      "description": "Must compose `Gesture.LongPress()` and `Gesture.Pan()` with RNGH composition APIs (for example `Gesture.Simultaneous(...)`) so drag is gated by long-press activation.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Uses legacy PanGestureHandler/LongPressGestureHandler components nested in JSX, not Gesture.LongPress()/Gesture.Pan() composed via Gesture.Simultaneous() or any other RNGH composition API.",
+      "evidence": [
+        "import { PanGestureHandler, LongPressGestureHandler, GestureHandlerRootView } from 'react-native-gesture-handler'",
+        "<PanGestureHandler onGestureEvent={panGesture}>",
+        "<LongPressGestureHandler onGestureEvent={longPressGesture} minDurationMs={600}>"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "implementation-rngh-longpress-pan-gating-contract",
+      "description": "Must implement gating in pan callbacks by checking long-press activation state before applying translation updates, and MUST NOT use legacy `useAnimatedGestureHandler`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Uses the explicitly forbidden useAnimatedGestureHandler for both pan and long-press handlers. Although isActive gating logic is present in onActive, the MUST NOT condition is violated.",
+      "evidence": [
+        "import { useAnimatedGestureHandler } from 'react-native-reanimated'",
+        "const panGesture = useAnimatedGestureHandler({",
+        "const longPressGesture = useAnimatedGestureHandler({"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "drag-limit-clamp-usage",
+      "description": "`Gesture.Pan().onUpdate(...)` must clamp horizontal translation using the existing `DRAG_LIMIT` constant (bounded to `-DRAG_LIMIT` and `DRAG_LIMIT`) before assigning `translateX`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Clamping with DRAG_LIMIT is implemented in the legacy useAnimatedGestureHandler onActive callback, not inside a Gesture.Pan().onUpdate(...) callback as required.",
+      "evidence": [
+        "const DRAG_LIMIT = 170",
+        "const clamped = Math.min(Math.max(newX, -DRAG_LIMIT), DRAG_LIMIT)",
+        "onActive: (event, ctx) => { ... } // inside useAnimatedGestureHandler, not Gesture.Pan().onUpdate"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "visual-activation-feedback-card-border",
+      "description": "Must drive card style from a Reanimated shared value using `useAnimatedStyle`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Card style including borderColor is driven by the isActive shared value via useAnimatedStyle, applied to an Animated component.",
+      "evidence": [
+        "const isActive = useSharedValue(false)",
+        "const animatedStyle = useAnimatedStyle(() => ({ borderColor: isActive.value ? '#10B981' : '#9CA3AF' }))",
+        "<AnimatedView style={[styles.card, animatedStyle, { borderWidth: 1 }]}>"
+      ],
+      "confidence": 0.95
+    }
+  ],
+  "score": {
+    "passedWeight": 1,
+    "totalWeight": 4,
+    "ratio": 0.25
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

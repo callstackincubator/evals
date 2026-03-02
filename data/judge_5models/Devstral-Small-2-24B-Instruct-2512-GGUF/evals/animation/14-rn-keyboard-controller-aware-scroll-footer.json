@@ -1,0 +1,78 @@
+{
+  "evalId": "14-rn-keyboard-controller-aware-scroll-footer",
+  "evalPath": "evals/animation/14-rn-keyboard-controller-aware-scroll-footer",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Devstral-Small-2-24B-Instruct-2512-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "keyboard-aware-scroll-behavior",
+      "description": "Must wrap the form screen with `KeyboardProvider` and render form content in `KeyboardAwareScrollView` from `react-native-keyboard-controller`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "No KeyboardProvider wrapper found and Animated.ScrollView (not KeyboardAwareScrollView from react-native-keyboard-controller) is used.",
+      "evidence": [
+        "import { useKeyboardAnimation } from 'react-native-keyboard-controller'",
+        "<Animated.ScrollView ... > — not KeyboardAwareScrollView",
+        "No KeyboardProvider in the component tree"
+      ],
+      "confidence": 0.99
+    },
+    {
+      "id": "keyboard-aware-scroll-dismiss-mode-prop",
+      "description": "`KeyboardAwareScrollView` must set `keyboardDismissMode=\"interactive\"`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "keyboardDismissMode=\"interactive\" is set on Animated.ScrollView, not on KeyboardAwareScrollView as required.",
+      "evidence": [
+        "keyboardDismissMode=\"interactive\" present on Animated.ScrollView, not KeyboardAwareScrollView"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "keyboard-aware-scroll-persist-taps-prop",
+      "description": "`KeyboardAwareScrollView` must set `keyboardShouldPersistTaps=\"handled\"`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "keyboardShouldPersistTaps=\"handled\" is set on Animated.ScrollView, not on KeyboardAwareScrollView as required.",
+      "evidence": [
+        "keyboardShouldPersistTaps=\"handled\" present on Animated.ScrollView, not KeyboardAwareScrollView"
+      ],
+      "confidence": 0.95
+    },
+    {
+      "id": "sticky-footer-translate-with-keyboard-height",
+      "description": "Must use `useReanimatedKeyboardAnimation` with Reanimated `useAnimatedStyle` to drive footer `translateY` from `-keyboard.height.value`.",
+      "weight": 1,
+      "passed": false,
+      "reason": "useReanimatedKeyboardAnimation is not used; useKeyboardAnimation is used instead. The translateY logic derives from a manually synced useSharedValue, not directly from keyboard.height.value via useReanimatedKeyboardAnimation.",
+      "evidence": [
+        "import { useKeyboardAnimation } from 'react-native-keyboard-controller'",
+        "keyboardHeight.value = withTiming(keyboard.height as any, ...)",
+        "translateY: keyboardHeight.value > 0 ? -keyboardHeight.value : 0"
+      ],
+      "confidence": 0.97
+    },
+    {
+      "id": "sticky-footer-padding-with-keyboard-progress",
+      "description": "Must use Reanimated `interpolate` over `keyboard.progress.value` to animate footer bottom padding during keyboard transitions.",
+      "weight": 1,
+      "passed": false,
+      "reason": "No use of interpolate over keyboard.progress.value for footer bottom padding. The footer has only static paddingVertical; no Reanimated interpolate call exists anywhere in the file.",
+      "evidence": [
+        "No interpolate import or usage in file",
+        "footer style uses static paddingVertical: 10 only",
+        "keyboard.progress is never referenced"
+      ],
+      "confidence": 0.99
+    }
+  ],
+  "score": {
+    "passedWeight": 0,
+    "totalWeight": 5,
+    "ratio": 0
+  },
+  "outputFiles": [
+    "App.tsx",
+    "app.json"
+  ]
+}

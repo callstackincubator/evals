@@ -1,0 +1,95 @@
+{
+  "evalId": "04-rn-rq-optimistic-update-rollback",
+  "evalPath": "evals/async-state/04-rn-rq-optimistic-update-rollback",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Devstral-Small-2-24B-Instruct-2512-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "app-is-wrapped-with-query-client-provider",
+      "description": "App component renders `QueryClientProvider` with `client` set to `queryClient` and wraps `TodosScreen`",
+      "weight": 1,
+      "passed": false,
+      "reason": "App component renders only <TodosScreen /> with no QueryClientProvider wrapping it and no queryClient instance created at app level.",
+      "evidence": [
+        "export default function App() { return (<TodosScreen />) }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "mutation-uses-object-form-with-optimistic-callbacks",
+      "description": "Toggle flow uses `useMutation` object form with `mutationFn` `onMutate` `onError` and `onSettled` callbacks",
+      "weight": 1,
+      "passed": true,
+      "reason": "useMutation is called with object form containing mutationFn, onMutate, onError, and onSettled callbacks.",
+      "evidence": [
+        "useMutation({ mutationFn: ..., onMutate: ..., onError: ..., onSettled: ... })"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "onmutate-cancels-snapshots-and-writes-optimistic-cache",
+      "description": "Must call `cancelQueries` from `onMutate`, read snapshot with `getQueryData`, and write optimistic list with `setQueryData`",
+      "weight": 1,
+      "passed": true,
+      "reason": "onMutate calls cancelQueries, reads snapshot via getQueryData, and writes optimistic update via setQueryData.",
+      "evidence": [
+        "await queryClient.cancelQueries({ queryKey: ['todos'] })",
+        "const previousTodos = queryClient.getQueryData<{ todos: Todo[] }>(['todos'])",
+        "queryClient.setQueryData<{ todos: Todo[] }>(['todos'], (old) => { ... })"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "onerror-restores-snapshot-context",
+      "description": "Must read snapshot from `onError` and restore it through `setQueryData`",
+      "weight": 1,
+      "passed": true,
+      "reason": "onError reads previousTodos from context and restores it via setQueryData.",
+      "evidence": [
+        "if (context?.previousTodos) { queryClient.setQueryData(['todos'], context.previousTodos) }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "onsettled-invalidates-todos-query-key",
+      "description": "Must call `reactQueryClient.invalidateQueries` from `onSettled`",
+      "weight": 1,
+      "passed": true,
+      "reason": "onSettled calls queryClient.invalidateQueries with the ['todos'] query key.",
+      "evidence": [
+        "onSettled: () => { queryClient.invalidateQueries({ queryKey: ['todos'] }) }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "press-handler-calls-mutate-with-todoid-and-nextdone",
+      "description": "Row press callback must trigger mutation",
+      "weight": 1,
+      "passed": true,
+      "reason": "Pressable onPress calls toggleMutation.mutate(todo), passing the full todo object from which id and current completed state are used in mutationFn and onMutate.",
+      "evidence": [
+        "onPress={() => toggleMutation.mutate(todo)}"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "error-copy-is-conditional-on-mutation-error",
+      "description": "Failure text is rendered only when mutation error state is set.",
+      "weight": 1,
+      "passed": false,
+      "reason": "Error Text is rendered unconditionally with no conditional check on toggleMutation.error or isError.",
+      "evidence": [
+        "<Text style={styles.error}>Toggle failed. Cache rolled back and revalidated.</Text>"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 5,
+    "totalWeight": 7,
+    "ratio": 0.7143
+  },
+  "outputFiles": [
+    "workspace/parallel/temp/App.tsx"
+  ]
+}

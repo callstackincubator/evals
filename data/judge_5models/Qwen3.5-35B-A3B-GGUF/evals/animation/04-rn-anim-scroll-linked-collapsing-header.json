@@ -1,0 +1,51 @@
+{
+  "evalId": "04-rn-anim-scroll-linked-collapsing-header",
+  "evalPath": "evals/animation/04-rn-anim-scroll-linked-collapsing-header",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "llama.cpp/Qwen3.5-35B-A3B-GGUF",
+  "llmJudgeRequirements": [
+    {
+      "id": "animated-scroll-handler-source",
+      "description": "Must capture scroll offset with Reanimated `useAnimatedScrollHandler(...)` attached to `Animated.ScrollView onScroll`.",
+      "weight": 1,
+      "passed": true,
+      "reason": "useAnimatedScrollHandler captures contentOffset.y into scrollY shared value and is attached to Animated.ScrollView onScroll.",
+      "evidence": [
+        "const scrollHandler = useAnimatedScrollHandler((event) => { scrollY.value = event.contentOffset.y })",
+        "<Animated.ScrollView onScroll={scrollHandler} ...>"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "interpolated-header-transform-or-opacity",
+      "description": "Must compute header visuals in `useAnimatedStyle` using `interpolate(...)` from the shared scroll value (for example height and/or opacity).",
+      "weight": 1,
+      "passed": false,
+      "reason": "interpolate is called directly in the render body (not inside useAnimatedStyle), so headerHeight is a plain JS number computed once at render time, not a reactive animated value driving the header style.",
+      "evidence": [
+        "const headerHeight = interpolate(scrollY.value, [0, COLLAPSE_DISTANCE], [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT], Extrapolation.CLAMP)",
+        "No useAnimatedStyle call exists anywhere in the file"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "clamped-header-range",
+      "description": "Interpolation for header collapse must use clamped extrapolation (`Extrapolation.CLAMP`) with explicit input/output ranges.",
+      "weight": 1,
+      "passed": true,
+      "reason": "Extrapolation.CLAMP is passed as the fourth argument to interpolate with explicit input range [0, COLLAPSE_DISTANCE] and output range [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT].",
+      "evidence": [
+        "interpolate(scrollY.value, [0, COLLAPSE_DISTANCE], [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT], Extrapolation.CLAMP)"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 2,
+    "totalWeight": 3,
+    "ratio": 0.6667
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}

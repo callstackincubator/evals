@@ -1,0 +1,71 @@
+{
+  "evalId": "03-rn-rq-mutation-invalidate-on-success",
+  "evalPath": "evals/async-state/03-rn-rq-mutation-invalidate-on-success",
+  "judgeModel": "anthropic/claude-sonnet-4-6",
+  "solverModel": "openai/gpt-5.3-codex",
+  "llmJudgeRequirements": [
+    {
+      "id": "app-is-wrapped-with-query-client-provider",
+      "description": "App component renders `QueryClientProvider` with `client` set to `queryClient` and wraps `ItemsScreen`",
+      "weight": 1,
+      "passed": true,
+      "reason": "App returns QueryClientProvider with client={queryClient} wrapping ItemsScreen",
+      "evidence": [
+        "export default function App() { return (<QueryClientProvider client={queryClient}><ItemsScreen /></QueryClientProvider>) }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "items-queryfn-uses-query-function-context-signal",
+      "description": "Items `queryFn` reads `signal` from `QueryFunctionContext` and passes it to `fetchItems`",
+      "weight": 1,
+      "passed": false,
+      "reason": "queryFn is defined as () => fetchItems(LIMIT, SKIP), ignoring QueryFunctionContext entirely; signal is never destructured or passed to fetchItems",
+      "evidence": [
+        "queryFn: () => fetchItems(LIMIT, SKIP)"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "create-mutation-uses-usemutation-object-form",
+      "description": "Create flow uses `useMutation` object form with `mutationFn` set to `createItem`",
+      "weight": 1,
+      "passed": true,
+      "reason": "useMutation is called with object form containing mutationFn: createItem",
+      "evidence": [
+        "const createMutation = useMutation({ mutationFn: createItem, ... })"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "create-mutation-invalidates-items-key-on-success",
+      "description": "Mutation `onSuccess` calls `reactQueryClient.invalidateQueries`",
+      "weight": 1,
+      "passed": false,
+      "reason": "onSuccess uses queryClient.setQueryData to update cache directly, never calls invalidateQueries",
+      "evidence": [
+        "onSuccess: (createdItem) => { queryClient.setQueryData<TodosResponse>(['items', LIMIT, SKIP], ...) }"
+      ],
+      "confidence": 1
+    },
+    {
+      "id": "create-button-disabled-is-bound-to-mutation-pending",
+      "description": "Create button `disabled` prop uses `isPending` from mutation",
+      "weight": 1,
+      "passed": true,
+      "reason": "Pressable has disabled={createMutation.isPending} explicitly set",
+      "evidence": [
+        "<Pressable disabled={createMutation.isPending} ...>"
+      ],
+      "confidence": 1
+    }
+  ],
+  "score": {
+    "passedWeight": 3,
+    "totalWeight": 5,
+    "ratio": 0.6
+  },
+  "outputFiles": [
+    "App.tsx"
+  ]
+}
