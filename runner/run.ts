@@ -26,6 +26,8 @@ function formatUnknownError(error: unknown) {
   return String(error)
 }
 
+const RETRY_DELAY_MS = 5_000
+
 async function runWithRetries<T>(
   task: () => Promise<T>,
   maxRetries: number,
@@ -42,6 +44,7 @@ async function runWithRetries<T>(
       }
 
       onRetry(attempt, error)
+      await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS))
     }
   }
 
