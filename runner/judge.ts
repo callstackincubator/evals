@@ -23,10 +23,7 @@ function toRelativePath(value: string) {
 }
 
 function toPosixRelativePath(fromDirectory: string, targetPath: string) {
-  return path
-    .relative(fromDirectory, targetPath)
-    .split(path.sep)
-    .join('/')
+  return path.relative(fromDirectory, targetPath).split(path.sep).join('/')
 }
 
 function getEvalResultSubdirectory(generatedPath: string) {
@@ -77,12 +74,8 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
   const runId = new Date().toISOString().replace(/[:.]/g, '-')
   const startedAt = new Date().toISOString()
   const inputDirectory = path.resolve(process.cwd(), cliOptions.input)
-  const outputDirectory =
-    cliOptions.output ??
-    path.join('runs', sanitizeSegment(path.basename(inputDirectory)))
-  const outputDirectories = await createRunOutputDirectories(
-    outputDirectory
-  )
+  const outputDirectory = cliOptions.output ?? path.dirname(inputDirectory)
+  const outputDirectories = await createRunOutputDirectories(outputDirectory)
   const generationManifest = await readGenerationManifest(inputDirectory)
   const manifestEvals = generationManifest.evals
 
@@ -113,19 +106,15 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
         ])
 
         const packageJson = await loadFile(
-          path.resolve(__dirname, '../testbench/package.json')
+          path.join(process.cwd(), 'testbench/package.json')
         )
 
         const llmJudgeStage = await runWithRetries(
           () =>
-            runLlmJudgeStage(
-              [packageJson, ...generatedFiles],
-              requirements,
-              {
-                ...cliOptions,
-                directory: process.cwd(),
-              }
-            ),
+            runLlmJudgeStage([packageJson, ...generatedFiles], requirements, {
+              ...cliOptions,
+              directory: process.cwd(),
+            }),
           cliOptions.maxRetries,
           (attempt, error) => {
             const errorMessage =
@@ -226,8 +215,9 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
   const requirementsPassed = successfulRuns.reduce((sum, evalRun) => {
     return (
       sum +
-      evalRun.result.llmJudgeRequirements.filter((requirement) => requirement.passed)
-        .length
+      evalRun.result.llmJudgeRequirements.filter(
+        (requirement) => requirement.passed
+      ).length
     )
   }, 0)
 
@@ -258,7 +248,10 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
     weightedAverageScore,
   }
 
-  const summaryPath = await writeSummary(outputDirectories.runDirectory, summaryPayload)
+  const summaryPath = await writeSummary(
+    outputDirectories.runDirectory,
+    summaryPayload
+  )
   console.log(`judge complete: ${toRelativePath(summaryPath)}`)
 
   return {

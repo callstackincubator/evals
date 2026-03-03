@@ -6,7 +6,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "bench:run": "bun runner/run.ts",
-    "bench:judge": "bun runner/judge.ts"
+    "bench:judge": "bun runner/judge.ts",
+    "bench:series": "bash ./scripts/bench-series.sh"
   },
   "devDependencies": {
     "@types/node": "^25.2.2",
