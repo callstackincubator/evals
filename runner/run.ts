@@ -90,6 +90,7 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
           if (cliOptions.model === 'noop') {
             return {
               summary: 'Copied reference files',
+              opencodeSession: undefined,
               files: await materializeFiles(
                 generatedEvalRunDirectory,
                 (await loadFiles(path.join(evalItem.evalPath, 'reference'))).map(
@@ -125,6 +126,16 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
           `[${position}/${discoveredEvals.length}] ${evalItem.evalId} -> generated`
         )
 
+        const solverSessionArtifactPath = path.join(
+          generatedEvalRunDirectory,
+          'opencode-session.solver.json'
+        )
+        await writeFile(
+          solverSessionArtifactPath,
+          JSON.stringify(solverStage.opencodeSession ?? {}, null, 2),
+          'utf8'
+        )
+
         return {
           kind: 'success' as const,
           index,
@@ -133,6 +144,7 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
             evalPath: toRelativePath(evalItem.evalPath),
             outputFiles: solverStage.files.map((file) => file.path),
             generatedPath,
+            solverSessionArtifactPath: toRelativePath(solverSessionArtifactPath),
           },
         }
       } catch (error) {
