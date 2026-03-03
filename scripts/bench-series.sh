@@ -97,6 +97,17 @@ for ((i = 1; i <= RUN_COUNT; i++)); do
   run_artifacts_dir="${OUTPUT_PARENT}/${MODEL}/run-${i}/generated"
   attempt=1
 
+  # check if output directory exists
+  if [[ -d "$run_artifacts_dir" ]]; then
+    echo "bench-series: output directory ${run_artifacts_dir} already exists; are you sure you want to run this bench again and overwrite the existing results?"
+    read -p "Continue? (y/n): " continue
+    if [[ "$continue" != "y" ]]; then
+      echo "bench-series: exiting without running this bench"
+      exit 1
+    fi
+    rm -rf "$run_artifacts_dir"
+  fi
+
   max_attempts=$((MAX_RETRIES + 1))
   while true; do
     echo ""
