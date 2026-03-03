@@ -27,6 +27,7 @@ export async function runSolverStage(
 
   return {
     summary: result.summary,
+    opencodeSession: result.opencodeSession,
     files: await materializeFiles(
       workingDir,
       result.files

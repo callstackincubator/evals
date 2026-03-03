@@ -18,6 +18,16 @@ function toRelativePath(value: string) {
   return path.relative(process.cwd(), value).split(path.sep).join('/')
 }
 
+function formatUnknownError(error: unknown) {
+  if (error instanceof Error) {
+    return error.stack ?? error.message ?? error.name
+  }
+
+  return String(error)
+}
+
+const RETRY_DELAY_MS = 5_000
+
 async function runWithRetries<T>(
   task: () => Promise<T>,
   maxRetries: number,
@@ -34,6 +44,7 @@ async function runWithRetries<T>(
       }
 
       onRetry(attempt, error)
+      await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS))
     }
   }
 
@@ -79,6 +90,7 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
           if (cliOptions.model === 'noop') {
             return {
               summary: 'Copied reference files',
+              opencodeSession: undefined,
               files: await materializeFiles(
                 generatedEvalRunDirectory,
                 (await loadFiles(path.join(evalItem.evalPath, 'reference'))).map(
@@ -114,6 +126,16 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
           `[${position}/${discoveredEvals.length}] ${evalItem.evalId} -> generated`
         )
 
+        const solverSessionArtifactPath = path.join(
+          generatedEvalRunDirectory,
+          'opencode-session.solver.json'
+        )
+        await writeFile(
+          solverSessionArtifactPath,
+          JSON.stringify(solverStage.opencodeSession ?? {}, null, 2),
+          'utf8'
+        )
+
         return {
           kind: 'success' as const,
           index,
@@ -122,10 +144,11 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
             evalPath: toRelativePath(evalItem.evalPath),
             outputFiles: solverStage.files.map((file) => file.path),
             generatedPath,
+            solverSessionArtifactPath: toRelativePath(solverSessionArtifactPath),
           },
         }
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.stack : String(error)
+        const errorMessage = formatUnknownError(error)
         console.error(`[run-stage][${evalItem.evalId}] ${errorMessage}`)
 
         if (cliOptions.failFast) {
@@ -171,7 +194,7 @@ if (import.meta.main) {
     await runGenerationEntry()
     process.exit(0)
   } catch (error) {
-    console.error(error instanceof Error ? error.message : String(error))
+    console.error(formatUnknownError(error))
     process.exit(1)
   }
 }

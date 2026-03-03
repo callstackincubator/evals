@@ -22,6 +22,10 @@ function toRelativePath(value: string) {
   return path.relative(process.cwd(), value).split(path.sep).join('/')
 }
 
+function toPosixRelativePath(fromDirectory: string, targetPath: string) {
+  return path.relative(fromDirectory, targetPath).split(path.sep).join('/')
+}
+
 function getEvalResultSubdirectory(generatedPath: string) {
   const normalizedPath = generatedPath.replace(/\\/g, '/').replace(/^\/+/, '')
   const parentDirectory = path.posix.dirname(normalizedPath)
@@ -29,6 +33,36 @@ function getEvalResultSubdirectory(generatedPath: string) {
     return ''
   }
   return parentDirectory
+}
+
+function formatUnknownError(error: unknown) {
+  if (error instanceof Error) {
+    return error.stack ?? error.message ?? error.name
+  }
+
+  return String(error)
+}
+
+async function runWithRetries<T>(
+  task: () => Promise<T>,
+  maxRetries: number,
+  onRetry: (attempt: number, error: unknown) => void
+) {
+  const maxAttempts = maxRetries + 1
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      return await task()
+    } catch (error) {
+      if (attempt >= maxAttempts) {
+        throw error
+      }
+
+      onRetry(attempt, error)
+    }
+  }
+
+  throw new Error('unexpected retry flow')
 }
 
 /*
@@ -75,10 +109,20 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
           path.join(process.cwd(), 'testbench/package.json')
         )
 
-        const llmJudgeStage = await runLlmJudgeStage(
-          [packageJson, ...generatedFiles],
-          requirements,
-          cliOptions
+        const llmJudgeStage = await runWithRetries(
+          () =>
+            runLlmJudgeStage([packageJson, ...generatedFiles], requirements, {
+              ...cliOptions,
+              directory: process.cwd(),
+            }),
+          cliOptions.maxRetries,
+          (attempt, error) => {
+            const errorMessage =
+              error instanceof Error ? error.message : String(error)
+            console.warn(
+              `[judge-stage][${manifestEval.evalId}] attempt ${attempt}/${cliOptions.maxRetries} failed: ${errorMessage}`
+            )
+          }
         )
 
         const stageResult = {
@@ -89,6 +133,7 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
           llmJudgeRequirements: llmJudgeStage.requirements,
           score: llmJudgeStage.score,
           outputFiles: generatedFiles.map((file) => file.path),
+          judgeSessionArtifactPath: undefined as string | undefined,
         }
 
         if (cliOptions.debug) {
@@ -109,6 +154,29 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
           resultSubdirectory
         )
         await mkdir(resultDirectory, { recursive: true })
+
+        const judgeSessionArtifactPath = llmJudgeStage.opencodeSession
+          ? path.join(
+              resultDirectory,
+              `${sanitizeSegment(stageResult.evalId)}.opencode-session.judge.json`
+            )
+          : undefined
+
+        if (judgeSessionArtifactPath) {
+          await writeFile(
+            judgeSessionArtifactPath,
+            JSON.stringify(llmJudgeStage.opencodeSession, null, 2),
+            'utf8'
+          )
+        }
+
+        stageResult.judgeSessionArtifactPath = judgeSessionArtifactPath
+          ? toPosixRelativePath(
+              outputDirectories.runDirectory,
+              judgeSessionArtifactPath
+            )
+          : undefined
+
         await writeFile(
           path.join(resultDirectory, resultFileName),
           JSON.stringify(stageResult, null, 2),
@@ -123,8 +191,7 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
 
         return { kind: 'success' as const, index, result: stageResult }
       } catch (error) {
-        const errorMessage =
-          (error instanceof Error ? error.stack : String(error)) ?? error
+        const errorMessage = formatUnknownError(error)
         console.error(`[judge-stage][${manifestEval.evalId}] ${errorMessage}`)
 
         if (cliOptions.failFast) {
@@ -198,7 +265,7 @@ if (import.meta.main) {
     await runJudgeEntry()
     process.exit(0)
   } catch (error) {
-    console.error(error instanceof Error ? error.message : String(error))
+    console.error(formatUnknownError(error))
     process.exit(1)
   }
 }

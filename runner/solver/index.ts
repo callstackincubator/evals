@@ -4,6 +4,10 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { z } from 'zod'
 
+import {
+  collectOpencodeSessionSnapshot,
+  type OpencodeSessionSnapshot,
+} from 'runner/utils/opencode-session'
 import { ensureOpencodeServerStarted } from 'runner/utils/opencode'
 import type { LoadedFile } from 'runner/utils/fs'
 
@@ -35,6 +39,26 @@ const solverOutputSchema = z.object({
 export type SolverResult = {
   files: LoadedFile[]
   summary?: string
+  opencodeSession?: OpencodeSessionSnapshot
+}
+
+function asRecord(value: unknown) {
+  if (typeof value !== 'object' || value === null) {
+    return undefined
+  }
+
+  return value as Record<string, unknown>
+}
+
+function extractOpencodeSessionId(response: unknown) {
+  const responseRecord = asRecord(response)
+  const providerMetadata = asRecord(responseRecord?.providerMetadata)
+  const opencodeMetadata = asRecord(providerMetadata?.opencode)
+
+  const maybeSessionId =
+    opencodeMetadata?.sessionId ?? opencodeMetadata?.sessionID
+
+  return typeof maybeSessionId === 'string' ? maybeSessionId : undefined
 }
 
 function sanitizeGeneratedPath(relativePath: string) {
@@ -145,7 +169,7 @@ export async function runSolver(params: {
   })
 
   try {
-    const { output } = await generateText({
+    const response = await generateText({
       model,
       prompt,
       system: SYSTEM_PROMPT,
@@ -156,16 +180,23 @@ export async function runSolver(params: {
       }),
     })
 
-    return output
+    return {
+      ...response.output,
+      opencodeSession: await collectOpencodeSessionSnapshot({
+        sessionId: extractOpencodeSessionId(response),
+        port: params.port,
+        directory: params.workingDirectory,
+      }),
+    }
   } catch (structuredOutputError) {
-    const { text } = await generateText({
+    const fallbackResponse = await generateText({
       model,
       prompt,
       system: `${SYSTEM_PROMPT}\n${JSON_FALLBACK_SYSTEM_PROMPT}`,
       abortSignal: AbortSignal.timeout(params.timeout),
     })
 
-    const parsedOutput = parseSolverOutputFromText(text)
+    const parsedOutput = parseSolverOutputFromText(fallbackResponse.text)
     if (!parsedOutput.success) {
       const originalMessage =
         structuredOutputError instanceof Error
@@ -176,6 +207,13 @@ export async function runSolver(params: {
       )
     }
 
-    return parsedOutput.data
+    return {
+      ...parsedOutput.data,
+      opencodeSession: await collectOpencodeSessionSnapshot({
+        sessionId: extractOpencodeSessionId(fallbackResponse),
+        port: params.port,
+        directory: params.workingDirectory,
+      }),
+    }
   }
 }
