@@ -53,8 +53,8 @@ if [[ -z "$MODEL" ]] || [[ -z "$JUDGE_MODEL" ]]; then
   exit 1
 fi
 
-RUN_COUNT="${RUNS:-2}"
-MAX_RETRIES=0
+RUN_COUNT="${RUNS:-10}"
+MAX_RETRIES=2
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
