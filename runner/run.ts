@@ -18,13 +18,6 @@ function toRelativePath(value: string) {
   return path.relative(process.cwd(), value).split(path.sep).join('/')
 }
 
-function toPosixRelativePath(fromDirectory: string, targetPath: string) {
-  return path
-    .relative(fromDirectory, targetPath)
-    .split(path.sep)
-    .join('/')
-}
-
 function formatUnknownError(error: unknown) {
   if (error instanceof Error) {
     return error.stack ?? error.message ?? error.name
@@ -133,17 +126,15 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
           `[${position}/${discoveredEvals.length}] ${evalItem.evalId} -> generated`
         )
 
-        const solverSessionArtifactPath = solverStage.opencodeSession
-          ? path.join(generatedEvalRunDirectory, 'opencode-session.solver.json')
-          : undefined
-
-        if (solverSessionArtifactPath) {
-          await writeFile(
-            solverSessionArtifactPath,
-            JSON.stringify(solverStage.opencodeSession, null, 2),
-            'utf8'
-          )
-        }
+        const solverSessionArtifactPath = path.join(
+          generatedEvalRunDirectory,
+          'opencode-session.solver.json'
+        )
+        await writeFile(
+          solverSessionArtifactPath,
+          JSON.stringify(solverStage.opencodeSession ?? {}, null, 2),
+          'utf8'
+        )
 
         return {
           kind: 'success' as const,
@@ -153,9 +144,7 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
             evalPath: toRelativePath(evalItem.evalPath),
             outputFiles: solverStage.files.map((file) => file.path),
             generatedPath,
-            solverSessionArtifactPath: solverSessionArtifactPath
-              ? toPosixRelativePath(outputDirectory, solverSessionArtifactPath)
-              : undefined,
+            solverSessionArtifactPath: toRelativePath(solverSessionArtifactPath),
           },
         }
       } catch (error) {

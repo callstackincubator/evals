@@ -53,22 +53,19 @@ export async function runLlmJudgeStage(
 
   const prompt = buildJudgePrompt(requirements, files)
 
-  const judgeCall = await runJudgeCall(
+  const judgeCall = await runJudgeCall({
     prompt,
-    cliOptions.model,
-    cliOptions.timeout,
-    cliOptions.port,
-    cliOptions.directory
-  )
+    ...cliOptions,
+  })
 
   const mappedRequirements = mapRequirementResults(
     requirements,
-    judgeCall.output.requirements
+    judgeCall.requirements
   )
 
   return {
     requirements: mappedRequirements,
-    summary: judgeCall.output.summary,
+    summary: judgeCall.summary,
     score: computeScore(mappedRequirements),
     opencodeSession: judgeCall.opencodeSession,
   }

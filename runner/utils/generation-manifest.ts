@@ -9,7 +9,7 @@ const generationManifestEvalSchema = z.object({
   evalPath: z.string().min(1),
   outputFiles: z.array(z.string().min(1)),
   generatedPath: z.string().min(1),
-  solverSessionArtifactPath: z.string().min(1).optional(),
+  solverSessionArtifactPath: z.string().min(1),
 }).strict()
 
 const generationManifestSchema = z.object({
