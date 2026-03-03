@@ -4,6 +4,9 @@
 # runs bench:run then bench:judge. If either fails, retries up to 3 times
 # before failing the script.
 #
+# Starts `opencode serve` in the background before the benchmark and stops it
+# when the script exits (success or failure).
+#
 # Usage:
 #   ./scripts/bench-series.sh --model <model> --judge-model <judge-model> [--runs <n>]
 #
@@ -50,7 +53,7 @@ if [[ -z "$MODEL" ]] || [[ -z "$JUDGE_MODEL" ]]; then
   exit 1
 fi
 
-RUN_COUNT="${RUNS:-10}"
+RUN_COUNT="${RUNS:-2}"
 MAX_RETRIES=0
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -62,6 +65,33 @@ echo "bench-series: output parent ${OUTPUT_PARENT}"
 mkdir -p "$OUTPUT_PARENT"
 
 cd "$REPO_ROOT"
+
+# Start opencode serve in background; kill it when we exit
+OPENCODE_PID=""
+cleanup_opencode() {
+  if [[ -n "$OPENCODE_PID" ]] && kill -0 "$OPENCODE_PID" 2>/dev/null; then
+    echo "bench-series: stopping opencode serve (pid $OPENCODE_PID)"
+    kill "$OPENCODE_PID" 2>/dev/null || true
+    wait "$OPENCODE_PID" 2>/dev/null || true
+  fi
+}
+trap cleanup_opencode EXIT
+
+echo "bench-series: starting opencode serve"
+opencode serve &
+OPENCODE_PID=$!
+for i in $(seq 1 30); do
+  sleep 1
+  if ! kill -0 "$OPENCODE_PID" 2>/dev/null; then
+    echo "bench-series: opencode serve failed to start"
+    exit 1
+  fi
+  if nc -z 127.0.0.1 4096 2>/dev/null; then
+    break
+  fi
+  [[ $i -eq 30 ]] && { echo "bench-series: opencode serve did not become ready"; exit 1; }
+done
+echo "bench-series: opencode serve running (pid $OPENCODE_PID)"
 
 for ((i = 1; i <= RUN_COUNT; i++)); do
   run_artifacts_dir="${OUTPUT_PARENT}/${MODEL}/run-${i}/generated"
