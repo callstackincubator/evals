@@ -46,8 +46,8 @@ function CategoryTooltipContent({ active, label, payload }: CategoryTooltipProps
 
   return (
     <div
-      className="min-w-56 border border-zinc-700 bg-zinc-950/95 px-3 py-2 shadow-xl"
-      style={{ animation: "tooltip-fade-in 120ms ease-out" }}
+      className="tooltip-rounded min-w-56 overflow-hidden rounded border border-zinc-700 bg-zinc-950/95 px-5 py-4 shadow-xl"
+      style={{ animation: "tooltip-fade-in 120ms ease-out", borderRadius: "4px", WebkitBorderRadius: "4px" }}
     >
       <div className="flex items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-1.5">
@@ -108,7 +108,7 @@ export function CategoryBarChart({ category, models }: CategoryBarChartProps) {
             <Tooltip
               isAnimationActive={false}
               cursor={{ fill: "rgba(255,255,255,0.03)" }}
-              wrapperStyle={{ pointerEvents: "none" }}
+              wrapperStyle={{ pointerEvents: "none", borderRadius: "4px", WebkitBorderRadius: "4px", overflow: "hidden" }}
               content={<CategoryTooltipContent />}
             />
             <Bar dataKey="score" fill={baseColor} name="Score">

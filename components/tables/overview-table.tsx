@@ -28,7 +28,7 @@ export function OverviewTable({ categories, models }: OverviewTableProps) {
   return (
     <div className="no-scrollbar h-full overflow-auto border border-zinc-800 bg-zinc-950">
       <table className="min-w-full border-collapse text-sm">
-        <thead className="sticky top-0 z-10 bg-zinc-900/95">
+        <thead className="sticky top-0 z-10">
           <tr className="border-b border-zinc-800 text-left text-xs uppercase tracking-wide text-zinc-400">
             <th className="px-4 py-3 font-semibold">Model</th>
             <th className="px-4 py-3 text-center font-semibold">Overall</th>
@@ -43,12 +43,14 @@ export function OverviewTable({ categories, models }: OverviewTableProps) {
         <tbody>
           {models.map((model, index) => {
             const rank = index + 1;
+            const isLast = index === models.length - 1;
 
             return (
             <tr
               key={model.id}
               className={cn(
-                "border-b border-zinc-800/80 hover:bg-zinc-900/70",
+                "border-b border-zinc-800/80 first:border-t-0 hover:bg-zinc-900/70",
+                isLast && "border-b-0",
                 rank <= 3 && "border-l-2",
               )}
               style={getPodiumRowStyle(rank)}

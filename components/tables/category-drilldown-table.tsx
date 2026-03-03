@@ -95,7 +95,7 @@ export function CategoryDrilldownTable({ category, models }: CategoryDrilldownTa
         <table className="min-w-full table-fixed border-collapse text-sm">
           <SharedColumns />
 
-          <thead className="sticky top-0 z-10 bg-zinc-900/95">
+          <thead className="sticky top-0 z-10">
             <tr className="border-b border-zinc-800 text-left text-xs uppercase tracking-wide text-zinc-400">
               <th className="px-4 py-3 font-semibold">Model</th>
               <th className="px-4 py-3 text-center font-semibold">Score</th>
@@ -105,14 +105,18 @@ export function CategoryDrilldownTable({ category, models }: CategoryDrilldownTa
           </thead>
 
           <tbody>
-            {rows.map(({ rank, model, categoryScore }) => {
+            {rows.map(({ rank, model, categoryScore }, index) => {
               const isModelExpanded = expandedModelId === model.id;
+              const isFirst = index === 0;
+              const isLast = index === rows.length - 1;
 
               return (
                 <FragmentRow
                   key={model.id}
                   modelId={model.id}
                   rank={rank}
+                  isFirst={isFirst}
+                  isLast={isLast}
                   isModelExpanded={isModelExpanded}
                   onToggleModel={() =>
                     setExpandedModelId((prev) => (prev === model.id ? null : model.id))
@@ -139,6 +143,8 @@ export function CategoryDrilldownTable({ category, models }: CategoryDrilldownTa
 interface FragmentRowProps {
   modelId: string;
   rank: number;
+  isFirst: boolean;
+  isLast: boolean;
   isModelExpanded: boolean;
   onToggleModel: () => void;
   modelLabel: string;
@@ -153,6 +159,8 @@ interface FragmentRowProps {
 function FragmentRow({
   modelId,
   rank,
+  isFirst,
+  isLast,
   isModelExpanded,
   onToggleModel,
   modelLabel,
@@ -177,6 +185,8 @@ function FragmentRow({
         }}
         className={cn(
           "cursor-pointer border-b border-zinc-800/80 hover:bg-zinc-900/60",
+          isFirst && "border-t-0",
+          isLast && !isModelExpanded && "border-b-0",
           rank <= 3 && "border-l-2",
         )}
         style={getPodiumRowStyle(rank)}
@@ -198,16 +208,17 @@ function FragmentRow({
       </tr>
 
       {isModelExpanded && (
-        <tr className="border-b border-zinc-800 bg-zinc-900/70">
+        <tr className={cn("border-b border-zinc-800 bg-zinc-900/70", isLast && "border-b-0")}>
           <td colSpan={4} className="p-0">
-            <div className="overflow-hidden border-t border-zinc-800 bg-zinc-900">
+            <div className="overflow-hidden bg-zinc-900">
               <table className="min-w-full table-fixed border-collapse text-sm">
                 <SharedColumns />
 
                 <tbody>
-                  {evalRows.map((evalItem) => {
+                  {evalRows.map((evalItem, evalIndex) => {
                     const isSelected =
                       selectedEval?.modelId === modelId && selectedEval.evalItem.evalId === evalItem.evalId;
+                    const isEvalLast = evalIndex === evalRows.length - 1;
 
                     return (
                       <tr
@@ -233,6 +244,8 @@ function FragmentRow({
                         }}
                         className={cn(
                           "cursor-pointer border-b border-zinc-800/80 hover:bg-zinc-800/70",
+                          evalIndex === 0 && "border-t-0",
+                          isEvalLast && "border-b-0",
                           isSelected && "bg-zinc-800/60",
                         )}
                       >
@@ -296,15 +309,22 @@ function EvalDetailsDrawer({ selectedEval, onClose }: EvalDetailsDrawerProps) {
         <div className="no-scrollbar h-[calc(100%-65px)] overflow-auto p-4">
           <div className="mt-2 border border-zinc-800 bg-zinc-950">
             <table className="min-w-full border-collapse text-sm">
-              <thead className="bg-zinc-900 text-zinc-400">
+              <thead className="text-zinc-400">
                 <tr className="border-b border-zinc-800 text-left text-xs uppercase tracking-wide">
                   <th className="px-3 py-2">Requirement</th>
                   <th className="px-3 py-2">Status</th>
                 </tr>
               </thead>
               <tbody>
-                {selectedEval.evalItem.requirements.map((requirement) => (
-                  <tr key={requirement.requirementId} className="border-b border-zinc-800/80">
+                {selectedEval.evalItem.requirements.map((requirement, requirementIndex) => (
+                  <tr
+                    key={requirement.requirementId}
+                    className={cn(
+                      "border-b border-zinc-800/80",
+                      requirementIndex === 0 && "border-t-0",
+                      requirementIndex === selectedEval.evalItem.requirements.length - 1 && "border-b-0",
+                    )}
+                  >
                     <td className="px-3 py-2 text-zinc-200">{requirement.description}</td>
                     <td className="px-3 py-2">
                       <RequirementStatusPill status={requirement.status} />

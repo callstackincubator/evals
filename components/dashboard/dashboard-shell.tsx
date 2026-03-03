@@ -78,7 +78,11 @@ export function DashboardShell({ data }: DashboardShellProps) {
         )}
 
         {activeCategory && viewMode === "table" && (
-          <CategoryDrilldownTable category={activeCategory} models={data.models} />
+          <CategoryDrilldownTable
+            key={activeCategory.id}
+            category={activeCategory}
+            models={data.models}
+          />
         )}
       </main>
     </div>
