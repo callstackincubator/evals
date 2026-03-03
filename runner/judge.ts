@@ -72,7 +72,7 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
         ])
 
         const packageJson = await loadFile(
-          path.join(__dirname, '../../../testbench/package.json')
+          path.join(process.cwd(), 'testbench/package.json')
         )
 
         const llmJudgeStage = await runLlmJudgeStage(
