@@ -144,6 +144,9 @@ The judge CLI requires \texttt{----model}; there is no judge skip/noop path.
 
 \section{Scoring Methodology}
 \label{sec:scoring}
+
+A given model is run through the same evaluation pipeline $10$ times to obtain a more stable score, suitable for analysis in a comparative setting.
+
 \subsection{Requirement Weight Normalization}
 Each requirement weight is normalized as:
 \[
@@ -216,6 +219,17 @@ Each run writes artifacts to deterministic generation and judge directories:
 
 Per-eval results include solver and judge model identifiers, mapped requirement verdicts, per-eval score, and generated file list.
 
+\section{Repeat Orchestration Script}
+The repository provides \texttt{scripts/bench-series.sh} to run multiple full cycles (generation + judging) for variance analysis. Configure via environment variables:
+\begin{itemize}
+  \item \texttt{RUN\_COUNT}: number of run+judge iterations (default: 10)
+  \item \texttt{BENCH\_RUN\_ARGS}: arguments for the generation CLI (e.g.\ \texttt{----model}, \texttt{----pattern})
+  \item \texttt{BENCH\_JUDGE\_ARGS}: arguments for the judge CLI (e.g.\ \texttt{----model}); \texttt{----input} is injected per run
+  \item \texttt{BENCH\_OUTPUT\_BASE}: base directory for outputs (default: \texttt{/tmp/bench-seriess})
+\end{itemize}
+
+For each of the \texttt{RUN\_COUNT} iterations, the script runs generation then judging. If either step fails, it retries up to 3 times before failing the script. Outputs are written to \texttt{<BENCH\_OUTPUT\_BASE>/<timestamp>/run-1}, \texttt{run-2}, etc.
+
 \section{Recommended Reporting Protocol}
 For comparative studies, report at minimum:
 \begin{enumerate}
@@ -227,7 +241,7 @@ For comparative studies, report at minimum:
   \item generated artifact source directory
 \end{enumerate}
 
-Repeat runs are recommended. The current runner does not explicitly pin a random seed or decoding settings (e.g., temperature) in solver or judge calls, so provider defaults and model nondeterminism can affect results.
+Repeat runs are recommended. The \texttt{bench:repeat} script (or \texttt{scripts/bench-series.sh}) automates multiple cycles. The current runner does not explicitly pin a random seed or decoding settings (e.g., temperature) in solver or judge calls, so provider defaults and model nondeterminism can affect results.
 
 \section{Limitations and Threats to Validity}
 \begin{itemize}
