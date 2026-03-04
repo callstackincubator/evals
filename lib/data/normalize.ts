@@ -1,13 +1,12 @@
 import {
+  type AggregateDataset,
   type CategoryDefinition,
   type CategoryScore,
   type DashboardData,
+  type EvalMatrixEntry,
   type EvalScore,
-  type JudgeDataset,
   type ModelSummary,
-  type RequirementScore,
 } from "@/lib/types/evals";
-import { calculateEvalScore } from "@/lib/scoring/calculate-scores";
 
 const CATEGORY_ORDER: Record<string, number> = {
   navigation: 1,
@@ -50,26 +49,16 @@ function evalNameFromId(evalId: string): string {
     .join(" ");
 }
 
-function categoryIdFromEvalPath(evalPath: string): string {
-  const parts = evalPath.split("/");
-  return parts[1] ?? "uncategorized";
+function toPercent(value: number): number {
+  return value * 100;
 }
 
-function toRequirementScore(status: boolean, requirementId: string, description: string, confidence?: number): RequirementScore {
-  return {
-    requirementId,
-    description,
-    status: status ? "pass" : "fail",
-    confidence,
-  };
-}
-
-function buildCategories(models: JudgeDataset["models"]): CategoryDefinition[] {
+function buildCategories(models: AggregateDataset["models"]): CategoryDefinition[] {
   const categoryCounts = new Map<string, number>();
 
   for (const model of models) {
-    for (const evalResult of model.evals) {
-      const categoryId = categoryIdFromEvalPath(evalResult.evalPath);
+    for (const evalResult of model.results.per_eval) {
+      const categoryId = evalResult.category;
       categoryCounts.set(categoryId, (categoryCounts.get(categoryId) ?? 0) + 1);
     }
   }
@@ -88,7 +77,7 @@ function buildCategories(models: JudgeDataset["models"]): CategoryDefinition[] {
 }
 
 function summarizeModel(
-  model: JudgeDataset["models"][number],
+  model: AggregateDataset["models"][number],
   categories: CategoryDefinition[],
   warnings: string[],
 ): ModelSummary {
@@ -101,92 +90,137 @@ function summarizeModel(
       iconKey: category.iconKey,
       evalCount: 0,
       evals: [],
-      passedWeight: 0,
-      totalWeight: 0,
       scorePct: 0,
+      contributionPct: 0,
+      tokensUsed: 0,
     });
   }
 
-  for (const evalResult of model.evals) {
-    const categoryId = categoryIdFromEvalPath(evalResult.evalPath);
-    const category = categoryMap.get(categoryId);
+  const requirementsTotal = model.results.model_summary.requirements_total;
+
+  if (model.results.per_eval.length !== model.results.model_summary.num_evals) {
+    warnings.push(
+      `${model.modelId}: num_evals (${model.results.model_summary.num_evals}) does not match per_eval length (${model.results.per_eval.length})`,
+    );
+  }
+
+  for (const evalResult of model.results.per_eval) {
+    const category = categoryMap.get(evalResult.category);
 
     if (!category) {
-      warnings.push(`${model.modelId}: unknown category ${categoryId} from ${evalResult.evalPath}`);
+      warnings.push(`${model.modelId}: unknown category ${evalResult.category} from ${evalResult.eval_id}`);
       continue;
     }
 
-    const requirements = evalResult.llmJudgeRequirements.map((requirement) =>
-      toRequirementScore(
-        requirement.passed,
-        requirement.id,
-        requirement.description,
-        requirement.confidence,
-      ),
-    );
-
     const evalScore: EvalScore = {
-      evalId: evalResult.evalId,
-      evalPath: evalResult.evalPath,
-      name: evalNameFromId(evalResult.evalId),
-      outputFiles: evalResult.outputFiles,
-      requirements,
-      passedWeight: evalResult.score.passedWeight,
-      totalWeight: evalResult.score.totalWeight,
-      scorePct: calculateEvalScore(evalResult.score.passedWeight, evalResult.score.totalWeight),
+      evalId: evalResult.eval_id,
+      categoryId: evalResult.category,
+      name: evalNameFromId(evalResult.eval_id),
+      scorePct: toPercent(evalResult.score_median),
+      tokensUsed: evalResult.tokens_median,
+      requirementsTotal: evalResult.requirements_total,
     };
 
     category.evals.push(evalScore);
     category.evalCount += 1;
-    category.passedWeight += evalResult.score.passedWeight;
-    category.totalWeight += evalResult.score.totalWeight;
   }
 
   for (const category of categoryMap.values()) {
-    if (category.totalWeight <= 0) {
-      warnings.push(`${model.modelId}/${category.categoryId}: totalWeight is 0`);
+    const requirementsInCategory = category.evals.reduce(
+      (acc, evalScore) => acc + evalScore.requirementsTotal,
+      0,
+    );
+
+    const weightedScoreSum = category.evals.reduce(
+      (acc, evalScore) => acc + evalScore.scorePct * evalScore.requirementsTotal,
+      0,
+    );
+
+    if (requirementsInCategory > 0) {
+      category.scorePct = weightedScoreSum / requirementsInCategory;
+    } else {
+      warnings.push(`${model.modelId}/${category.categoryId}: requirements_total is 0`);
       category.scorePct = 0;
-      continue;
     }
 
-    category.scorePct = calculateEvalScore(category.passedWeight, category.totalWeight);
+    category.tokensUsed = Math.round(
+      category.evals.reduce((acc, evalScore) => acc + evalScore.tokensUsed, 0),
+    );
+
+    if (requirementsTotal > 0) {
+      category.contributionPct = weightedScoreSum / requirementsTotal;
+    }
+
     category.evals.sort((left, right) => left.evalId.localeCompare(right.evalId));
   }
 
   return {
     id: model.modelId,
     label: model.label,
-    solverModel: model.summary.solverModel,
-    overallScorePct: model.summary.weightedAverageScore * 100,
-    requirementsPassed: model.summary.requirementsPassed,
-    requirementsTotal: model.summary.requirementsTotal,
+    solverModel: model.results.model_summary.solver_model,
+    overallScorePct: toPercent(model.results.model_summary.weighted_avg_score),
+    tokensUsed: Math.round(model.results.model_summary.tokens_total / model.results.model_summary.n_runs),
+    requirementsPassed: model.results.model_summary.requirements_passed,
+    requirementsTotal,
     categories: Object.fromEntries(categoryMap.entries()),
   };
 }
 
-export function normalizeDashboardData(dataset: JudgeDataset): DashboardData {
+function buildEvalMatrix(models: ModelSummary[]): Record<string, EvalMatrixEntry[]> {
+  const matrix = new Map<string, EvalMatrixEntry[]>();
+
+  for (const model of models) {
+    for (const category of Object.values(model.categories)) {
+      for (const evalScore of category.evals) {
+        const entries = matrix.get(evalScore.evalId) ?? [];
+        entries.push({
+          modelId: model.id,
+          modelLabel: model.label,
+          scorePct: evalScore.scorePct,
+          tokensUsed: Math.round(evalScore.tokensUsed),
+          requirementsTotal: evalScore.requirementsTotal,
+        });
+        matrix.set(evalScore.evalId, entries);
+      }
+    }
+  }
+
+  for (const entries of matrix.values()) {
+    entries.sort((left, right) => {
+      if (right.scorePct !== left.scorePct) {
+        return right.scorePct - left.scorePct;
+      }
+
+      return left.tokensUsed - right.tokensUsed;
+    });
+  }
+
+  return Object.fromEntries(matrix.entries());
+}
+
+export function normalizeDashboardData(dataset: AggregateDataset): DashboardData {
   const warnings: string[] = [];
   const categories = buildCategories(dataset.models);
+  const runCounts = dataset.models.map((model) => model.results.model_summary.n_runs);
+  const runCount = runCounts[0] ?? 0;
+  const nowIso = new Date().toISOString();
+
+  if (runCounts.some((count) => count !== runCount)) {
+    warnings.push(`Run count mismatch across models: ${runCounts.join(", ")}`);
+  }
 
   const models = dataset.models
     .map((model) => summarizeModel(model, categories, warnings))
     .sort((left, right) => right.overallScorePct - left.overallScorePct);
 
-  const judgeModel = dataset.models[0]?.summary.judgeModel ?? "unknown";
-  const runStartedAt = dataset.models
-    .map((model) => model.summary.startedAt)
-    .sort()[0] ?? "";
-  const runFinishedAt = dataset.models
-    .map((model) => model.summary.finishedAt)
-    .sort()
-    .at(-1) ?? "";
-
   return {
     categories,
-    judgeModel,
-    runStartedAt,
-    runFinishedAt,
+    judgeModel: "unknown",
+    runStartedAt: nowIso,
+    runFinishedAt: nowIso,
+    runCount,
     warnings,
     models,
+    evalMatrixById: buildEvalMatrix(models),
   };
 }

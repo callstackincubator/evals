@@ -53,6 +53,7 @@ export function DashboardShell({ data }: DashboardShellProps) {
         onTabChange={setActiveTab}
         runStartedAt={data.runStartedAt}
         runFinishedAt={data.runFinishedAt}
+        runCount={data.runCount}
         warningCount={data.warnings.length}
       />
 
@@ -82,6 +83,7 @@ export function DashboardShell({ data }: DashboardShellProps) {
             key={activeCategory.id}
             category={activeCategory}
             models={data.models}
+            evalMatrixById={data.evalMatrixById}
           />
         )}
       </main>

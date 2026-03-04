@@ -1,65 +1,80 @@
 import { z } from "zod";
 
-export const judgeSummarySchema = z.object({
-  runId: z.string().min(1),
-  startedAt: z.string().datetime(),
-  finishedAt: z.string().datetime(),
-  judgeModel: z.string().min(1),
-  solverModel: z.string().min(1),
-  pattern: z.string().min(1),
-  inputGeneratedArtifacts: z.string().min(1),
-  evalCount: z.number().int().nonnegative(),
-  evalsProcessed: z.number().int().nonnegative(),
-  evalsErrored: z.number().int().nonnegative(),
-  requirementsTotal: z.number().int().nonnegative(),
-  requirementsPassed: z.number().int().nonnegative(),
-  weightedAverageScore: z.number().min(0).max(1),
+export const aggregateModelSummarySchema = z.object({
+  solver_model: z.string().min(1),
+  n_runs: z.number().int().positive(),
+  weighted_avg_score: z.number().min(0).max(1),
+  requirements_passed: z.number().int().nonnegative(),
+  requirements_total: z.number().int().positive(),
+  num_evals: z.number().int().nonnegative(),
+  pass_at_1: z.number().min(0).max(1),
+  pass_at_5: z.number().min(0).max(1),
+  pass_at_10: z.number().min(0).max(1),
+  tokens_total: z.number().nonnegative(),
 });
 
-export const judgeRequirementSchema = z.object({
-  id: z.string().min(1),
-  description: z.string().min(1),
-  weight: z.number().nonnegative(),
-  passed: z.boolean(),
-  reason: z.string().min(1),
-  evidence: z.array(z.string()),
-  confidence: z.number().min(0).max(1).optional(),
+export const aggregatePerEvalSchema = z.object({
+  eval_id: z.string().min(1),
+  short_label: z.string().min(1),
+  category: z.string().min(1),
+  score_mean: z.number().min(0).max(1),
+  score_min: z.number().min(0).max(1),
+  score_median: z.number().min(0).max(1),
+  score_max: z.number().min(0).max(1),
+  score_stddev: z.number().nonnegative(),
+  runs: z.number().int().positive(),
+  requirements_total: z.number().int().positive(),
+  pass_at_1: z.number().min(0).max(1),
+  pass_at_5: z.number().min(0).max(1),
+  pass_at_10: z.number().min(0).max(1),
+  tokens_mean: z.number().nonnegative(),
+  tokens_median: z.number().nonnegative(),
+  tokens_min: z.number().nonnegative(),
+  tokens_max: z.number().nonnegative(),
+  tokens_stddev: z.number().nonnegative(),
 });
 
-export const judgeEvalScoreSchema = z.object({
-  passedWeight: z.number().nonnegative(),
-  totalWeight: z.number().positive(),
-  ratio: z.number().min(0).max(1),
+export const aggregatePerRequirementSchema = z.object({
+  category: z.string().min(1),
+  eval_id: z.string().min(1),
+  requirement_id: z.string().min(1),
+  requirement_index: z.number().int().nonnegative(),
+  n_runs: z.number().int().positive(),
+  pass_rate: z.number().min(0).max(1),
+  pass_rate_stddev: z.number().nonnegative(),
+  pass_at_1: z.number().min(0).max(1),
+  pass_at_5: z.number().min(0).max(1),
+  pass_at_10: z.number().min(0).max(1),
+  tokens_mean: z.number().nonnegative(),
+  tokens_median: z.number().nonnegative(),
+  tokens_min: z.number().nonnegative(),
+  tokens_max: z.number().nonnegative(),
+  tokens_stddev: z.number().nonnegative(),
 });
 
-export const judgeEvalResultSchema = z.object({
-  evalId: z.string().min(1),
-  evalPath: z.string().min(1),
-  judgeModel: z.string().min(1),
-  solverModel: z.string().min(1),
-  llmJudgeRequirements: z.array(judgeRequirementSchema),
-  score: judgeEvalScoreSchema,
-  outputFiles: z.array(z.string()).default([]),
+export const aggregateModelFileSchema = z.object({
+  model_summary: aggregateModelSummarySchema,
+  per_eval: z.array(aggregatePerEvalSchema).min(1),
+  per_requirement: z.array(aggregatePerRequirementSchema),
 });
 
-export const judgeModelRunSchema = z.object({
+export const aggregateModelRunSchema = z.object({
   modelId: z.string().min(1),
   label: z.string().min(1),
-  summary: judgeSummarySchema,
-  evals: z.array(judgeEvalResultSchema),
+  results: aggregateModelFileSchema,
 });
 
-export const judgeDatasetSchema = z.object({
+export const aggregateDatasetSchema = z.object({
   version: z.string().min(1),
-  models: z.array(judgeModelRunSchema).min(1),
+  models: z.array(aggregateModelRunSchema).min(1),
 });
 
-export type JudgeSummary = z.infer<typeof judgeSummarySchema>;
-export type JudgeRequirement = z.infer<typeof judgeRequirementSchema>;
-export type JudgeEvalScore = z.infer<typeof judgeEvalScoreSchema>;
-export type JudgeEvalResult = z.infer<typeof judgeEvalResultSchema>;
-export type JudgeModelRun = z.infer<typeof judgeModelRunSchema>;
-export type JudgeDataset = z.infer<typeof judgeDatasetSchema>;
+export type AggregateModelSummary = z.infer<typeof aggregateModelSummarySchema>;
+export type AggregatePerEval = z.infer<typeof aggregatePerEvalSchema>;
+export type AggregatePerRequirement = z.infer<typeof aggregatePerRequirementSchema>;
+export type AggregateModelFile = z.infer<typeof aggregateModelFileSchema>;
+export type AggregateModelRun = z.infer<typeof aggregateModelRunSchema>;
+export type AggregateDataset = z.infer<typeof aggregateDatasetSchema>;
 
 export interface CategoryDefinition {
   id: string;
@@ -69,22 +84,13 @@ export interface CategoryDefinition {
   evalCount: number;
 }
 
-export interface RequirementScore {
-  requirementId: string;
-  description: string;
-  status: "pass" | "fail";
-  confidence?: number;
-}
-
 export interface EvalScore {
   evalId: string;
-  evalPath: string;
+  categoryId: string;
   name: string;
-  outputFiles: string[];
-  requirements: RequirementScore[];
-  passedWeight: number;
-  totalWeight: number;
   scorePct: number;
+  tokensUsed: number;
+  requirementsTotal: number;
 }
 
 export interface CategoryScore {
@@ -93,9 +99,9 @@ export interface CategoryScore {
   iconKey: string;
   evalCount: number;
   evals: EvalScore[];
-  passedWeight: number;
-  totalWeight: number;
   scorePct: number;
+  contributionPct: number;
+  tokensUsed: number;
 }
 
 export interface ModelSummary {
@@ -103,9 +109,18 @@ export interface ModelSummary {
   label: string;
   solverModel: string;
   overallScorePct: number;
+  tokensUsed: number;
   requirementsPassed: number;
   requirementsTotal: number;
   categories: Record<string, CategoryScore>;
+}
+
+export interface EvalMatrixEntry {
+  modelId: string;
+  modelLabel: string;
+  scorePct: number;
+  tokensUsed: number;
+  requirementsTotal: number;
 }
 
 export interface DashboardData {
@@ -113,6 +128,8 @@ export interface DashboardData {
   judgeModel: string;
   runStartedAt: string;
   runFinishedAt: string;
+  runCount: number;
   warnings: string[];
   models: ModelSummary[];
+  evalMatrixById: Record<string, EvalMatrixEntry[]>;
 }

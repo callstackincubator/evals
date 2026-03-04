@@ -42,14 +42,9 @@ function buildOverviewRows(categories: CategoryDefinition[], models: ModelSummar
       modelId: model.id,
       overall: model.overallScorePct,
     };
-    const totalWeight = Object.values(model.categories).reduce(
-      (acc, categoryScore) => acc + categoryScore.totalWeight,
-      0,
-    );
 
     for (const category of categories) {
-      const passedWeight = model.categories[category.id]?.passedWeight ?? 0;
-      row[category.id] = totalWeight > 0 ? (passedWeight / totalWeight) * 100 : 0;
+      row[category.id] = model.categories[category.id]?.contributionPct ?? 0;
     }
 
     return row;

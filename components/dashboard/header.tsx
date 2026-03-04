@@ -13,6 +13,7 @@ interface DashboardHeaderProps {
   onTabChange: (tabId: DashboardTabId) => void;
   runStartedAt: string;
   runFinishedAt: string;
+  runCount: number;
   warningCount: number;
 }
 
@@ -23,7 +24,7 @@ function formatDate(dateValue: string): string {
   }
   return new Intl.DateTimeFormat("en-US", {
     month: "long",
-    day: "2-digit",
+    day: "numeric",
     year: "numeric",
   }).format(date);
 }
@@ -34,6 +35,7 @@ export function DashboardHeader({
   onTabChange,
   runStartedAt,
   runFinishedAt,
+  runCount,
   warningCount,
 }: DashboardHeaderProps) {
   return (
@@ -55,12 +57,14 @@ export function DashboardHeader({
               Warnings: {warningCount}
             </span>
           )}
-          <span className="text-zinc-400">Last run: {formatDate(runFinishedAt || runStartedAt)}</span>
+          <span className="text-zinc-400">
+            Last run: {formatDate(runFinishedAt || runStartedAt)} · {runCount}x Runs
+          </span>
           <a
             href={RESULTS_REPO_URL}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex h-9 items-center gap-2 border border-zinc-100 bg-zinc-100 px-3 font-medium text-zinc-900 transition-colors hover:bg-white"
+            className="ml-4 inline-flex h-9 items-center gap-2 border border-zinc-100 bg-zinc-100 px-3 font-medium text-zinc-900 transition-colors hover:bg-white"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
               <path d="M5 2H9V4H7V6H5V2Z" fill="currentColor" />

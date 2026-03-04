@@ -1,60 +1,35 @@
 "use client";
 
 import { type Dispatch, type SetStateAction, useMemo, useState } from "react";
-import { Check, X } from "@phosphor-icons/react";
-import type { CategoryDefinition, CategoryScore, EvalScore, ModelSummary } from "@/lib/types/evals";
-import { cn, formatPct } from "@/lib/utils";
+import { X } from "@phosphor-icons/react";
+import type {
+  CategoryDefinition,
+  CategoryScore,
+  EvalMatrixEntry,
+  EvalScore,
+  ModelSummary,
+} from "@/lib/types/evals";
+import { cn, formatNumber, formatPct } from "@/lib/utils";
 import { getPodiumRowStyle, ModelLogoSquare, RankBadge } from "@/components/tables/table-badges";
 
 interface CategoryDrilldownTableProps {
   category: CategoryDefinition;
   models: ModelSummary[];
+  evalMatrixById: Record<string, EvalMatrixEntry[]>;
 }
 
 interface SelectedEvalDetails {
-  modelId: string;
-  modelLabel: string;
-  evalItem: EvalScore;
-}
-
-function RequirementStatusPill({ status }: { status: "pass" | "fail" }) {
-  const pass = status === "pass";
-
-  return (
-    <span
-      className={cn(
-        "inline-flex min-w-16 items-center justify-center gap-1 border border-transparent px-2 py-1 text-xs font-medium",
-        pass ? "bg-emerald-500/15 text-emerald-300" : "bg-rose-500/15 text-rose-300",
-      )}
-    >
-      {pass ? <Check size={12} weight="bold" /> : <X size={12} weight="bold" />}
-      {pass ? "Pass" : "Fail"}
-    </span>
-  );
-}
-
-function CountPill({ value, tone }: { value: number; tone: "pass" | "fail" }) {
-  const pass = tone === "pass";
-
-  return (
-    <span
-      className={cn(
-        "inline-flex min-w-16 items-center justify-center border border-transparent px-2 py-1 font-mono text-xs font-medium",
-        pass ? "bg-emerald-500/15 text-emerald-300" : "bg-rose-500/15 text-rose-300",
-      )}
-    >
-      {value}
-    </span>
-  );
+  evalId: string;
+  evalName: string;
+  requirementsTotal: number;
 }
 
 function SharedColumns() {
   return (
     <colgroup>
       <col className="w-[52%]" />
-      <col className="w-[16%]" />
-      <col className="w-[16%]" />
-      <col className="w-[16%]" />
+      <col className="w-[24%]" />
+      <col className="w-[24%]" />
     </colgroup>
   );
 }
@@ -66,13 +41,13 @@ function emptyCategory(category: CategoryDefinition): CategoryScore {
     iconKey: category.iconKey,
     evalCount: 0,
     evals: [],
-    passedWeight: 0,
-    totalWeight: 0,
     scorePct: 0,
+    contributionPct: 0,
+    tokensUsed: 0,
   };
 }
 
-export function CategoryDrilldownTable({ category, models }: CategoryDrilldownTableProps) {
+export function CategoryDrilldownTable({ category, models, evalMatrixById }: CategoryDrilldownTableProps) {
   const [expandedModelId, setExpandedModelId] = useState<string | null>(null);
   const [selectedEval, setSelectedEval] = useState<SelectedEvalDetails | null>(null);
 
@@ -99,8 +74,7 @@ export function CategoryDrilldownTable({ category, models }: CategoryDrilldownTa
             <tr className="border-b border-zinc-800 text-left text-xs uppercase tracking-wide text-zinc-400">
               <th className="px-4 py-3 font-semibold">Model</th>
               <th className="px-4 py-3 text-center font-semibold">Score</th>
-              <th className="px-4 py-3 text-center font-semibold">Passed</th>
-              <th className="px-4 py-3 text-center font-semibold">Failed</th>
+              <th className="px-4 py-3 text-center font-semibold whitespace-nowrap">Tokens Used</th>
             </tr>
           </thead>
 
@@ -123,8 +97,7 @@ export function CategoryDrilldownTable({ category, models }: CategoryDrilldownTa
                   }
                   modelLabel={model.label}
                   score={categoryScore.scorePct}
-                  passedWeight={categoryScore.passedWeight}
-                  totalWeight={categoryScore.totalWeight}
+                  tokensUsed={categoryScore.tokensUsed}
                   evalRows={categoryScore.evals}
                   selectedEval={selectedEval}
                   setSelectedEval={setSelectedEval}
@@ -135,7 +108,11 @@ export function CategoryDrilldownTable({ category, models }: CategoryDrilldownTa
         </table>
       </div>
 
-      <EvalDetailsDrawer selectedEval={selectedEval} onClose={() => setSelectedEval(null)} />
+      <EvalDetailsDrawer
+        selectedEval={selectedEval}
+        evalMatrixById={evalMatrixById}
+        onClose={() => setSelectedEval(null)}
+      />
     </>
   );
 }
@@ -149,8 +126,7 @@ interface FragmentRowProps {
   onToggleModel: () => void;
   modelLabel: string;
   score: number;
-  passedWeight: number;
-  totalWeight: number;
+  tokensUsed: number;
   evalRows: EvalScore[];
   selectedEval: SelectedEvalDetails | null;
   setSelectedEval: Dispatch<SetStateAction<SelectedEvalDetails | null>>;
@@ -165,8 +141,7 @@ function FragmentRow({
   onToggleModel,
   modelLabel,
   score,
-  passedWeight,
-  totalWeight,
+  tokensUsed,
   evalRows,
   selectedEval,
   setSelectedEval,
@@ -199,86 +174,68 @@ function FragmentRow({
           </div>
         </td>
         <td className="px-4 py-5 text-center font-mono text-zinc-300">{formatPct(score)}</td>
-        <td className="px-4 py-5 text-center whitespace-nowrap">
-          <CountPill value={passedWeight} tone="pass" />
-        </td>
-        <td className="px-4 py-5 text-center whitespace-nowrap">
-          <CountPill value={totalWeight - passedWeight} tone="fail" />
+        <td className="px-4 py-5 text-center font-mono text-zinc-300 whitespace-nowrap">
+          {formatNumber(tokensUsed)}
         </td>
       </tr>
 
-      {isModelExpanded && (
-        <tr className={cn("border-b border-zinc-800 bg-zinc-900/70", isLast && "border-b-0")}>
-          <td colSpan={4} className="p-0">
-            <div className="overflow-hidden bg-zinc-900">
-              <table className="min-w-full table-fixed border-collapse text-sm">
-                <SharedColumns />
+      {isModelExpanded && evalRows.map((evalItem, evalIndex) => {
+        const isSelected = selectedEval?.evalId === evalItem.evalId;
+        const isEvalLast = evalIndex === evalRows.length - 1;
+        const removeBottomBorder = isLast && isEvalLast;
 
-                <tbody>
-                  {evalRows.map((evalItem, evalIndex) => {
-                    const isSelected =
-                      selectedEval?.modelId === modelId && selectedEval.evalItem.evalId === evalItem.evalId;
-                    const isEvalLast = evalIndex === evalRows.length - 1;
-
-                    return (
-                      <tr
-                        key={`${modelId}:${evalItem.evalId}`}
-                        role="button"
-                        tabIndex={0}
-                        onClick={() =>
-                          setSelectedEval({
-                            modelId,
-                            modelLabel,
-                            evalItem,
-                          })
-                        }
-                        onKeyDown={(event) => {
-                          if (event.key === "Enter" || event.key === " ") {
-                            event.preventDefault();
-                            setSelectedEval({
-                              modelId,
-                              modelLabel,
-                              evalItem,
-                            });
-                          }
-                        }}
-                        className={cn(
-                          "cursor-pointer border-b border-zinc-800/80 hover:bg-zinc-800/70",
-                          evalIndex === 0 && "border-t-0",
-                          isEvalLast && "border-b-0",
-                          isSelected && "bg-zinc-800/60",
-                        )}
-                      >
-                        <td className="px-4 py-5 text-zinc-100">{evalItem.name}</td>
-                        <td className="px-4 py-5 text-center font-mono text-zinc-300">{formatPct(evalItem.scorePct)}</td>
-                        <td className="px-4 py-5 text-center whitespace-nowrap">
-                          <CountPill value={evalItem.passedWeight} tone="pass" />
-                        </td>
-                        <td className="px-4 py-5 text-center whitespace-nowrap">
-                          <CountPill value={evalItem.totalWeight - evalItem.passedWeight} tone="fail" />
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </td>
-        </tr>
-      )}
+        return (
+          <tr
+            key={`${modelId}:${evalItem.evalId}`}
+            role="button"
+            tabIndex={0}
+            onClick={() =>
+              setSelectedEval({
+                evalId: evalItem.evalId,
+                evalName: evalItem.name,
+                requirementsTotal: evalItem.requirementsTotal,
+              })
+            }
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                setSelectedEval({
+                  evalId: evalItem.evalId,
+                  evalName: evalItem.name,
+                  requirementsTotal: evalItem.requirementsTotal,
+                });
+              }
+            }}
+            className={cn(
+              "cursor-pointer border-b border-zinc-800/80 bg-zinc-900/70 hover:bg-zinc-800/70",
+              removeBottomBorder && "border-b-0",
+              isSelected && "bg-zinc-800/60",
+            )}
+          >
+            <td className="px-4 py-5 text-zinc-100">{evalItem.name}</td>
+            <td className="px-4 py-5 text-center font-mono text-zinc-300">{formatPct(evalItem.scorePct)}</td>
+            <td className="px-4 py-5 text-center font-mono text-zinc-300 whitespace-nowrap">
+              {formatNumber(evalItem.tokensUsed)}
+            </td>
+          </tr>
+        );
+      })}
     </>
   );
 }
 
 interface EvalDetailsDrawerProps {
   selectedEval: SelectedEvalDetails | null;
+  evalMatrixById: Record<string, EvalMatrixEntry[]>;
   onClose: () => void;
 }
 
-function EvalDetailsDrawer({ selectedEval, onClose }: EvalDetailsDrawerProps) {
+function EvalDetailsDrawer({ selectedEval, evalMatrixById, onClose }: EvalDetailsDrawerProps) {
   if (!selectedEval) {
     return null;
   }
+
+  const rows = evalMatrixById[selectedEval.evalId] ?? [];
 
   return (
     <>
@@ -292,8 +249,8 @@ function EvalDetailsDrawer({ selectedEval, onClose }: EvalDetailsDrawerProps) {
       <aside className="fixed inset-y-0 right-0 z-40 w-full max-w-2xl border-l border-zinc-800 bg-zinc-950">
         <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-3">
           <div>
-            <h3 className="text-base font-semibold text-zinc-100">{selectedEval.evalItem.name}</h3>
-            <p className="text-sm text-zinc-400">{selectedEval.modelLabel}</p>
+            <h3 className="text-base font-semibold text-zinc-100">{selectedEval.evalName}</h3>
+            <p className="text-sm text-zinc-400">Requirements: {formatNumber(selectedEval.requirementsTotal)}</p>
           </div>
 
           <button
@@ -311,28 +268,46 @@ function EvalDetailsDrawer({ selectedEval, onClose }: EvalDetailsDrawerProps) {
             <table className="min-w-full border-collapse text-sm">
               <thead className="text-zinc-400">
                 <tr className="border-b border-zinc-800 text-left text-xs uppercase tracking-wide">
-                  <th className="px-3 py-2">Requirement</th>
-                  <th className="px-3 py-2">Status</th>
+                  <th className="px-4 py-3 font-semibold">Model</th>
+                  <th className="px-4 py-3 text-center font-semibold">Score</th>
+                  <th className="px-4 py-3 text-center font-semibold whitespace-nowrap">Tokens Used</th>
                 </tr>
               </thead>
               <tbody>
-                {selectedEval.evalItem.requirements.map((requirement, requirementIndex) => (
-                  <tr
-                    key={requirement.requirementId}
-                    className={cn(
-                      "border-b border-zinc-800/80",
-                      requirementIndex === 0 && "border-t-0",
-                      requirementIndex === selectedEval.evalItem.requirements.length - 1 && "border-b-0",
-                    )}
-                  >
-                    <td className="px-3 py-2 text-zinc-200">{requirement.description}</td>
-                    <td className="px-3 py-2">
-                      <RequirementStatusPill status={requirement.status} />
-                    </td>
-                  </tr>
-                ))}
+                {rows.map((row, index) => {
+                  const rank = index + 1;
+                  const isLast = index === rows.length - 1;
+
+                  return (
+                    <tr
+                      key={`${selectedEval.evalId}:${row.modelId}`}
+                      className={cn(
+                        "border-b border-zinc-800/80 first:border-t-0",
+                        isLast && "border-b-0",
+                        rank <= 3 && "border-l-2",
+                      )}
+                      style={getPodiumRowStyle(rank)}
+                    >
+                      <td className="px-4 py-4 font-medium text-zinc-100">
+                        <div className="flex items-center gap-3">
+                          <RankBadge rank={rank} />
+                          <ModelLogoSquare modelId={row.modelId} modelLabel={row.modelLabel} />
+                          <span>{row.modelLabel}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 text-center font-mono text-zinc-300">{formatPct(row.scorePct)}</td>
+                      <td className="px-4 py-4 text-center font-mono text-zinc-300 whitespace-nowrap">
+                        {formatNumber(row.tokensUsed)}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
+
+            {rows.length === 0 && (
+              <p className="px-4 py-6 text-sm text-zinc-400">No eval data available for this item.</p>
+            )}
           </div>
         </div>
       </aside>
