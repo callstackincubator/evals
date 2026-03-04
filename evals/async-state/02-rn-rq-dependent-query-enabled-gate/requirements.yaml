@@ -12,4 +12,4 @@ requirements:
   - id: projects-query-enabled-uses-profile-id-boolean
     description: Projects query `enabled` option is set from boolean cast of `profileId`
   - id: projects-queryfn-destructures-userid-from-querykey
-    description: Projects `queryFn` destructures `userId` from `queryKey` and calls `fetchProjectsByUserId` with `signal`
+    description: Projects `queryFn` destructures `userId` from `queryKey`
