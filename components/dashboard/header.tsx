@@ -5,7 +5,7 @@ import { CallstackLogo } from "@/components/dashboard/callstack-logo";
 import { NavigationCategories, type DashboardTabId } from "@/components/dashboard/nav-categories";
 import type { CategoryDefinition } from "@/lib/types/evals";
 
-const RESULTS_REPO_URL = "https://github.com/callstack/rn-evals-results";
+const RESULTS_REPO_URL = "https://github.com/callstack";
 
 interface DashboardHeaderProps {
   categories: CategoryDefinition[];
