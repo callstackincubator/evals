@@ -2,14 +2,16 @@
   "model_summary": {
     "solver_model": "vercel/anthropic/claude-opus-4.6",
     "n_runs": 10,
-    "weighted_avg_score": 0.8425157384017001,
-    "requirements_passed": 1365,
-    "requirements_total": 1620,
+    "weighted_avg_score": 0.8435582822085891,
+    "requirements_passed": 1375,
+    "requirements_total": 1630,
     "num_evals": 39,
     "pass_at_1": 0.5897435897435898,
     "pass_at_5": 0.6694139194139195,
     "pass_at_10": 0.6923076923076923,
-    "tokens_total": 3309536
+    "tokens_total": 3255983,
+    "tokens_mean": 325598.3,
+    "tokens_stddev": 5922.960324871339
   },
   "per_eval": [
     {
@@ -306,11 +308,11 @@
       "pass_at_1": 0.0,
       "pass_at_5": 0.0,
       "pass_at_10": 0.0,
-      "tokens_mean": 8710.2,
-      "tokens_median": 8626.5,
-      "tokens_min": 8539.0,
-      "tokens_max": 9200.0,
-      "tokens_stddev": 199.73872934411094
+      "tokens_mean": 2705.2,
+      "tokens_median": 2673.0,
+      "tokens_min": 2604.0,
+      "tokens_max": 2865.0,
+      "tokens_stddev": 81.30289047752238
     },
     {
       "eval_id": "03-rn-rq-mutation-invalidate-on-success",
@@ -418,19 +420,19 @@
       "category": "async-state",
       "score_mean": 1.0,
       "score_min": 1,
-      "score_median": 1,
+      "score_median": 1.0,
       "score_max": 1,
       "score_stddev": 0.0,
-      "runs": 9,
-      "requirements_total": 36,
+      "runs": 10,
+      "requirements_total": 40,
       "pass_at_1": 1.0,
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
-      "tokens_mean": 5717.2,
+      "tokens_mean": 5941.1,
       "tokens_median": 6346.0,
-      "tokens_min": 0.0,
+      "tokens_min": 2239.0,
       "tokens_max": 6402.0,
-      "tokens_stddev": 1905.9815214214434
+      "tokens_stddev": 1234.4165787933991
     },
     {
       "eval_id": "10-rn-jotai-loadable-async-atom-no-suspense",
@@ -478,19 +480,19 @@
       "category": "async-state",
       "score_mean": 1.0,
       "score_min": 1,
-      "score_median": 1,
+      "score_median": 1.0,
       "score_max": 1,
       "score_stddev": 0.0,
-      "runs": 9,
-      "requirements_total": 54,
+      "runs": 10,
+      "requirements_total": 60,
       "pass_at_1": 1.0,
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
-      "tokens_mean": 10251.4,
+      "tokens_mean": 10677.2,
       "tokens_median": 11279.5,
-      "tokens_min": 0.0,
+      "tokens_min": 4258.0,
       "tokens_max": 12099.0,
-      "tokens_stddev": 3430.244137084123
+      "tokens_stddev": 2160.609488084323
     },
     {
       "eval_id": "13-rn-react-usedeferredvalue-search-stale-indicator",
@@ -1791,11 +1793,11 @@
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
       "n_runs": 10,
-      "tokens_mean": 8710.2,
-      "tokens_median": 8626.5,
-      "tokens_min": 8539.0,
-      "tokens_max": 9200.0,
-      "tokens_stddev": 199.73872934411094
+      "tokens_mean": 2705.2,
+      "tokens_median": 2673.0,
+      "tokens_min": 2604.0,
+      "tokens_max": 2865.0,
+      "tokens_stddev": 81.30289047752238
     },
     {
       "eval_id": "02-rn-rq-dependent-query-enabled-gate",
@@ -1808,11 +1810,11 @@
       "pass_at_5": 0.0,
       "pass_at_10": 0.0,
       "n_runs": 10,
-      "tokens_mean": 8710.2,
-      "tokens_median": 8626.5,
-      "tokens_min": 8539.0,
-      "tokens_max": 9200.0,
-      "tokens_stddev": 199.73872934411094
+      "tokens_mean": 2705.2,
+      "tokens_median": 2673.0,
+      "tokens_min": 2604.0,
+      "tokens_max": 2865.0,
+      "tokens_stddev": 81.30289047752238
     },
     {
       "eval_id": "02-rn-rq-dependent-query-enabled-gate",
@@ -1825,11 +1827,11 @@
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
       "n_runs": 10,
-      "tokens_mean": 8710.2,
-      "tokens_median": 8626.5,
-      "tokens_min": 8539.0,
-      "tokens_max": 9200.0,
-      "tokens_stddev": 199.73872934411094
+      "tokens_mean": 2705.2,
+      "tokens_median": 2673.0,
+      "tokens_min": 2604.0,
+      "tokens_max": 2865.0,
+      "tokens_stddev": 81.30289047752238
     },
     {
       "eval_id": "02-rn-rq-dependent-query-enabled-gate",
@@ -1842,11 +1844,11 @@
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
       "n_runs": 10,
-      "tokens_mean": 8710.2,
-      "tokens_median": 8626.5,
-      "tokens_min": 8539.0,
-      "tokens_max": 9200.0,
-      "tokens_stddev": 199.73872934411094
+      "tokens_mean": 2705.2,
+      "tokens_median": 2673.0,
+      "tokens_min": 2604.0,
+      "tokens_max": 2865.0,
+      "tokens_stddev": 81.30289047752238
     },
     {
       "eval_id": "02-rn-rq-dependent-query-enabled-gate",
@@ -1859,11 +1861,11 @@
       "pass_at_5": 0.0,
       "pass_at_10": 0.0,
       "n_runs": 10,
-      "tokens_mean": 8710.2,
-      "tokens_median": 8626.5,
-      "tokens_min": 8539.0,
-      "tokens_max": 9200.0,
-      "tokens_stddev": 199.73872934411094
+      "tokens_mean": 2705.2,
+      "tokens_median": 2673.0,
+      "tokens_min": 2604.0,
+      "tokens_max": 2865.0,
+      "tokens_stddev": 81.30289047752238
     },
     {
       "eval_id": "03-rn-rq-mutation-invalidate-on-success",
@@ -2368,12 +2370,12 @@
       "pass_at_1": 1.0,
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
-      "n_runs": 9,
-      "tokens_mean": 5717.2,
+      "n_runs": 10,
+      "tokens_mean": 5941.1,
       "tokens_median": 6346.0,
-      "tokens_min": 0.0,
+      "tokens_min": 2239.0,
       "tokens_max": 6402.0,
-      "tokens_stddev": 1905.9815214214434
+      "tokens_stddev": 1234.4165787933991
     },
     {
       "eval_id": "09-rn-jotai-async-read-atom-suspense",
@@ -2385,12 +2387,12 @@
       "pass_at_1": 1.0,
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
-      "n_runs": 9,
-      "tokens_mean": 5717.2,
+      "n_runs": 10,
+      "tokens_mean": 5941.1,
       "tokens_median": 6346.0,
-      "tokens_min": 0.0,
+      "tokens_min": 2239.0,
       "tokens_max": 6402.0,
-      "tokens_stddev": 1905.9815214214434
+      "tokens_stddev": 1234.4165787933991
     },
     {
       "eval_id": "09-rn-jotai-async-read-atom-suspense",
@@ -2402,12 +2404,12 @@
       "pass_at_1": 1.0,
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
-      "n_runs": 9,
-      "tokens_mean": 5717.2,
+      "n_runs": 10,
+      "tokens_mean": 5941.1,
       "tokens_median": 6346.0,
-      "tokens_min": 0.0,
+      "tokens_min": 2239.0,
       "tokens_max": 6402.0,
-      "tokens_stddev": 1905.9815214214434
+      "tokens_stddev": 1234.4165787933991
     },
     {
       "eval_id": "09-rn-jotai-async-read-atom-suspense",
@@ -2419,12 +2421,12 @@
       "pass_at_1": 1.0,
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
-      "n_runs": 9,
-      "tokens_mean": 5717.2,
+      "n_runs": 10,
+      "tokens_mean": 5941.1,
       "tokens_median": 6346.0,
-      "tokens_min": 0.0,
+      "tokens_min": 2239.0,
       "tokens_max": 6402.0,
-      "tokens_stddev": 1905.9815214214434
+      "tokens_stddev": 1234.4165787933991
     },
     {
       "eval_id": "10-rn-jotai-loadable-async-atom-no-suspense",
@@ -2589,12 +2591,12 @@
       "pass_at_1": 1.0,
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
-      "n_runs": 9,
-      "tokens_mean": 10251.4,
+      "n_runs": 10,
+      "tokens_mean": 10677.2,
       "tokens_median": 11279.5,
-      "tokens_min": 0.0,
+      "tokens_min": 4258.0,
       "tokens_max": 12099.0,
-      "tokens_stddev": 3430.244137084123
+      "tokens_stddev": 2160.609488084323
     },
     {
       "eval_id": "12-rn-jotai-atomwithstorage-async-rehydrate-guard",
@@ -2606,12 +2608,12 @@
       "pass_at_1": 1.0,
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
-      "n_runs": 9,
-      "tokens_mean": 10251.4,
+      "n_runs": 10,
+      "tokens_mean": 10677.2,
       "tokens_median": 11279.5,
-      "tokens_min": 0.0,
+      "tokens_min": 4258.0,
       "tokens_max": 12099.0,
-      "tokens_stddev": 3430.244137084123
+      "tokens_stddev": 2160.609488084323
     },
     {
       "eval_id": "12-rn-jotai-atomwithstorage-async-rehydrate-guard",
@@ -2623,12 +2625,12 @@
       "pass_at_1": 1.0,
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
-      "n_runs": 9,
-      "tokens_mean": 10251.4,
+      "n_runs": 10,
+      "tokens_mean": 10677.2,
       "tokens_median": 11279.5,
-      "tokens_min": 0.0,
+      "tokens_min": 4258.0,
       "tokens_max": 12099.0,
-      "tokens_stddev": 3430.244137084123
+      "tokens_stddev": 2160.609488084323
     },
     {
       "eval_id": "12-rn-jotai-atomwithstorage-async-rehydrate-guard",
@@ -2640,12 +2642,12 @@
       "pass_at_1": 1.0,
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
-      "n_runs": 9,
-      "tokens_mean": 10251.4,
+      "n_runs": 10,
+      "tokens_mean": 10677.2,
       "tokens_median": 11279.5,
-      "tokens_min": 0.0,
+      "tokens_min": 4258.0,
       "tokens_max": 12099.0,
-      "tokens_stddev": 3430.244137084123
+      "tokens_stddev": 2160.609488084323
     },
     {
       "eval_id": "12-rn-jotai-atomwithstorage-async-rehydrate-guard",
@@ -2657,12 +2659,12 @@
       "pass_at_1": 1.0,
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
-      "n_runs": 9,
-      "tokens_mean": 10251.4,
+      "n_runs": 10,
+      "tokens_mean": 10677.2,
       "tokens_median": 11279.5,
-      "tokens_min": 0.0,
+      "tokens_min": 4258.0,
       "tokens_max": 12099.0,
-      "tokens_stddev": 3430.244137084123
+      "tokens_stddev": 2160.609488084323
     },
     {
       "eval_id": "12-rn-jotai-atomwithstorage-async-rehydrate-guard",
@@ -2674,12 +2676,12 @@
       "pass_at_1": 1.0,
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
-      "n_runs": 9,
-      "tokens_mean": 10251.4,
+      "n_runs": 10,
+      "tokens_mean": 10677.2,
       "tokens_median": 11279.5,
-      "tokens_min": 0.0,
+      "tokens_min": 4258.0,
       "tokens_max": 12099.0,
-      "tokens_stddev": 3430.244137084123
+      "tokens_stddev": 2160.609488084323
     },
     {
       "eval_id": "13-rn-react-usedeferredvalue-search-stale-indicator",
@@ -3570,6 +3572,7 @@
     {
       "category": "animation",
       "score_samples": 130,
+      "requirements_total": 53,
       "score_mean": 0.7776884615384597,
       "score_median": 0.8333,
       "score_stddev": 0.24617547888716587,
@@ -3577,15 +3580,17 @@
     },
     {
       "category": "async-state",
-      "score_samples": 128,
-      "score_mean": 0.83394453125,
+      "score_samples": 130,
+      "requirements_total": 65,
+      "score_mean": 0.8364992307692308,
       "score_median": 1.0,
-      "score_stddev": 0.20821922559550732,
-      "tokens_total": 1291735
+      "score_stddev": 0.2076196942993288,
+      "tokens_total": 1238182
     },
     {
       "category": "navigation",
       "score_samples": 130,
+      "requirements_total": 45,
       "score_mean": 0.9448730769230769,
       "score_median": 1.0,
       "score_stddev": 0.11572364746602241,
@@ -3611,7 +3616,7 @@
       "failed_max": 13,
       "failed_stddev": 1.3564659966250536,
       "runs_in_failed_distribution": 10,
-      "tokens_total": 1291735
+      "tokens_total": 1238182
     },
     {
       "category": "navigation",

@@ -2,14 +2,16 @@
   "model_summary": {
     "solver_model": "vercel/zai/glm-5",
     "n_runs": 10,
-    "weighted_avg_score": 0.7417602345950535,
-    "requirements_passed": 1206,
-    "requirements_total": 1626,
+    "weighted_avg_score": 0.7423312883435583,
+    "requirements_passed": 1210,
+    "requirements_total": 1630,
     "num_evals": 39,
     "pass_at_1": 0.5076923076923078,
     "pass_at_5": 0.6118233618233617,
     "pass_at_10": 0.6153846153846154,
-    "tokens_total": 5181854
+    "tokens_total": 5124022,
+    "tokens_mean": 512402.2,
+    "tokens_stddev": 95493.45658504566
   },
   "per_eval": [
     {
@@ -306,11 +308,11 @@
       "pass_at_1": 0.0,
       "pass_at_5": 0.0,
       "pass_at_10": 0.0,
-      "tokens_mean": 9359.7,
-      "tokens_median": 8271.5,
-      "tokens_min": 7168.0,
-      "tokens_max": 17911.0,
-      "tokens_stddev": 3004.9871563785427
+      "tokens_mean": 3218.5,
+      "tokens_median": 2128.5,
+      "tokens_min": 1638.0,
+      "tokens_max": 12116.0,
+      "tokens_stddev": 3011.9400807452994
     },
     {
       "eval_id": "03-rn-rq-mutation-invalidate-on-success",
@@ -418,19 +420,19 @@
       "category": "async-state",
       "score_mean": 1.0,
       "score_min": 1,
-      "score_median": 1,
+      "score_median": 1.0,
       "score_max": 1,
       "score_stddev": 0.0,
-      "runs": 9,
-      "requirements_total": 36,
+      "runs": 10,
+      "requirements_total": 40,
       "pass_at_1": 1.0,
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
-      "tokens_mean": 5404.8,
+      "tokens_mean": 5762.8,
       "tokens_median": 5711.5,
-      "tokens_min": 0.0,
+      "tokens_min": 3580.0,
       "tokens_max": 6922.0,
-      "tokens_stddev": 1908.681733553292
+      "tokens_stddev": 962.6552653987823
     },
     {
       "eval_id": "10-rn-jotai-loadable-async-atom-no-suspense",
@@ -1791,11 +1793,11 @@
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
       "n_runs": 10,
-      "tokens_mean": 9359.7,
-      "tokens_median": 8271.5,
-      "tokens_min": 7168.0,
-      "tokens_max": 17911.0,
-      "tokens_stddev": 3004.9871563785427
+      "tokens_mean": 3218.5,
+      "tokens_median": 2128.5,
+      "tokens_min": 1638.0,
+      "tokens_max": 12116.0,
+      "tokens_stddev": 3011.9400807452994
     },
     {
       "eval_id": "02-rn-rq-dependent-query-enabled-gate",
@@ -1808,11 +1810,11 @@
       "pass_at_5": 0.0,
       "pass_at_10": 0.0,
       "n_runs": 10,
-      "tokens_mean": 9359.7,
-      "tokens_median": 8271.5,
-      "tokens_min": 7168.0,
-      "tokens_max": 17911.0,
-      "tokens_stddev": 3004.9871563785427
+      "tokens_mean": 3218.5,
+      "tokens_median": 2128.5,
+      "tokens_min": 1638.0,
+      "tokens_max": 12116.0,
+      "tokens_stddev": 3011.9400807452994
     },
     {
       "eval_id": "02-rn-rq-dependent-query-enabled-gate",
@@ -1825,11 +1827,11 @@
       "pass_at_5": 0.9166666666666666,
       "pass_at_10": 1.0,
       "n_runs": 10,
-      "tokens_mean": 9359.7,
-      "tokens_median": 8271.5,
-      "tokens_min": 7168.0,
-      "tokens_max": 17911.0,
-      "tokens_stddev": 3004.9871563785427
+      "tokens_mean": 3218.5,
+      "tokens_median": 2128.5,
+      "tokens_min": 1638.0,
+      "tokens_max": 12116.0,
+      "tokens_stddev": 3011.9400807452994
     },
     {
       "eval_id": "02-rn-rq-dependent-query-enabled-gate",
@@ -1842,11 +1844,11 @@
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
       "n_runs": 10,
-      "tokens_mean": 9359.7,
-      "tokens_median": 8271.5,
-      "tokens_min": 7168.0,
-      "tokens_max": 17911.0,
-      "tokens_stddev": 3004.9871563785427
+      "tokens_mean": 3218.5,
+      "tokens_median": 2128.5,
+      "tokens_min": 1638.0,
+      "tokens_max": 12116.0,
+      "tokens_stddev": 3011.9400807452994
     },
     {
       "eval_id": "02-rn-rq-dependent-query-enabled-gate",
@@ -1859,11 +1861,11 @@
       "pass_at_5": 0.0,
       "pass_at_10": 0.0,
       "n_runs": 10,
-      "tokens_mean": 9359.7,
-      "tokens_median": 8271.5,
-      "tokens_min": 7168.0,
-      "tokens_max": 17911.0,
-      "tokens_stddev": 3004.9871563785427
+      "tokens_mean": 3218.5,
+      "tokens_median": 2128.5,
+      "tokens_min": 1638.0,
+      "tokens_max": 12116.0,
+      "tokens_stddev": 3011.9400807452994
     },
     {
       "eval_id": "03-rn-rq-mutation-invalidate-on-success",
@@ -2368,12 +2370,12 @@
       "pass_at_1": 1.0,
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
-      "n_runs": 9,
-      "tokens_mean": 5404.8,
+      "n_runs": 10,
+      "tokens_mean": 5762.8,
       "tokens_median": 5711.5,
-      "tokens_min": 0.0,
+      "tokens_min": 3580.0,
       "tokens_max": 6922.0,
-      "tokens_stddev": 1908.681733553292
+      "tokens_stddev": 962.6552653987823
     },
     {
       "eval_id": "09-rn-jotai-async-read-atom-suspense",
@@ -2385,12 +2387,12 @@
       "pass_at_1": 1.0,
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
-      "n_runs": 9,
-      "tokens_mean": 5404.8,
+      "n_runs": 10,
+      "tokens_mean": 5762.8,
       "tokens_median": 5711.5,
-      "tokens_min": 0.0,
+      "tokens_min": 3580.0,
       "tokens_max": 6922.0,
-      "tokens_stddev": 1908.681733553292
+      "tokens_stddev": 962.6552653987823
     },
     {
       "eval_id": "09-rn-jotai-async-read-atom-suspense",
@@ -2402,12 +2404,12 @@
       "pass_at_1": 1.0,
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
-      "n_runs": 9,
-      "tokens_mean": 5404.8,
+      "n_runs": 10,
+      "tokens_mean": 5762.8,
       "tokens_median": 5711.5,
-      "tokens_min": 0.0,
+      "tokens_min": 3580.0,
       "tokens_max": 6922.0,
-      "tokens_stddev": 1908.681733553292
+      "tokens_stddev": 962.6552653987823
     },
     {
       "eval_id": "09-rn-jotai-async-read-atom-suspense",
@@ -2419,12 +2421,12 @@
       "pass_at_1": 1.0,
       "pass_at_5": 1.0,
       "pass_at_10": 1.0,
-      "n_runs": 9,
-      "tokens_mean": 5404.8,
+      "n_runs": 10,
+      "tokens_mean": 5762.8,
       "tokens_median": 5711.5,
-      "tokens_min": 0.0,
+      "tokens_min": 3580.0,
       "tokens_max": 6922.0,
-      "tokens_stddev": 1908.681733553292
+      "tokens_stddev": 962.6552653987823
     },
     {
       "eval_id": "10-rn-jotai-loadable-async-atom-no-suspense",
@@ -3570,6 +3572,7 @@
     {
       "category": "animation",
       "score_samples": 130,
+      "requirements_total": 53,
       "score_mean": 0.6612815384615383,
       "score_median": 0.6667,
       "score_stddev": 0.3002175431210394,
@@ -3577,15 +3580,17 @@
     },
     {
       "category": "async-state",
-      "score_samples": 129,
-      "score_mean": 0.7190054263565885,
+      "score_samples": 130,
+      "requirements_total": 65,
+      "score_mean": 0.7211669230769224,
       "score_median": 0.8,
-      "score_stddev": 0.28781283790073914,
-      "tokens_total": 2012588
+      "score_stddev": 0.28775288821339035,
+      "tokens_total": 1954756
     },
     {
       "category": "navigation",
       "score_samples": 130,
+      "requirements_total": 45,
       "score_mean": 0.8915399999999997,
       "score_median": 1.0,
       "score_stddev": 0.18876662498358207,
@@ -3611,7 +3616,7 @@
       "failed_max": 19,
       "failed_stddev": 1.445683229480096,
       "runs_in_failed_distribution": 10,
-      "tokens_total": 2012588
+      "tokens_total": 1954756
     },
     {
       "category": "navigation",
