@@ -9,6 +9,7 @@ import {
   writeSummary,
 } from './evaluators/llm/output'
 import { runLlmJudgeStage } from './evaluators/llm/run'
+import { computeScore, type RequirementResult } from './evaluators/llm/utils'
 import { runWithConcurrency } from './solver/concurrency'
 import { partitionEvalRuns } from './utils/eval-runs'
 import { loadFile, loadFiles, sanitizeSegment } from './utils/fs'
@@ -43,6 +44,151 @@ function formatUnknownError(error: unknown) {
   return String(error)
 }
 
+function isNotFoundError(error: unknown) {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    error.code === 'ENOENT'
+  )
+}
+
+type PersistedEvalResult = {
+  evalId: string
+  evalPath: string
+  judgeModel: string
+  solverModel: string
+  llmJudgeRequirements: RequirementResult[]
+  score: {
+    passedWeight: number
+    totalWeight: number
+    ratio: number
+  }
+  outputFiles: string[]
+  judgeSessionArtifactPath?: string
+}
+
+function parsePersistedEvalResult(
+  raw: string,
+  resultFilePath: string
+): PersistedEvalResult {
+  const parsed = JSON.parse(raw) as Partial<PersistedEvalResult>
+
+  if (
+    !Array.isArray(parsed.llmJudgeRequirements) ||
+    !parsed.score ||
+    typeof parsed.score.ratio !== 'number'
+  ) {
+    throw new Error(
+      `invalid per-eval judge output at ${toRelativePath(resultFilePath)}`
+    )
+  }
+
+  return parsed as PersistedEvalResult
+}
+
+function getResultFilePath(
+  runDirectory: string,
+  generatedPath: string,
+  evalId: string
+) {
+  const resultSubdirectory = getEvalResultSubdirectory(generatedPath)
+  const resultDirectory = path.join(runDirectory, 'evals', resultSubdirectory)
+  const resultFileName = `${sanitizeSegment(evalId)}.json`
+
+  return path.join(resultDirectory, resultFileName)
+}
+
+async function backupExistingSummary(runDirectory: string) {
+  const summaryPath = path.join(runDirectory, 'summary.json')
+  const backupSuffix = new Date().toISOString().replace(/[:.]/g, '-')
+  const backupPath = path.join(
+    runDirectory,
+    `summary.backup.${backupSuffix}.json`
+  )
+
+  try {
+    const existingSummary = await readFile(summaryPath, 'utf8')
+    await writeFile(backupPath, existingSummary, 'utf8')
+    return backupPath
+  } catch (error) {
+    if (isNotFoundError(error)) {
+      return undefined
+    }
+    throw error
+  }
+}
+
+async function rebuildSummaryFromExistingResults(options: {
+  runDirectory: string
+  inputDirectory: string
+  generationManifest: Awaited<ReturnType<typeof readGenerationManifest>>
+  judgeModel: string
+}) {
+  const runId = new Date().toISOString().replace(/[:.]/g, '-')
+  const startedAt = new Date().toISOString()
+  const successfulRuns: PersistedEvalResult[] = []
+  let evalsErrored = 0
+
+  for (const manifestEval of options.generationManifest.evals) {
+    const resultFilePath = getResultFilePath(
+      options.runDirectory,
+      manifestEval.generatedPath,
+      manifestEval.evalId
+    )
+
+    try {
+      const raw = await readFile(resultFilePath, 'utf8')
+      const parsed = parsePersistedEvalResult(raw, resultFilePath)
+      successfulRuns.push(parsed)
+    } catch (error) {
+      if (isNotFoundError(error)) {
+        evalsErrored += 1
+        continue
+      }
+
+      throw error
+    }
+  }
+
+  const requirementsTotal = successfulRuns.reduce((sum, evalRun) => {
+    return sum + evalRun.llmJudgeRequirements.length
+  }, 0)
+
+  const requirementsPassed = successfulRuns.reduce((sum, evalRun) => {
+    return (
+      sum +
+      evalRun.llmJudgeRequirements.filter((requirement) => requirement.passed)
+        .length
+    )
+  }, 0)
+
+  const weightedAverageScore =
+    successfulRuns.length === 0
+      ? 0
+      : roundTo(
+          successfulRuns.reduce((sum, run) => sum + run.score.ratio, 0) /
+            successfulRuns.length,
+          4
+        )
+
+  return {
+    runId,
+    startedAt,
+    finishedAt: new Date().toISOString(),
+    judgeModel: options.judgeModel,
+    solverModel: options.generationManifest.solverModel,
+    pattern: options.generationManifest.pattern,
+    inputGeneratedArtifacts: toRelativePath(options.inputDirectory),
+    evalCount: options.generationManifest.evals.length,
+    evalsProcessed: successfulRuns.length,
+    evalsErrored,
+    requirementsTotal,
+    requirementsPassed,
+    weightedAverageScore,
+  }
+}
+
 async function runWithRetries<T>(
   task: () => Promise<T>,
   maxRetries: number,
@@ -71,8 +217,6 @@ async function runWithRetries<T>(
 */
 export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
   const cliOptions = parseJudgeCliArgs(argv)
-  const runId = new Date().toISOString().replace(/[:.]/g, '-')
-  const startedAt = new Date().toISOString()
   const inputDirectory = path.resolve(process.cwd(), cliOptions.input)
   const outputDirectory = cliOptions.output ?? path.dirname(inputDirectory)
   const outputDirectories = await createRunOutputDirectories(outputDirectory)
@@ -80,6 +224,177 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
   const manifestEvals = generationManifest.evals
 
   console.log(`judge output: ${toRelativePath(outputDirectories.runDirectory)}`)
+  const rerunRequirementId = cliOptions.rerunRequirementId
+  const rerunRequirementsFile = cliOptions.rerunRequirementsFile
+
+  if (rerunRequirementId && rerunRequirementsFile) {
+    const targetRequirementsPath = path.resolve(
+      process.cwd(),
+      rerunRequirementsFile
+    )
+    const manifestEval = manifestEvals.find((item) => {
+      const candidateRequirementsPath = path.resolve(
+        process.cwd(),
+        item.evalPath,
+        'requirements.yaml'
+      )
+
+      return candidateRequirementsPath === targetRequirementsPath
+    })
+
+    if (!manifestEval) {
+      throw new Error(
+        `could not map --rerun-requirements-file=${toRelativePath(
+          targetRequirementsPath
+        )} to an eval in input manifest`
+      )
+    }
+
+    console.log(
+      `rerunning one requirement: ${manifestEval.evalId}#${rerunRequirementId}`
+    )
+
+    const evalDirectory = path.resolve(process.cwd(), manifestEval.evalPath)
+    const generatedEvalRunDirectory = path.join(
+      inputDirectory,
+      manifestEval.generatedPath
+    )
+    const generatedFiles = await loadFiles(generatedEvalRunDirectory)
+    if (generatedFiles.length === 0) {
+      throw new Error(
+        `no generated files found in ${toRelativePath(generatedEvalRunDirectory)}`
+      )
+    }
+
+    const [requirements, prompt] = await Promise.all([
+      readFile(path.join(evalDirectory, 'requirements.yaml'), 'utf-8'),
+      readFile(path.join(evalDirectory, 'prompt.md'), 'utf-8'),
+    ])
+
+    const packageJson = await loadFile(path.join(process.cwd(), 'testbench/package.json'))
+
+    const llmJudgeStage = await runWithRetries(
+      () =>
+        runLlmJudgeStage([packageJson, ...generatedFiles], requirements, {
+          ...cliOptions,
+          directory: process.cwd(),
+          requirementIds: [rerunRequirementId],
+        }),
+      cliOptions.maxRetries,
+      (attempt, error) => {
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        console.warn(
+          `[judge-stage][${manifestEval.evalId}] attempt ${attempt}/${cliOptions.maxRetries} failed: ${errorMessage}`
+        )
+      }
+    )
+
+    const rerunRequirement = llmJudgeStage.requirements[0]
+    if (!rerunRequirement) {
+      throw new Error(
+        `judge did not return a requirement result for ${rerunRequirementId}`
+      )
+    }
+    const resultFilePath = getResultFilePath(
+      outputDirectories.runDirectory,
+      manifestEval.generatedPath,
+      manifestEval.evalId
+    )
+
+    let existingEvalResult: PersistedEvalResult
+    try {
+      const raw = await readFile(resultFilePath, 'utf8')
+      existingEvalResult = parsePersistedEvalResult(raw, resultFilePath)
+    } catch (error) {
+      if (isNotFoundError(error)) {
+        throw new Error(
+          `missing existing per-eval output at ${toRelativePath(resultFilePath)}`
+        )
+      }
+      throw error
+    }
+
+    const matchingIndex = existingEvalResult.llmJudgeRequirements.findIndex(
+      (item) => item.id === rerunRequirement.id
+    )
+    if (matchingIndex === -1) {
+      throw new Error(
+        `existing per-eval output does not contain requirement id ${rerunRequirement.id}`
+      )
+    }
+
+    const updatedRequirements = [...existingEvalResult.llmJudgeRequirements]
+    updatedRequirements[matchingIndex] = rerunRequirement
+
+    const judgeSessionArtifactPath = llmJudgeStage.opencodeSession
+      ? path.join(
+          path.dirname(resultFilePath),
+          `${sanitizeSegment(existingEvalResult.evalId)}.opencode-session.judge.json`
+        )
+      : undefined
+
+    if (judgeSessionArtifactPath) {
+      await writeFile(
+        judgeSessionArtifactPath,
+        JSON.stringify(llmJudgeStage.opencodeSession, null, 2),
+        'utf8'
+      )
+    }
+
+    const updatedEvalResult: PersistedEvalResult = {
+      ...existingEvalResult,
+      judgeModel: cliOptions.model,
+      solverModel: generationManifest.solverModel,
+      llmJudgeRequirements: updatedRequirements,
+      score: computeScore(updatedRequirements),
+      outputFiles:
+        existingEvalResult.outputFiles && existingEvalResult.outputFiles.length > 0
+          ? existingEvalResult.outputFiles
+          : generatedFiles.map((file) => file.path),
+      judgeSessionArtifactPath: judgeSessionArtifactPath
+        ? toPosixRelativePath(
+            outputDirectories.runDirectory,
+            judgeSessionArtifactPath
+          )
+        : existingEvalResult.judgeSessionArtifactPath,
+    }
+
+    await writeFile(resultFilePath, JSON.stringify(updatedEvalResult, null, 2), 'utf8')
+
+    if (cliOptions.debug) {
+      await writeDebugArtifacts(
+        outputDirectories.runDirectory,
+        manifestEval.evalId,
+        prompt,
+        llmJudgeStage
+      )
+    }
+
+    const summaryBackupPath = await backupExistingSummary(outputDirectories.runDirectory)
+    if (summaryBackupPath) {
+      console.log(`summary backup: ${toRelativePath(summaryBackupPath)}`)
+    }
+
+    const summaryPayload = await rebuildSummaryFromExistingResults({
+      runDirectory: outputDirectories.runDirectory,
+      inputDirectory,
+      generationManifest,
+      judgeModel: cliOptions.model,
+    })
+    const summaryPath = await writeSummary(
+      outputDirectories.runDirectory,
+      summaryPayload
+    )
+
+    console.log(`judge complete: ${toRelativePath(summaryPath)}`)
+    return {
+      runDirectory: outputDirectories.runDirectory,
+      summaryPath,
+    }
+  }
+
+  const runId = new Date().toISOString().replace(/[:.]/g, '-')
+  const startedAt = new Date().toISOString()
   console.log(`starting judge: ${manifestEvals.length} eval(s)`)
 
   const evalRuns = await runWithConcurrency(

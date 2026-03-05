@@ -9,6 +9,7 @@ type LlmJudgeStageOptions = {
   timeout: number
   port?: number
   directory?: string
+  requirementIds?: string[]
 }
 
 // todo: this could be handled by structured output to make sure all requirements are satisfied
@@ -50,8 +51,29 @@ export async function runLlmJudgeStage(
   cliOptions: LlmJudgeStageOptions
 ) {
   const requirements = await loadRequirements(rawRequirements)
+  const requirementIdsFilter = cliOptions.requirementIds
+  const selectedRequirements = requirementIdsFilter
+    ? requirements.filter((requirement) =>
+        requirementIdsFilter.includes(requirement.id)
+      )
+    : requirements
 
-  const prompt = buildJudgePrompt(requirements, files)
+  if (selectedRequirements.length === 0) {
+    throw new Error('no requirements matched requirement filter')
+  }
+
+  if (
+    requirementIdsFilter &&
+    selectedRequirements.length !== requirementIdsFilter.length
+  ) {
+    const selectedIds = new Set(selectedRequirements.map((item) => item.id))
+    const missingIds = requirementIdsFilter.filter((id) => !selectedIds.has(id))
+    throw new Error(
+      `missing requirement ids for judge rerun: ${missingIds.join(', ')}`
+    )
+  }
+
+  const prompt = buildJudgePrompt(selectedRequirements, files)
 
   const judgeCall = await runJudgeCall({
     prompt,
@@ -59,7 +81,7 @@ export async function runLlmJudgeStage(
   })
 
   const mappedRequirements = mapRequirementResults(
-    requirements,
+    selectedRequirements,
     judgeCall.requirements
   )
 

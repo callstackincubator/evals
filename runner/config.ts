@@ -61,6 +61,8 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
       'fail-fast': { type: 'boolean', default: false },
       'max-retries': { type: 'string', default: '1' },
       'model': { type: 'string' },
+      'rerun-requirement-id': { type: 'string' },
+      'rerun-requirements-file': { type: 'string' },
       'timeout': { type: 'string', default: '120000' },
       'port': { type: 'string' },
       'input': { type: 'string' },
@@ -76,6 +78,21 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
   if (!values.model) {
     throw new Error('--model is required for judge runs')
   }
+  if (values['rerun-requirement-id'] && !values['rerun-requirements-file']) {
+    throw new Error(
+      '--rerun-requirements-file is required when --rerun-requirement-id is provided'
+    )
+  }
+  if (values['rerun-requirements-file'] && !values['rerun-requirement-id']) {
+    throw new Error(
+      '--rerun-requirement-id is required when --rerun-requirements-file is provided'
+    )
+  }
+  if (values['rerun-requirement-id'] && !values.output) {
+    throw new Error(
+      '--output is required when rerunning a single requirement over existing judge outputs'
+    )
+  }
 
   return {
     concurrency: parsePositiveInteger(values.concurrency, '--concurrency'),
@@ -83,6 +100,8 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
     failFast: values['fail-fast'] ?? false,
     maxRetries: parsePositiveInteger(values['max-retries'], '--max-retries'),
     model: values.model,
+    rerunRequirementId: values['rerun-requirement-id'],
+    rerunRequirementsFile: values['rerun-requirements-file'],
     timeout: parsePositiveInteger(values.timeout, '--timeout'),
     port: parsePort(values.port),
     input: values.input,
