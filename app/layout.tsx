@@ -18,6 +18,12 @@ function resolveSiteUrl(): URL {
     return new URL(normalizeSiteUrl(explicitSiteUrl));
   }
 
+  const vercelProductionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+
+  if (vercelProductionUrl) {
+    return new URL(`https://${vercelProductionUrl}`);
+  }
+
   const vercelUrl = process.env.VERCEL_URL?.trim();
 
   if (vercelUrl) {
