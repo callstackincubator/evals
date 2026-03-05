@@ -12,14 +12,12 @@ const CATEGORY_ORDER: Record<string, number> = {
   navigation: 1,
   animation: 2,
   "async-state": 3,
-  "expo-sdk": 4,
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
   navigation: "Navigation",
   animation: "Animation",
   "async-state": "Async State",
-  "expo-sdk": "Expo SDK",
 };
 
 function titleCaseWord(word: string): string {
