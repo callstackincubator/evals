@@ -83,14 +83,9 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
       '--rerun-requirements-file is required when --rerun-requirement-id is provided'
     )
   }
-  if (values['rerun-requirements-file'] && !values['rerun-requirement-id']) {
+  if (values['rerun-requirements-file'] && !values.output) {
     throw new Error(
-      '--rerun-requirement-id is required when --rerun-requirements-file is provided'
-    )
-  }
-  if (values['rerun-requirement-id'] && !values.output) {
-    throw new Error(
-      '--output is required when rerunning a single requirement over existing judge outputs'
+      '--output is required when rerunning requirements over existing judge outputs'
     )
   }
 

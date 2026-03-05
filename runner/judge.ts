@@ -227,7 +227,7 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
   const rerunRequirementId = cliOptions.rerunRequirementId
   const rerunRequirementsFile = cliOptions.rerunRequirementsFile
 
-  if (rerunRequirementId && rerunRequirementsFile) {
+  if (rerunRequirementsFile) {
     const targetRequirementsPath = path.resolve(
       process.cwd(),
       rerunRequirementsFile
@@ -250,9 +250,13 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
       )
     }
 
-    console.log(
-      `rerunning one requirement: ${manifestEval.evalId}#${rerunRequirementId}`
-    )
+    if (rerunRequirementId) {
+      console.log(
+        `rerunning one requirement: ${manifestEval.evalId}#${rerunRequirementId}`
+      )
+    } else {
+      console.log(`rerunning all requirements: ${manifestEval.evalId}`)
+    }
 
     const evalDirectory = path.resolve(process.cwd(), manifestEval.evalPath)
     const generatedEvalRunDirectory = path.join(
@@ -278,7 +282,7 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
         runLlmJudgeStage([packageJson, ...generatedFiles], requirements, {
           ...cliOptions,
           directory: process.cwd(),
-          requirementIds: [rerunRequirementId],
+          requirementIds: rerunRequirementId ? [rerunRequirementId] : undefined,
         }),
       cliOptions.maxRetries,
       (attempt, error) => {
@@ -289,12 +293,6 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
       }
     )
 
-    const rerunRequirement = llmJudgeStage.requirements[0]
-    if (!rerunRequirement) {
-      throw new Error(
-        `judge did not return a requirement result for ${rerunRequirementId}`
-      )
-    }
     const resultFilePath = getResultFilePath(
       outputDirectories.runDirectory,
       manifestEval.generatedPath,
@@ -314,17 +312,29 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
       throw error
     }
 
-    const matchingIndex = existingEvalResult.llmJudgeRequirements.findIndex(
-      (item) => item.id === rerunRequirement.id
-    )
-    if (matchingIndex === -1) {
-      throw new Error(
-        `existing per-eval output does not contain requirement id ${rerunRequirement.id}`
-      )
-    }
+    let updatedRequirements: RequirementResult[]
+    if (rerunRequirementId) {
+      const rerunRequirement = llmJudgeStage.requirements[0]
+      if (!rerunRequirement) {
+        throw new Error(
+          `judge did not return a requirement result for ${rerunRequirementId}`
+        )
+      }
 
-    const updatedRequirements = [...existingEvalResult.llmJudgeRequirements]
-    updatedRequirements[matchingIndex] = rerunRequirement
+      const matchingIndex = existingEvalResult.llmJudgeRequirements.findIndex(
+        (item) => item.id === rerunRequirement.id
+      )
+      if (matchingIndex === -1) {
+        throw new Error(
+          `existing per-eval output does not contain requirement id ${rerunRequirement.id}`
+        )
+      }
+
+      updatedRequirements = [...existingEvalResult.llmJudgeRequirements]
+      updatedRequirements[matchingIndex] = rerunRequirement
+    } else {
+      updatedRequirements = llmJudgeStage.requirements
+    }
 
     const judgeSessionArtifactPath = llmJudgeStage.opencodeSession
       ? path.join(
