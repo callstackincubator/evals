@@ -61,6 +61,7 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
       'fail-fast': { type: 'boolean', default: false },
       'max-retries': { type: 'string', default: '1' },
       'model': { type: 'string' },
+      'rerun-missing-judgements': { type: 'boolean', default: false },
       'rerun-requirement-id': { type: 'string' },
       'rerun-requirements-file': { type: 'string' },
       'timeout': { type: 'string', default: '120000' },
@@ -83,6 +84,16 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
       '--rerun-requirements-file is required when --rerun-requirement-id is provided'
     )
   }
+  if (values['rerun-missing-judgements'] && values['rerun-requirements-file']) {
+    throw new Error(
+      '--rerun-missing-judgements cannot be used together with --rerun-requirements-file'
+    )
+  }
+  if (values['rerun-missing-judgements'] && !values.output) {
+    throw new Error(
+      '--output is required when rerunning missing judgements over existing judge outputs'
+    )
+  }
   if (values['rerun-requirements-file'] && !values.output) {
     throw new Error(
       '--output is required when rerunning requirements over existing judge outputs'
@@ -95,6 +106,7 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
     failFast: values['fail-fast'] ?? false,
     maxRetries: parsePositiveInteger(values['max-retries'], '--max-retries'),
     model: values.model,
+    rerunMissingJudgements: values['rerun-missing-judgements'] ?? false,
     rerunRequirementId: values['rerun-requirement-id'],
     rerunRequirementsFile: values['rerun-requirements-file'],
     timeout: parsePositiveInteger(values.timeout, '--timeout'),

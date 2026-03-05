@@ -68,6 +68,8 @@ type PersistedEvalResult = {
   judgeSessionArtifactPath?: string
 }
 
+type ManifestEval = Awaited<ReturnType<typeof readGenerationManifest>>['evals'][number]
+
 function parsePersistedEvalResult(
   raw: string,
   resultFilePath: string
@@ -189,6 +191,113 @@ async function rebuildSummaryFromExistingResults(options: {
   }
 }
 
+async function runJudgeForManifestEval(options: {
+  manifestEval: ManifestEval
+  index: number
+  total: number
+  cliOptions: ReturnType<typeof parseJudgeCliArgs>
+  inputDirectory: string
+  outputDirectories: Awaited<ReturnType<typeof createRunOutputDirectories>>
+  solverModel: string
+}) {
+  const { manifestEval } = options
+  const evalPath = manifestEval.evalPath
+  const evalDirectory = path.resolve(process.cwd(), evalPath)
+  const generatedEvalRunDirectory = path.join(
+    options.inputDirectory,
+    manifestEval.generatedPath
+  )
+  const generatedFiles = await loadFiles(generatedEvalRunDirectory)
+  if (generatedFiles.length === 0) {
+    throw new Error(
+      `no generated files found in ${toRelativePath(generatedEvalRunDirectory)}`
+    )
+  }
+
+  const [requirements, prompt] = await Promise.all([
+    readFile(path.join(evalDirectory, 'requirements.yaml'), 'utf-8'),
+    readFile(path.join(evalDirectory, 'prompt.md'), 'utf-8'),
+  ])
+
+  const packageJson = await loadFile(path.join(process.cwd(), 'testbench/package.json'))
+
+  const llmJudgeStage = await runWithRetries(
+    () =>
+      runLlmJudgeStage([packageJson, ...generatedFiles], requirements, {
+        ...options.cliOptions,
+        directory: process.cwd(),
+      }),
+    options.cliOptions.maxRetries,
+    (attempt, error) => {
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      console.warn(
+        `[judge-stage][${manifestEval.evalId}] attempt ${attempt}/${options.cliOptions.maxRetries} failed: ${errorMessage}`
+      )
+    }
+  )
+
+  const stageResult = {
+    evalId: manifestEval.evalId,
+    evalPath,
+    judgeModel: options.cliOptions.model,
+    solverModel: options.solverModel,
+    llmJudgeRequirements: llmJudgeStage.requirements,
+    score: llmJudgeStage.score,
+    outputFiles: generatedFiles.map((file) => file.path),
+    judgeSessionArtifactPath: undefined as string | undefined,
+  }
+
+  if (options.cliOptions.debug) {
+    await writeDebugArtifacts(
+      options.outputDirectories.runDirectory,
+      manifestEval.evalId,
+      prompt,
+      llmJudgeStage
+    )
+  }
+
+  const resultFileName = `${sanitizeSegment(stageResult.evalId)}.json`
+  const resultSubdirectory = getEvalResultSubdirectory(manifestEval.generatedPath)
+  const resultDirectory = path.join(
+    options.outputDirectories.evalDirectory,
+    resultSubdirectory
+  )
+  await mkdir(resultDirectory, { recursive: true })
+
+  const judgeSessionArtifactPath = llmJudgeStage.opencodeSession
+    ? path.join(
+        resultDirectory,
+        `${sanitizeSegment(stageResult.evalId)}.opencode-session.judge.json`
+      )
+    : undefined
+
+  if (judgeSessionArtifactPath) {
+    await writeFile(
+      judgeSessionArtifactPath,
+      JSON.stringify(llmJudgeStage.opencodeSession, null, 2),
+      'utf8'
+    )
+  }
+
+  stageResult.judgeSessionArtifactPath = judgeSessionArtifactPath
+    ? toPosixRelativePath(options.outputDirectories.runDirectory, judgeSessionArtifactPath)
+    : undefined
+
+  await writeFile(
+    path.join(resultDirectory, resultFileName),
+    JSON.stringify(stageResult, null, 2),
+    'utf8'
+  )
+
+  const position = options.index + 1
+  console.log(
+    `[${position}/${options.total}] ${manifestEval.evalId} ` +
+      `-> llm:${stageResult.score.ratio}`
+  )
+
+  return stageResult
+}
+
 async function runWithRetries<T>(
   task: () => Promise<T>,
   maxRetries: number,
@@ -224,8 +333,97 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
   const manifestEvals = generationManifest.evals
 
   console.log(`judge output: ${toRelativePath(outputDirectories.runDirectory)}`)
+  const rerunMissingJudgements = cliOptions.rerunMissingJudgements
   const rerunRequirementId = cliOptions.rerunRequirementId
   const rerunRequirementsFile = cliOptions.rerunRequirementsFile
+
+  if (rerunMissingJudgements) {
+    const missingManifestEvals: ManifestEval[] = []
+
+    for (const manifestEval of manifestEvals) {
+      const resultFilePath = getResultFilePath(
+        outputDirectories.runDirectory,
+        manifestEval.generatedPath,
+        manifestEval.evalId
+      )
+
+      try {
+        await readFile(resultFilePath, 'utf8')
+      } catch (error) {
+        if (isNotFoundError(error)) {
+          missingManifestEvals.push(manifestEval)
+          continue
+        }
+
+        throw error
+      }
+    }
+
+    console.log(
+      `rerunning missing judgements: ${missingManifestEvals.length} eval(s)`
+    )
+
+    const evalRuns = await runWithConcurrency(
+      missingManifestEvals,
+      cliOptions.concurrency,
+      async (manifestEval, index) => {
+        try {
+          const stageResult = await runJudgeForManifestEval({
+            manifestEval,
+            index,
+            total: missingManifestEvals.length,
+            cliOptions,
+            inputDirectory,
+            outputDirectories,
+            solverModel: generationManifest.solverModel,
+          })
+
+          return { kind: 'success' as const, index, result: stageResult }
+        } catch (error) {
+          const errorMessage = formatUnknownError(error)
+          console.error(`[judge-stage][${manifestEval.evalId}] ${errorMessage}`)
+
+          if (cliOptions.failFast) {
+            throw error
+          }
+
+          return {
+            kind: 'error' as const,
+            index,
+          }
+        }
+      }
+    )
+
+    const { errorRuns } = partitionEvalRuns(evalRuns)
+    if (errorRuns.length > 0) {
+      console.log(
+        `missing-judgement rerun completed with ${errorRuns.length} error(s)`
+      )
+    }
+
+    const summaryBackupPath = await backupExistingSummary(outputDirectories.runDirectory)
+    if (summaryBackupPath) {
+      console.log(`summary backup: ${toRelativePath(summaryBackupPath)}`)
+    }
+
+    const summaryPayload = await rebuildSummaryFromExistingResults({
+      runDirectory: outputDirectories.runDirectory,
+      inputDirectory,
+      generationManifest,
+      judgeModel: cliOptions.model,
+    })
+    const summaryPath = await writeSummary(
+      outputDirectories.runDirectory,
+      summaryPayload
+    )
+    console.log(`judge complete: ${toRelativePath(summaryPath)}`)
+
+    return {
+      runDirectory: outputDirectories.runDirectory,
+      summaryPath,
+    }
+  }
 
   if (rerunRequirementsFile) {
     const targetRequirementsPath = path.resolve(
@@ -412,107 +610,15 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
     cliOptions.concurrency,
     async (manifestEval, index) => {
       try {
-        const evalPath = manifestEval.evalPath
-        const evalDirectory = path.resolve(process.cwd(), evalPath)
-        const generatedEvalRunDirectory = path.join(
+        const stageResult = await runJudgeForManifestEval({
+          manifestEval,
+          index,
+          total: manifestEvals.length,
+          cliOptions,
           inputDirectory,
-          manifestEval.generatedPath
-        )
-        const generatedFiles = await loadFiles(generatedEvalRunDirectory)
-        if (generatedFiles.length === 0) {
-          throw new Error(
-            `no generated files found in ${toRelativePath(generatedEvalRunDirectory)}`
-          )
-        }
-
-        const [requirements, prompt] = await Promise.all([
-          readFile(path.join(evalDirectory, 'requirements.yaml'), 'utf-8'),
-          readFile(path.join(evalDirectory, 'prompt.md'), 'utf-8'),
-        ])
-
-        const packageJson = await loadFile(
-          path.join(process.cwd(), 'testbench/package.json')
-        )
-
-        const llmJudgeStage = await runWithRetries(
-          () =>
-            runLlmJudgeStage([packageJson, ...generatedFiles], requirements, {
-              ...cliOptions,
-              directory: process.cwd(),
-            }),
-          cliOptions.maxRetries,
-          (attempt, error) => {
-            const errorMessage =
-              error instanceof Error ? error.message : String(error)
-            console.warn(
-              `[judge-stage][${manifestEval.evalId}] attempt ${attempt}/${cliOptions.maxRetries} failed: ${errorMessage}`
-            )
-          }
-        )
-
-        const stageResult = {
-          evalId: manifestEval.evalId,
-          evalPath,
-          judgeModel: cliOptions.model,
+          outputDirectories,
           solverModel: generationManifest.solverModel,
-          llmJudgeRequirements: llmJudgeStage.requirements,
-          score: llmJudgeStage.score,
-          outputFiles: generatedFiles.map((file) => file.path),
-          judgeSessionArtifactPath: undefined as string | undefined,
-        }
-
-        if (cliOptions.debug) {
-          await writeDebugArtifacts(
-            outputDirectories.runDirectory,
-            manifestEval.evalId,
-            prompt,
-            llmJudgeStage
-          )
-        }
-
-        const resultFileName = `${sanitizeSegment(stageResult.evalId)}.json`
-        const resultSubdirectory = getEvalResultSubdirectory(
-          manifestEval.generatedPath
-        )
-        const resultDirectory = path.join(
-          outputDirectories.evalDirectory,
-          resultSubdirectory
-        )
-        await mkdir(resultDirectory, { recursive: true })
-
-        const judgeSessionArtifactPath = llmJudgeStage.opencodeSession
-          ? path.join(
-              resultDirectory,
-              `${sanitizeSegment(stageResult.evalId)}.opencode-session.judge.json`
-            )
-          : undefined
-
-        if (judgeSessionArtifactPath) {
-          await writeFile(
-            judgeSessionArtifactPath,
-            JSON.stringify(llmJudgeStage.opencodeSession, null, 2),
-            'utf8'
-          )
-        }
-
-        stageResult.judgeSessionArtifactPath = judgeSessionArtifactPath
-          ? toPosixRelativePath(
-              outputDirectories.runDirectory,
-              judgeSessionArtifactPath
-            )
-          : undefined
-
-        await writeFile(
-          path.join(resultDirectory, resultFileName),
-          JSON.stringify(stageResult, null, 2),
-          'utf8'
-        )
-
-        const position = index + 1
-        console.log(
-          `[${position}/${manifestEvals.length}] ${manifestEval.evalId} ` +
-            `-> llm:${stageResult.score.ratio}`
-        )
+        })
 
         return { kind: 'success' as const, index, result: stageResult }
       } catch (error) {
