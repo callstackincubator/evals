@@ -1,7 +1,7 @@
 "use client";
 
-import { type Dispatch, type SetStateAction, useMemo, useState } from "react";
-import { CaretDown, CaretUp, X } from "@phosphor-icons/react";
+import { type Dispatch, type SetStateAction, useEffect, useMemo, useState } from "react";
+import { CaretDown, CaretUp, Info, X } from "@phosphor-icons/react";
 import type {
   CategoryDefinition,
   CategoryScore,
@@ -11,6 +11,7 @@ import type {
 } from "@/lib/types/evals";
 import { cn, formatNumber, formatPct } from "@/lib/utils";
 import { getPodiumRowStyle, ModelLogoSquare, RankBadge } from "@/components/tables/table-badges";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface CategoryDrilldownTableProps {
   category: CategoryDefinition;
@@ -23,6 +24,8 @@ interface SelectedEvalDetails {
   evalName: string;
   requirementsTotal: number;
 }
+
+const CATEGORY_TABLE_ALERT_SEEN_KEY = "rn-evals:category-table-alert-seen";
 
 function SharedColumns() {
   return (
@@ -50,6 +53,20 @@ function emptyCategory(category: CategoryDefinition): CategoryScore {
 export function CategoryDrilldownTable({ category, models, evalMatrixById }: CategoryDrilldownTableProps) {
   const [expandedModelId, setExpandedModelId] = useState<string | null>(null);
   const [selectedEval, setSelectedEval] = useState<SelectedEvalDetails | null>(null);
+  const [showIntroAlert, setShowIntroAlert] = useState(false);
+
+  useEffect(() => {
+    const hasSeenAlert = window.localStorage.getItem(CATEGORY_TABLE_ALERT_SEEN_KEY) === "true";
+
+    if (!hasSeenAlert) {
+      window.localStorage.setItem(CATEGORY_TABLE_ALERT_SEEN_KEY, "true");
+      const frameId = window.requestAnimationFrame(() => {
+        setShowIntroAlert(true);
+      });
+
+      return () => window.cancelAnimationFrame(frameId);
+    }
+  }, []);
 
   const rows = useMemo(() => {
     return models
@@ -113,6 +130,29 @@ export function CategoryDrilldownTable({ category, models, evalMatrixById }: Cat
         evalMatrixById={evalMatrixById}
         onClose={() => setSelectedEval(null)}
       />
+
+      {showIntroAlert && (
+        <div className="pointer-events-none fixed bottom-4 left-4 z-50 max-w-md md:bottom-6 md:left-6">
+          <Alert className="pointer-events-auto border-zinc-800 bg-zinc-900 text-zinc-100 shadow-2xl">
+            <Info size={16} weight="bold" className="text-zinc-100" />
+            <div className="pr-6">
+              <AlertTitle className="mb-2 text-zinc-100">Deep dive into evals</AlertTitle>
+              <AlertDescription className="leading-snug text-zinc-300">
+                Click a model to see all evals in a category, including scores and token usage.
+                Click an eval to compare how different models solved it.
+              </AlertDescription>
+            </div>
+            <button
+              type="button"
+              aria-label="Dismiss alert"
+              onClick={() => setShowIntroAlert(false)}
+              className="absolute top-2 right-2 inline-flex h-6 w-6 items-center justify-center border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100"
+            >
+              <X size={12} weight="bold" />
+            </button>
+          </Alert>
+        </div>
+      )}
     </>
   );
 }
