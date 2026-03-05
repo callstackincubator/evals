@@ -1,7 +1,7 @@
 "use client";
 
 import { type Dispatch, type SetStateAction, useMemo, useState } from "react";
-import { X } from "@phosphor-icons/react";
+import { CaretDown, CaretUp, X } from "@phosphor-icons/react";
 import type {
   CategoryDefinition,
   CategoryScore,
@@ -169,6 +169,17 @@ function FragmentRow({
         <td className="px-4 py-5 font-medium text-zinc-100">
           <div className="flex items-center gap-3">
             <RankBadge rank={rank} />
+            <span
+              aria-hidden
+              className={cn(
+                "inline-flex h-6 w-6 items-center justify-center border",
+                isModelExpanded
+                  ? "border-zinc-500 bg-zinc-800 text-zinc-100"
+                  : "border-zinc-700 bg-zinc-900 text-zinc-400",
+              )}
+            >
+              {isModelExpanded ? <CaretUp size={12} weight="bold" /> : <CaretDown size={12} weight="bold" />}
+            </span>
             <ModelLogoSquare modelId={modelId} modelLabel={modelLabel} />
             <span>{modelLabel}</span>
           </div>
