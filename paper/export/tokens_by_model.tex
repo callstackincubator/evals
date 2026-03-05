@@ -1,0 +1,24 @@
+% Requires: \usepackage{booktabs}
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrr}
+\toprule
+Model & Mean token usage & Token usage standard deviation \\
+\midrule
+claude-opus-4.6 & 325,598 & 5,923 \\
+claude-sonnet-4.6 & 116,581 & 981 \\
+deepseek-r1-distill-qwen-32b & 181,466 & 1,468 \\
+deepseek-v3.2 & 270,069 & 38,035 \\
+gemini-3.1-pro-preview & 582,696 & 39,110 \\
+glm-5 & 512,402 & 95,493 \\
+gpt-5.3-codex & 321,229 & 74,294 \\
+gpt-oss-120b & 450,443 & 34,197 \\
+gpt-oss-20b & 486,854 & 48,229 \\
+grok-4 & 821,708 & 66,569 \\
+kimi-k2.5 & 516,723 & 93,631 \\
+qwen2.5-coder-32b-instruct & 447,939 & 18,558 \\
+\bottomrule
+\end{tabular}
+\caption{Total tokens per run by model. Mean and stddev computed across runs (solver + judge).}
+\label{tab:tokens-by-model}
+\end{table}

@@ -8,6 +8,18 @@
 \usepackage{enumitem}
 \usepackage{hyperref}
 \usepackage{xcolor}
+\usepackage{cleveref}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{minted}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\usepackage{authblk}
+
+
+\usetikzlibrary{arrows.meta}
 
 \hypersetup{
   colorlinks=true,
@@ -19,43 +31,291 @@
 \setlist[itemize]{leftmargin=1.25em}
 \setlist[enumerate]{leftmargin=1.5em}
 
-\title{\textbf{Methodology Whitepaper}\\React Native Evals Benchmark}
-\author{Repository-aligned methodology specification}
-\date{February 26, 2026}
+\title{\textbf{React Native Evals: A Reproducible Benchmark for Evaluating Large Language Models on Mobile App Development Tasks}\\ Whitepaper}
+
+\author{Artur Morys-Magiera}
+\author{Mike Grabowski}
+\author{Lech Kalinowski PhD}
+\author{\\Piotr Miłkowski}
+\author{Michał Pierzchała}
+\affil{Callstack, Poland}
+\affil{\{artur.morys-magiera,mike,lech.kalinowski,\\piotr.milkowski,michal.pierzchala\}@callstack.com}
+
+\date{March 5, 2026}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-This document specifies the methodology implemented by the React Native Evals repository for benchmarking coding models on React Native tasks. It describes dataset structure, execution flow, solver and judge roles, requirement-weighted scoring, aggregation logic, artifact outputs, and reproducibility considerations. The description is implementation-faithful to the current repository state and explicitly notes branch-level authoring conventions where they affect interpretation.
+Large Language Models (LLMs) have improved rapidly on coding tasks, but most widely used benchmarks emphasize general-purpose programming and underrepresent mobile engineering. However, scores from generic coding benchmarks are often insufficient for estimating real-world performance on domain-specific tasks. To address this gap with respect to React Native, an open-source framework for building cross-platform applications, we present React Native Evals: a benchmark designed specifically for React Native problem solving evaluation. The framework evaluates declared requirements with optional weights, enabling fine-grained analysis of where models succeed or fail. These elements provide a transparent and auditable basis for comparative evaluation of LLMs on mobile app development tasks. The benchmark pipeline executes successfully end-to-end across the evaluated model set, confirming that the current eval suite is operationally usable. The results show that the framework can separate model capability in an auditable and reproducible way, while preserving requirement-level interpretability through explicit weights and per-eval verdict traces and deterministic output artifacts. Finally, we draw conclusions from the benchmark runs, comparing models both generally and within specific sub-domains in React Native code generation, as well as general metrics such as token consumption.
 \end{abstract}
 
-\section{Scope and Assumptions}
-This whitepaper documents the benchmark as executed through the split CLI flow: \texttt{bun runner/run.ts} followed by \texttt{bun runner/judge.ts}. It is aligned to observable runner behavior under \texttt{runner/} and to repository-level eval authoring guidance under \texttt{docs/}.
+\section{Introduction}
+Large Language Models (LLMs) have improved rapidly on coding tasks, but most widely used benchmarks emphasize general-purpose programming and underrepresent mobile engineering. React Native development introduces a different difficulty profile: correctness depends not only on code syntax, but also on component behavior, navigation flow, asynchronous state transitions, platform API usage, and consistency across multiple files. As a result, scores from generic coding benchmarks are often insufficient for estimating real-world performance on React Native tasks.
 
-\textbf{Assumption used in this document:} evals follow the repository contract under \texttt{evals/<category>/<eval-id>/} and are benchmarked via the standard runner pipeline.
+To address this gap, we present \textit{React Native Evals}, a reproducible benchmark designed specifically for React Native code-generation evaluation. The benchmark uses repository-defined tasks, structured solver outputs, and requirement-level judging to assess whether generated implementations satisfy explicit engineering constraints. Rather than relying on a single pass/fail signal at the task level, the framework evaluates declared requirements with optional weights, enabling fine-grained analysis of where models succeed or fail.
 
-\section{Benchmark Unit and Dataset Contract}
-The atomic benchmark unit is a single eval directory. Each eval is expected to contain:
-\begin{itemize}
-  \item \texttt{prompt.md}: task prompt used by the solver model
-  \item \texttt{requirements.yaml}: a list of judgeable requirements (optional per-requirement weights)
-  \item \texttt{app/}: baseline input files provided to the solver
-  \item \texttt{reference/}: reference implementation files retained for authoring and manual validation workflows
-\end{itemize}
+This whitepaper documents the benchmark in an implementation-faithful manner relative to the current repository state. It specifies the dataset contract, end-to-end execution pipeline, solver and judge responsibilities, scoring and aggregation rules, artifact schema, and repeat-run protocol for variance-aware comparison. It also clarifies authoring conventions (including \texttt{implementation-} requirement IDs) and distinguishes those conventions from runner-enforced behavior. Together, these elements provide a transparent and auditable basis for comparative evaluation of LLMs on mobile app development tasks in React Native.
+
+\section{Common mobile development tasks methodology}
+
+The meritorious content of this benchmark is concentrated around validation of primitive Large Language Models without any external augmentations such as RAG, documentation access or agent skills. The purpose of this benchmark is to assess how those models perform in the task of React Native development including the most common third party libraries in the React Native ecosystem.
+
+The benchmark we propose in this work includes evaluation cases (referred to as \textit{evals}), divided into categories; each eval consists of multiple requirements as to the outputs of the evaluated model (referred to as \textit{solver}), as described in \cref{sec:generation,sec:judgement}. Finally, the solver performs the task in each evaluation, and in the second stage of the benchmark, another LLM (referred to as \textit{judge}) assesses the result by assigning scores to each of the requirements, along with generating a justification in natural language (for interpretability). The breakdown of the categories of evals is presented in \cref{tab:category-evals-scope}. For the sake of this experiment, the chosen requirements were adjusted such that they mattered equally, thus implying weights of all requirements being set to $1.0$.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\linewidth}{l c X}
+\toprule
+\textbf{Category} & \textbf{\# Evals} & \textbf{Scope} \\
+\midrule
+Animation & 14 & React Native animation behavior, including \texttt{Animated} and \texttt{react-native-reanimated}. \\
+Asynchronous state & 14 & Async state/data-flow tasks with \texttt{TanStack Query}, \texttt{Zustand}, and \texttt{Jotai}. \\
+Navigation & 15 & Screen transitions, stack/modal flows, route params, and navigation state handling. \\
+\bottomrule
+\end{tabularx}
+\caption{Benchmark categories, number of evals per category, and short scope descriptions.}
+\label{tab:category-evals-scope}
+\end{table}
+
+\section{The benchmark pipeline}
+\label{sec:pipeline}
+
+This section specifies the exact models and runtime settings used in the benchmark to ensure reproducibility and fair comparison. We report model identifiers, version snapshots, assigned pipeline roles, and key execution parameters. All experiments use the same evaluation protocol, task set, and scoring logic; only the configured model changes.
+The models used in this benchmark are presented in \cref{tab:model-versions}.
+
+\subsection{Version and configuration of benchmarked models}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c|c|c}
+         \textbf{Model name}  & \textbf{Role}  \\
+         \hline
+         claude-opus-4.6 & Solver \\
+         \hline
+         claude-sonnet-4.6 & Solver, Judge \\
+         \hline
+         deepseek-r1-distill-qwen-32b & Solver \\
+         \hline
+         deepseek-v3.2 & Solver \\
+         \hline
+         gemini-3.1-pro-preview & Solver \\
+         \hline
+         glm-5  & Solver \\
+         \hline
+         gpt-5.3-codex  & Solver \\
+         \hline
+         gpt-oss-20b  & Solver \\
+         \hline
+         gpt-oss-120b  & Solver \\
+         \hline
+         grok-4  & Solver \\
+         \hline
+         kimi-k2.5 & Solver \\
+         \hline
+         qwen2.5-coder-32b-instruct & Solver \\
+         \bottomrule
+    \end{tabular}
+    \caption{List of models used in evaluation: names, versions and table role in the sense of \cref{sec:pipeline} (solver - the evaluted LLM; judge - LLM used to grade requirement execution by the solver)}
+    \label{tab:model-versions}
+\end{table}
+
+\subsection{Benchmark Unit and Dataset Contract}
+The atomic benchmark unit is a single eval directory. Each eval is expected to contain files structured according to the following \cref{sec:generation,sec:judgement}. The general pipeline looks as follows:
+\begin{enumerate}
+  \item \textbf{Generation CLI}: discover evals, load \texttt{app/} and \texttt{prompt.md}, run solver model, write generated files and \texttt{manifest.json} to the configured output directory.
+  \item \textbf{Judge CLI}: read eval entries from generation \texttt{manifest.json}, load generated files and \\\texttt{requirements.yaml}, run LLM judging, write per-eval results incrementally, and write summary at run completion.
+\end{enumerate}
 
 Eval discovery is file-driven: the runner scans for \texttt{requirements.yaml}. If that file is missing, the eval is not discovered and will not be included in the run.
 
-\section{End-to-End Execution Pipeline}
-For each benchmark run, execution is split into generation and judging:
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  data/.style={rectangle, draw, rounded corners=2pt, minimum width=1.8cm, align=center, font=\footnotesize, fill=blue!8},
+  process/.style={rectangle, draw, rounded corners=2pt, minimum width=2.4cm, align=center, font=\footnotesize, fill=green!8},
+  output/.style={rectangle, draw, rounded corners=2pt, minimum width=1.8cm, align=center, font=\footnotesize, fill=orange!8},
+  arrow/.style={-{Stealth[length=2pt]}}
+]
+  % Row 1: Dataset
+  \node[data] (prompt) {\texttt{prompt.md}};
+  \node[data, anchor=west] (app) at ([xshift=0.3cm]prompt.east) {\texttt{app/}};
+  \node[data, anchor=west] (reqs) at ([xshift=0.3cm]app.east) {\texttt{requirements.yaml}};
+  \node[data, anchor=west] (ref) at ([xshift=0.3cm]reqs.east) {\texttt{reference/}};
+
+  % Row 2: Generation CLI
+  \node[process] (discover) at ([yshift=-0.8cm]app.south) {Discovery};
+  \node[process] (loadgen) at ([yshift=-0.4cm]discover.south) {Load app, prompt};
+  \node[process] (solver) at ([yshift=-0.4cm]loadgen.south) {Solver LLM};
+  \node[process] (materialize) at ([yshift=-0.4cm]solver.south) {Materialize};
+
+  \draw[arrow] (prompt.south) -- (discover);
+  \draw[arrow] (app.south) -- (discover);
+  \draw[arrow] (discover) -- (loadgen);
+  \draw[arrow] (loadgen) -- (solver);
+  \draw[arrow] (solver) -- (materialize);
+
+  % Generation outputs (row centered between materialize and read manifest)
+  \node[output, anchor=east] (genfiles) at ([xshift=-1cm, yshift=-0.5cm]materialize.south) {Generated source files};
+  \node[output, anchor=east] (manifest) at ([xshift=1.21cm, yshift=-1.5cm]materialize.south) {\texttt{manifest.json}};
+  \draw[arrow] (materialize.south) |- (genfiles.east);
+  \draw[arrow] (materialize.south) |- (manifest.north);
+
+  % Row 3: Judge CLI
+  \node[process] (readmanifest) at ([yshift=-2.5cm]materialize.south) {Read manifest};
+  \node[process] (loadjudge) at ([yshift=-0.4cm]readmanifest.south) {Load files, reqs};
+  \node[process] (judge) at ([yshift=-0.4cm]loadjudge.south) {Judge LLM};
+  \node[process] (mapreq) at ([yshift=-0.4cm]judge.south) {Map by ID};
+
+  \draw[arrow] (manifest.south) -- (readmanifest.north);
+  \draw[arrow] (reqs.south) |- (loadjudge.east);
+  \draw[arrow] (readmanifest) -- (loadjudge);
+  \draw[arrow] (loadjudge) -- (judge);
+  \draw[arrow] (judge) -- (mapreq);
+
+  % Judge outputs
+  \node[output, anchor=west] (summary) at ([xshift=1.8cm, yshift=0.5cm]mapreq.east) {\texttt{summary.json}};
+  \node[output, anchor=west] (pereval) at ([xshift=1.8cm, yshift=-0.5cm]mapreq.east) {\texttt{<eval-id>.json}};
+  \draw[arrow] (mapreq.east) -- (summary.west);
+  \draw[arrow] (mapreq.east) -- (pereval.west);
+
+  % Row 4: Scoring
+  \node[process, fill=yellow!6] (scoring) at ([yshift=-0.8cm]mapreq.south) {Scoring};
+  \draw[arrow] (mapreq) -- (scoring);
+
+  % Dataset label
+  \node[font=\scriptsize\itshape, anchor=south] at ([yshift=0.1cm]prompt.north) {evals/\textlangle category\textrangle/\textlangle eval-id\textrangle/};
+\end{tikzpicture}
+\caption{End-to-end pipeline of the React Native Evals benchmark. Dataset inputs (blue) feed the Generation CLI (described in \cref{sec:generation}), producing \texttt{manifest.json} and source files generated by the solver. The Judge CLI (described in \cref{sec:judgement}) reads the manifest and \texttt{requirements.yaml}, runs the judge LLM, maps verdicts by requirement ID, and writes \texttt{summary.json} along with telemetry data. Scoring computes metrics as described in \cref{sec:scoring}.}
+\label{fig:pipeline-flow}
+\end{figure}
+
+\subsection{Generation stage inputs}
+\label{sec:generation}
+
 \begin{enumerate}
-  \item \textbf{Generation CLI}: discover evals, load \texttt{app/} and \texttt{prompt.md}, run solver model, write generated files and \texttt{manifest.json} to the configured output directory.
-  \item \textbf{Judge CLI}: read eval entries from generation \texttt{manifest.json}, load generated files and \texttt{requirements.yaml}, run LLM judging, write per-eval results incrementally under \texttt{runs/<input-folder>/evals/}, and write summary at run completion.
+  \item \textbf{Discovery}: discover evals
+  \item \textbf{Load \texttt{app/}}: read solution template (files on which the solver performs the task) and copy it to a temporary directory, in which the solver LLM will operate
+  \item \textbf{Load \texttt{prompt.md}}: parse the task definition, run solver model, write generated files and \\\texttt{manifest.json} to the configured output directory.
 \end{enumerate}
+
+\subsubsection{\texttt{prompt.md}}
+
+Task prompt used by the solver model. A representative logical template of this type of file is presented in \cref{lst:promptmd-template}.
+
+\begin{listing}[h]
+\begin{tcolorbox}[colback=gray!20,  % light gray background
+                  colframe=gray!60, % border color
+                  rounded corners,   % rounded edges
+                  boxrule=0.5mm,    % border thickness
+                  left=4mm, right=4mm, top=2mm, bottom=2mm, % padding
+                  title=\texttt{prompt.md} example]    % optional title
+Implement X where performing interaction Y causes Z and state A uses an animation B from package C.
+\end{tcolorbox}
+\caption{Example structure of a prompt in the benchmark.}
+\label{lst:promptmd-template}
+\end{listing}
+
+\subsubsection{\texttt{app/}}
+
+The \texttt{app/} directory must contain all files serving as baseline input provided to the solver. The files that shall be evaluated by the judge must be listed in the \texttt{requirements.yaml} file.
+
+\subsection{Judgement stage inputs}
+\label{sec:judgement}
+
+Reads eval entries from the generation output and runs an LLM to assess the completion of requirements (specified in \cref{sec:judgement-reqs}) in the generated solution.
+
+\subsubsection{\texttt{manifest.json}}
+
+The manifest file contains a summary of the generation stage (\cref{sec:generation}), containing information according to \cref{lst:manifest-json}.
+
+\begin{listing}[h]
+\begin{tcolorbox}[colback=gray!20,  % light gray background
+                  colframe=gray!60, % border color
+                  rounded corners,   % rounded edges
+                  boxrule=0.5mm,    % border thickness
+                  left=4mm, right=4mm, top=2mm, bottom=2mm, % padding
+                  title=\texttt{requirements.yaml} contract]    % optional title
+\begin{minted}[breaklines]{json}
+{
+  "runId": "YYYY-MM-DDTHH-MM-SS-SSSZ",
+  "startedAt": "YYYY-MM-DDTHH:MM:SS.SSSZ",
+  "finishedAt": "YYYY-MM-DDTHH:MM:SS.SSSZ",
+  "solverModel": "<MODEL_NAME>",
+  "pattern": "evals/**/*",
+  "evalCount": 1,
+  "evalsProcessed": 1,
+  "evalsErrored": 0,
+  "evals": [
+    {
+      "evalId": "01-category-task",
+      "evalPath": "evals/category/task",
+      "outputFiles": [
+        "App.tsx",
+        "styles.ts"
+      ],
+      "generatedPath": "category/task"
+    }
+  ]
+}
+\end{minted}
+\end{tcolorbox}
+\caption{The contract of \texttt{manifest.json} file, an artifact of the generation stage.}
+\label{lst:manifest-json}
+\end{listing}
+
+\subsubsection{\texttt{requirements.yaml}}
+\label{sec:judgement-reqs}
+
+Task prompt used by the solver model. A representative logical template of this type of file is presented in \cref{lst:requirements-yaml-template}.
+The \mintinline{yaml}{version} is a constant element present for compatibility reasons for future versions of the project, that must be set to \mintinline{yaml}{1}.
+The \mintinline{yaml}{inputs} list shall contain all files to be copied to the temporary workspace for the solver.
+The \mintinline{yaml}{requirements} list shall contain all the requirements, described in natural language. The requirements should explicitly state specific elements or behaviors that the presence of is to be asserted in the judgement stage.
+Optionally, each requirement may contain a \mintinline{yaml}{weight} value set to a positive value to emphasize its impact on the score for that requirement. If omitted, its value defaults to \mintinline{yaml}{1}.
+
+\begin{listing}[h]
+\begin{tcolorbox}[colback=gray!20,  % light gray background
+                  colframe=gray!60, % border color
+                  rounded corners,   % rounded edges
+                  boxrule=0.5mm,    % border thickness
+                  left=4mm, right=4mm, top=2mm, bottom=2mm, % padding
+                  title=\texttt{requirements.yaml} contract]    % optional title
+\begin{minted}[breaklines]{yaml}
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/styles.ts
+requirements:
+  - id: implementation-use-X-api
+    description: Must use API `X` from package `A`.
+    weight: 1
+  - id: implementation-avoid-Y-api
+    description: Must NOT use deprecated API `Y` from package `A`.
+    weight: 1
+  - id: toggle-state-on-click
+    description: Upon click on button `B`, the visual active state of element `C` must toggle.
+    weight: 1
+\end{minted}
+\end{tcolorbox}
+\caption{The contract of \texttt{requirements.yaml} file.}
+\label{lst:requirements-yaml-template}
+\end{listing}
+
+\subsection{OpenCode integration in the judgment stage.}
+Execution layer used to call all solver and judge models through one interface (model IDs in the form \texttt{provider/model}, e.g., \texttt{openai/gpt-5.3-codex}). Before judging starts, the runner ensures that a local OpenCode server is available on the configured port; if a server is already running, it is reused. For each eval, the Judge CLI creates a new OpenCode session, sends the constructed judge prompt, and requests schema-constrained structured output. If strict structured output fails, a JSON fallback path is used and validated before scoring.
+
+After each judge call, the pipeline can fetch OpenCode session metadata (conversation, token usage, and file-diff summary) and store it as \texttt{<eval-id>.opencode-session.judge.json}. Standard judge outputs are written incrementally as \texttt{runs/<input-folder>/evals/<eval-id>.json}, and the run-level aggregate is written as \texttt{summary.json}. Judging runs with bounded concurrency and retry logic; when \texttt{--fail-fast} is disabled, failed evals do not stop the run and are counted in \texttt{evalsErrored}.
 
 The runner supports bounded concurrency. If an eval fails and \texttt{----fail-fast} is not enabled, the run continues and the eval is counted in \texttt{evalsErrored}.
 
+The judge CLI also supports targeted re-judging over existing judge outputs using \\\texttt{----rerun-requirements-file} with \texttt{----output}; optionally pass \texttt{----rerun-requirement-id} to refresh only one requirement. Without \texttt{----rerun-requirement-id}, all requirements for the targeted eval are re-judged and replaced in the per-eval JSON. It also supports \texttt{----rerun-missing-judgements} with \texttt{----output} to scan for and judge all evals missing per-eval judge JSON outputs (the same missing rows counted by \texttt{evalsErrored} in the rebuilt summary). In rerun modes, the previous \texttt{summary.json} is backed up as \texttt{summary.backup.<timestamp>.json}, and a new aggregate summary is generated from the current per-eval result set.
+
 \section{Solver Stage Methodology}
+
+The solver methodology treats each benchmark item as a constrained code-generation task: the model receives a task prompt plus project context, produces a complete implementation artifact, and is evaluated only against task-defined requirements. The same solver protocol is applied across all tasks and runs, with outputs stored in a structured, reproducible format, ensuring fair comparison across models and direct traceability between generated code and downstream requirement-level scores.
+
 \subsection{Input Construction}
 The solver is given:
 \begin{itemize}
@@ -79,6 +339,9 @@ Returned paths are sanitized before writing to disk (e.g., stripping leading sla
 The generation CLI requires \texttt{----model}. When set to \texttt{noop}, the generation stage copies files from each eval's \texttt{reference/} directory into the configured output and still writes a validated \texttt{manifest.json}. Any other model value runs normal solver generation.
 
 \section{LLM Judge Methodology}
+
+For React Native coding tasks, an LLM-based judge is an effective approach that balances benefits with preparation workload. The quality of a task depends on semantic correctness across multiple files and layers. Component logic, state flow, navigation behavior, asynchronous handling, and API usage are all important. Many valid implementations exist, and strict deterministic rules do not apply to the semantic complexity of mobile apps. Deterministic checks are excellent for narrow invariants, but as a standalone judge, they overly penalize acceptable variations, miss errors in higher-level reasoning, and require constant revisions as frameworks and programming patterns evolve. A requirements- or specification-based LLM judge can evaluate requirements at the intent level, detect nuanced errors, incorrect cycle assumptions, or unstable query invalidation logic, and assign consistent, evidence-based results at the requirements level, thus remaining independent of the solver model and style. In practice, this approach provides a better fit to real-world engineering tasks and faster benchmark evolution than pure determinism pipelines for React Native.
+
 \subsection{Requirements Parsing}
 \texttt{requirements.yaml} is parsed and validated at runtime. The enforced schema requires:
 \begin{itemize}
@@ -109,7 +372,7 @@ For technical categories (for example navigation, animation, storage), requireme
 \begin{itemize}
   \item \textbf{Recent API shift audit:} before requirement writing, review official docs plus recent releases/changelogs for each core library, and extract concrete ``new preferred API'' and ``deprecated/removed API'' signals with dates.
   \item \textbf{Evidence-gated \texttt{MUST NOT}:} use explicit \texttt{MUST NOT} clauses only when backed by primary-source deprecation/removal or correctness caveats.
-  \item \textbf{Implementation-level specificity:} technical diversity is measured at requirement/API-constraint level, not prompt wording level.
+  \item \textbf{Implementation-level specificity:} technical diversity is measured at \\requirement/API-constraint level, not prompt wording level.
   \item \textbf{Similarity budget:} within a library subgroup, keep shared baseline requirements small (target: at most two shared IDs) and maintain multiple eval-specific implementation constraints per eval.
   \item \textbf{Judge input scope:} set \texttt{inputs.files} to implementation files under evaluation (for example \texttt{app/App.tsx}) rather than prompt-only artifacts.
 \end{itemize}
@@ -145,7 +408,7 @@ The judge CLI requires \texttt{----model}; there is no judge skip/noop path.
 \section{Scoring Methodology}
 \label{sec:scoring}
 
-A given model is run through the same evaluation pipeline $10$ times to obtain a more stable score, suitable for analysis in a comparative setting.
+Each model is evaluated through the identical benchmark pipeline in 10 independent runs to reduce variance from stochastic generation and judging effects and to produce a statistically more reliable performance estimate. In every run, the model receives the same task set, prompt protocol, and scoring rules, while random factors may still lead to different outputs and per-task scores. Repeating the full pipeline therefore captures both central tendency and dispersion of performance, allowing analysis to rely on aggregated results (e.g., mean and spread) rather than a potentially noisy single-run outcome. This design improves fairness in cross-model comparison and supports more robust conclusions about relative capability on React Native tasks.
 
 \subsection{Requirement Weight Normalization}
 Each requirement weight is normalized as:
@@ -208,7 +471,7 @@ For successful evals, each row includes \texttt{requirementsTotal}, \texttt{requ
 and \texttt{scoreRatio}. For pipeline errors, each row includes \texttt{status=error}
 along with the eval identifier and path.
 
-\section{Artifacts and Output Schema (Operational View)}
+\section{Artifacts and Output Schema}
 Each run writes artifacts to deterministic generation and judge directories:
 \begin{itemize}
   \item \texttt{runs/<input-folder>/evals/<eval-id>.json}: per-eval judge results (written as each eval completes)
@@ -222,8 +485,6 @@ Each run writes artifacts to deterministic generation and judge directories:
   \item optional debug artifacts when \texttt{----debug} is enabled
 \end{itemize}
 
-The judge CLI also supports targeted re-judging over existing judge outputs using \texttt{----rerun-requirements-file} with \texttt{----output}; optionally pass \texttt{----rerun-requirement-id} to refresh only one requirement. Without \texttt{----rerun-requirement-id}, all requirements for the targeted eval are re-judged and replaced in the per-eval JSON. It also supports \texttt{----rerun-missing-judgements} with \texttt{----output} to scan for and judge all evals missing per-eval judge JSON outputs (the same missing rows counted by \texttt{evalsErrored} in the rebuilt summary). In rerun modes, the previous \texttt{summary.json} is backed up as \texttt{summary.backup.<timestamp>.json}, and a new aggregate summary is generated from the current per-eval result set.
-
 Per-eval results include solver and judge model identifiers, mapped requirement verdicts, per-eval score, generated file list, and optional \texttt{judgeSessionArtifactPath} when session capture succeeds. The generation \texttt{manifest.json} includes \texttt{solverSessionArtifactPath} for each processed eval.
 
 \section{Repeat Orchestration Script}
@@ -235,13 +496,54 @@ The repository provides \texttt{scripts/bench-series.sh} to run multiple full cy
   \item \texttt{BENCH\_OUTPUT\_BASE}: base directory for outputs (default: \texttt{/tmp/bench-seriess})
 \end{itemize}
 
-For each of the \texttt{RUN\_COUNT} iterations, the script runs generation then judging. If either step fails, it retries up to 3 times before failing the script. Outputs are written to \texttt{<BENCH\_OUTPUT\_BASE>/<timestamp>/run-1}, \texttt{run-2}, etc.
+For each of the \texttt{RUN\_COUNT} iterations, the script runs generation then judging. If either step fails, it retries up to 3 times before failing the script. Outputs are written to \\\texttt{<BENCH\_OUTPUT\_BASE>/<timestamp>/run-1}, \texttt{run-2}, etc.
+
+\section{Results}
+
+\Cref{fig:model-comparison} summarizes both overall and category-level performance across twelve solver models. In overall weighted average score, \texttt{claude-opus-4.6} leads (84.4\%), followed by \texttt{gpt-5.3-codex} (80.9\%) and \texttt{gemini-3.1-pro-preview} (78.9\%), while \texttt{deepseek-r1-distill-qwen-32b} records the lowest score (31.8\%). The category breakdown is non-uniform: navigation is generally the strongest category for most models, whereas animation and async-state are more discriminative and better separate mid-tier and lower-tier performance. For each model, detailed analysis is provided in Appendix~A. \Cref{tab:tokens-by-model} summarizes token usage by model.
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{export/comparison_plot.png}
+\caption{Overall score and category comparison across all models.}
+\label{fig:model-comparison}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{r l c c}
+\toprule
+\textbf{Rank} & \textbf{Model} & \textbf{Weighted average score} & \textbf{Runs} \\
+\midrule
+1  & claude-opus-4.6                & 0.844 (84.4\%) & 10 \\
+2  & gpt-5.3-codex                  & 0.809 (80.9\%) & 10 \\
+3  & gemini-3.1-pro-preview         & 0.789 (78.9\%) & 10 \\
+4  & claude-sonnet-4.6              & 0.779 (77.9\%) & 10 \\
+5  & kimi-k2.5                      & 0.749 (74.9\%) & 10 \\
+6  & glm-5                          & 0.742 (74.2\%) & 10 \\
+7  & grok-4                         & 0.701 (70.1\%) & 10 \\
+8  & deepseek-v3.2                  & 0.690 (69.0\%) & 10 \\
+9  & gpt-oss-120b                   & 0.664 (66.4\%) & 10 \\
+10 & gpt-oss-20b                    & 0.643 (64.3\%) & 10 \\
+11 & qwen2.5-coder-32b-instruct     & 0.427 (42.7\%) & 10 \\
+12 & deepseek-r1-distill-qwen-32b   & 0.318 (31.8\%) & 10 \\
+\bottomrule
+\end{tabular}
+\caption{Overall model comparison from packed result archives.}
+\label{tab:model-comparison-overall}
+\end{table}
+
+\include{export/tokens_by_model}
+
+The full benchmark pipeline executed successfully end-to-end across the evaluated model set, confirming that the current eval suite is operationally usable for comparative React Native model assessment.
 
 \section{Recommended Reporting Protocol}
 For comparative studies, report at minimum:
 \begin{enumerate}
   \item repository commit hash (dataset and runner version)
-  \item CLI options (\texttt{run: ----pattern, ----model, ----timeout, ----concurrency, ----output}; \texttt{judge: ----model, ----timeout, ----concurrency, ----input} and optional rerun flags \texttt{----rerun-requirements-file}, \texttt{----output}, optional \texttt{----rerun-requirement-id}, optional \texttt{----rerun-missing-judgements})
+  \item CLI options (\texttt{run: ----pattern, ----model, ----timeout, ----concurrency, ----output}; \\\texttt{judge: ----model, ----timeout, ----concurrency, ----input} \\and optional rerun flags \texttt{----rerun-requirements-file}, \texttt{----output}, \\scope optional \texttt{----rerun-requirement-id}, scope optional \texttt{----rerun-missing-judgements})
   \item execution date and time
   \item counts of discovered, processed, and errored evals
   \item \texttt{weightedAverageScore} and \texttt{requirementsPassed/Total}
@@ -257,10 +559,27 @@ Repeat runs are recommended. The \texttt{bench:repeat} script (or \texttt{script
   \item \textbf{Binary requirement outcomes:} there is no partial credit within a single requirement.
   \item \textbf{Run-level averaging choice:} the summary score is unweighted across evals, which can underweight larger evals.
   \item \textbf{Pipeline error exclusion from mean:} errored evals are counted separately and excluded from the run-level score average.
-  \item \textbf{Authoring-convention variability:} conventions such as \texttt{implementation-} improve consistency but are not enforced by the runtime parser.
+  \item \textbf{Authoring-convention variability:} conventions such as \texttt{implementation} improve consistency but are not enforced by the runtime parser.
 \end{itemize}
 
+\section{Acknowledgments}
+
+Text drafting and editorial refinement used artificial intelligence-assisted tooling. All technical claims, implementation details, equations, and reported metrics were manually verified against repository code and captured experiment artifacts before inclusion.
+
+\section{Conflict of Interest}
+
+The authors are affiliated with Callstack. The experiments used commercially available infrastructure acquired and operated independently; no direct sponsorship, funding, or editorial influence was provided for this work.
+
 \section{Conclusion}
-The methodology combines structured solver outputs and requirement-based LLM judging to evaluate React Native coding performance on repository-defined tasks. Its main strength is transparency: scoring is based on declared requirements with explicit weights, documented mapping behavior, and reproducible artifact outputs. The documented \texttt{implementation-} convention provides clearer guidance for deterministic requirement authoring without changing the underlying runner logic.
+We evaluated \textbf{12} solver models on the React Native eval suite (\textbf{43} evals in total), with \textbf{10 repeated runs per model} under the same pipeline and scoring rules. Across completed runs, the highest mean \texttt{weightedAverageScore} was \textbf{0.844} (\textbf{84.4\%}, model: \texttt{claude-opus-4.6}); the median across models was \textbf{0.722} (\textbf{72.2\%}). Category-level analysis (Figure~\ref{fig:model-comparison}) shows strongest performance on \textbf{navigation} and weakest performance on \textbf{animation}, with \textbf{async state} in between and strongly differentiating mid-tier models. Recurring failures were concentrated in behavior-heavy requirements, especially animation dynamics and async-state consistency/invalidation logic.
+
+Two practical implications follow. First, React Native development difficulty is not uniform: models that are competitive on navigation and structural code generation can still be unreliable on behavior-heavy work, where correctness depends on timing, gesture/animation dynamics, and state invalidation semantics. For practitioners, this suggests applying the most scrutiny (and the most automated protection via tests and runtime validation) to animation and async-state code paths, even when a model performs strongly overall. Second, requirement-level evaluation yields actionable signals: per-requirement verdict traces support targeted prompt iteration, scaffolding improvements, and dataset evolution without collapsing all behavior into a single task-level pass/fail.
+
+From an operational standpoint, token usage varied substantially across models (Table~\ref{tab:tokens-by-model}), ranging from \textbf{116,581} mean tokens per run (\texttt{claude-sonnet-4.6}) to \textbf{821,708} (\texttt{grok-4}). This highlights a cost/latency frontier that is not directly implied by score alone, and reinforces that model selection for production assistance should consider both category-specific performance and consumption characteristics.
+
+Overall, these results indicate that React Native Evals separates model capability in a reproducible and auditable way while preserving requirement-level interpretability (via explicit per-requirement weights and per-eval verdict artifacts). They also highlight a need to extend the current evaluation set beyond the existing categories to more of the day-to-day React Native surface area, such as handling network requests (including error handling, retries, caching, and cancellation), building custom native integrations, repairing or extending faulty code in partially-correct codebases, keeping pace with the latest versions and breaking changes of common third-party libraries, and more. Future work should also explore judge-robust scoring (e.g., multi-judge consensus and calibrated partial credit) to reduce dependence on any single evaluator while maintaining transparency.
+
+
+% \include{export/appendix}
 
 \end{document}
