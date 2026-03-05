@@ -57,7 +57,7 @@ To address this gap, we present \textit{React Native Evals}, a reproducible benc
 
 This whitepaper documents the benchmark in an implementation-faithful manner relative to the current repository state. It specifies the dataset contract, end-to-end execution pipeline, solver and judge responsibilities, scoring and aggregation rules, artifact schema, and repeat-run protocol for variance-aware comparison. It also clarifies authoring conventions (including \texttt{implementation-} requirement IDs) and distinguishes those conventions from runner-enforced behavior. Together, these elements provide a transparent and auditable basis for comparative evaluation of LLMs on mobile app development tasks in React Native.
 
-\section{Common mobile development tasks methodology}
+\section{React Native methodology}
 
 The meritorious content of this benchmark is concentrated around validation of primitive Large Language Models without any external augmentations such as RAG, documentation access or agent skills. The purpose of this benchmark is to assess how those models perform in the task of React Native development including the most common third party libraries in the React Native ecosystem.
 
@@ -500,8 +500,7 @@ For each of the \texttt{RUN\_COUNT} iterations, the script runs generation then 
 
 \section{Results}
 
-\Cref{fig:model-comparison} summarizes both overall and category-level performance across twelve solver models. In overall weighted average score, \texttt{claude-opus-4.6} leads (84.4\%), followed by \texttt{gpt-5.3-codex} (80.9\%) and \texttt{gemini-3.1-pro-preview} (78.9\%), while \texttt{deepseek-r1-distill-qwen-32b} records the lowest score (31.8\%). The category breakdown is non-uniform: navigation is generally the strongest category for most models, whereas animation and async-state are more discriminative and better separate mid-tier and lower-tier performance. For each model, detailed analysis is provided in Appendix~A. \Cref{tab:tokens-by-model} summarizes token usage by model.
-
+\Cref{fig:model-comparison} summarizes both overall and category-level performance across eight primitive models. In overall weighted average score, \texttt{claude-opus-4.6} leads (84.3\%), followed by \texttt{claude-sonnet-4.6} (77.9\%) and \texttt{glm-5} (74.2\%), while \texttt{deepseek-r1-distill-qwen-32b} scores lowest (26.1\%). The category breakdown shows non-uniform behavior: navigation is generally the strongest category for most models, whereas animation and async-state are more discriminative and better separate mid-tier models. For each model, detailed analysis is provided in appendix section A. The \cref{tab:tokens-by-model} summarizes token usage for each of the models.
 
 \begin{figure}[htbp]
 \centering
