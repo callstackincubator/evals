@@ -37,6 +37,16 @@ function SharedColumns() {
   );
 }
 
+function DrawerColumns() {
+  return (
+    <colgroup>
+      <col className="w-[14rem] sm:w-[18rem]" />
+      <col className="w-[7rem] sm:w-[8rem]" />
+      <col className="w-[8rem] sm:w-[10rem]" />
+    </colgroup>
+  );
+}
+
 function emptyCategory(category: CategoryDefinition): CategoryScore {
   return {
     categoryId: category.id,
@@ -297,8 +307,8 @@ function EvalDetailsDrawer({ selectedEval, evalMatrixById, onClose }: EvalDetail
         onClick={onClose}
       />
 
-      <aside className="fixed inset-y-0 right-0 z-40 w-full max-w-2xl border-l border-zinc-800 bg-zinc-950">
-        <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-3">
+      <aside className="fixed inset-0 z-40 w-full bg-zinc-950 sm:inset-y-0 sm:right-0 sm:left-auto sm:max-w-2xl sm:border-l sm:border-zinc-800">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-zinc-800 bg-zinc-950 px-4 py-3">
           <div>
             <h3 className="text-base font-semibold text-zinc-100">{selectedEval.evalName}</h3>
             <p className="text-sm text-zinc-400">Requirements: {formatNumber(selectedEval.requirementsTotal)}</p>
@@ -314,10 +324,11 @@ function EvalDetailsDrawer({ selectedEval, evalMatrixById, onClose }: EvalDetail
           </button>
         </div>
 
-        <div className="no-scrollbar h-[calc(100%-65px)] overflow-auto p-4">
-          <div className="mt-2 border border-zinc-800 bg-zinc-950">
-            <table className="min-w-full w-max border-collapse text-sm">
-              <SharedColumns />
+        <div className="no-scrollbar h-[calc(100%-65px)] overflow-y-auto overflow-x-hidden p-0 sm:p-4">
+          <div className="border-y border-zinc-800 bg-zinc-950 sm:mt-2 sm:border">
+            <div className="no-scrollbar overflow-x-auto">
+              <table className="min-w-[29rem] w-max border-collapse text-sm sm:min-w-full">
+                <DrawerColumns />
               <thead className="bg-background text-zinc-400">
                 <tr className="border-b border-zinc-800 text-left text-xs uppercase tracking-wide">
                   <th className="px-4 py-3 font-semibold">Model</th>
@@ -355,7 +366,8 @@ function EvalDetailsDrawer({ selectedEval, evalMatrixById, onClose }: EvalDetail
                   );
                 })}
               </tbody>
-            </table>
+              </table>
+            </div>
 
             {rows.length === 0 && (
               <p className="px-4 py-6 text-sm text-zinc-400">No eval data available for this item.</p>
