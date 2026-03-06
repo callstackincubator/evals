@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RN Evals Dashboard
 
-## Getting Started
+This app renders React Native eval results from JSON files stored in [`data/official-results`](/Users/damian/Documents/GitHub/rn-evals/data/official-results).
 
-First, run the development server:
+## Current Data Flow
+
+1. The page calls [`loadDashboardData()`](/Users/damian/Documents/GitHub/rn-evals/lib/data/load-data.ts).
+2. That loader scans every `*.json` file in [`data/official-results`](/Users/damian/Documents/GitHub/rn-evals/data/official-results).
+3. Each file is validated with the Zod schema in [`lib/types/evals.ts`](/Users/damian/Documents/GitHub/rn-evals/lib/types/evals.ts).
+4. The validated data is normalized in [`normalizeDashboardData()`](/Users/damian/Documents/GitHub/rn-evals/lib/data/normalize.ts).
+5. The normalized dataset is passed into the dashboard UI in [`app/page.tsx`](/Users/damian/Documents/GitHub/rn-evals/app/page.tsx).
+
+## What Happens When You Add Data
+
+- A new JSON file in [`data/official-results`](/Users/damian/Documents/GitHub/rn-evals/data/official-results) is treated as a new model automatically.
+- The model id comes from the filename. Example: `gpt-5.3-codex.json` becomes `gpt-5.3-codex`.
+- Replacing an existing JSON file updates that model automatically.
+- New categories are discovered from `per_eval[].category`.
+- Unknown categories still render, but they use fallback ordering, icon, and chart color unless you add explicit UI mappings.
+
+## Deployment Behavior
+
+This app is intended to use a Git-driven deployment flow on Vercel.
+
+That means:
+
+- In local development, editing or adding JSON files under [`data/official-results`](/Users/damian/Documents/GitHub/rn-evals/data/official-results) is picked up by the local dev server.
+- In production on Vercel, the JSON files are read during build/deploy from the contents of the repository.
+- To publish new results, add or update the JSON files in Git and push the change so Vercel creates a new deployment.
+- Runtime uploads to the app filesystem are not the right model on Vercel because deployed functions do not persist those file changes.
+
+## Recommended Update Workflow
+
+1. Add a new model file or update an existing file in [`data/official-results`](/Users/damian/Documents/GitHub/rn-evals/data/official-results).
+2. Run tests locally.
+3. Commit and push.
+4. Let Vercel build a fresh deployment.
+
+This keeps the site fast for visitors because the data is prepared once per deployment rather than reloaded on every request.
+
+## Commands
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm test
+npm run build
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
