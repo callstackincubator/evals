@@ -51,7 +51,7 @@ export function DashboardShell({ data }: DashboardShellProps) {
   const chartKey = `${activeTab}:${viewMode}`;
 
   return (
-    <div className="flex h-screen min-h-[600px] w-full min-w-0 flex-col overflow-x-hidden bg-zinc-950 text-zinc-100">
+    <div className="flex min-h-screen w-full min-w-0 flex-col overflow-x-hidden bg-zinc-950 text-zinc-100 lg:h-screen lg:min-h-[600px]">
       <DashboardHeader
         categories={data.categories}
         activeTab={activeTab}
@@ -66,7 +66,7 @@ export function DashboardShell({ data }: DashboardShellProps) {
         <ViewToggle value={viewMode} onChange={setViewMode} />
       </div>
 
-      <main className="min-h-0 w-full min-w-0 flex-1 overflow-x-hidden px-0 pb-4 md:px-6 md:pb-6">
+      <main className="w-full min-w-0 px-0 pb-4 lg:min-h-0 lg:flex-1 lg:overflow-x-hidden md:px-6 md:pb-6">
         <div className="mb-3 flex items-center gap-2 px-4 md:px-0">
           <h2 className="text-base font-semibold tracking-[-0.04em] text-zinc-200 md:text-lg">
             {EVALS_HEADLINE}

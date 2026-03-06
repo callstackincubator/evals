@@ -83,7 +83,7 @@ export function CategoryDrilldownTable({ category, models, evalMatrixById }: Cat
 
   return (
     <>
-      <div className="no-scrollbar h-full overflow-auto border border-zinc-800 bg-zinc-950">
+      <div className="no-scrollbar overflow-x-auto overflow-y-visible border-y border-zinc-800 bg-zinc-950 lg:h-full lg:overflow-auto lg:border">
         <table className="min-w-full w-max border-collapse text-sm">
           <SharedColumns />
 

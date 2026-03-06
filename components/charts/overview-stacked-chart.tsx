@@ -124,7 +124,7 @@ export function OverviewStackedChart({ categories, models }: OverviewStackedChar
   const mobileChartHeight = Math.max(440, rows.length * 50 + 72);
 
   return (
-    <div className="h-full min-h-[420px] border border-zinc-800 bg-zinc-950 p-0 lg:p-4">
+    <div className="h-auto min-h-[420px] border-y border-zinc-800 bg-zinc-950 p-0 lg:h-full lg:border lg:p-4">
       <div className="h-full lg:hidden" style={{ height: `${mobileChartHeight}px` }}>
         <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={mobileChartHeight}>
           <BarChart
@@ -132,7 +132,7 @@ export function OverviewStackedChart({ categories, models }: OverviewStackedChar
             layout="vertical"
             barGap={8}
             barCategoryGap={12}
-            margin={{ top: 8, right: 8, bottom: 0, left: 12 }}
+            margin={{ top: 8, right: 20, bottom: 0, left: 12 }}
             onMouseLeave={() => setHighlightedCategoryId(null)}
           >
             <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#27272a" />
