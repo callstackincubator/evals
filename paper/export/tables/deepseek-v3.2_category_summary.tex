@@ -1,0 +1,14 @@
+% Requires: \usepackage{booktabs}
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Category & Score & Evals & Requirements & Failed requirements \\
+\midrule
+animation & 57.5\% & 129 & 53 & 233 \\
+async state & 71.0\% & 130 & 65 & 182 \\
+navigation & 80.4\% & 129 & 45 & 88 \\
+\bottomrule
+\end{tabular}
+\caption{Results by category for deepseek-v3.2. Score: mean(per-eval passed/total weight) across evals and runs. Evals: count of evaluation tasks. Requirements: sum of requirement count per eval. Failed requirements: sum of failed requirement instances across runs.}
+\end{table}

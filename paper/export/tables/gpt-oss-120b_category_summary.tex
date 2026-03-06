@@ -1,0 +1,14 @@
+% Requires: \usepackage{booktabs}
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Category & Score & Evals & Requirements & Failed requirements \\
+\midrule
+animation & 52.6\% & 110 & 53 & 239 \\
+async state & 67.1\% & 129 & 65 & 204 \\
+navigation & 88.5\% & 109 & 45 & 51 \\
+\bottomrule
+\end{tabular}
+\caption{Results by category for gpt-oss-120b. Score: mean(per-eval passed/total weight) across evals and runs. Evals: count of evaluation tasks. Requirements: sum of requirement count per eval. Failed requirements: sum of failed requirement instances across runs.}
+\end{table}

@@ -1,0 +1,14 @@
+% Requires: \usepackage{booktabs}
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Category & Score & Evals & Requirements & Failed requirements \\
+\midrule
+animation & 25.9\% & 122 & 53 & 389 \\
+async state & 44.4\% & 121 & 65 & 329 \\
+navigation & 66.1\% & 111 & 45 & 140 \\
+\bottomrule
+\end{tabular}
+\caption{Results by category for qwen2.5-coder-32b-instruct. Score: mean(per-eval passed/total weight) across evals and runs. Evals: count of evaluation tasks. Requirements: sum of requirement count per eval. Failed requirements: sum of failed requirement instances across runs.}
+\end{table}

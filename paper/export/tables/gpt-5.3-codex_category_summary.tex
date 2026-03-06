@@ -1,0 +1,14 @@
+% Requires: \usepackage{booktabs}
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Category & Score & Evals & Requirements & Failed requirements \\
+\midrule
+animation & 67.1\% & 130 & 53 & 186 \\
+async state & 83.4\% & 129 & 65 & 105 \\
+navigation & 96.2\% & 130 & 45 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Results by category for gpt-5.3-codex. Score: mean(per-eval passed/total weight) across evals and runs. Evals: count of evaluation tasks. Requirements: sum of requirement count per eval. Failed requirements: sum of failed requirement instances across runs.}
+\end{table}

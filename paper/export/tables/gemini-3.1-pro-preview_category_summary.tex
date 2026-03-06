@@ -1,0 +1,14 @@
+% Requires: \usepackage{booktabs}
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Category & Score & Evals & Requirements & Failed requirements \\
+\midrule
+animation & 65.1\% & 130 & 53 & 189 \\
+async state & 78.9\% & 130 & 65 & 130 \\
+navigation & 95.0\% & 130 & 45 & 25 \\
+\bottomrule
+\end{tabular}
+\caption{Results by category for gemini-3.1-pro-preview. Score: mean(per-eval passed/total weight) across evals and runs. Evals: count of evaluation tasks. Requirements: sum of requirement count per eval. Failed requirements: sum of failed requirement instances across runs.}
+\end{table}

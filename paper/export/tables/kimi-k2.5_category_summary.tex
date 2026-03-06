@@ -1,0 +1,14 @@
+% Requires: \usepackage{booktabs}
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Category & Score & Evals & Requirements & Failed requirements \\
+\midrule
+animation & 61.0\% & 130 & 53 & 220 \\
+async state & 76.0\% & 130 & 65 & 148 \\
+navigation & 91.9\% & 130 & 45 & 41 \\
+\bottomrule
+\end{tabular}
+\caption{Results by category for kimi-k2.5. Score: mean(per-eval passed/total weight) across evals and runs. Evals: count of evaluation tasks. Requirements: sum of requirement count per eval. Failed requirements: sum of failed requirement instances across runs.}
+\end{table}
