@@ -30,9 +30,9 @@ const CATEGORY_TABLE_ALERT_SEEN_KEY = "rn-evals:category-table-alert-seen";
 function SharedColumns() {
   return (
     <colgroup>
-      <col className="w-[52%]" />
-      <col className="w-[24%]" />
-      <col className="w-[24%]" />
+      <col className="w-[18rem] sm:w-[22rem]" />
+      <col className="w-[8rem]" />
+      <col className="w-[10rem]" />
     </colgroup>
   );
 }
@@ -84,10 +84,10 @@ export function CategoryDrilldownTable({ category, models, evalMatrixById }: Cat
   return (
     <>
       <div className="no-scrollbar h-full overflow-auto border border-zinc-800 bg-zinc-950">
-        <table className="min-w-full table-fixed border-collapse text-sm">
+        <table className="min-w-full w-max border-collapse text-sm">
           <SharedColumns />
 
-          <thead className="sticky top-0 z-10">
+          <thead className="sticky top-0 z-10 bg-background">
             <tr className="border-b border-zinc-800 text-left text-xs uppercase tracking-wide text-zinc-400">
               <th className="px-4 py-3 font-semibold">Model</th>
               <th className="px-4 py-3 text-center font-semibold">Score</th>
@@ -206,7 +206,7 @@ function FragmentRow({
         )}
         style={getPodiumRowStyle(rank)}
       >
-        <td className="px-4 py-5 font-medium text-zinc-100">
+        <td className="px-4 py-5 font-medium whitespace-nowrap text-zinc-100">
           <div className="flex items-center gap-3">
             <RankBadge rank={rank} />
             <span
@@ -316,8 +316,9 @@ function EvalDetailsDrawer({ selectedEval, evalMatrixById, onClose }: EvalDetail
 
         <div className="no-scrollbar h-[calc(100%-65px)] overflow-auto p-4">
           <div className="mt-2 border border-zinc-800 bg-zinc-950">
-            <table className="min-w-full border-collapse text-sm">
-              <thead className="text-zinc-400">
+            <table className="min-w-full w-max border-collapse text-sm">
+              <SharedColumns />
+              <thead className="bg-background text-zinc-400">
                 <tr className="border-b border-zinc-800 text-left text-xs uppercase tracking-wide">
                   <th className="px-4 py-3 font-semibold">Model</th>
                   <th className="px-4 py-3 text-center font-semibold">Score</th>
@@ -339,7 +340,7 @@ function EvalDetailsDrawer({ selectedEval, evalMatrixById, onClose }: EvalDetail
                       )}
                       style={getPodiumRowStyle(rank)}
                     >
-                      <td className="px-4 py-4 font-medium text-zinc-100">
+                      <td className="px-4 py-4 font-medium whitespace-nowrap text-zinc-100">
                         <div className="flex items-center gap-3">
                           <RankBadge rank={rank} />
                           <ModelLogoSquare modelId={row.modelId} modelLabel={row.modelLabel} />

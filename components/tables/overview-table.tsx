@@ -12,8 +12,16 @@ interface OverviewTableProps {
 export function OverviewTable({ categories, models }: OverviewTableProps) {
   return (
     <div className="no-scrollbar h-full overflow-auto border border-zinc-800 bg-zinc-950">
-      <table className="min-w-full border-collapse text-sm">
-        <thead className="sticky top-0 z-10">
+      <table className="min-w-full w-max border-collapse text-sm">
+        <colgroup>
+          <col className="w-[18rem] sm:w-[22rem]" />
+          <col className="w-[8rem]" />
+          {categories.map((category) => (
+            <col key={category.id} className="w-[8rem]" />
+          ))}
+          <col className="w-[10rem]" />
+        </colgroup>
+        <thead className="sticky top-0 z-10 bg-background">
           <tr className="border-b border-zinc-800 text-left text-xs uppercase tracking-wide text-zinc-400">
             <th className="px-4 py-3 font-semibold">Model</th>
             <th className="px-4 py-3 text-center font-semibold">Overall</th>
@@ -39,7 +47,7 @@ export function OverviewTable({ categories, models }: OverviewTableProps) {
                 )}
                 style={getPodiumRowStyle(rank)}
               >
-                <td className="px-4 py-5 font-medium text-zinc-100">
+                <td className="px-4 py-5 font-medium whitespace-nowrap text-zinc-100">
                   <div className="flex items-center gap-3">
                     <RankBadge rank={rank} />
                     <ModelLogoSquare modelId={model.id} modelLabel={model.label} />

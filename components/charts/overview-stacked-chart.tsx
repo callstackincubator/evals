@@ -121,10 +121,73 @@ export function OverviewStackedChart({ categories, models }: OverviewStackedChar
   const modelIdByLabel = Object.fromEntries(models.map((model) => [model.label, model.id]));
   const stackCategories = [...categories].reverse();
   const [highlightedCategoryId, setHighlightedCategoryId] = useState<string | null>(null);
+  const mobileChartHeight = Math.max(440, rows.length * 50 + 72);
 
   return (
-    <div className="h-full min-h-[420px] border border-zinc-800 bg-zinc-950 p-4">
-      <div className="h-full">
+    <div className="h-full min-h-[420px] border border-zinc-800 bg-zinc-950 p-0 lg:p-4">
+      <div className="h-full lg:hidden" style={{ height: `${mobileChartHeight}px` }}>
+        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={mobileChartHeight}>
+          <BarChart
+            data={rows}
+            layout="vertical"
+            barGap={8}
+            barCategoryGap={12}
+            margin={{ top: 8, right: 8, bottom: 0, left: 12 }}
+            onMouseLeave={() => setHighlightedCategoryId(null)}
+          >
+            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#27272a" />
+            <XAxis
+              type="number"
+              domain={[0, 100]}
+              tickCount={6}
+              tickFormatter={(value) => `${value}%`}
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: "#a1a1aa", fontSize: 12 }}
+            />
+            <YAxis
+              dataKey="model"
+              type="category"
+              tickLine={false}
+              axisLine={false}
+              width={156}
+              tick={<ModelAxisTick modelIdByLabel={modelIdByLabel} orientation="y" align="left" labelWidth={152} />}
+            />
+            <Tooltip
+              isAnimationActive={false}
+              cursor={{ fill: "rgba(255,255,255,0.03)" }}
+              wrapperStyle={{ pointerEvents: "none", borderRadius: "4px", WebkitBorderRadius: "4px", overflow: "hidden" }}
+              content={
+                <OverviewTooltipContent
+                  categories={categories}
+                  highlightedCategoryId={highlightedCategoryId}
+                />
+              }
+            />
+            {stackCategories.map((category) => (
+              <Bar
+                key={`mobile-${category.id}`}
+                dataKey={category.id}
+                stackId="overall"
+                fill={CATEGORY_COLORS[category.id] ?? "#71717a"}
+                fillOpacity={
+                  highlightedCategoryId && highlightedCategoryId !== category.id ? 0.6 : 1
+                }
+                stroke={CHART_BACKGROUND_COLOR}
+                strokeWidth={2}
+                radius={[0, 4, 4, 0]}
+                style={{ transition: "fill-opacity 0.3s ease-in-out" }}
+                onMouseEnter={() => setHighlightedCategoryId(category.id)}
+                onMouseMove={() => setHighlightedCategoryId(category.id)}
+                onMouseLeave={() => setHighlightedCategoryId(null)}
+                name={category.name}
+              />
+            ))}
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="hidden h-full lg:block">
         <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={320}>
           <BarChart
             data={rows}

@@ -88,47 +88,69 @@ export function NavigationCategories({
   activeTab,
   onTabChange,
 }: NavigationCategoriesProps) {
+  const options = [{ id: "overview", name: "Overview" }, ...categories];
+
   return (
-    <nav className="min-w-0 overflow-x-auto">
-      <ul className="flex items-center gap-1">
-        <li>
-          <button
-            type="button"
-            onClick={() => onTabChange("overview")}
-            className={cn(
-              "inline-flex h-9 items-center gap-2 border border-transparent px-3 text-sm font-medium transition-colors",
-              activeTab === "overview"
-                ? "border-zinc-600 bg-zinc-100 text-zinc-900"
-                : "text-zinc-300 hover:border-zinc-800 hover:bg-zinc-900 hover:text-zinc-100",
-            )}
-          >
-            <OverviewIcon />
-            Overview
-          </button>
-        </li>
+    <>
+      <div className="lg:hidden">
+        <label htmlFor="dashboard-category-select" className="sr-only">
+          Category
+        </label>
+        <select
+          id="dashboard-category-select"
+          value={activeTab}
+          onChange={(event) => onTabChange(event.target.value)}
+          className="h-10 w-full border border-zinc-800 bg-zinc-950 px-3 text-sm font-medium text-zinc-100"
+        >
+          {options.map((option) => (
+            <option key={option.id} value={option.id}>
+              {option.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
-        {categories.map((category) => {
-          const Icon = getCategoryIcon(category.id);
+      <nav className="hidden min-w-0 overflow-x-auto lg:block">
+        <ul className="flex items-center gap-1">
+          <li>
+            <button
+              type="button"
+              onClick={() => onTabChange("overview")}
+              className={cn(
+                "inline-flex h-9 items-center gap-2 border border-transparent px-3 text-sm font-medium transition-colors",
+                activeTab === "overview"
+                  ? "border-zinc-600 bg-zinc-100 text-zinc-900"
+                  : "text-zinc-300 hover:border-zinc-800 hover:bg-zinc-900 hover:text-zinc-100",
+              )}
+            >
+              <OverviewIcon />
+              Overview
+            </button>
+          </li>
 
-          return (
-            <li key={category.id}>
-              <button
-                type="button"
-                onClick={() => onTabChange(category.id)}
-                className={cn(
-                  "inline-flex h-9 items-center gap-2 border border-transparent px-3 text-sm font-medium transition-colors whitespace-nowrap",
-                  activeTab === category.id
-                    ? "border-zinc-600 bg-zinc-100 text-zinc-900"
-                    : "text-zinc-300 hover:border-zinc-800 hover:bg-zinc-900 hover:text-zinc-100",
-                )}
-              >
-                {Icon ? <Icon /> : <OverviewIcon />}
-                {category.name}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
+          {categories.map((category) => {
+            const Icon = getCategoryIcon(category.id);
+
+            return (
+              <li key={category.id}>
+                <button
+                  type="button"
+                  onClick={() => onTabChange(category.id)}
+                  className={cn(
+                    "inline-flex h-9 items-center gap-2 border border-transparent px-3 text-sm font-medium transition-colors whitespace-nowrap",
+                    activeTab === category.id
+                      ? "border-zinc-600 bg-zinc-100 text-zinc-900"
+                      : "text-zinc-300 hover:border-zinc-800 hover:bg-zinc-900 hover:text-zinc-100",
+                  )}
+                >
+                  {Icon ? <Icon /> : <OverviewIcon />}
+                  {category.name}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+    </>
   );
 }

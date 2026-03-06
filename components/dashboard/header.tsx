@@ -40,19 +40,68 @@ export function DashboardHeader({
 }: DashboardHeaderProps) {
   return (
     <header className="border-b border-zinc-800 bg-zinc-950 px-4 py-3 md:px-6">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex min-w-0 flex-1 items-center gap-4">
-          <CallstackLogo className="h-5 text-white" />
-          <NavigationCategories
-            categories={categories}
-            activeTab={activeTab}
-            onTabChange={onTabChange}
-          />
+      <div className="flex flex-col gap-3 lg:hidden">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0 shrink-0">
+            <CallstackLogo className="h-5 text-white" />
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <NavigationCategories
+              categories={categories}
+              activeTab={activeTab}
+              onTabChange={onTabChange}
+            />
+          </div>
+
+          <a
+            href={RESULTS_REPO_URL}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Open GitHub repository"
+            className="inline-flex h-10 w-10 shrink-0 items-center justify-center border border-zinc-100 bg-zinc-100 text-zinc-900 transition-colors hover:bg-white"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path d="M5 2H9V4H7V6H5V2Z" fill="currentColor" />
+              <path d="M5 12H3V6H5V12Z" fill="currentColor" />
+              <path d="M7 14H5V12H7V14Z" fill="currentColor" />
+              <path fillRule="evenodd" clipRule="evenodd" d="M9 16V14H7V16H3V14H1V16H3V18H7V22H9V18H11V16H9ZM9 16V18H7V16H9Z" fill="currentColor" />
+              <path d="M15 4V6H9V4H15Z" fill="currentColor" />
+              <path d="M19 6H17V4H15V2H19V6Z" fill="currentColor" />
+              <path d="M19 12V6H21V12H19Z" fill="currentColor" />
+              <path d="M17 14V12H19V14H17Z" fill="currentColor" />
+              <path d="M15 16V14H17V16H15Z" fill="currentColor" />
+              <path d="M15 18H13V16H15V18Z" fill="currentColor" />
+              <path d="M15 18H17V22H15V18Z" fill="currentColor" />
+            </svg>
+          </a>
         </div>
 
-        <div className="flex items-center gap-2 text-sm whitespace-nowrap">
+        {warningCount > 0 && (
+          <div className="flex justify-end">
+            <span className="inline-flex h-9 items-center gap-1 border border-amber-700 bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-300">
+              <WarningCircle size={13} />
+              {warningCount}
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className="hidden items-center justify-between gap-4 lg:flex">
+        <div className="flex min-w-0 flex-1 items-center gap-4">
+          <CallstackLogo className="h-5 shrink-0 text-white" />
+          <div className="min-w-0 flex-1">
+            <NavigationCategories
+              categories={categories}
+              activeTab={activeTab}
+              onTabChange={onTabChange}
+            />
+          </div>
+        </div>
+
+        <div className="flex shrink-0 items-center gap-2 text-sm whitespace-nowrap">
           {warningCount > 0 && (
-            <span className="inline-flex items-center gap-1 border border-amber-700 bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-300">
+            <span className="inline-flex h-9 items-center gap-1 border border-amber-700 bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-300">
               <WarningCircle size={13} />
               Warnings: {warningCount}
             </span>
@@ -64,7 +113,7 @@ export function DashboardHeader({
             href={RESULTS_REPO_URL}
             target="_blank"
             rel="noreferrer"
-            className="ml-4 inline-flex h-9 items-center gap-2 border border-zinc-100 bg-zinc-100 px-3 font-medium text-zinc-900 transition-colors hover:bg-white"
+            className="inline-flex h-9 items-center gap-2 border border-zinc-100 bg-zinc-100 px-3 font-medium text-zinc-900 transition-colors hover:bg-white"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
               <path d="M5 2H9V4H7V6H5V2Z" fill="currentColor" />

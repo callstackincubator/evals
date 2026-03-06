@@ -72,6 +72,7 @@ export function CategoryBarChart({ category, models }: CategoryBarChartProps) {
   const baseColor = CATEGORY_COLORS[category.id] ?? "#71717a";
   const minScore = rows.length > 0 ? Math.min(...rows.map((row) => row.score)) : 0;
   const maxScore = rows.length > 0 ? Math.max(...rows.map((row) => row.score)) : 100;
+  const mobileChartHeight = Math.max(440, rows.length * 50 + 72);
 
   const opacityForScore = (score: number) => {
     if (maxScore === minScore) {
@@ -83,8 +84,48 @@ export function CategoryBarChart({ category, models }: CategoryBarChartProps) {
   };
 
   return (
-    <div className="h-full min-h-[420px] border border-zinc-800 bg-zinc-950 p-4">
-      <div className="h-full">
+    <div className="h-full min-h-[420px] border border-zinc-800 bg-zinc-950 p-0 lg:p-4">
+      <div className="h-full lg:hidden" style={{ height: `${mobileChartHeight}px` }}>
+        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={mobileChartHeight}>
+          <BarChart data={rows} layout="vertical" barGap={8} barCategoryGap={12} margin={{ top: 8, right: 8, bottom: 0, left: 12 }}>
+            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#27272a" />
+            <XAxis
+              type="number"
+              domain={[0, 100]}
+              tickCount={6}
+              tickFormatter={(value) => `${value}%`}
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: "#a1a1aa", fontSize: 12 }}
+            />
+            <YAxis
+              dataKey="model"
+              type="category"
+              tickLine={false}
+              axisLine={false}
+              width={156}
+              tick={<ModelAxisTick modelIdByLabel={modelIdByLabel} orientation="y" align="left" labelWidth={152} />}
+            />
+            <Tooltip
+              isAnimationActive={false}
+              cursor={{ fill: "rgba(255,255,255,0.03)" }}
+              wrapperStyle={{ pointerEvents: "none", borderRadius: "4px", WebkitBorderRadius: "4px", overflow: "hidden" }}
+              content={<CategoryTooltipContent />}
+            />
+            <Bar dataKey="score" fill={baseColor} name="Score" radius={[0, 4, 4, 0]}>
+              {rows.map((row) => (
+                <Cell
+                  key={`score-mobile-${row.model}`}
+                  fill={baseColor}
+                  fillOpacity={opacityForScore(row.score)}
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="hidden h-full lg:block">
         <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={320}>
           <BarChart data={rows} barGap={8} barCategoryGap={16}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#27272a" />
