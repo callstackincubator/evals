@@ -13,6 +13,11 @@ describe("aggregateModelFileSchema", () => {
       pass_at_5: 0.4,
       pass_at_10: 0.7,
       tokens_total: 123456,
+      recorded_cost_total_usd: 0,
+      api_estimated_cost_total_usd: 12.34,
+      effective_cost_total_usd: 0,
+      cost_source: "recorded",
+      vercel_pricing_checked_on: "2026-03-09",
     },
     per_eval: [
       {
@@ -29,6 +34,8 @@ describe("aggregateModelFileSchema", () => {
         pass_at_1: 0,
         pass_at_5: 0.5,
         pass_at_10: 1,
+        api_estimated_cost_total_usd: 0.4,
+        cost_median_usd: 0.04,
         tokens_mean: 3000,
         tokens_median: 2900,
         tokens_min: 2500,
@@ -61,6 +68,8 @@ describe("aggregateModelFileSchema", () => {
     const parsed = aggregateModelFileSchema.parse(validModel);
     expect(parsed.model_summary.n_runs).toBe(10);
     expect(parsed.per_eval[0].score_median).toBe(0.5);
+    expect(parsed.model_summary.api_estimated_cost_total_usd).toBe(12.34);
+    expect(parsed.per_eval[0].cost_median_usd).toBe(0.04);
   });
 
   it("fails when required numeric fields are missing", () => {

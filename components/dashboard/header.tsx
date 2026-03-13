@@ -99,16 +99,30 @@ export function DashboardHeader({
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2 text-sm whitespace-nowrap">
+        <div className="flex shrink-0 items-center gap-4 text-sm whitespace-nowrap">
           {warningCount > 0 && (
             <span className="inline-flex h-9 items-center gap-1 border border-amber-700 bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-300">
               <WarningCircle size={13} />
               Warnings: {warningCount}
             </span>
           )}
-          <span className="text-zinc-400">
-            Last run: {formatDate(runFinishedAt || runStartedAt)} · {runCount}x Runs
-          </span>
+          <div className="flex items-center gap-2 text-zinc-400">
+            <span>
+              Last run: {formatDate(runFinishedAt || runStartedAt)} · {runCount}x Runs
+            </span>
+            <span aria-hidden>·</span>
+            <span>
+              Build by{" "}
+              <a
+                href="https://callstack.com"
+                target="_blank"
+                rel="noreferrer"
+                className="text-zinc-200 underline decoration-zinc-700 underline-offset-2 transition-colors hover:text-white"
+              >
+                Callstack
+              </a>
+            </span>
+          </div>
           <a
             href={RESULTS_REPO_URL}
             target="_blank"

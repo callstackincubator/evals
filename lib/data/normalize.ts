@@ -51,6 +51,23 @@ function toPercent(value: number): number {
   return value * 100;
 }
 
+function pickPreferredCostUsd(costs: Array<number | undefined>): number | null {
+  for (const cost of costs) {
+    if (typeof cost === "number" && Number.isFinite(cost) && cost > 0) {
+      return cost;
+    }
+  }
+
+  return null;
+}
+
+function pickEvalDisplayCostUsd(evalResult: AggregateDataset["models"][number]["results"]["per_eval"][number]): number | null {
+  return pickPreferredCostUsd([
+    evalResult.api_estimated_cost_total_usd,
+    evalResult.effective_cost_total_usd,
+  ]);
+}
+
 function buildCategories(models: AggregateDataset["models"]): CategoryDefinition[] {
   const categoryCounts = new Map<string, number>();
 
@@ -91,6 +108,7 @@ function summarizeModel(
       scorePct: 0,
       contributionPct: 0,
       tokensUsed: 0,
+      costUsd: null,
     });
   }
 
@@ -116,6 +134,7 @@ function summarizeModel(
       name: evalNameFromId(evalResult.eval_id),
       scorePct: toPercent(evalResult.score_median),
       tokensUsed: evalResult.tokens_median,
+      costUsd: pickEvalDisplayCostUsd(evalResult),
       requirementsTotal: evalResult.requirements_total,
     };
 
@@ -144,6 +163,9 @@ function summarizeModel(
     category.tokensUsed = Math.round(
       category.evals.reduce((acc, evalScore) => acc + evalScore.tokensUsed, 0),
     );
+    category.costUsd = category.evals.every((evalScore) => evalScore.costUsd !== null)
+      ? category.evals.reduce((acc, evalScore) => acc + (evalScore.costUsd ?? 0), 0)
+      : null;
 
     if (requirementsTotal > 0) {
       category.contributionPct = weightedScoreSum / requirementsTotal;
@@ -158,6 +180,10 @@ function summarizeModel(
     solverModel: model.results.model_summary.solver_model,
     overallScorePct: toPercent(model.results.model_summary.weighted_avg_score),
     tokensUsed: Math.round(model.results.model_summary.tokens_total / model.results.model_summary.n_runs),
+    costUsd: pickPreferredCostUsd([
+      model.results.model_summary.api_estimated_cost_total_usd,
+      model.results.model_summary.effective_cost_total_usd,
+    ]),
     requirementsPassed: model.results.model_summary.requirements_passed,
     requirementsTotal,
     categories: Object.fromEntries(categoryMap.entries()),
@@ -176,6 +202,7 @@ function buildEvalMatrix(models: ModelSummary[]): Record<string, EvalMatrixEntry
           modelLabel: model.label,
           scorePct: evalScore.scorePct,
           tokensUsed: Math.round(evalScore.tokensUsed),
+          costUsd: evalScore.costUsd,
           requirementsTotal: evalScore.requirementsTotal,
         });
         matrix.set(evalScore.evalId, entries);

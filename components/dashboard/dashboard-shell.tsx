@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { Info } from "@phosphor-icons/react";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { ViewToggle, type ViewMode } from "@/components/dashboard/view-toggle";
+import { CostScatterChart } from "@/components/charts/cost-scatter-chart";
 import { CategoryDrilldownTable } from "@/components/tables/category-drilldown-table";
 import { OverviewTable } from "@/components/tables/overview-table";
 import type { DashboardData } from "@/lib/types/evals";
@@ -37,7 +38,7 @@ const CategoryBarChart = dynamic(
 
 const EVALS_HEADLINE = "AI Agent Evaluations for React Native";
 const EVALS_INFO_TEXT =
-  "Performance results of AI coding agents on React Native code generation tasks, measuring success rate for common task groups, token usage, and best practices.";
+  "Performance results of AI coding agents on React Native code generation tasks, measuring success rate for common task groups, token usage, and cost.";
 
 export function DashboardShell({ data }: DashboardShellProps) {
   const [activeTab, setActiveTab] = useState<string>("overview");
@@ -66,7 +67,7 @@ export function DashboardShell({ data }: DashboardShellProps) {
         <ViewToggle value={viewMode} onChange={setViewMode} />
       </div>
 
-      <main className="w-full min-w-0 px-0 pb-4 lg:min-h-0 lg:flex-1 lg:overflow-x-hidden md:px-6 md:pb-6">
+      <main className="flex w-full min-w-0 flex-col px-0 pb-4 lg:min-h-0 lg:flex-1 lg:overflow-hidden md:px-6 md:pb-6">
         <div className="mb-3 flex items-center gap-2 px-4 md:px-0">
           <h2 className="text-base font-semibold tracking-[-0.04em] text-zinc-200 md:text-lg">
             {EVALS_HEADLINE}
@@ -91,30 +92,40 @@ export function DashboardShell({ data }: DashboardShellProps) {
           </div>
         </div>
 
-        {activeTab === "overview" && viewMode === "chart" && (
-          <OverviewStackedChart
-            key={chartKey}
-            categories={data.categories}
-            models={data.models}
-          />
-        )}
+        <div className="min-h-0 lg:flex-1">
+          {activeTab === "overview" && viewMode === "chart" && (
+            <OverviewStackedChart
+              key={chartKey}
+              categories={data.categories}
+              models={data.models}
+            />
+          )}
 
-        {activeTab === "overview" && viewMode === "table" && (
-          <OverviewTable categories={data.categories} models={data.models} />
-        )}
+          {activeTab === "overview" && viewMode === "table" && (
+            <OverviewTable categories={data.categories} models={data.models} />
+          )}
 
-        {activeCategory && viewMode === "chart" && (
-          <CategoryBarChart key={chartKey} category={activeCategory} models={data.models} />
-        )}
+          {activeTab === "overview" && viewMode === "cost" && (
+            <CostScatterChart key={chartKey} models={data.models} />
+          )}
 
-        {activeCategory && viewMode === "table" && (
-          <CategoryDrilldownTable
-            key={activeCategory.id}
-            category={activeCategory}
-            models={data.models}
-            evalMatrixById={data.evalMatrixById}
-          />
-        )}
+          {activeCategory && viewMode === "chart" && (
+            <CategoryBarChart key={chartKey} category={activeCategory} models={data.models} />
+          )}
+
+          {activeCategory && viewMode === "table" && (
+            <CategoryDrilldownTable
+              key={activeCategory.id}
+              category={activeCategory}
+              models={data.models}
+              evalMatrixById={data.evalMatrixById}
+            />
+          )}
+
+          {activeCategory && viewMode === "cost" && (
+            <CostScatterChart key={chartKey} category={activeCategory} models={data.models} />
+          )}
+        </div>
       </main>
     </div>
   );

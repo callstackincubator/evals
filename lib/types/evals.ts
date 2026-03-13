@@ -11,6 +11,13 @@ export const aggregateModelSummarySchema = z.object({
   pass_at_5: z.number().min(0).max(1),
   pass_at_10: z.number().min(0).max(1),
   tokens_total: z.number().nonnegative(),
+  tokens_mean: z.number().nonnegative().optional(),
+  tokens_stddev: z.number().nonnegative().optional(),
+  recorded_cost_total_usd: z.number().nonnegative().optional(),
+  api_estimated_cost_total_usd: z.number().nonnegative().optional(),
+  effective_cost_total_usd: z.number().nonnegative().optional(),
+  cost_source: z.string().min(1).optional(),
+  vercel_pricing_checked_on: z.string().min(1).optional(),
 });
 
 export const aggregatePerEvalSchema = z.object({
@@ -27,6 +34,17 @@ export const aggregatePerEvalSchema = z.object({
   pass_at_1: z.number().min(0).max(1),
   pass_at_5: z.number().min(0).max(1),
   pass_at_10: z.number().min(0).max(1),
+  token_total: z.number().nonnegative().optional(),
+  recorded_cost_total_usd: z.number().nonnegative().optional(),
+  api_estimated_cost_total_usd: z.number().nonnegative().optional(),
+  effective_cost_total_usd: z.number().nonnegative().optional(),
+  cost_source: z.string().min(1).optional(),
+  cost_priced_runs: z.number().int().nonnegative().optional(),
+  cost_mean_usd: z.number().nonnegative().optional(),
+  cost_median_usd: z.number().nonnegative().optional(),
+  cost_min_usd: z.number().nonnegative().optional(),
+  cost_max_usd: z.number().nonnegative().optional(),
+  cost_stddev_usd: z.number().nonnegative().optional(),
   tokens_mean: z.number().nonnegative(),
   tokens_median: z.number().nonnegative(),
   tokens_min: z.number().nonnegative(),
@@ -90,6 +108,7 @@ export interface EvalScore {
   name: string;
   scorePct: number;
   tokensUsed: number;
+  costUsd: number | null;
   requirementsTotal: number;
 }
 
@@ -102,6 +121,7 @@ export interface CategoryScore {
   scorePct: number;
   contributionPct: number;
   tokensUsed: number;
+  costUsd: number | null;
 }
 
 export interface ModelSummary {
@@ -110,6 +130,7 @@ export interface ModelSummary {
   solverModel: string;
   overallScorePct: number;
   tokensUsed: number;
+  costUsd: number | null;
   requirementsPassed: number;
   requirementsTotal: number;
   categories: Record<string, CategoryScore>;
@@ -120,6 +141,7 @@ export interface EvalMatrixEntry {
   modelLabel: string;
   scorePct: number;
   tokensUsed: number;
+  costUsd: number | null;
   requirementsTotal: number;
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import type { CategoryDefinition, ModelSummary } from "@/lib/types/evals";
-import { cn, formatNumber, formatPct } from "@/lib/utils";
+import { cn, formatNumber, formatPct, formatUsd } from "@/lib/utils";
 import { getPodiumRowStyle, ModelLogoSquare, RankBadge } from "@/components/tables/table-badges";
 
 interface OverviewTableProps {
@@ -20,6 +20,7 @@ export function OverviewTable({ categories, models }: OverviewTableProps) {
             <col key={category.id} className="w-[8rem]" />
           ))}
           <col className="w-[10rem]" />
+          <col className="w-[10rem]" />
         </colgroup>
         <thead className="sticky top-0 z-10 bg-background">
           <tr className="border-b border-zinc-800 text-left text-xs uppercase tracking-wide text-zinc-400">
@@ -29,6 +30,7 @@ export function OverviewTable({ categories, models }: OverviewTableProps) {
               <th key={category.id} className="px-4 py-3 text-center font-semibold whitespace-nowrap">{category.name}</th>
             ))}
             <th className="px-4 py-3 text-center font-semibold whitespace-nowrap">Tokens Used</th>
+            <th className="px-4 py-3 text-center font-semibold whitespace-nowrap">Cost</th>
           </tr>
         </thead>
 
@@ -70,6 +72,9 @@ export function OverviewTable({ categories, models }: OverviewTableProps) {
 
                 <td className="px-4 py-5 text-center font-mono text-zinc-300 whitespace-nowrap">
                   {formatNumber(model.tokensUsed)}
+                </td>
+                <td className="px-4 py-5 text-center font-mono text-zinc-300 whitespace-nowrap">
+                  {model.costUsd === null ? "-" : formatUsd(model.costUsd)}
                 </td>
               </tr>
             );

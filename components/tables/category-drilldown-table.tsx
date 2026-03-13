@@ -9,7 +9,7 @@ import type {
   EvalScore,
   ModelSummary,
 } from "@/lib/types/evals";
-import { cn, formatNumber, formatPct } from "@/lib/utils";
+import { cn, formatNumber, formatPct, formatUsd, formatUsdPrecise } from "@/lib/utils";
 import { getPodiumRowStyle, ModelLogoSquare, RankBadge } from "@/components/tables/table-badges";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -33,6 +33,7 @@ function SharedColumns() {
       <col className="w-[18rem] sm:w-[22rem]" />
       <col className="w-[8rem]" />
       <col className="w-[10rem]" />
+      <col className="w-[10rem]" />
     </colgroup>
   );
 }
@@ -42,6 +43,7 @@ function DrawerColumns() {
     <colgroup>
       <col className="w-[14rem] sm:w-[18rem]" />
       <col className="w-[7rem] sm:w-[8rem]" />
+      <col className="w-[8rem] sm:w-[10rem]" />
       <col className="w-[8rem] sm:w-[10rem]" />
     </colgroup>
   );
@@ -57,6 +59,7 @@ function emptyCategory(category: CategoryDefinition): CategoryScore {
     scorePct: 0,
     contributionPct: 0,
     tokensUsed: 0,
+    costUsd: null,
   };
 }
 
@@ -102,6 +105,7 @@ export function CategoryDrilldownTable({ category, models, evalMatrixById }: Cat
               <th className="px-4 py-3 font-semibold">Model</th>
               <th className="px-4 py-3 text-center font-semibold">Score</th>
               <th className="px-4 py-3 text-center font-semibold whitespace-nowrap">Tokens Used</th>
+              <th className="px-4 py-3 text-center font-semibold whitespace-nowrap">Cost</th>
             </tr>
           </thead>
 
@@ -125,6 +129,7 @@ export function CategoryDrilldownTable({ category, models, evalMatrixById }: Cat
                   modelLabel={model.label}
                   score={categoryScore.scorePct}
                   tokensUsed={categoryScore.tokensUsed}
+                  costUsd={categoryScore.costUsd}
                   evalRows={categoryScore.evals}
                   selectedEval={selectedEval}
                   setSelectedEval={setSelectedEval}
@@ -177,6 +182,7 @@ interface FragmentRowProps {
   modelLabel: string;
   score: number;
   tokensUsed: number;
+  costUsd: number | null;
   evalRows: EvalScore[];
   selectedEval: SelectedEvalDetails | null;
   setSelectedEval: Dispatch<SetStateAction<SelectedEvalDetails | null>>;
@@ -192,6 +198,7 @@ function FragmentRow({
   modelLabel,
   score,
   tokensUsed,
+  costUsd,
   evalRows,
   selectedEval,
   setSelectedEval,
@@ -238,6 +245,9 @@ function FragmentRow({
         <td className="px-4 py-5 text-center font-mono text-zinc-300 whitespace-nowrap">
           {formatNumber(tokensUsed)}
         </td>
+        <td className="px-4 py-5 text-center font-mono text-zinc-300 whitespace-nowrap">
+          {costUsd === null ? "-" : formatUsd(costUsd)}
+        </td>
       </tr>
 
       {isModelExpanded && evalRows.map((evalItem, evalIndex) => {
@@ -278,6 +288,9 @@ function FragmentRow({
             <td className="px-4 py-5 text-center font-mono text-zinc-300 whitespace-nowrap">
               {formatNumber(evalItem.tokensUsed)}
             </td>
+            <td className="px-4 py-5 text-center font-mono text-zinc-300 whitespace-nowrap">
+              {evalItem.costUsd === null ? "-" : formatUsdPrecise(evalItem.costUsd)}
+            </td>
           </tr>
         );
       })}
@@ -307,33 +320,37 @@ function EvalDetailsDrawer({ selectedEval, evalMatrixById, onClose }: EvalDetail
         onClick={onClose}
       />
 
-      <aside className="fixed inset-0 z-40 w-full bg-zinc-950 sm:inset-y-0 sm:right-0 sm:left-auto sm:max-w-2xl sm:border-l sm:border-zinc-800">
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-zinc-800 bg-zinc-950 px-4 py-3">
-          <div>
-            <h3 className="text-base font-semibold text-zinc-100">{selectedEval.evalName}</h3>
-            <p className="text-sm text-zinc-400">Requirements: {formatNumber(selectedEval.requirementsTotal)}</p>
-          </div>
+      <aside className="fixed inset-0 z-40 flex w-full flex-col overflow-hidden bg-zinc-950 sm:inset-y-0 sm:right-0 sm:left-auto sm:max-w-2xl sm:border-l sm:border-zinc-800">
+        <div className="shrink-0 border-b border-zinc-800 bg-zinc-950 px-4 py-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <h3 className="text-base font-semibold text-zinc-100">{selectedEval.evalName}</h3>
+              <p className="text-sm text-zinc-400">Requirements: {formatNumber(selectedEval.requirementsTotal)}</p>
+            </div>
 
-          <button
-            type="button"
-            onClick={onClose}
-            className="inline-flex h-8 w-8 items-center justify-center border border-zinc-800 text-zinc-300 hover:bg-zinc-900"
-            aria-label="Close drawer"
-          >
-            <X size={16} />
-          </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="inline-flex h-8 w-8 shrink-0 items-center justify-center border border-zinc-800 text-zinc-300 hover:bg-zinc-900"
+              aria-label="Close drawer"
+            >
+              <X size={16} />
+            </button>
+          </div>
         </div>
 
-        <div className="no-scrollbar h-[calc(100%-65px)] overflow-y-auto overflow-x-hidden p-0 sm:p-4">
-          <div className="border-y border-zinc-800 bg-zinc-950 sm:mt-2 sm:border">
-            <div className="no-scrollbar overflow-x-auto">
-              <table className="min-w-[29rem] w-max border-collapse text-sm sm:min-w-full">
-                <DrawerColumns />
+        <div className="no-scrollbar min-h-0 flex-1 overflow-auto p-0 sm:p-4">
+          <div className="w-max min-w-full border-y border-zinc-800 bg-zinc-950 sm:border">
+            <table className="min-w-[42rem] w-full border-collapse text-sm">
+              <DrawerColumns />
               <thead className="bg-background text-zinc-400">
                 <tr className="border-b border-zinc-800 text-left text-xs uppercase tracking-wide">
-                  <th className="px-4 py-3 font-semibold">Model</th>
+                  <th className="sticky left-0 z-10 border-r border-zinc-800 bg-zinc-950 px-4 py-3 font-semibold">
+                    Model
+                  </th>
                   <th className="px-4 py-3 text-center font-semibold">Score</th>
                   <th className="px-4 py-3 text-center font-semibold whitespace-nowrap">Tokens Used</th>
+                  <th className="px-4 py-3 text-center font-semibold whitespace-nowrap">Cost</th>
                 </tr>
               </thead>
               <tbody>
@@ -351,7 +368,7 @@ function EvalDetailsDrawer({ selectedEval, evalMatrixById, onClose }: EvalDetail
                       )}
                       style={getPodiumRowStyle(rank)}
                     >
-                      <td className="px-4 py-4 font-medium whitespace-nowrap text-zinc-100">
+                      <td className="sticky left-0 z-10 border-r border-zinc-800 bg-zinc-950 px-4 py-4 font-medium whitespace-nowrap text-zinc-100">
                         <div className="flex items-center gap-3">
                           <RankBadge rank={rank} />
                           <ModelLogoSquare modelId={row.modelId} modelLabel={row.modelLabel} />
@@ -362,17 +379,19 @@ function EvalDetailsDrawer({ selectedEval, evalMatrixById, onClose }: EvalDetail
                       <td className="px-4 py-4 text-center font-mono text-zinc-300 whitespace-nowrap">
                         {formatNumber(row.tokensUsed)}
                       </td>
+                      <td className="px-4 py-4 text-center font-mono text-zinc-300 whitespace-nowrap">
+                        {row.costUsd === null ? "-" : formatUsdPrecise(row.costUsd)}
+                      </td>
                     </tr>
                   );
                 })}
               </tbody>
-              </table>
-            </div>
-
-            {rows.length === 0 && (
-              <p className="px-4 py-6 text-sm text-zinc-400">No eval data available for this item.</p>
-            )}
+            </table>
           </div>
+
+          {rows.length === 0 && (
+            <p className="px-4 py-6 text-sm text-zinc-400">No eval data available for this item.</p>
+          )}
         </div>
       </aside>
     </>
