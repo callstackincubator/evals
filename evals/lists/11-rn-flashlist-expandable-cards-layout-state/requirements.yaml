@@ -7,5 +7,5 @@ requirements:
     description: Must render the list with `FlashList`.
   - id: implementation-provide-flashlist-key-extractor
     description: Must provide FlashList `keyExtractor` using stable FAQ ids.
-  - id: implementation-use-flashlist-layout-state
-    description: Must use FlashList `useLayoutState(...)` inside the expandable row component.
+  - id: implementation-use-flashlist-recycling-state
+    description: Must use FlashList `useRecyclingState(...)` inside the expandable row component.
