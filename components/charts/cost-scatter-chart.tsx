@@ -1,12 +1,16 @@
 "use client";
 
 import {
+  Bar,
+  BarChart,
   CartesianGrid,
+  Cell,
   Scatter,
   ScatterChart,
   XAxis,
   YAxis,
 } from "recharts";
+import { ModelAxisTick } from "@/components/charts/model-axis-tick";
 import { ModelLogoSquare } from "@/components/tables/table-badges";
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import {
@@ -15,7 +19,7 @@ import {
   type CostScatterPoint,
 } from "@/lib/data/cost-chart";
 import type { CategoryDefinition, ModelSummary } from "@/lib/types/evals";
-import { formatPct, formatUsd, formatUsdPrecise } from "@/lib/utils";
+import { cn, formatPct, formatUsd, formatUsdPrecise } from "@/lib/utils";
 
 const FRONTIER_POINT_COLOR = "#22c55e";
 const FRONTIER_LINE_COLOR = "#3f6212";
@@ -35,6 +39,14 @@ interface CostPointShapeProps {
   cy?: number;
   payload?: CostScatterPoint;
   fill?: string;
+  showLabel?: boolean;
+  pointRadius?: number;
+}
+
+interface CostChartBounds {
+  xDomain: [number, number];
+  xTicks: number[];
+  yDomain: [number, number];
 }
 
 function formatAxisCost(value: number): string {
@@ -68,7 +80,7 @@ function getNiceCostStep(maxCost: number): number {
   return 10;
 }
 
-function buildChartBounds(points: CostScatterPoint[], isOverview: boolean) {
+function buildChartBounds(points: CostScatterPoint[], isOverview: boolean): CostChartBounds {
   const costs = points.map((point) => point.costUsd);
   const maxCost = Math.max(...costs);
   const xStep = isOverview ? 5 : getNiceCostStep(maxCost);
@@ -77,34 +89,44 @@ function buildChartBounds(points: CostScatterPoint[], isOverview: boolean) {
     : Math.max(xStep, Math.ceil(maxCost / xStep) * xStep);
 
   return {
-    xDomain: [0, xMax] as [number, number],
+    xDomain: [0, xMax],
     xTicks: Array.from({ length: Math.floor(xMax / xStep) + 1 }, (_, index) =>
       Number((index * xStep).toFixed(2)),
     ),
-    yDomain: [0, 100] as [number, number],
+    yDomain: [0, 100],
   };
 }
 
-function CostPointShape({ cx, cy, payload, fill }: CostPointShapeProps) {
+function CostPointShape({
+  cx,
+  cy,
+  payload,
+  fill,
+  showLabel = true,
+  pointRadius,
+}: CostPointShapeProps) {
   if (typeof cx !== "number" || typeof cy !== "number" || !payload) {
     return null;
   }
 
+  const radius = pointRadius ?? (payload.isOnFrontier ? 11 : 9);
   const labelY = payload.isOnFrontier ? cy - 14 : cy - 10;
 
   return (
     <g>
-      <circle cx={cx} cy={cy} r={payload.isOnFrontier ? 11 : 9} fill={fill} />
-      <text
-        x={cx + 14}
-        y={labelY}
-        fill={fill}
-        fontSize={12}
-        fontWeight={500}
-        className="pointer-events-none"
-      >
-        {payload.modelId}
-      </text>
+      <circle cx={cx} cy={cy} r={radius} fill={fill} />
+      {showLabel ? (
+        <text
+          x={cx + 14}
+          y={labelY}
+          fill={fill}
+          fontSize={12}
+          fontWeight={500}
+          className="pointer-events-none"
+        >
+          {payload.modelId}
+        </text>
+      ) : null}
     </g>
   );
 }
@@ -147,9 +169,16 @@ function CostScatterTooltip({
   );
 }
 
-function CostLegend({ unavailableLabels }: { unavailableLabels?: string[] }) {
+function CostLegend({ unavailableLabels, stacked = false }: { unavailableLabels?: string[]; stacked?: boolean }) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3 px-4 pb-4 text-sm text-zinc-200 md:px-0">
+    <div
+      className={cn(
+        "px-4 pb-4 text-sm text-zinc-200 md:px-0",
+        stacked
+          ? "flex flex-col gap-3"
+          : "flex flex-wrap items-start justify-between gap-x-6 gap-y-3",
+      )}
+    >
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
         <div className="flex items-center gap-2">
           <span
@@ -178,48 +207,106 @@ function CostLegend({ unavailableLabels }: { unavailableLabels?: string[] }) {
       </div>
 
       {unavailableLabels && unavailableLabels.length > 0 ? (
-        <p className="max-w-[32rem] text-right text-xs leading-5 text-zinc-400">
-          Missing category cost:
-          {" "}
-          {unavailableLabels.join(", ")}
+        <p className={cn("text-xs leading-5 text-zinc-400", stacked ? "text-left" : "max-w-[32rem] text-right")}>
+          Missing category cost: {unavailableLabels.join(", ")}
         </p>
       ) : null}
     </div>
   );
 }
 
-export function CostScatterChart({ models, category }: CostScatterChartProps) {
-  const chartData = category
-    ? buildCategoryCostScatterData(category, models)
-    : buildOverviewCostScatterData(models);
-
-  if (chartData.points.length === 0) {
-    return (
-      <div className="flex min-h-[600px] items-center justify-center border-y border-zinc-800 bg-zinc-950 px-6 text-sm text-zinc-400 lg:h-full lg:min-h-0 lg:border">
-        No cost data is available for this view.
-      </div>
-    );
-  }
-
-  const frontierPoints = chartData.frontierPoints;
-  const nonFrontierPoints = chartData.points.filter((point) => !point.isOnFrontier);
-  const isOverview = !category;
-  const { xDomain, xTicks, yDomain } = buildChartBounds(chartData.points, isOverview);
-  const unavailableLabels = category
-    ? models
-      .filter((model) => chartData.omittedModelIds.includes(model.id))
-      .map((model) => model.label)
-    : [];
+function MobileCostBars({
+  bounds,
+  frontierPoints,
+  nonFrontierPoints,
+}: {
+  bounds: CostChartBounds;
+  frontierPoints: CostScatterPoint[];
+  nonFrontierPoints: CostScatterPoint[];
+}) {
+  const rows = [...frontierPoints, ...nonFrontierPoints]
+    .sort((left, right) => right.costUsd - left.costUsd || right.scorePct - left.scorePct)
+    .map((point) => ({
+      ...point,
+      model: point.modelLabel,
+      modelId: point.modelId,
+      mobileCostUsd: point.costUsd,
+    }));
+  const modelIdByLabel = Object.fromEntries(rows.map((row) => [row.model, row.modelId]));
+  const mobileChartHeight = Math.max(440, rows.length * 50 + 72);
+  const mobileTicks = bounds.xTicks.filter((tick, index, ticks) => index % 2 === 0 || index === ticks.length - 1);
 
   return (
-    <div className="flex h-auto min-h-[600px] flex-col border-y border-zinc-800 bg-zinc-950 p-0 lg:h-full lg:min-h-0 lg:border lg:p-4">
-      <div className="shrink-0">
-        <CostLegend unavailableLabels={unavailableLabels} />
-      </div>
-
-      <div className="min-h-[520px] w-full flex-1 lg:min-h-0">
+    <div className="lg:hidden">
+      <div className="h-full" style={{ height: `${mobileChartHeight}px` }}>
         <ChartContainer
-          className="h-full min-h-[520px] px-2 pt-4 md:px-0 lg:min-h-0"
+          className="h-full min-h-[420px] min-w-0"
+          config={{
+            frontier: { label: "On Pareto frontier", color: FRONTIER_POINT_COLOR },
+            below: { label: "Below frontier", color: BELOW_FRONTIER_COLOR },
+          }}
+        >
+          <BarChart
+            data={rows}
+            layout="vertical"
+            barGap={8}
+            barCategoryGap={12}
+            margin={{ top: 8, right: 20, bottom: 0, left: 12 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#27272a" />
+            <XAxis
+              type="number"
+              dataKey="mobileCostUsd"
+              domain={bounds.xDomain}
+              ticks={mobileTicks}
+              tickFormatter={formatAxisCost}
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: "#a1a1aa", fontSize: 12 }}
+            />
+            <YAxis
+              dataKey="model"
+              type="category"
+              tickLine={false}
+              axisLine={false}
+              width={156}
+              tick={<ModelAxisTick modelIdByLabel={modelIdByLabel} orientation="y" align="left" labelWidth={152} />}
+            />
+            <ChartTooltip
+              cursor={{ fill: "rgba(255,255,255,0.03)" }}
+              isAnimationActive={false}
+              wrapperStyle={{ pointerEvents: "none" }}
+              content={<CostScatterTooltip />}
+            />
+            <Bar dataKey="mobileCostUsd" name="Estimated cost" radius={[0, 4, 4, 0]}>
+              {rows.map((row) => (
+                <Cell
+                  key={`mobile-cost-${row.modelId}`}
+                  fill={row.isOnFrontier ? FRONTIER_POINT_COLOR : BELOW_FRONTIER_COLOR}
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ChartContainer>
+      </div>
+    </div>
+  );
+}
+
+function DesktopCostScatter({
+  bounds,
+  frontierPoints,
+  nonFrontierPoints,
+}: {
+  bounds: CostChartBounds;
+  frontierPoints: CostScatterPoint[];
+  nonFrontierPoints: CostScatterPoint[];
+}) {
+  return (
+    <div className="hidden min-h-[600px] lg:block lg:h-full lg:min-h-0">
+      <div className="h-[600px] w-full lg:h-full">
+        <ChartContainer
+          className="h-full min-h-[600px] px-2 pt-4 md:px-0 lg:min-h-0"
           config={{
             frontier: { label: "On Pareto frontier", color: FRONTIER_POINT_COLOR },
             below: { label: "Below frontier", color: BELOW_FRONTIER_COLOR },
@@ -233,8 +320,8 @@ export function CostScatterChart({ models, category }: CostScatterChartProps) {
               dataKey="costUsd"
               name="Estimated cost"
               tickFormatter={formatAxisCost}
-              domain={xDomain}
-              ticks={xTicks}
+              domain={bounds.xDomain}
+              ticks={bounds.xTicks}
               tickLine={false}
               axisLine={false}
               tick={{ fill: "#a1a1aa", fontSize: 12 }}
@@ -251,10 +338,8 @@ export function CostScatterChart({ models, category }: CostScatterChartProps) {
               dataKey="scorePct"
               name="Weighted average score"
               tickFormatter={(value) => `${value}%`}
-              domain={yDomain}
-              ticks={Array.from({ length: 11 }, (_, index) => index * 10).filter(
-                (tick) => tick >= yDomain[0] && tick <= yDomain[1],
-              )}
+              domain={bounds.yDomain}
+              ticks={[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
               tickLine={false}
               axisLine={false}
               tick={{ fill: "#a1a1aa", fontSize: 12 }}
@@ -294,7 +379,52 @@ export function CostScatterChart({ models, category }: CostScatterChartProps) {
           </ScatterChart>
         </ChartContainer>
       </div>
+    </div>
+  );
+}
 
+export function CostScatterChart({ models, category }: CostScatterChartProps) {
+  const chartData = category
+    ? buildCategoryCostScatterData(category, models)
+    : buildOverviewCostScatterData(models);
+
+  if (chartData.points.length === 0) {
+    return (
+      <div className="flex min-h-[420px] items-center justify-center border-y border-zinc-800 bg-zinc-950 px-6 text-sm text-zinc-400 lg:h-full lg:min-h-0 lg:border">
+        No cost data is available for this view.
+      </div>
+    );
+  }
+
+  const frontierPoints = chartData.frontierPoints;
+  const nonFrontierPoints = chartData.points.filter((point) => !point.isOnFrontier);
+  const isOverview = !category;
+  const bounds = buildChartBounds(chartData.points, isOverview);
+  const unavailableLabels = category
+    ? models
+      .filter((model) => chartData.omittedModelIds.includes(model.id))
+      .map((model) => model.label)
+    : [];
+
+  return (
+    <div className="flex min-h-[420px] flex-col border-y border-zinc-800 bg-zinc-950 p-0 lg:h-full lg:min-h-0 lg:border lg:p-4">
+      <div className="shrink-0">
+        <div className="hidden lg:block">
+          <CostLegend unavailableLabels={unavailableLabels} />
+        </div>
+      </div>
+
+      <MobileCostBars
+        bounds={bounds}
+        frontierPoints={frontierPoints}
+        nonFrontierPoints={nonFrontierPoints}
+      />
+
+      <DesktopCostScatter
+        bounds={bounds}
+        frontierPoints={frontierPoints}
+        nonFrontierPoints={nonFrontierPoints}
+      />
     </div>
   );
 }
