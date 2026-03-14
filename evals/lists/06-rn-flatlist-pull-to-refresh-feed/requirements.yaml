@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: feed-rendered-through-flatlist
+    description: Must render the feed through `FlatList`.
+  - id: refresh-state-controlled
+    description: Must track refresh state in component state and pass it to the list through `refreshing`.
+  - id: pull-to-refresh-handler-wired
+    description: Must attach pull-to-refresh behavior using `onRefresh`.
+  - id: refresh-updates-feed-data
+    description: Must call `updateFeedData` from the refresh handler.
+  - id: implementation-use-flatlist-key-extractor
+    description: Must provide FlatList `keyExtractor` using stable post ids.

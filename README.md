@@ -14,7 +14,7 @@ Groups map to top-level folders under `evals/`.
 | react-native-apis | `evals/react-native-apis` | WIP |
 | expo-sdk | `evals/expo-sdk` | WIP |
 | nitro-modules | `evals/nitro-modules` | WIP |
-| lists | `evals/lists` | WIP |
+| lists | `evals/lists` | Active |
 
 > Want a group that is not listed here? [Open an issue](https://github.com/callstackincubator/evals/issues/new/choose) to request it. Contributions are also welcome.
 

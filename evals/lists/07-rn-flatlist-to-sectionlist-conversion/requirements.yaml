@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: contacts-rendered-through-sectionlist
+    description: Must render the contacts through `SectionList`.
+  - id: sectionlist-sections-derived-from-contact-name
+    description: Must derive `SectionList` sections from the first letter of each contact name.
+  - id: render-section-header-present
+    description: Must render section labels through `renderSectionHeader`.
+  - id: contact-row-renders-name-and-role
+    description: Must render contact rows with both contact name and role.
+  - id: implementation-use-sectionlist-key-extractor
+    description: Must provide `SectionList` `keyExtractor` using stable contact ids.

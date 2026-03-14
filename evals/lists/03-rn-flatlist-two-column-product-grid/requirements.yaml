@@ -1,0 +1,11 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: products-rendered-through-flatlist
+    description: Must render the product catalog through `FlatList`.
+  - id: two-column-grid-uses-numcolumns
+    description: Must configure `FlatList` with `numColumns={2}`.
+  - id: implementation-use-flatlist-key-extractor
+    description: Must provide FlatList `keyExtractor` using stable product ids.
