@@ -18,6 +18,25 @@ const VIEWABILITY_CONFIG = {
   minimumViewTime: 150,
 }
 
+function VideoCard({
+  isVisible,
+  item,
+}: {
+  isVisible: boolean
+  item: (typeof VIDEOS)[number]
+}) {
+  return (
+    <View style={styles.card}>
+      <View style={styles.thumbnail} />
+      <Text style={styles.cardTitle}>{item.title}</Text>
+      <Text style={styles.meta}>{item.creator}</Text>
+      <Text style={[styles.visible, isVisible && styles.visibleActive]}>
+        {isVisible ? 'Visible' : 'Idle'}
+      </Text>
+    </View>
+  )
+}
+
 export default function App() {
   const [visibleIds, setVisibleIds] = useState<string[]>([])
 
@@ -35,24 +54,14 @@ export default function App() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Highlights</Text>
       <FlatList
         data={VIDEOS}
+        extraData={visibleIds}
         keyExtractor={(item) => item.id}
         onViewableItemsChanged={handleViewableItemsChanged}
         renderItem={({ item }) => {
           const isVisible = visibleIds.includes(item.id)
-
-          return (
-            <View style={styles.card}>
-              <View style={styles.thumbnail} />
-              <Text style={styles.cardTitle}>{item.title}</Text>
-              <Text style={styles.meta}>{item.creator}</Text>
-              <Text style={[styles.visible, isVisible && styles.visibleActive]}>
-                {isVisible ? 'Visible' : 'Idle'}
-              </Text>
-            </View>
-          )
+          return <VideoCard isVisible={isVisible} item={item} />
         }}
         viewabilityConfig={VIEWABILITY_CONFIG}
       />
@@ -87,12 +96,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#cbd5f5',
     borderRadius: 14,
     height: 180,
-  },
-  title: {
-    color: '#0f172a',
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 12,
   },
   visible: {
     color: '#475569',

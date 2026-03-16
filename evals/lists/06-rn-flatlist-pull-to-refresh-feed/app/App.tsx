@@ -24,7 +24,6 @@ export default function App() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Operations Feed</Text>
       <FlatList
         data={posts}
         renderItem={({ item }) => {

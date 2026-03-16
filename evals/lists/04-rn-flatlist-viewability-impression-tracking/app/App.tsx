@@ -7,31 +7,52 @@ const VIDEOS = Array.from({ length: 10 }, (_, index) => ({
   creator: index % 2 === 0 ? 'Studio North' : 'Studio South',
 }))
 
-export default function App() {
+function VideoCard({
+  item,
+}: {
+  item: (typeof VIDEOS)[number]
+}) {
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Highlights</Text>
-      <Text style={styles.subtitle}>Clips: {VIDEOS.length}</Text>
+    <View style={styles.card}>
+      <View style={styles.thumbnail} />
+      <Text style={styles.cardTitle}>{item.title}</Text>
+      <Text style={styles.meta}>{item.creator}</Text>
     </View>
   )
 }
 
+export default function App() {
+  return (
+    <View style={styles.screen} />
+  )
+}
+
 const styles = StyleSheet.create({
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 18,
+    marginBottom: 14,
+    padding: 14,
+  },
+  cardTitle: {
+    color: '#0f172a',
+    fontSize: 17,
+    fontWeight: '700',
+    marginTop: 10,
+  },
+  meta: {
+    color: '#64748b',
+    marginTop: 4,
+  },
   screen: {
     backgroundColor: '#f8fafc',
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
   },
-  subtitle: {
-    color: '#334155',
-    marginTop: 6,
-    textAlign: 'center',
-  },
-  title: {
-    color: '#0f172a',
-    fontSize: 24,
-    fontWeight: '700',
-    textAlign: 'center',
+  thumbnail: {
+    backgroundColor: '#cbd5f5',
+    borderRadius: 14,
+    height: 180,
   },
 })
