@@ -18,7 +18,6 @@ export default function App() {
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
-        <Text style={styles.title}>Ops chat</Text>
         <Pressable
           onPress={() => {
             setMessages((current) => [
@@ -76,11 +75,6 @@ const styles = StyleSheet.create({
   sender: {
     color: '#2563eb',
     fontSize: 12,
-    fontWeight: '700',
-  },
-  title: {
-    color: '#0f172a',
-    fontSize: 24,
     fontWeight: '700',
   },
 })

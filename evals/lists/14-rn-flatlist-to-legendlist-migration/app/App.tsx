@@ -16,7 +16,6 @@ const ITEMS = [
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Overview</Text>
       <FlatList
         data={ITEMS}
         keyExtractor={(item) => item.id}
@@ -54,11 +53,5 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 56,
-  },
-  title: {
-    color: '#0f172a',
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 12,
   },
 })

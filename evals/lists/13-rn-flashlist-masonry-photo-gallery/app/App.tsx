@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 const PHOTOS = [
   { id: 'photo-1', label: 'Lakeside', height: 160 },
@@ -13,7 +13,6 @@ const PHOTOS = [
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Gallery</Text>
     </View>
   )
 }
@@ -24,11 +23,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
-  },
-  title: {
-    color: '#0f172a',
-    fontSize: 24,
-    fontWeight: '700',
-    textAlign: 'center',
   },
 })

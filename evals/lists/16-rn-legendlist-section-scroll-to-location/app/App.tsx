@@ -29,7 +29,6 @@ const AGENDA = [
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Agenda</Text>
       <SectionList
         sections={AGENDA}
         keyExtractor={(item) => item.id}
@@ -80,11 +79,5 @@ const styles = StyleSheet.create({
     color: '#2563eb',
     fontSize: 12,
     fontWeight: '700',
-  },
-  title: {
-    color: '#0f172a',
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 12,
   },
 })
