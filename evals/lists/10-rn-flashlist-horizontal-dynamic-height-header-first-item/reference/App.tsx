@@ -18,7 +18,6 @@ const RAIL_ITEMS = [
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Up next</Text>
       <FlashList
         data={RAIL_ITEMS}
         getItemType={(item) => item.type}
@@ -82,11 +81,5 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 16,
     paddingTop: 56,
-  },
-  title: {
-    color: '#0f172a',
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 14,
   },
 })

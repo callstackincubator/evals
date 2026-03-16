@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 const ITEMS = [
   { id: 'item-1', title: 'Shift overview', subtitle: 'Morning operations' },
@@ -10,9 +10,7 @@ const ITEMS = [
 
 export default function App() {
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Overview</Text>
-    </View>
+    <View style={styles.screen} />
   )
 }
 
@@ -22,11 +20,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
-  },
-  title: {
-    color: '#0f172a',
-    fontSize: 24,
-    fontWeight: '700',
-    textAlign: 'center',
   },
 })
