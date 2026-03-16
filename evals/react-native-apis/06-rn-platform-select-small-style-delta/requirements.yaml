@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: implementation-use-platform-api
+    description: Must import and use `Platform` from `react-native`.
+  - id: platform-select-used-for-subtitle-font-size
+    description: Must use `Platform.select(...)` for the subtitle font size.
+  - id: platform-select-defines-android-ios-and-default
+    description: Must define `android`, `ios`, and `default` branches in `Platform.select(...)`.
+  - id: subtitle-font-size-values-match-prompt
+    description: Must set subtitle font size to `12` on Android, `10` on iOS, and `8` on `default`.
