@@ -11,9 +11,7 @@ const CONTACTS = [
 
 export default function App() {
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Contacts</Text>
-    </View>
+    <View style={styles.screen}></View>
   )
 }
 
@@ -23,11 +21,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
-  },
-  title: {
-    color: '#0f172a',
-    fontSize: 24,
-    fontWeight: '700',
-    textAlign: 'center',
   },
 })

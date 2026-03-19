@@ -9,9 +9,7 @@ const PRODUCTS = Array.from({ length: 8 }, (_, index) => ({
 
 export default function App() {
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Catalog</Text>
-    </View>
+    <View style={styles.screen}></View>
   )
 }
 
@@ -25,12 +23,6 @@ const styles = StyleSheet.create({
   subtitle: {
     color: '#334155',
     marginTop: 6,
-    textAlign: 'center',
-  },
-  title: {
-    color: '#0f172a',
-    fontSize: 24,
-    fontWeight: '700',
     textAlign: 'center',
   },
 })

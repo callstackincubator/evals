@@ -21,7 +21,6 @@ export default function App() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Inbox</Text>
       <FlatList
         data={MESSAGES}
         getItemLayout={(_, index) => ({
@@ -70,10 +69,5 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: SEPARATOR_HEIGHT,
-  },
-  title: {
-    color: '#0f172a',
-    fontSize: 24,
-    fontWeight: '700',
   },
 })

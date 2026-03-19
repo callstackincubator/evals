@@ -7,6 +7,8 @@ requirements:
     description: Must define a `viewabilityConfig` object for the `FlatList`.
   - id: on-viewable-items-changed-attached
     description: Must attach `onViewableItemsChanged` to `FlatList`.
+  - id: flatlist-extra-data-wired-to-visible-state
+    description: Must pass the current visibility state to `FlatList` through `extraData`.
   - id: visible-row-style-driven-by-viewable-ids
     description: Must change row style when the item id is in the current set of viewable ids.
   - id: implementation-use-flatlist-key-extractor

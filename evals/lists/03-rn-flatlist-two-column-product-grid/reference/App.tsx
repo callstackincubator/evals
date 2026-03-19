@@ -15,7 +15,6 @@ const PRODUCTS = Array.from({ length: 8 }, (_, index) => ({
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Catalog</Text>
       <FlatList
         columnWrapperStyle={styles.columnWrapper}
         contentContainerStyle={styles.content}
@@ -70,11 +69,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#bfdbfe',
     borderRadius: 12,
     height: 92,
-  },
-  title: {
-    color: '#0f172a',
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 12,
   },
 })
