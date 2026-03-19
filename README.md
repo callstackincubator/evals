@@ -13,6 +13,7 @@ Groups map to top-level folders under `evals/`.
 | navigation | `evals/navigation` | Active |
 | react-native-apis | `evals/react-native-apis` | WIP |
 | expo-sdk | `evals/expo-sdk` | WIP |
+| brownfield | `evals/brownfield` | WIP |
 | nitro-modules | `evals/nitro-modules` | WIP |
 | lists | `evals/lists` | Active |
 
