@@ -1,11 +1,6 @@
 import React from 'react'
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
-import { FlashList, useLayoutState } from '@shopify/flash-list'
+import { StyleSheet, Text, View } from 'react-native'
+import { LegendList } from '@legendapp/list/react-native'
 
 const FAQS = [
   {
@@ -25,38 +20,24 @@ const FAQS = [
   },
 ]
 
-function FaqCard({
-  item,
-}: {
-  item: (typeof FAQS)[number]
-}) {
-  const [isExpanded, setIsExpanded] = useLayoutState(false)
-
-  return (
-    <Pressable onPress={() => setIsExpanded(!isExpanded)} style={styles.card}>
-      <Text style={styles.question}>{item.question}</Text>
-      {isExpanded ? <Text style={styles.answer}>{item.answer}</Text> : null}
-    </Pressable>
-  )
-}
-
 export default function App() {
   return (
     <View style={styles.screen}>
-      <FlashList
+      <LegendList
         data={FAQS}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <FaqCard item={item} />}
+        renderItem={({ item }) => {
+          return (
+            <View style={styles.card}>
+              <Text style={styles.question}>{item.question}</Text>
+            </View>
+          )
+        }}
       />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  answer: {
-    color: '#475569',
-    marginTop: 8,
-  },
   card: {
     backgroundColor: '#fff',
     borderRadius: 16,

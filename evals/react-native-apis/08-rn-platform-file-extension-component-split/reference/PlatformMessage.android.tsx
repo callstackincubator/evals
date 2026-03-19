@@ -1,0 +1,6 @@
+import React from 'react'
+import { Text } from 'react-native'
+
+export default function PlatformMessage() {
+  return <Text>Running on Android</Text>
+}

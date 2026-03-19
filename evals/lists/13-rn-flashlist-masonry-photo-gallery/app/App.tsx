@@ -12,7 +12,8 @@ const PHOTOS = [
 
 export default function App() {
   return (
-    <View style={styles.screen} />
+    <View style={styles.screen}>
+    </View>
   )
 }
 

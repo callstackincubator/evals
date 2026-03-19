@@ -1,0 +1,11 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: implementation-render-stylesheet-create
+    description: Must define styles with `StyleSheet.create(...)`.
+  - id: base-card-and-highlight-diff-style
+    description: Must define a base card style and a highlighted diff style instead of two full separate card styles.
+  - id: highlighted-style-conditionally-extends-base-card
+    description: Must conditionally extend the base card style for highlighted cards instead of using separate standalone card styles.

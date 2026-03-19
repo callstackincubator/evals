@@ -5,7 +5,10 @@ import {
   Text,
   View,
 } from 'react-native'
-import { FlashList, useLayoutState } from '@shopify/flash-list'
+import {
+  LegendList,
+  useRecyclingState,
+} from '@legendapp/list/react-native'
 
 const FAQS = [
   {
@@ -30,7 +33,7 @@ function FaqCard({
 }: {
   item: (typeof FAQS)[number]
 }) {
-  const [isExpanded, setIsExpanded] = useLayoutState(false)
+  const [isExpanded, setIsExpanded] = useRecyclingState(() => false)
 
   return (
     <Pressable onPress={() => setIsExpanded(!isExpanded)} style={styles.card}>
@@ -43,9 +46,10 @@ function FaqCard({
 export default function App() {
   return (
     <View style={styles.screen}>
-      <FlashList
+      <LegendList
         data={FAQS}
         keyExtractor={(item) => item.id}
+        recycleItems
         renderItem={({ item }) => <FaqCard item={item} />}
       />
     </View>
