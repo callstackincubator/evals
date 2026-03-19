@@ -1,0 +1,11 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: implementation-render-image
+    description: Must import and render `Image` from `react-native`.
+  - id: image-uses-network-uri-source
+    description: Must pass uri to the Image with "https://placehold.co/200x100.png".
+  - id: network-image-has-explicit-dimensions
+    description: Must give the image explicit dimensions either inline or via a style object.

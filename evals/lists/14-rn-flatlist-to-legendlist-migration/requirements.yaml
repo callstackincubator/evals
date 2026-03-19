@@ -1,0 +1,11 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: implementation-import-legendlist
+    description: Must import `LegendList` from `@legendapp/list`.
+  - id: feed-rendered-through-legendlist
+    description: Must replace `FlatList` with `LegendList`.
+  - id: recycle-items-enabled
+    description: Must enable `recycleItems` on the `LegendList`.

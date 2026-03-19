@@ -14,12 +14,14 @@
     "harness:ios": "react-native-harness --harnessRunner ios"
   },
   "dependencies": {
+    "@legendapp/list": "^3.0.0-beta.42",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-community/netinfo": "^12.0.1",
     "@react-navigation/bottom-tabs": "^7.3.0",
     "@react-navigation/drawer": "^7.3.0",
     "@react-navigation/native": "^7.1.0",
     "@react-navigation/native-stack": "^7.3.0",
+    "@shopify/flash-list": "^2.3.0",
     "@tanstack/react-query": "^5.90.21",
     "expo": "~54.0.33",
     "expo-status-bar": "~3.0.9",

@@ -11,7 +11,7 @@ Groups map to top-level folders under `evals/`.
 | animation | `evals/animation` | Active |
 | async-state | `evals/async-state` | Active | 
 | navigation | `evals/navigation` | Active |
-| react-native-apis | `evals/react-native-apis` | WIP |
+| react-native-apis | `evals/react-native-apis` | Active |
 | expo-sdk | `evals/expo-sdk` | WIP |
 | brownfield | `evals/brownfield` | WIP |
 | nitro-modules | `evals/nitro-modules` | WIP |
