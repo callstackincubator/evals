@@ -1,0 +1,11 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: contacts-rendered-through-flatlist
+    description: Must render the contacts through `FlatList`.
+  - id: contact-name-and-role-visible
+    description: Must render each contact row with both the contact name and role.
+  - id: implementation-use-flatlist-key-extractor
+    description: Must provide FlatList `keyExtractor` using stable contact ids.

@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: inbox-rendered-through-flatlist
+    description: Must render the inbox messages through `FlatList`.
+  - id: initial-scroll-index-from-first-unread
+    description: Must compute the first unread message index from the data array and pass it to `FlatList` via `initialScrollIndex`.
+  - id: no-unread-fallback-starts-at-top
+    description: If there are no unread messages, must fall back to starting the list at the top instead of passing an invalid unread index.
+  - id: fixed-row-get-item-layout
+    description: Must provide `getItemLayout` with deterministic `length` and `offset` values based on fixed row height and separator spacing.
+  - id: implementation-use-flatlist-key-extractor
+    description: Must provide FlatList `keyExtractor` using stable message ids.
