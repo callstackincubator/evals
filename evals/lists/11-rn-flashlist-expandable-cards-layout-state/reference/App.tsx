@@ -5,7 +5,7 @@ import {
   Text,
   View,
 } from 'react-native'
-import { FlashList, useRecyclingState } from '@shopify/flash-list'
+import { FlashList, useLayoutState } from '@shopify/flash-list'
 
 const FAQS = [
   {
@@ -30,11 +30,7 @@ function FaqCard({
 }: {
   item: (typeof FAQS)[number]
 }) {
-  const [isExpanded, setIsExpanded] = useRecyclingState(
-    false,
-    [item.id],
-    () => {}
-  )
+  const [isExpanded, setIsExpanded] = useLayoutState(false)
 
   return (
     <Pressable onPress={() => setIsExpanded(!isExpanded)} style={styles.card}>
