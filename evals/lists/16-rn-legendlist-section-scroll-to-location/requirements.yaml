@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: implementation-legend-sectionlist-ref
+    description: Must keep a ref to the `SectionList`.
+  - id: day-buttons-rendered-for-agenda-sections
+    description: Must render a button or pressable for each section in the list.
+  - id: scroll-to-location-wired
+    description: Must call `scrollToLocation(...)` when each button is pressed.
+  - id: section-index-used-for-scroll-target
+    description: Must pass the pressed section's `sectionIndex` to `scrollToLocation(...)`.
+  - id: first-item-targeted-in-section
+    description: Must scroll to the first item in the selected section with `itemIndex` as `0`.

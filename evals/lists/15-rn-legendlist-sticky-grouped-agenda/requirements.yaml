@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: implementation-render-legend-sectionlist
+    description: Must import and render `SectionList` from `@legendapp/list/section-list`.
+  - id: implementation-provide-legend-sectionlist-key-extractor
+    description: Must provide `SectionList` `keyExtractor` using stable event ids.
+  - id: sections-derived-from-event-day
+    description: Must derive `sections` from each event's `day`.
+  - id: render-section-header-present
+    description: Must render day headers through `renderSectionHeader`.
+  - id: sticky-section-headers-enabled
+    description: Must enable `stickySectionHeadersEnabled` on the `SectionList`.
