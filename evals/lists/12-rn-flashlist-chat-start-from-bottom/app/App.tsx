@@ -1,11 +1,5 @@
-import React, { useState } from 'react'
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
-import { FlashList } from '@shopify/flash-list'
+import React from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 
 const INITIAL_MESSAGES = Array.from({ length: 8 }, (_, index) => ({
   id: `message-${index + 1}`,
@@ -13,30 +7,22 @@ const INITIAL_MESSAGES = Array.from({ length: 8 }, (_, index) => ({
   text: `Chat message ${index + 1}`,
 }))
 
-export default function App() {
-  const [messages, setMessages] = useState(INITIAL_MESSAGES)
-
+function MessageBubble({
+  item,
+}: {
+  item: (typeof INITIAL_MESSAGES)[number]
+}) {
   return (
-    <View style={styles.screen}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Ops chat</Text>
-        <Pressable
-          onPress={() => {
-            setMessages((current) => [
-              ...current,
-              {
-                id: `message-${current.length + 1}`,
-                from: current.length % 2 === 0 ? 'Jordan' : 'Ops',
-                text: `Chat message ${current.length + 1}`,
-              },
-            ])
-          }}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>Add message</Text>
-        </Pressable>
-      </View>
+    <View style={styles.bubble}>
+      <Text style={styles.sender}>{item.from}</Text>
+      <Text style={styles.body}>{item.text}</Text>
     </View>
+  )
+}
+
+export default function App() {
+  return (
+    <View style={styles.screen} />
   )
 }
 
@@ -52,22 +38,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 12,
   },
-  button: {
-    backgroundColor: '#0f172a',
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
-  header: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-  },
   screen: {
     backgroundColor: '#e2e8f0',
     flex: 1,
@@ -77,11 +47,6 @@ const styles = StyleSheet.create({
   sender: {
     color: '#2563eb',
     fontSize: 12,
-    fontWeight: '700',
-  },
-  title: {
-    color: '#0f172a',
-    fontSize: 24,
     fontWeight: '700',
   },
 })

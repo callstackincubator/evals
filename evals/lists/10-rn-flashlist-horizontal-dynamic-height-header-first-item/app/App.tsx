@@ -10,9 +10,7 @@ const VIDEOS = [
 
 export default function App() {
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Up next</Text>
-    </View>
+    <View style={styles.screen} />
   )
 }
 
@@ -53,11 +51,5 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 16,
     paddingTop: 56,
-  },
-  title: {
-    color: '#0f172a',
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 14,
   },
 })

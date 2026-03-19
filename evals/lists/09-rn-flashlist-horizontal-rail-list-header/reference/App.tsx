@@ -10,7 +10,6 @@ const VIDEOS = Array.from({ length: 8 }, (_, index) => ({
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Up next</Text>
       <FlashList
         data={VIDEOS}
         horizontal
@@ -75,11 +74,5 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 16,
     paddingTop: 56,
-  },
-  title: {
-    color: '#0f172a',
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 14,
   },
 })
