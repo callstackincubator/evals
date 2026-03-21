@@ -11,7 +11,8 @@ export default function App() {
     <View style={styles.screen}>
       <Text style={styles.title}>Overview</Text>
       <ImageBackground
-        source={require('banner.png')}
+        source={require('./banner.jpg')}
+        imageStyle={styles.headerImage}
         style={styles.header}
         resizeMode='cover'
       >
@@ -26,7 +27,10 @@ export default function App() {
 
 const styles = StyleSheet.create({
   header: {
-    flex: 1,
+    borderRadius: 20,
+    height: 200,
+    overflow: 'hidden',
+    width: 300,
   },
   headerContent: {
     flex: 1,
