@@ -1,2 +1,1 @@
-Add platform-specific font size for the Summary text.
-The font size should be `12` on Android, `10` on iOS, and `8` on all other platforms.
+Use `Platform.select` to apply platform-native depth styling to the summary card: iOS should use shadow props, Android should use elevation, and other platforms should use a border imitating shadow.
