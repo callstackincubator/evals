@@ -1,1 +1,1 @@
-Update the existing login form so the keyboard does not cover the input fields when it opens.
+Update the existing login form so the keyboard does not cover the input fields when it opens, using built-in React Native APIs only.

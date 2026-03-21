@@ -5,5 +5,7 @@ inputs:
 requirements:
   - id: overlay-covers-thumbnail-with-stylesheet-helper
     description: Must position the thumbnail overlay with `StyleSheet.absoluteFill`.
+  - id: overlay-does-not-use-deprecated-absolute-fill-object
+    description: Must NOT use deprecated `StyleSheet.absoluteFillObject`.
   - id: overlay-background-color-rgba
     description: Must have a background color of `rgba(0, 0, 0, 0.5)`.
