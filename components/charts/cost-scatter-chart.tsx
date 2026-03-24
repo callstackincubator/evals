@@ -151,9 +151,6 @@ function CostScatterTooltip({
           <ModelLogoSquare modelId={point.modelId} modelLabel={point.modelLabel} />
           <p className="truncate text-xs font-semibold text-zinc-100">{point.modelLabel}</p>
         </div>
-        <span className="text-[11px] font-medium text-zinc-400">
-          {point.isOnFrontier ? "On frontier" : "Below frontier"}
-        </span>
       </div>
       <div className="mt-3 space-y-1.5 border-t border-zinc-700 pt-3">
         <div className="flex items-center justify-between gap-2 text-xs">
