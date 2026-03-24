@@ -243,7 +243,7 @@ function FragmentRow({
         </td>
         <td className="px-4 py-5 text-center font-mono text-zinc-300">{formatPct(score)}</td>
         <td className="px-4 py-5 text-center font-mono text-zinc-300 whitespace-nowrap">
-          {formatNumber(tokensUsed)}
+          {tokensUsed === 0 ? "-" : formatNumber(tokensUsed)}
         </td>
         <td className="px-4 py-5 text-center font-mono text-zinc-300 whitespace-nowrap">
           {costUsd === null ? "-" : formatUsd(costUsd)}
@@ -286,7 +286,7 @@ function FragmentRow({
             <td className="px-4 py-5 text-zinc-100">{evalItem.name}</td>
             <td className="px-4 py-5 text-center font-mono text-zinc-300">{formatPct(evalItem.scorePct)}</td>
             <td className="px-4 py-5 text-center font-mono text-zinc-300 whitespace-nowrap">
-              {formatNumber(evalItem.tokensUsed)}
+              {evalItem.tokensUsed === 0 ? "-" : formatNumber(evalItem.tokensUsed)}
             </td>
             <td className="px-4 py-5 text-center font-mono text-zinc-300 whitespace-nowrap">
               {evalItem.costUsd === null ? "-" : formatUsdPrecise(evalItem.costUsd)}
@@ -377,7 +377,7 @@ function EvalDetailsDrawer({ selectedEval, evalMatrixById, onClose }: EvalDetail
                       </td>
                       <td className="px-4 py-4 text-center font-mono text-zinc-300">{formatPct(row.scorePct)}</td>
                       <td className="px-4 py-4 text-center font-mono text-zinc-300 whitespace-nowrap">
-                        {formatNumber(row.tokensUsed)}
+                        {row.tokensUsed === 0 ? "-" : formatNumber(row.tokensUsed)}
                       </td>
                       <td className="px-4 py-4 text-center font-mono text-zinc-300 whitespace-nowrap">
                         {row.costUsd === null ? "-" : formatUsdPrecise(row.costUsd)}

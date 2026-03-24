@@ -71,7 +71,7 @@ export function OverviewTable({ categories, models }: OverviewTableProps) {
                 })}
 
                 <td className="px-4 py-5 text-center font-mono text-zinc-300 whitespace-nowrap">
-                  {formatNumber(model.tokensUsed)}
+                  {model.tokensUsed === 0 ? "-" : formatNumber(model.tokensUsed)}
                 </td>
                 <td className="px-4 py-5 text-center font-mono text-zinc-300 whitespace-nowrap">
                   {model.costUsd === null ? "-" : formatUsd(model.costUsd)}
