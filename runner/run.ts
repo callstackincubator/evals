@@ -57,7 +57,10 @@ async function runWithRetries<T>(
 */
 export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
   const cliOptions = parseRunCliArgs(argv)
-  const discoveredEvals = await discoverEvals(cliOptions.pattern)
+  const skipEvalIdSet = new Set(cliOptions.skipEvalIds)
+  const discoveredEvals = (await discoverEvals(cliOptions.pattern)).filter(
+    (item) => !skipEvalIdSet.has(item.evalId)
+  )
   const runId = new Date().toISOString().replace(/[:.]/g, '-')
   const startedAt = new Date().toISOString()
   const outputDirectory = path.resolve(

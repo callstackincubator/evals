@@ -1,0 +1,31 @@
+name: trigger-webhook
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger webhook
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          WEBHOOK_USER: ${{ secrets.WEBHOOK_USER }}
+          WEBHOOK_PASSWORD: ${{ secrets.WEBHOOK_PASSWORD }}
+        run: |
+          if [ -z "$WEBHOOK_URL" ]; then
+            echo "WEBHOOK_URL secret unset; skip WEBHOOK dispatch"
+            exit 0
+          fi
+          basic=$(printf '%s:%s' "$WEBHOOK_USER" "$WEBHOOK_PASSWORD" | base64 -w0)
+          body=$(jq -nc \
+            --arg sha "${{ github.sha }}" \
+            --arg ref "${{ github.ref_name }}" \
+            --arg url "https://github.com/${{ github.repository }}.git" \
+            '{conf: {commit_sha: $sha, git_ref: $ref, git_repo_url: $url}}')
+          curl -sfS -X POST "$WEBHOOK_URL" \
+            -H "Authorization: Basic $basic" \
+            -H "Content-Type: application/json" \
+            -d "$body"

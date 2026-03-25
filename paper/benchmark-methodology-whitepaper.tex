@@ -314,6 +314,8 @@ The runner supports bounded concurrency. If an eval fails and \texttt{----fail-f
 
 The judge CLI also supports targeted re-judging over existing judge outputs using \\\texttt{----rerun-requirements-file} with \texttt{----output}; optionally pass \texttt{----rerun-requirement-id} to refresh only one requirement. Without \texttt{----rerun-requirement-id}, all requirements for the targeted eval are re-judged and replaced in the per-eval JSON. It also supports \texttt{----rerun-missing-judgements} with \texttt{----output} to scan for and judge all evals missing per-eval judge JSON outputs (the same missing rows counted by \texttt{evalsErrored} in the rebuilt summary). In rerun modes, the previous \texttt{summary.json} is backed up as \texttt{summary.backup.<timestamp>.json}, and a new aggregate summary is generated from the current per-eval result set.
 
+Both CLIs accept repeatable \texttt{----skip-eval-id}. Generation omits those eval IDs from discovery processing. Judging skips LLM calls for those IDs and instead requires an existing per-eval judge JSON already present under the configured judge output directory (used when orchestration merges prior verdict artifacts). Skipped evals still contribute to the aggregate summary when their per-eval JSON is present.
+
 \section{Solver Stage Methodology}
 
 The solver methodology treats each benchmark item as a constrained code-generation task: the model receives a task prompt plus project context, produces a complete implementation artifact, and is evaluated only against task-defined requirements. The same solver protocol is applied across all tasks and runs, with outputs stored in a structured, reproducible format, ensuring fair comparison across models and direct traceability between generated code and downstream requirement-level scores.
@@ -338,7 +340,7 @@ The solver returns structured output with:
 Returned paths are sanitized before writing to disk (e.g., stripping leading slashes and removing traversal segments such as \texttt{..}).
 
 \subsection{Model Requirement}
-The generation CLI requires \texttt{----model}. When set to \texttt{noop}, the generation stage copies files from each eval's \texttt{reference/} directory into the configured output and still writes a validated \texttt{manifest.json}. Any other model value runs normal solver generation.
+The generation CLI requires \texttt{----model}. When set to \texttt{noop}, the generation stage copies files from each eval's \texttt{reference/} directory into the configured output and still writes a validated \texttt{manifest.json}. Any other model value runs normal solver generation. Repeatable \texttt{----skip-eval-id} removes matching eval IDs from the generation pass after glob discovery (orchestration may merge outputs from a prior run for those IDs before judging).
 
 \section{LLM Judge Methodology}
 
@@ -405,7 +407,7 @@ Judge rows are mapped back to declared requirements by ID.
   \item Requirement weights are normalized before scoring (\cref{sec:scoring}).
 \end{itemize}
 
-The judge CLI requires \texttt{----model}; there is no judge skip/noop path.
+The judge CLI requires \texttt{----model}. Aside from repeatable \texttt{----skip-eval-id} (which reuses existing per-eval judge JSON on disk rather than calling the judge model), there is no judge noop path.
 
 \section{Scoring Methodology}
 \label{sec:scoring}
@@ -545,7 +547,7 @@ The full benchmark pipeline executed successfully end-to-end across the evaluate
 For comparative studies, report at minimum:
 \begin{enumerate}
   \item repository commit hash (dataset and runner version)
-  \item CLI options (\texttt{run: ----pattern, ----model, ----timeout, ----concurrency, ----output}; \\\texttt{judge: ----model, ----timeout, ----concurrency, ----input} \\and optional rerun flags \texttt{----rerun-requirements-file}, \texttt{----output}, \\scope optional \texttt{----rerun-requirement-id}, scope optional \texttt{----rerun-missing-judgements})
+  \item CLI options (\texttt{run: ----pattern, ----model, ----timeout, ----concurrency, ----output}, \\optional repeatable \texttt{----skip-eval-id}; \\\texttt{judge: ----model, ----timeout, ----concurrency, ----input}, \\optional repeatable \texttt{----skip-eval-id}, \\and optional rerun flags \texttt{----rerun-requirements-file}, \texttt{----output}, \\scope optional \texttt{----rerun-requirement-id}, scope optional \texttt{----rerun-missing-judgements})
   \item execution date and time
   \item counts of discovered, processed, and errored evals
   \item \texttt{weightedAverageScore} and \texttt{requirementsPassed/Total}
