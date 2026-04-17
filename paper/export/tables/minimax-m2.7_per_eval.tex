@@ -1,0 +1,79 @@
+% Requires: \usepackage{booktabs}
+\begin{table}[htbp]
+\centering
+\begin{adjustbox}{width=0.8\textwidth}
+\begin{tabular}{lrrrrr}
+\toprule
+Eval & Category & Score & P@1 & P@5 & P@10 \\
+\midrule
+01-rn-anim-pressable-scale-with-timing & animation & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+02-rn-anim-spring-toggle-card-height & animation & 73.3\% & 20.0\% & 77.8\% & 100.0\% \\
+03-rn-anim-layout-enter-exit-list-items & animation & 93.3\% & 90.0\% & 100.0\% & 100.0\% \\
+04-rn-anim-scroll-linked-collapsing-header & animation & 80.0\% & 70.0\% & 100.0\% & 100.0\% \\
+05-rn-anim-pan-drag-card-with-snap-points & animation & 47.5\% & 0.0\% & 0.0\% & 0.0\% \\
+06-rn-anim-longpress-then-pan-activation-gate & animation & 62.5\% & 30.0\% & 91.7\% & 100.0\% \\
+07-rn-anim-pinch-pan-simultaneous-photo-canvas & animation & 90.0\% & 80.0\% & 100.0\% & 100.0\% \\
+09-rn-anim-android-modal-gesture-root-safety & animation & 48.3\% & 0.0\% & 0.0\% & 0.0\% \\
+10-rn-anim-worklet-thread-bridge-schedule-on-rn & animation & 45.0\% & 0.0\% & 0.0\% & 0.0\% \\
+11-rn-rngh-exclusive-single-double-tap & animation & 36.0\% & 0.0\% & 0.0\% & 0.0\% \\
+12-rn-rngh-scroll-pan-failure-chain & animation & 40.0\% & 0.0\% & 0.0\% & 0.0\% \\
+13-rn-worklets-runtime-offload-and-bridge & animation & 33.3\% & 0.0\% & 0.0\% & 0.0\% \\
+14-rn-keyboard-controller-aware-scroll-footer & animation & 16.0\% & 0.0\% & 0.0\% & 0.0\% \\
+01-rn-rq-stable-query-key-filters & async state & 44.0\% & 0.0\% & 0.0\% & 0.0\% \\
+02-rn-rq-dependent-query-enabled-gate & async state & 36.0\% & 0.0\% & 0.0\% & 0.0\% \\
+03-rn-rq-mutation-invalidate-on-success & async state & 58.0\% & 0.0\% & 0.0\% & 0.0\% \\
+04-rn-rq-optimistic-update-rollback & async state & 77.1\% & 20.0\% & 77.8\% & 100.0\% \\
+05-rn-zustand-async-action-lifecycle & async state & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+06-rn-zustand-request-id-stale-response-guard & async state & 66.0\% & 0.0\% & 0.0\% & 0.0\% \\
+07-rn-zustand-persist-async-hydration-gate & async state & 55.7\% & 10.0\% & 50.0\% & 100.0\% \\
+09-rn-jotai-async-read-atom-suspense & async state & 90.0\% & 70.0\% & 100.0\% & 100.0\% \\
+10-rn-jotai-loadable-async-atom-no-suspense & async state & 25.0\% & 0.0\% & 0.0\% & 0.0\% \\
+11-rn-jotai-async-write-atom-mutation & async state & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+12-rn-jotai-atomwithstorage-async-rehydrate-guard & async state & 88.3\% & 40.0\% & 97.6\% & 100.0\% \\
+13-rn-react-usedeferredvalue-search-stale-indicator & async state & 87.5\% & 60.0\% & 100.0\% & 100.0\% \\
+14-rn-rq-react-native-appstate-focus-online-managers & async state & 33.3\% & 0.0\% & 0.0\% & 0.0\% \\
+01-rn-flatlist-scroll-to-unread-fixed-rows & lists & 56.0\% & 0.0\% & 0.0\% & 0.0\% \\
+02-rn-flatlist-basic-contact-list & lists & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+03-rn-flatlist-two-column-product-grid & lists & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+04-rn-flatlist-viewability-impression-tracking & lists & 80.0\% & 0.0\% & 0.0\% & 0.0\% \\
+05-rn-flatlist-large-feed-window-tuning & lists & 84.0\% & 30.0\% & 91.7\% & 100.0\% \\
+06-rn-flatlist-pull-to-refresh-feed & lists & 76.0\% & 0.0\% & 0.0\% & 0.0\% \\
+07-rn-flatlist-to-sectionlist-conversion & lists & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+08-rn-flashlist-basic-list & lists & 93.3\% & 80.0\% & 100.0\% & 100.0\% \\
+09-rn-flashlist-horizontal-rail-list-header & lists & 72.5\% & 20.0\% & 77.8\% & 100.0\% \\
+10-rn-flashlist-horizontal-dynamic-height-header-first-item & lists & 78.3\% & 0.0\% & 0.0\% & 0.0\% \\
+11-rn-flashlist-expandable-cards-layout-state & lists & 36.7\% & 0.0\% & 0.0\% & 0.0\% \\
+12-rn-flashlist-chat-start-from-bottom & lists & 40.0\% & 0.0\% & 0.0\% & 0.0\% \\
+13-rn-flashlist-masonry-photo-gallery & lists & 56.0\% & 0.0\% & 0.0\% & 0.0\% \\
+14-rn-flatlist-to-legendlist-migration & lists & 6.7\% & 0.0\% & 0.0\% & 0.0\% \\
+15-rn-legendlist-sticky-grouped-agenda & lists & 82.0\% & 10.0\% & 50.0\% & 100.0\% \\
+16-rn-legendlist-section-scroll-to-location & lists & 94.0\% & 90.0\% & 100.0\% & 100.0\% \\
+17-rn-legendlist-chat-start-from-bottom & lists & 40.0\% & 0.0\% & 0.0\% & 0.0\% \\
+18-rn-legendlist-expandable-cards-recycling-state & lists & 37.5\% & 0.0\% & 0.0\% & 0.0\% \\
+01-rn-nav-stack-product-details & navigation & 72.0\% & 0.0\% & 0.0\% & 0.0\% \\
+02-rn-nav-stack-filter-default & navigation & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+03-rn-nav-stack-header-from-param & navigation & 97.5\% & 90.0\% & 100.0\% & 100.0\% \\
+04-rn-nav-modal-compose-note & navigation & 95.0\% & 90.0\% & 100.0\% & 100.0\% \\
+05-rn-nav-tabs-three-sections & navigation & 96.7\% & 90.0\% & 100.0\% & 100.0\% \\
+06-rn-nav-home-tab-nested-details & navigation & 83.3\% & 50.0\% & 99.6\% & 100.0\% \\
+07-rn-nav-drawer-account-help & navigation & 97.5\% & 90.0\% & 100.0\% & 100.0\% \\
+09-rn-nav-login-replace-home & navigation & 58.0\% & 0.0\% & 0.0\% & 0.0\% \\
+10-rn-nav-deeplink-profile-basic & navigation & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+12-rn-nav-unsaved-edit-confirm & navigation & 70.0\% & 0.0\% & 0.0\% & 0.0\% \\
+13-rn-nav-focus-refresh-inbox & navigation & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+14-rn-nav-tabs-lazy-first-render & navigation & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+15-rn-nav-header-action-stateful & navigation & 80.0\% & 80.0\% & 100.0\% & 100.0\% \\
+01-rn-stylesheet-card-variants & react native apis & 60.0\% & 40.0\% & 97.6\% & 100.0\% \\
+02-rn-stylesheet-absolute-fill-overlay-badge & react native apis & 63.3\% & 0.0\% & 0.0\% & 0.0\% \\
+03-rn-stylesheet-divider-hairline & react native apis & 76.7\% & 30.0\% & 91.7\% & 100.0\% \\
+04-rn-image-network-dimensions & react native apis & 96.7\% & 90.0\% & 100.0\% & 100.0\% \\
+05-rn-imagebackground-resize-mode & react native apis & 97.5\% & 90.0\% & 100.0\% & 100.0\% \\
+06-rn-platform-select-small-style-delta & react native apis & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+07-rn-platform-os-conditional-cta & react native apis & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+08-rn-platform-file-extension-component-split & react native apis & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+09-rn-keyboardavoidingview-login-form & react native apis & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\caption{Per-eval results (score and pass@k) for minimax-m2.7}
+\end{table}

@@ -1,0 +1,16 @@
+% Requires: \usepackage{booktabs}
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Category & Score & Evals & Requirements & Failed requirements \\
+\midrule
+animation & 73.3\% & 130 & 53 & 152 \\
+async state & 78.9\% & 130 & 65 & 135 \\
+lists & 83.7\% & 180 & 79 & 137 \\
+navigation & 95.3\% & 130 & 45 & 24 \\
+react native apis & 91.9\% & 90 & 31 & 22 \\
+\bottomrule
+\end{tabular}
+\caption{Results by category for claude-opus-4.7. Score: mean(per-eval passed/total weight) across evals and runs. Evals: count of evaluation tasks. Requirements: sum of requirement count per eval. Failed requirements: sum of failed requirement instances across runs.}
+\end{table}

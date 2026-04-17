@@ -1,6 +1,7 @@
 % Requires: \usepackage{booktabs}
 \begin{table}[htbp]
 \centering
+\begin{adjustbox}{width=0.8\textwidth}
 \begin{tabular}{lrrrrr}
 \toprule
 Eval & Category & Score & P@1 & P@5 & P@10 \\
@@ -31,6 +32,24 @@ Eval & Category & Score & P@1 & P@5 & P@10 \\
 12-rn-jotai-atomwithstorage-async-rehydrate-guard & async state & 96.7\% & 80.0\% & 100.0\% & 100.0\% \\
 13-rn-react-usedeferredvalue-search-stale-indicator & async state & 94.4\% & 88.9\% & 100.0\% & 88.9\% \\
 14-rn-rq-react-native-appstate-focus-online-managers & async state & 33.3\% & 0.0\% & 0.0\% & 0.0\% \\
+01-rn-flatlist-scroll-to-unread-fixed-rows & lists & 74.3\% & 14.3\% & 71.4\% & 14.3\% \\
+02-rn-flatlist-basic-contact-list & lists & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+03-rn-flatlist-two-column-product-grid & lists & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+04-rn-flatlist-viewability-impression-tracking & lists & 60.0\% & 0.0\% & 0.0\% & 0.0\% \\
+05-rn-flatlist-large-feed-window-tuning & lists & 76.0\% & 60.0\% & 100.0\% & 60.0\% \\
+06-rn-flatlist-pull-to-refresh-feed & lists & 80.0\% & 0.0\% & 0.0\% & 0.0\% \\
+07-rn-flatlist-to-sectionlist-conversion & lists & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+08-rn-flashlist-basic-list & lists & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+09-rn-flashlist-horizontal-rail-list-header & lists & 75.0\% & 10.0\% & 50.0\% & 100.0\% \\
+10-rn-flashlist-horizontal-dynamic-height-header-first-item & lists & 55.6\% & 0.0\% & 0.0\% & 0.0\% \\
+11-rn-flashlist-expandable-cards-layout-state & lists & 66.7\% & 0.0\% & 0.0\% & 0.0\% \\
+12-rn-flashlist-chat-start-from-bottom & lists & 50.0\% & 0.0\% & 0.0\% & 0.0\% \\
+13-rn-flashlist-masonry-photo-gallery & lists & 76.0\% & 0.0\% & 0.0\% & 0.0\% \\
+14-rn-flatlist-to-legendlist-migration & lists & 0.0\% & 0.0\% & 0.0\% & 0.0\% \\
+15-rn-legendlist-sticky-grouped-agenda & lists & 80.0\% & 0.0\% & 0.0\% & 0.0\% \\
+16-rn-legendlist-section-scroll-to-location & lists & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+17-rn-legendlist-chat-start-from-bottom & lists & 40.0\% & 0.0\% & 0.0\% & 0.0\% \\
+18-rn-legendlist-expandable-cards-recycling-state & lists & 50.0\% & 0.0\% & 0.0\% & 0.0\% \\
 01-rn-nav-stack-product-details & navigation & 73.3\% & 0.0\% & 0.0\% & 0.0\% \\
 02-rn-nav-stack-filter-default & navigation & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
 03-rn-nav-stack-header-from-param & navigation & 80.6\% & 22.2\% & 83.3\% & 22.2\% \\
@@ -44,7 +63,17 @@ Eval & Category & Score & P@1 & P@5 & P@10 \\
 13-rn-nav-focus-refresh-inbox & navigation & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
 14-rn-nav-tabs-lazy-first-render & navigation & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
 15-rn-nav-header-action-stateful & navigation & 95.0\% & 90.0\% & 100.0\% & 100.0\% \\
+01-rn-stylesheet-card-variants & react native apis & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+02-rn-stylesheet-absolute-fill-overlay-badge & react native apis & 60.0\% & 0.0\% & 0.0\% & 0.0\% \\
+03-rn-stylesheet-divider-hairline & react native apis & 90.0\% & 80.0\% & 100.0\% & 100.0\% \\
+04-rn-image-network-dimensions & react native apis & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+05-rn-imagebackground-resize-mode & react native apis & 97.5\% & 90.0\% & 100.0\% & 100.0\% \\
+06-rn-platform-select-small-style-delta & react native apis & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+07-rn-platform-os-conditional-cta & react native apis & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+08-rn-platform-file-extension-component-split & react native apis & 100.0\% & 100.0\% & 100.0\% & 100.0\% \\
+09-rn-keyboardavoidingview-login-form & react native apis & 96.3\% & 88.9\% & 100.0\% & 88.9\% \\
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \caption{Per-eval results (score and pass@k) for gpt-oss-120b}
 \end{table}

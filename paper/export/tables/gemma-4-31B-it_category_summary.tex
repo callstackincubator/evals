@@ -1,0 +1,16 @@
+% Requires: \usepackage{booktabs}
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Category & Score & Evals & Requirements & Failed requirements \\
+\midrule
+animation & 65.8\% & 130 & 53 & 198 \\
+async state & 76.9\% & 130 & 65 & 145 \\
+lists & 67.8\% & 180 & 79 & 263 \\
+navigation & 91.1\% & 130 & 45 & 50 \\
+react native apis & 92.6\% & 90 & 31 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Results by category for gemma-4-31B-it. Score: mean(per-eval passed/total weight) across evals and runs. Evals: count of evaluation tasks. Requirements: sum of requirement count per eval. Failed requirements: sum of failed requirement instances across runs.}
+\end{table}

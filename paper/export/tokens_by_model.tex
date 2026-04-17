@@ -5,21 +5,26 @@
 \toprule
 Model & Tokens mean & Tokens stddev \\
 \midrule
-claude-opus-4.6 & 325,598 & 5,923 \\
-claude-sonnet-4.6 & 116,581 & 981 \\
-deepseek-r1-distill-qwen-32b & 181,466 & 1,468 \\
-deepseek-v3.2 & 270,069 & 38,035 \\
-gemini-3.1-pro-preview & 582,696 & 39,110 \\
-glm-5 & 512,402 & 95,493 \\
-gpt-5.3-codex & 321,229 & 74,294 \\
-gpt-5.4 & 90,425 & 10,130 \\
-gpt-oss-120b & 450,443 & 34,197 \\
-gpt-oss-20b & 486,854 & 48,229 \\
-grok-4 & 821,708 & 66,569 \\
-kimi-k2.5 & 516,723 & 93,631 \\
-qwen2.5-coder-32b-instruct & 447,939 & 18,558 \\
+claude-opus-4.6 & 885,374 & 1,537 \\
+claude-opus-4.7 & 1,209,561 & 723 \\
+claude-sonnet-4.6 & 885,424 & 1090 \\
+composer-2 & --- & --- \\
+composer-2-fast & --- & --- \\
+deepseek-r1-distill-qwen-32b & 254,437 & 1,247 \\
+deepseek-v3.2 & 5,590,132 & 782,834 \\
+gemini-3.1-pro-preview & 1,074,284 & 12,826 \\
+gemma-4-31B-it & 885,910 & 91,050 \\
+glm-5 & 1,171,183 & 152,778 \\
+gpt-5.3-codex & 778,463 & 49,875 \\
+gpt-5.4 & 869,589 & 50,085 \\
+gpt-oss-120b & 653,327 & 27,343 \\
+gpt-oss-20b & 765,263 & 57,402 \\
+grok-4 & 1,257,083 & 38,612 \\
+kimi-k2.5 & 2,500,716 & 408,562 \\
+minimax-m2.7 & 1,261,454 & 131,780 \\
+qwen2.5-coder-32b-instruct & 732,531 & 15,154 \\
 \bottomrule
 \end{tabular}
-\caption{Total tokens per run by model. Mean and stddev computed across runs (solver + judge).}
+\caption{Total tokens per run by model. Mean and stddev computed across runs. It was impossible to **precisely** determine Composer 2 and Composer 2 Fast values for the runs.}
 \label{tab:tokens-by-model}
 \end{table}

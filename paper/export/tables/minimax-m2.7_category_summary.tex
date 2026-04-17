@@ -1,0 +1,16 @@
+% Requires: \usepackage{booktabs}
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Category & Score & Evals & Requirements & Failed requirements \\
+\midrule
+animation & 58.9\% & 130 & 53 & 234 \\
+async state & 66.2\% & 130 & 65 & 211 \\
+lists & 68.5\% & 180 & 79 & 244 \\
+navigation & 88.5\% & 130 & 45 & 61 \\
+react native apis & 88.2\% & 90 & 31 & 32 \\
+\bottomrule
+\end{tabular}
+\caption{Results by category for minimax-m2.7. Score: mean(per-eval passed/total weight) across evals and runs. Evals: count of evaluation tasks. Requirements: sum of requirement count per eval. Failed requirements: sum of failed requirement instances across runs.}
+\end{table}
