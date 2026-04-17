@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import {
   Bar,
   BarChart,
@@ -10,7 +11,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { ModelAxisTick } from "@/components/charts/model-axis-tick";
+import {
+  getDesktopModelAxisLabelWidth,
+  ModelAxisTick,
+} from "@/components/charts/model-axis-tick";
+import { useElementWidth } from "@/components/charts/use-element-width";
 import { ModelLogoSquare } from "@/components/tables/table-badges";
 import { CATEGORY_COLORS } from "@/lib/colors/category-colors";
 import { formatPct } from "@/lib/utils";
@@ -61,6 +66,8 @@ function CategoryTooltipContent({ active, label, payload }: CategoryTooltipProps
 }
 
 export function CategoryBarChart({ category, models }: CategoryBarChartProps) {
+  const desktopChartRef = useRef<HTMLDivElement>(null);
+  const desktopChartWidth = useElementWidth(desktopChartRef);
   const rows = models
     .map((model) => ({
       modelId: model.id,
@@ -73,6 +80,7 @@ export function CategoryBarChart({ category, models }: CategoryBarChartProps) {
   const minScore = rows.length > 0 ? Math.min(...rows.map((row) => row.score)) : 0;
   const maxScore = rows.length > 0 ? Math.max(...rows.map((row) => row.score)) : 100;
   const mobileChartHeight = Math.max(440, rows.length * 50 + 72);
+  const desktopLabelWidth = getDesktopModelAxisLabelWidth(desktopChartWidth, rows.length);
 
   const opacityForScore = (score: number) => {
     if (maxScore === minScore) {
@@ -125,7 +133,7 @@ export function CategoryBarChart({ category, models }: CategoryBarChartProps) {
         </ResponsiveContainer>
       </div>
 
-      <div className="hidden h-full lg:block">
+      <div ref={desktopChartRef} className="hidden h-full lg:block">
         <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={320}>
           <BarChart data={rows} barGap={8} barCategoryGap={16}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#27272a" />
@@ -135,7 +143,7 @@ export function CategoryBarChart({ category, models }: CategoryBarChartProps) {
               axisLine={false}
               interval={0}
               height={78}
-              tick={<ModelAxisTick modelIdByLabel={modelIdByLabel} />}
+              tick={<ModelAxisTick modelIdByLabel={modelIdByLabel} labelWidth={desktopLabelWidth} />}
             />
             <YAxis
               domain={[0, 100]}

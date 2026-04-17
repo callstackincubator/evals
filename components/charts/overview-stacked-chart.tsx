@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -10,7 +10,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { ModelAxisTick } from "@/components/charts/model-axis-tick";
+import {
+  getDesktopModelAxisLabelWidth,
+  ModelAxisTick,
+} from "@/components/charts/model-axis-tick";
+import { useElementWidth } from "@/components/charts/use-element-width";
 import { ModelLogoSquare } from "@/components/tables/table-badges";
 import { CATEGORY_COLORS } from "@/lib/colors/category-colors";
 import { formatPct } from "@/lib/utils";
@@ -117,11 +121,14 @@ function OverviewTooltipContent({
 }
 
 export function OverviewStackedChart({ categories, models }: OverviewStackedChartProps) {
+  const desktopChartRef = useRef<HTMLDivElement>(null);
+  const desktopChartWidth = useElementWidth(desktopChartRef);
   const rows = buildOverviewRows(categories, models);
   const modelIdByLabel = Object.fromEntries(models.map((model) => [model.label, model.id]));
   const stackCategories = [...categories].reverse();
   const [highlightedCategoryId, setHighlightedCategoryId] = useState<string | null>(null);
   const mobileChartHeight = Math.max(440, rows.length * 50 + 72);
+  const desktopLabelWidth = getDesktopModelAxisLabelWidth(desktopChartWidth, rows.length);
 
   return (
     <div className="h-auto min-h-[420px] border-y border-zinc-800 bg-zinc-950 p-0 lg:h-full lg:border lg:p-4">
@@ -187,7 +194,7 @@ export function OverviewStackedChart({ categories, models }: OverviewStackedChar
         </ResponsiveContainer>
       </div>
 
-      <div className="hidden h-full lg:block">
+      <div ref={desktopChartRef} className="hidden h-full lg:block">
         <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={320}>
           <BarChart
             data={rows}
@@ -202,7 +209,7 @@ export function OverviewStackedChart({ categories, models }: OverviewStackedChar
               axisLine={false}
               interval={0}
               height={78}
-              tick={<ModelAxisTick modelIdByLabel={modelIdByLabel} />}
+              tick={<ModelAxisTick modelIdByLabel={modelIdByLabel} labelWidth={desktopLabelWidth} />}
             />
             <YAxis
               domain={[0, 100]}
