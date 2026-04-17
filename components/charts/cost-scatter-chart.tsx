@@ -1,5 +1,6 @@
 "use client";
 
+import type { MouseEvent } from "react";
 import {
   Bar,
   BarChart,
@@ -109,23 +110,70 @@ function CostPointShape({
     return null;
   }
 
-  const radius = pointRadius ?? (payload.isOnFrontier ? 11 : 9);
-  const labelY = payload.isOnFrontier ? cy - 14 : cy - 10;
+  const radius = pointRadius ?? (payload.isOnFrontier ? 7 : 6);
+  const label = payload.modelId;
+  const labelX = cx + radius + 6;
+  const labelY = cy - radius - 4;
+  const labelWidth = label.length * 7.25 + 10;
+  const bringPointToFront = (event: MouseEvent<SVGGElement>) => {
+    const symbol = event.currentTarget.closest(".recharts-scatter-symbol");
+    symbol?.parentElement?.appendChild(symbol);
+
+    const scatter = event.currentTarget.closest(".recharts-scatter");
+    scatter?.parentElement?.appendChild(scatter);
+  };
 
   return (
-    <g>
+    <g onMouseEnter={bringPointToFront} style={{ cursor: "default" }}>
       <circle cx={cx} cy={cy} r={radius} fill={fill} />
       {showLabel ? (
-        <text
-          x={cx + 14}
-          y={labelY}
-          fill={fill}
-          fontSize={12}
-          fontWeight={500}
-          className="pointer-events-none"
-        >
-          {payload.modelId}
-        </text>
+        <g>
+          <rect
+            x={labelX - 5}
+            y={labelY - 14}
+            width={labelWidth}
+            height={20}
+            fill="#09090b"
+            fillOpacity={0.96}
+            style={{ filter: "drop-shadow(0 0 5px rgba(9, 9, 11, 0.95))" }}
+          />
+          <text
+            x={labelX}
+            y={labelY}
+            fill="none"
+            fontSize={12}
+            fontWeight={500}
+            stroke="#09090b"
+            strokeLinejoin="round"
+            strokeWidth={4}
+            opacity={0.85}
+            style={{ filter: "blur(0.6px)" }}
+          >
+            {label}
+          </text>
+          <text
+            x={labelX}
+            y={labelY}
+            fill="none"
+            fontSize={12}
+            fontWeight={500}
+            stroke="#09090b"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            opacity={0.95}
+          >
+            {label}
+          </text>
+          <text
+            x={labelX}
+            y={labelY}
+            fill={fill}
+            fontSize={12}
+            fontWeight={500}
+          >
+            {label}
+          </text>
+        </g>
       ) : null}
     </g>
   );

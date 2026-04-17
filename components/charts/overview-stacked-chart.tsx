@@ -201,7 +201,7 @@ export function OverviewStackedChart({ categories, models }: OverviewStackedChar
               tickLine={false}
               axisLine={false}
               interval={0}
-              height={56}
+              height={78}
               tick={<ModelAxisTick modelIdByLabel={modelIdByLabel} />}
             />
             <YAxis
