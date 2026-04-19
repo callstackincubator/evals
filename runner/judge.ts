@@ -326,6 +326,7 @@ async function runWithRetries<T>(
 */
 export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
   const cliOptions = parseJudgeCliArgs(argv)
+  const skipEvalIdSet = new Set(cliOptions.skipEvalIds)
   const inputDirectory = path.resolve(process.cwd(), cliOptions.input)
   const outputDirectory = cliOptions.output ?? path.dirname(inputDirectory)
   const outputDirectories = await createRunOutputDirectories(outputDirectory)
@@ -610,6 +611,35 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
     cliOptions.concurrency,
     async (manifestEval, index) => {
       try {
+        if (skipEvalIdSet.has(manifestEval.evalId)) {
+          const resultFilePath = getResultFilePath(
+            outputDirectories.runDirectory,
+            manifestEval.generatedPath,
+            manifestEval.evalId
+          )
+
+          try {
+            const raw = await readFile(resultFilePath, 'utf8')
+            const parsed = parsePersistedEvalResult(raw, resultFilePath)
+            const position = index + 1
+            console.log(
+              `[${position}/${manifestEvals.length}] ${manifestEval.evalId} ` +
+                `-> llm:${parsed.score.ratio} (reused prior judge output)`
+            )
+
+            return { kind: 'success' as const, index, result: parsed }
+          } catch (error) {
+            if (isNotFoundError(error)) {
+              throw new Error(
+                `missing judge output for skipped eval ${manifestEval.evalId} at ` +
+                  `${toRelativePath(resultFilePath)}`
+              )
+            }
+
+            throw error
+          }
+        }
+
         const stageResult = await runJudgeForManifestEval({
           manifestEval,
           index,

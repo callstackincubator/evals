@@ -1,5 +1,15 @@
 import { parseArgs as parseArgv } from 'node:util'
 
+function normalizeSkipEvalIds(value: string | string[] | undefined) {
+  if (!value) {
+    return []
+  }
+
+  return (Array.isArray(value) ? value : [value]).filter(
+    (item) => item.length > 0
+  )
+}
+
 function parsePositiveInteger(rawValue: string, flagName: string) {
   const parsedValue = Number.parseInt(rawValue, 10)
   if (!Number.isInteger(parsedValue) || parsedValue <= 0) {
@@ -25,6 +35,7 @@ export function parseRunCliArgs(argv: string[] = Bun.argv.slice(2)) {
       'max-retries': { type: 'string', default: '1' },
       'model': { type: 'string' },
       'pattern': { type: 'string', default: 'evals/**/*' },
+      'skip-eval-id': { type: 'string', multiple: true },
       'timeout': { type: 'string', default: '120000' },
       'port': { type: 'string' },
       'output': { type: 'string' },
@@ -43,6 +54,7 @@ export function parseRunCliArgs(argv: string[] = Bun.argv.slice(2)) {
     maxRetries: parsePositiveInteger(values['max-retries'], '--max-retries'),
     model: values.model,
     pattern: values.pattern,
+    skipEvalIds: normalizeSkipEvalIds(values['skip-eval-id']),
     timeout: parsePositiveInteger(values.timeout, '--timeout'),
     port: parsePort(values.port),
     output: values.output,
@@ -64,6 +76,7 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
       'rerun-missing-judgements': { type: 'boolean', default: false },
       'rerun-requirement-id': { type: 'string' },
       'rerun-requirements-file': { type: 'string' },
+      'skip-eval-id': { type: 'string', multiple: true },
       'timeout': { type: 'string', default: '120000' },
       'port': { type: 'string' },
       'input': { type: 'string' },
@@ -106,6 +119,7 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
     failFast: values['fail-fast'] ?? false,
     maxRetries: parsePositiveInteger(values['max-retries'], '--max-retries'),
     model: values.model,
+    skipEvalIds: normalizeSkipEvalIds(values['skip-eval-id']),
     rerunMissingJudgements: values['rerun-missing-judgements'] ?? false,
     rerunRequirementId: values['rerun-requirement-id'],
     rerunRequirementsFile: values['rerun-requirements-file'],
