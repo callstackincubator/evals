@@ -36,7 +36,7 @@ That means:
 3. Commit and push.
 4. Let Vercel build a fresh deployment.
 
-This keeps the site fast for visitors because the data is prepared once per deployment rather than reloaded on every request.
+This keeps the site fast for visitors because the data is prepared once per deployment rather than reloaded on every request. 
 
 ## Commands
 
