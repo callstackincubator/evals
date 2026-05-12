@@ -1,0 +1,1 @@
+Apply a Gaussian blur image filter to a rectangle on a Skia canvas using the Blur component. Provide a slider or button to adjust the blur intensity at runtime. Render an unblurred element in the background so the blur effect is clearly visible.

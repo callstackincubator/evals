@@ -1,4 +1,4 @@
-import { Output, generateText } from 'ai'
+import { Output, extractJsonMiddleware, generateText, wrapLanguageModel } from 'ai'
 import { createOpencode } from 'ai-sdk-provider-opencode-sdk'
 import { z } from 'zod'
 import { ensureOpencodeServerStarted } from 'runner/utils/opencode'
@@ -35,7 +35,10 @@ export async function runJudgeCall(
   })
 
   const response = await generateText({
-    model: provider(model, { createNewSession: true }),
+    model: wrapLanguageModel({
+      model: provider(model, { createNewSession: true }),
+      middleware: extractJsonMiddleware(),
+    }),
     prompt,
     abortSignal: AbortSignal.timeout(timeout),
     output: Output.object({

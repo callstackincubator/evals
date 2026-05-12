@@ -1,0 +1,1 @@
+Write a custom SKSL fragment shader compiled with Skia.RuntimeEffect.Make that generates a procedural color pattern based on UV coordinates. Pass at least one animated uniform value driven by a Reanimated shared value so the shader output changes over time.

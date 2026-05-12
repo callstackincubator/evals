@@ -1,0 +1,10 @@
+version: 1
+requirements:
+  - id: uses-linear-gradient-component
+    description: Must use LinearGradient from @shopify/react-native-skia as a child shader of Fill or another drawing element.
+  - id: uses-skia-interpolate-colors
+    description: Must use interpolateColors from @shopify/react-native-skia for color transitions, not interpolateColor from react-native-reanimated.
+  - id: uses-reanimated-shared-value
+    description: Must use useSharedValue from react-native-reanimated to drive the gradient animation progress.
+  - id: animation-is-infinite-loop
+    description: Must use withRepeat to create a continuous looping color animation.

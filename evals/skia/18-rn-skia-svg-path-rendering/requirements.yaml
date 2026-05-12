@@ -1,0 +1,10 @@
+version: 1
+requirements:
+  - id: uses-path-make-from-svg-string
+    description: Must use Skia.Path.MakeFromSVGString to parse an SVG path string into a SkPath object.
+  - id: svg-path-is-non-trivial-shape
+    description: The SVG path string must represent a recognizable non-rectangular shape such as a heart, star, or arrow — not just a simple rectangle or line.
+  - id: path-has-gradient-fill
+    description: Must render the path with a LinearGradient or RadialGradient as a child fill shader, not a flat color fill.
+  - id: path-has-stroke-outline
+    description: Must render a separate stroked outline of the same path using style="stroke" and a visible strokeWidth.

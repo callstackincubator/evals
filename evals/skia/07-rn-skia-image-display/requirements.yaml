@@ -1,0 +1,10 @@
+version: 1
+requirements:
+  - id: uses-use-image-hook
+    description: Must use the useImage hook from @shopify/react-native-skia to load the image, not React Native's Image component.
+  - id: uses-skia-image-component
+    description: Must render the Image component from @shopify/react-native-skia (not React Native's built-in Image) to draw the image on the canvas.
+  - id: uses-cover-fit-mode
+    description: Must use the fit="cover" prop on the Skia Image component.
+  - id: handles-null-loading-state
+    description: Must handle the null state returned by useImage before the image loads, rendering a placeholder or returning null to avoid a crash.

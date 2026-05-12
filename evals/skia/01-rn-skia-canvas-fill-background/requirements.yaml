@@ -1,0 +1,10 @@
+version: 1
+requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+  - id: uses-fill-for-background
+    description: Must use the Fill component from @shopify/react-native-skia to paint the canvas background color.
+  - id: uses-canvas-size-hook
+    description: Must use useCanvasSize from @shopify/react-native-skia to read canvas dimensions on the JS thread.
+  - id: displays-dimensions-as-text
+    description: Must render the canvas width and height as visible text inside the canvas using the Text component from @shopify/react-native-skia.

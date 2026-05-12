@@ -1,0 +1,10 @@
+version: 1
+requirements:
+  - id: uses-runtime-effect-make
+    description: Must use Skia.RuntimeEffect.Make to compile a custom SKSL shader string.
+  - id: shader-used-as-fill-child
+    description: Must use the Shader component from @shopify/react-native-skia as a child of Fill or another drawing element.
+  - id: shader-receives-animated-uniform
+    description: Must pass at least one uniform to the Shader component that is driven by a Reanimated shared or derived value, making the output dynamic.
+  - id: sksl-uses-uv-or-position
+    description: The SKSL source must use the pos (or equivalent UV) parameter to produce a position-dependent color pattern.

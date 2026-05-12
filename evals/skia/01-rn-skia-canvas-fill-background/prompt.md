@@ -1,0 +1,1 @@
+Implement a full-screen Skia canvas with a solid background color using Fill. Display the current canvas width and height as centered text inside the canvas. Use useCanvasSize to read the canvas dimensions on the JS thread and position the text accordingly.

@@ -1,0 +1,8 @@
+version: 1
+requirements:
+  - id: uses-paint-children-for-strokes
+    description: Must use Paint components as children of a drawing element to add at least two strokes with different widths.
+  - id: paint-uses-stroke-style
+    description: At least one Paint child must explicitly use style="stroke" with a strokeWidth property.
+  - id: uses-group-paint-inheritance
+    description: Must use a Group component with a color or paint prop to demonstrate that paint attributes are inherited by child drawing elements.

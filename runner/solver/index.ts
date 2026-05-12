@@ -1,4 +1,4 @@
-import { Output, generateText } from 'ai'
+import { Output, extractJsonMiddleware, generateText, wrapLanguageModel } from 'ai'
 import { createOpencode } from 'ai-sdk-provider-opencode-sdk'
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -103,14 +103,17 @@ export async function runSolver(params: {
   const prompt = buildSolverPrompt(params.prompt, params.files)
 
   const { output } = await generateText({
-    model: provider(params.model, { createNewSession: true }),
+    model: wrapLanguageModel({
+      model: provider(params.model, { createNewSession: true }),
+      middleware: extractJsonMiddleware(),
+    }),
     prompt,
     system: SYSTEM_PROMPT,
     abortSignal: AbortSignal.timeout(params.timeout),
     output: Output.object({
       schema: solverOutputSchema,
       description: 'Generated files that satisfy the task',
-      }),
+    }),
   })
 
   return output

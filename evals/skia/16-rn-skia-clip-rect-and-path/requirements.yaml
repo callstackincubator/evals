@@ -1,0 +1,10 @@
+version: 1
+requirements:
+  - id: uses-clip-rect
+    description: Must use the ClipRect component from @shopify/react-native-skia to clip a drawing to a rectangular region.
+  - id: uses-clip-path
+    description: Must use the ClipPath component from @shopify/react-native-skia with a path or SVG path string.
+  - id: clip-path-is-non-rectangular
+    description: The ClipPath shape must be a non-rectangular polygon, star, or curve — not just a simple rectangle.
+  - id: both-clips-applied-to-distinct-drawings
+    description: ClipRect and ClipPath must each be applied to a different visual element so both clipping techniques are demonstrated independently.

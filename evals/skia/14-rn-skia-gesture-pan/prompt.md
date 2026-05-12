@@ -1,0 +1,1 @@
+Make a draggable circle on a Skia canvas. Use react-native-gesture-handler's Pan gesture to update Reanimated shared values for the circle's position. Apply withDecay on gesture end to give the circle a physics-based coast-to-stop inertia effect.

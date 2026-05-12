@@ -1,0 +1,8 @@
+version: 1
+requirements:
+  - id: uses-blur-component
+    description: Must use the Blur component from @shopify/react-native-skia as a child image filter of a drawing element or Group.
+  - id: blur-amount-is-runtime-controllable
+    description: Must provide a UI control (slider, button, or similar) that changes the blur amount at runtime.
+  - id: unblurred-background-present
+    description: Must render at least one element outside of the blurred element so the blur effect is visually distinguishable.

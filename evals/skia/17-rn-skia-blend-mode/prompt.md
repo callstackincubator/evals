@@ -1,0 +1,1 @@
+Render three overlapping circles in cyan, magenta, and yellow arranged like a Venn diagram, placed inside a Skia Group with the multiply blend mode. The overlapping regions should blend into secondary and tertiary colors to demonstrate how Skia blend modes composite layers.

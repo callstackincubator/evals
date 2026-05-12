@@ -1,0 +1,10 @@
+version: 1
+requirements:
+  - id: uses-interpolate-colors-from-skia
+    description: Must use interpolateColors from @shopify/react-native-skia for color transitions, not interpolateColor from react-native-reanimated.
+  - id: uses-derived-value-for-color
+    description: Must use useDerivedValue to compute the animated color value from a shared progress value.
+  - id: animation-is-infinite
+    description: Must use withRepeat with a negative count (or equivalent) so the color cycle runs indefinitely.
+  - id: cycles-through-multiple-colors
+    description: Must define at least three distinct colors in the input range to produce a multi-step color cycle.

@@ -1,0 +1,10 @@
+version: 1
+requirements:
+  - id: shared-value-passed-directly-as-skia-prop
+    description: Must pass a Reanimated useSharedValue directly as a Skia component property (cx, cy, or r) without wrapping it in createAnimatedComponent or useAnimatedProps.
+  - id: uses-with-repeat
+    description: Must use withRepeat from react-native-reanimated to create a looping animation.
+  - id: uses-with-timing
+    description: Must use withTiming from react-native-reanimated to control the animation easing and duration.
+  - id: no-create-animated-component
+    description: Must not use createAnimatedComponent or useAnimatedProps for the Skia component animation.

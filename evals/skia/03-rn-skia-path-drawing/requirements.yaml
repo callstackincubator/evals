@@ -1,0 +1,10 @@
+version: 1
+requirements:
+  - id: uses-path-component
+    description: Must render a Path component from @shopify/react-native-skia.
+  - id: builds-path-imperatively
+    description: Must build the path using Skia.Path.Make() with at least moveTo and cubicTo or quadTo path commands.
+  - id: renders-as-stroke
+    description: Must render the path as a stroke using style="stroke" or strokeWidth property, not as a fill.
+  - id: path-is-memoized
+    description: The path object must be created outside of the render function or memoized with useMemo to avoid recreating it on every render.

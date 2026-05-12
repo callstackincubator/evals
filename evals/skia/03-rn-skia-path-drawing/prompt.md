@@ -1,0 +1,1 @@
+Draw a custom Bezier curve path on a Skia canvas. Build the path imperatively using Skia.Path.Make() with moveTo and cubicTo commands, and render it as a stroked line with a visible stroke width and color.

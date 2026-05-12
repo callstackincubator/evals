@@ -1,0 +1,8 @@
+version: 1
+requirements:
+  - id: uses-radial-gradient-component
+    description: Must use the RadialGradient component from @shopify/react-native-skia as a child of a drawing element.
+  - id: gradient-center-matches-shape-center
+    description: The RadialGradient center coordinates (cx, cy) must match the center of the shape it fills.
+  - id: uses-transparency-in-gradient
+    description: Must include at least one gradient color stop with an alpha (transparency) value, such as 'transparent' or a color with 0 alpha.

@@ -1,0 +1,1 @@
+Fill a Skia canvas with an animated linear gradient that continuously cycles through two sets of colors. Use LinearGradient as a child of Fill and drive the color interpolation with a Reanimated shared value combined with Skia's interpolateColors function.

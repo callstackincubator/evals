@@ -1,0 +1,1 @@
+Implement a Skia canvas with a drawing, and add a Save button that captures the canvas content as an image using makeImageSnapshot via a canvas ref. Call encodeToBytes on the result and log the byte length to confirm the snapshot was taken successfully.

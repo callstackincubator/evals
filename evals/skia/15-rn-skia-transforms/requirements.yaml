@@ -1,0 +1,10 @@
+version: 1
+requirements:
+  - id: uses-group-with-transform
+    description: Must use a Group component from @shopify/react-native-skia with a transform prop that includes rotation.
+  - id: transform-driven-by-reanimated
+    description: The rotation or transform value must be a Reanimated shared or derived value passed directly as the transform prop.
+  - id: nested-groups-for-transform-composition
+    description: Must use at least two nested Group components where the inner group applies a different transform (e.g. scale) from the outer group.
+  - id: animation-is-continuous
+    description: The rotation animation must run continuously using withRepeat.
