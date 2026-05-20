@@ -1,4 +1,4 @@
-import { Canvas, Circle, Fill, Group, Paint, Rect, vec } from '@shopify/react-native-skia'
+import { Canvas, Circle, Fill, Group, Paint, Rect } from '@shopify/react-native-skia'
 
 const SIZE = 300
 const CX = SIZE / 2

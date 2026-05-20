@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { Canvas, Fill, Path, Skia } from '@shopify/react-native-skia'
 
 const STROKE_WIDTH = 4
