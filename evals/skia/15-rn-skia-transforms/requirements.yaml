@@ -1,5 +1,8 @@
 version: 1
 requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
   - id: uses-group-with-transform
     description: Must use a Group component from @shopify/react-native-skia with a transform prop that includes rotation.
   - id: transform-driven-by-reanimated

@@ -1,5 +1,8 @@
 version: 1
 requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
   - id: uses-blend-mode-on-group
     description: Must set the blendMode prop on a Group component from @shopify/react-native-skia to composite the child elements.
   - id: uses-multiply-blend-mode

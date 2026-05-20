@@ -1,5 +1,8 @@
 version: 1
 requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
   - id: uses-derived-value
     description: Must use useDerivedValue from react-native-reanimated to compute one or more Skia property values from a shared value.
   - id: multiple-props-from-single-source

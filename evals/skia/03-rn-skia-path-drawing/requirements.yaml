@@ -1,5 +1,8 @@
 version: 1
 requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
   - id: uses-path-component
     description: Must render a Path component from @shopify/react-native-skia.
   - id: builds-path-imperatively

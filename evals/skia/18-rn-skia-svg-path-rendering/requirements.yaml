@@ -1,5 +1,8 @@
 version: 1
 requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
   - id: uses-path-make-from-svg-string
     description: Must use Skia.Path.MakeFromSVGString to parse an SVG path string into a SkPath object.
   - id: svg-path-is-non-trivial-shape

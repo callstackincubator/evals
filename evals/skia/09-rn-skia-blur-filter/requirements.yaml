@@ -1,5 +1,8 @@
 version: 1
 requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
   - id: uses-blur-component
     description: Must use the Blur component from @shopify/react-native-skia as a child image filter of a drawing element or Group.
   - id: blur-amount-is-runtime-controllable

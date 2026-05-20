@@ -1,5 +1,8 @@
 version: 1
 requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
   - id: shared-value-passed-directly-as-skia-prop
     description: Must pass a Reanimated useSharedValue directly as a Skia component property (cx, cy, or r) without wrapping it in createAnimatedComponent or useAnimatedProps.
   - id: uses-with-repeat

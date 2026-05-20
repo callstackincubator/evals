@@ -1,5 +1,8 @@
 version: 1
 requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
   - id: uses-paint-children-for-strokes
     description: Must use Paint components as children of a drawing element to add at least two strokes with different widths.
   - id: paint-uses-stroke-style

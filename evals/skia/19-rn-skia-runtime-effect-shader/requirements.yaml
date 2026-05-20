@@ -1,5 +1,8 @@
 version: 1
 requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
   - id: uses-runtime-effect-make
     description: Must use Skia.RuntimeEffect.Make to compile a custom SKSL shader string.
   - id: shader-used-as-fill-child
