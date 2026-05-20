@@ -1,7 +1,9 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "noEmit": true
+    "noEmit": true,
+    "moduleResolution": "bundler",
+    "strict": true
   },
   "include": [
     "**/app/**/*.ts",

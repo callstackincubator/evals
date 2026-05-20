@@ -1,61 +1,81 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 
 type Post = {
   id: string
   title: string
 }
 
+type SubmitState =
+  | { status: 'idle' }
+  | { status: 'pending' }
+  | { status: 'error'; message: string }
+
 const draftAtom = atom('')
 const postsAtom = atom<Post[]>([])
-const pendingAtom = atom(false)
-const errorAtom = atom<string | null>(null)
+const submitStateAtom = atom<SubmitState>({ status: 'idle' })
 
 async function createPost(title: string): Promise<Post> {
-  await new Promise<void>((resolve) => {
-    setTimeout(resolve, 240)
+  const response = await fetch('https://dummyjson.com/posts/add', {
+    body: JSON.stringify({
+      body: 'Created from Jotai mutation',
+      title,
+      userId: 1,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
   })
 
-  if (title.toLowerCase().includes('fail')) {
-    throw new Error('Server rejected title')
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
+  }
+
+  const json = (await response.json()) as {
+    id: number
+    title: string
   }
 
   return {
-    id: `post-${Date.now()}`,
-    title,
+    id: String(json.id),
+    title: json.title,
   }
 }
 
-const submitPostAtom = atom(null, async (get, set, title: string) => {
+const submitPostAtom = atom(null, async (_, set, title: string) => {
   const nextTitle = title.trim()
+
   if (!nextTitle) {
     return
   }
 
-  set(pendingAtom, true)
-  set(errorAtom, null)
+  set(submitStateAtom, { status: 'pending' })
 
   try {
     const created = await createPost(nextTitle)
+    set(submitStateAtom, { status: 'idle' })
     set(postsAtom, (previous) => [created, ...previous])
     set(draftAtom, '')
   } catch (error) {
-    set(errorAtom, error instanceof Error ? error.message : 'Unknown error')
-  } finally {
-    set(pendingAtom, false)
+    set(submitStateAtom, {
+      status: 'error',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    })
   }
 })
 
 export default function App() {
   const [draft, setDraft] = useAtom(draftAtom)
   const posts = useAtomValue(postsAtom)
-  const pending = useAtomValue(pendingAtom)
-  const submitError = useAtomValue(errorAtom)
+  const submitStatus = useAtomValue(submitStateAtom)
   const submitPost = useSetAtom(submitPostAtom)
+
+  const pending = submitStatus.status === 'pending'
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Async write atom</Text>
+      <Text style={styles.title}>Post Composer</Text>
 
       <View style={styles.row}>
         <TextInput
@@ -76,7 +96,9 @@ export default function App() {
         </Pressable>
       </View>
 
-      {submitError ? <Text style={styles.error}>{submitError}</Text> : null}
+      {submitStatus.status === 'error' ? (
+        <Text style={styles.error}>{submitStatus.message}</Text>
+      ) : null}
 
       {posts.map((post) => {
         return (

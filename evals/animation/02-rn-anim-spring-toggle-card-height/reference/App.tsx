@@ -46,16 +46,14 @@ export default function App() {
         <Pressable
           onPress={() => {
             const next = progress.value === 0 ? 1 : 0
-            progress.value = withSpring(next, {
-              damping: 18,
-              stiffness: 190,
-            })
+            progress.value = withSpring(next)
           }}
           style={styles.header}
         >
           <Text style={styles.title}>Shipment details</Text>
-          <Text style={styles.action}>Toggle</Text>
+
         </Pressable>
+
         <Animated.View style={[styles.details, detailsAnimatedStyle]}>
           <Text style={styles.copy}>
             Estimated arrival: Tomorrow, 10:00 - 12:00

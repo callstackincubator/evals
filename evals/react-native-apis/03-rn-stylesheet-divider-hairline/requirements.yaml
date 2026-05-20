@@ -1,0 +1,11 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: reusable-divider-component-present
+    description: Must render a divider component between each row.
+  - id: divider-uses-hairline-width
+    description: Must use `StyleSheet.hairlineWidth` for the divider thickness.
+  - id: divider-color-light-gray
+    description: Must use backgroundColor for the divider color.

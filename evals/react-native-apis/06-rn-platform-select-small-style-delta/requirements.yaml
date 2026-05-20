@@ -1,0 +1,17 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: implementation-use-platform-api
+    description: Must import and use `Platform` from `react-native`.
+  - id: platform-select-used-for-card-style
+    description: Must use `Platform.select(...)` to build a platform-specific style object for the card container.
+  - id: platform-select-defines-android-ios-and-default
+    description: Must define `android`, `ios`, and `default` branches in `Platform.select(...)`.
+  - id: ios-branch-defines-shadow-styles
+    description: The `ios` branch must define `shadowColor`, `shadowOpacity`, `shadowRadius`, and `shadowOffset`.
+  - id: android-branch-defines-elevation
+    description: The `android` branch must define `elevation`.
+  - id: default-branch-defines-border-fallback
+    description: The `default` branch must define `borderWidth` and `borderColor`.

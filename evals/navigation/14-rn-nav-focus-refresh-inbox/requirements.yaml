@@ -1,9 +1,0 @@
-version: 1
-inputs:
-  files:
-    - app/App.tsx
-requirements:
-  - id: focus-triggered-refresh
-    description: Must trigger inbox refresh from focus lifecycle rather than only from mount lifecycle.
-  - id: focus-effect-structure
-    description: Must implement focus logic using useFocusEffect with callback structure suitable for cleanup.

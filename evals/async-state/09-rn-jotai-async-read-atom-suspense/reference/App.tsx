@@ -9,14 +9,22 @@ type Profile = {
 }
 
 const profileAtom = atom(async (): Promise<Profile> => {
-  await new Promise<void>((resolve) => {
-    setTimeout(resolve, 260)
-  })
+  const response = await fetch('https://dummyjson.com/users/1')
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
+  }
+
+  const json = (await response.json()) as {
+    firstName: string
+    id: number
+    lastName: string
+  }
 
   return {
-    id: 'p-1',
-    name: 'Jordan Lee',
-    role: 'Release engineer',
+    id: String(json.id),
+    name: `${json.firstName} ${json.lastName}`,
+    role: 'User profile',
   }
 })
 

@@ -1,36 +1,46 @@
-import { NavigationContainer } from '@react-navigation/native'
+import React from 'react'
+import {
+  createStaticNavigation,
+  StaticParamList,
+  StaticScreenProps,
+  useNavigation,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-type RootStackParamList = {
-  Products: undefined
-  ProductDetails: { productId?: string; title: string }
-}
+const PRODUCT = { id: '42', title: 'Product 42' } as const
 
-const Stack = createNativeStackNavigator<RootStackParamList>()
+function ProductsScreen() {
+  const navigation = useNavigation()
 
-function ProductsScreen({ navigation }: { navigation: any }) {
+  const handleNavigateToDetails = () => {
+    navigation.navigate('ProductDetails', {
+      productId: PRODUCT.id,
+      title: PRODUCT.title,
+    })
+  }
+  const handleNavigateToMissingProduct = () => {
+    navigation.navigate('ProductDetails', { title: 'Missing Product' })
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Products</Text>
+      <Button title="Open" onPress={handleNavigateToDetails} />
       <Button
-        title='Open Product 42'
-        onPress={() =>
-          navigation.navigate('ProductDetails', {
-            productId: '42',
-            title: 'Product 42',
-          })
-        }
-      />
-      <Button
-        title='Open Missing Product'
-        onPress={() => navigation.navigate('ProductDetails', { title: 'Missing Product' })}
+        title="Open Missing Product"
+        onPress={handleNavigateToMissingProduct}
       />
     </View>
   )
 }
 
-function ProductDetailsScreen({ route }: { route: any }) {
+type ProductDetailsScreenProps = StaticScreenProps<{
+  productId?: string
+  title: string
+}>
+
+function ProductDetailsScreen({ route }: ProductDetailsScreenProps) {
   const productId = route.params?.productId
   const title = route.params?.title ?? 'Details'
 
@@ -38,21 +48,34 @@ function ProductDetailsScreen({ route }: { route: any }) {
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
       <Text>
-        {productId ? `productId: ${productId}` : 'productId unavailable, showing fallback details'}
+        {productId
+          ? `productId: ${productId}`
+          : 'productId unavailable, showing fallback details'}
       </Text>
     </View>
   )
 }
 
+const Stack = createNativeStackNavigator({
+  id: 'root',
+  screens: {
+    Products: ProductsScreen,
+    ProductDetails: ProductDetailsScreen,
+  },
+})
+
+type RootStackParamList = StaticParamList<typeof Stack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(Stack)
+
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='Products' component={ProductsScreen} />
-        <Stack.Screen name='ProductDetails' component={ProductDetailsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation />
 }
 
 const styles = StyleSheet.create({

@@ -1,9 +1,0 @@
-version: 1
-inputs:
-  files:
-    - app/App.tsx
-requirements:
-  - id: cold-start-precedence-rule
-    description: Must implement an explicit precedence rule that prioritizes initial deep-link URL over persisted nav state.
-  - id: state-restore-gating
-    description: Must gate state restoration logic based on startup URL presence.

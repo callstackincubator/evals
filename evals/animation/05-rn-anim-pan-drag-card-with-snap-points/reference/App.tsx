@@ -7,74 +7,87 @@ import {
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
+  withTiming,
 } from 'react-native-reanimated'
 
-const SNAP_POINTS = [-180, 0, 180]
+type SnapPoint = { x: number; y: number }
+
+const SNAP_POINTS: SnapPoint[] = [
+  { x: 0, y: 0 },
+  { x: -180, y: 0 },
+  { x: 180, y: 0 },
+  { x: 0, y: -180 },
+  { x: 0, y: 180 },
+]
 const VELOCITY_THRESHOLD = 650
 
-function pickNearestSnapPoint(position: number) {
+function pickNearestSnapPoint(px: number, py: number): SnapPoint {
   'worklet'
 
   let nearest = SNAP_POINTS[0]
-  let nearestDistance = Math.abs(position - nearest)
+  let nearestDist = (px - nearest.x) ** 2 + (py - nearest.y) ** 2
 
-  for (let index = 1; index < SNAP_POINTS.length; index += 1) {
-    const point = SNAP_POINTS[index]
-    const distance = Math.abs(position - point)
-    if (distance < nearestDistance) {
-      nearest = point
-      nearestDistance = distance
+  for (let i = 1; i < SNAP_POINTS.length; i += 1) {
+    const p = SNAP_POINTS[i]
+    const d = (px - p.x) ** 2 + (py - p.y) ** 2
+    if (d < nearestDist) {
+      nearest = p
+      nearestDist = d
     }
   }
-
   return nearest
 }
 
-function pickDirectionalSnapPoint(position: number, direction: -1 | 1) {
+function pickSnapPointByVelocity(velocityX: number, velocityY: number): SnapPoint {
   'worklet'
 
-  const nearest = pickNearestSnapPoint(position)
-  const nearestIndex = SNAP_POINTS.indexOf(nearest)
-  const nextIndex = Math.min(
-    SNAP_POINTS.length - 1,
-    Math.max(0, nearestIndex + direction)
-  )
+  let best = SNAP_POINTS[0]
+  let bestDot = best.x * velocityX + best.y * velocityY
 
-  return SNAP_POINTS[nextIndex]
+  for (let i = 1; i < SNAP_POINTS.length; i += 1) {
+    const p = SNAP_POINTS[i]
+    const dot = p.x * velocityX + p.y * velocityY
+    if (dot > bestDot) {
+      best = p
+      bestDot = dot
+    }
+  }
+  return best
 }
 
 export default function App() {
   const translateX = useSharedValue(0)
+  const translateY = useSharedValue(0)
   const dragStartX = useSharedValue(0)
+  const dragStartY = useSharedValue(0)
 
   const pan = Gesture.Pan()
     .onBegin(() => {
       dragStartX.value = translateX.value
+      dragStartY.value = translateY.value
     })
     .onUpdate((event) => {
       translateX.value = dragStartX.value + event.translationX
+      translateY.value = dragStartY.value + event.translationY
     })
     .onEnd((event) => {
-      let target = pickNearestSnapPoint(translateX.value)
+      const velocityMag =
+        Math.sqrt(event.velocityX ** 2 + event.velocityY ** 2)
+      const target =
+        velocityMag >= VELOCITY_THRESHOLD
+          ? pickSnapPointByVelocity(event.velocityX, event.velocityY)
+          : pickNearestSnapPoint(translateX.value, translateY.value)
 
-      if (event.velocityX > VELOCITY_THRESHOLD) {
-        target = pickDirectionalSnapPoint(translateX.value, 1)
-      } else if (event.velocityX < -VELOCITY_THRESHOLD) {
-        target = pickDirectionalSnapPoint(translateX.value, -1)
-      }
-
-      translateX.value = withSpring(target, {
-        damping: 16,
-        stiffness: 180,
-      })
+      translateX.value = withTiming(target.x)
+      translateY.value = withTiming(target.y)
     })
 
-  const cardStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: translateX.value }],
-    }
-  })
+  const cardStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: translateX.value },
+      { translateY: translateY.value },
+    ],
+  }))
 
   return (
     <GestureHandlerRootView style={styles.root}>
@@ -82,9 +95,9 @@ export default function App() {
         <Animated.View style={[styles.card, cardStyle]}>
           <GestureDetector gesture={pan}>
             <View style={styles.grabArea}>
-              <Text style={styles.title}>Drag me horizontally</Text>
+              <Text style={styles.title}>Drag me</Text>
               <Text style={styles.subtitle}>
-                Release to snap to -180, 0, or 180
+                Release to snap to nearest point or fling direction
               </Text>
             </View>
           </GestureDetector>

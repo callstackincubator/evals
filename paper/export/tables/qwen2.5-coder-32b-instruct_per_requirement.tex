@@ -1,0 +1,51 @@
+% Requires: \usepackage{booktabs}
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+Category & Requirement & Pass rate & Evals \\
+\midrule
+animation & pressable-drives-animation & 100.0\% & 1 \\
+async state & async-action-sets-loading-before-await & 100.0\% & 1 \\
+async state & async-action-success-and-error-branches & 100.0\% & 1 \\
+async state & composer-uses-draft-posts-and-submit-state-atoms & 100.0\% & 1 \\
+async state & deferred-query-derived-from-urgent-input & 100.0\% & 1 \\
+async state & error-copy-is-conditional-on-mutation-error & 100.0\% & 1 \\
+async state & login-fetches-token-from-auth-endpoint & 100.0\% & 1 \\
+async state & onerror-restores-snapshot-context & 100.0\% & 1 \\
+async state & onmutate-cancels-snapshots-and-writes-optimistic-cache & 100.0\% & 1 \\
+async state & preference-updates-use-functional-updater & 100.0\% & 1 \\
+async state & preferences-use-atomwithstorage-with-asyncstorage & 100.0\% & 1 \\
+async state & press-handler-calls-mutate-with-todoid-and-nextdone & 100.0\% & 1 \\
+async state & profile-request-uses-bearer-token-header & 100.0\% & 1 \\
+async state & status-driven-ui-branching & 100.0\% & 1 \\
+async state & zustand-create-store-hook & 100.0\% & 2 \\
+lists & contact-name-and-role-visible & 100.0\% & 1 \\
+lists & contact-row-renders-name-and-role & 100.0\% & 1 \\
+lists & contacts-rendered-through-flatlist & 100.0\% & 1 \\
+lists & contacts-rendered-through-sectionlist & 100.0\% & 1 \\
+lists & day-buttons-rendered-for-agenda-sections & 100.0\% & 1 \\
+lists & feed-rendered-through-flatlist & 100.0\% & 2 \\
+lists & flatlist-viewability-config-present & 100.0\% & 1 \\
+lists & header-modeled-as-first-data-item & 100.0\% & 1 \\
+lists & horizontal-list-enabled & 100.0\% & 2 \\
+lists & implementation-render-flashlist & 100.0\% & 6 \\
+lists & implementation-render-legendlist & 100.0\% & 2 \\
+lists & inbox-rendered-through-flatlist & 100.0\% & 1 \\
+lists & initial-render-window-configured & 100.0\% & 1 \\
+lists & items-rendered-through-flashlist & 100.0\% & 1 \\
+lists & masonry-num-columns-configured & 100.0\% & 1 \\
+lists & no-deprecated-masonryflashlist & 100.0\% & 1 \\
+lists & no-list-header-component & 100.0\% & 1 \\
+lists & products-rendered-through-flatlist & 100.0\% & 1 \\
+lists & pull-to-refresh-handler-wired & 100.0\% & 1 \\
+lists & refresh-state-controlled & 100.0\% & 1 \\
+lists & refresh-updates-feed-data & 100.0\% & 1 \\
+lists & render-section-header-present & 100.0\% & 2 \\
+lists & sectionlist-sections-derived-from-contact-name & 100.0\% & 1 \\
+lists & sections-derived-from-event-day & 100.0\% & 1 \\
+lists & viewport-window-size-configured & 100.0\% & 1 \\
+\bottomrule
+\end{tabular}
+\caption{Requirement-level pass rate (top 40) for qwen2.5-coder-32b-instruct}
+\end{table}

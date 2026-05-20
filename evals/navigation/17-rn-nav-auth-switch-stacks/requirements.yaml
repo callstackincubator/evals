@@ -1,9 +1,0 @@
-version: 1
-inputs:
-  files:
-    - app/App.tsx
-requirements:
-  - id: auth-gated-routes
-    description: Must render route sets based on authentication state.
-  - id: single-container-conditional-graph
-    description: Must keep a single navigation container while conditionally switching the inner route graph by auth state.

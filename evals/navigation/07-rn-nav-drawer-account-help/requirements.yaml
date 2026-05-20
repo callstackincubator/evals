@@ -3,7 +3,11 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: drawer-two-sections
-    description: Must define drawer routes named Account, Help.
-  - id: explicit-drawer-config
-    description: Must include explicit drawer screen configuration rather than implicit placeholder routing.
+  - id: uses-drawer-navigator-api
+    description: Must create the root navigator with `createDrawerNavigator` from `@react-navigation/drawer`.
+  - id: drawer-registers-account-and-help
+    description: Must register both `Account` and `Help` as drawer screen routes in the drawer navigator config.
+  - id: app-renders-static-drawer-navigation
+    description: Must build navigation from the drawer tree via `createStaticNavigation(...)` and render that navigation component from `App`.
+  - id: static-api-navigation-construction
+    description: Must construct navigation with React Navigation static API and render it via `createStaticNavigation(...)`.

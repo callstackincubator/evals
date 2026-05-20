@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: feed-rendered-through-flatlist
+    description: Must render the feed through `FlatList`.
+  - id: initial-render-window-configured
+    description: Must set `initialNumToRender` on the `FlatList`.
+  - id: batch-render-tuning-configured
+    description: Must set both `maxToRenderPerBatch` and `updateCellsBatchingPeriod` on the `FlatList`.
+  - id: viewport-window-size-configured
+    description: Must set `windowSize` on the `FlatList`.
+  - id: implementation-use-flatlist-key-extractor
+    description: Must provide FlatList `keyExtractor` using stable post ids.

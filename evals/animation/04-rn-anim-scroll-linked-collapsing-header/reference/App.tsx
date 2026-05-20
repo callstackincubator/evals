@@ -41,16 +41,6 @@ export default function App() {
         [1, 0.78],
         Extrapolation.CLAMP
       ),
-      transform: [
-        {
-          translateY: interpolate(
-            clamped,
-            [0, COLLAPSE_DISTANCE],
-            [0, -14],
-            Extrapolation.CLAMP
-          ),
-        },
-      ],
     }
   })
 

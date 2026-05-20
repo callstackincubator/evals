@@ -3,7 +3,14 @@ import { buildJudgePrompt } from './prompt'
 import { loadRequirements, type RequirementDefinition } from './requirements'
 import { computeScore, normalizeWeight } from './utils'
 import type { LoadedFile } from 'runner/utils/fs'
-import type { CliOptions } from 'runner/config'
+
+type LlmJudgeStageOptions = {
+  model: string
+  timeout: number
+  port?: number
+  directory?: string
+  requirementIds?: string[]
+}
 
 // todo: this could be handled by structured output to make sure all requirements are satisfied
 function mapRequirementResults(
@@ -40,36 +47,48 @@ function mapRequirementResults(
 */
 export async function runLlmJudgeStage(
   files: LoadedFile[],
-  referenceFiles: LoadedFile[],
   rawRequirements: string,
-  cliOptions: CliOptions
+  cliOptions: LlmJudgeStageOptions
 ) {
-  if (!cliOptions.model) {
-    return {
-      requirements: [],
-      summary: 'llm judge skipped: no --model provided',
-      score: {
-        passedWeight: 0,
-        totalWeight: 0,
-        ratio: 0,
-      }
-    }
+  const requirements = await loadRequirements(rawRequirements)
+  const requirementIdsFilter = cliOptions.requirementIds
+  const selectedRequirements = requirementIdsFilter
+    ? requirements.filter((requirement) =>
+        requirementIdsFilter.includes(requirement.id)
+      )
+    : requirements
+
+  if (selectedRequirements.length === 0) {
+    throw new Error('no requirements matched requirement filter')
   }
 
-  const requirements = await loadRequirements(rawRequirements)
+  if (
+    requirementIdsFilter &&
+    selectedRequirements.length !== requirementIdsFilter.length
+  ) {
+    const selectedIds = new Set(selectedRequirements.map((item) => item.id))
+    const missingIds = requirementIdsFilter.filter((id) => !selectedIds.has(id))
+    throw new Error(
+      `missing requirement ids for judge rerun: ${missingIds.join(', ')}`
+    )
+  }
 
-  const prompt = buildJudgePrompt(requirements, files, referenceFiles)
+  const prompt = buildJudgePrompt(selectedRequirements, files)
 
-  const results = await runJudgeCall(prompt, cliOptions.model, cliOptions.timeout, cliOptions.port)
+  const judgeCall = await runJudgeCall({
+    prompt,
+    ...cliOptions,
+  })
 
   const mappedRequirements = mapRequirementResults(
-    requirements,
-    results.requirements
+    selectedRequirements,
+    judgeCall.requirements
   )
 
   return {
     requirements: mappedRequirements,
-    summary: results.summary,
-    score: computeScore(mappedRequirements)
+    summary: judgeCall.summary,
+    score: computeScore(mappedRequirements),
+    opencodeSession: judgeCall.opencodeSession,
   }
 }

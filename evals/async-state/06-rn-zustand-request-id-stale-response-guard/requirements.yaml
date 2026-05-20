@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
-  - id: request-identity-tracking
-    description: Must track request identity or version for concurrent async actions.
-  - id: latest-intent-wins-commit
-    description: Must commit async results only when they belong to the latest active request.
-  - id: stale-response-ignored
-    description: Must ignore or drop out-of-date async responses so stale data cannot overwrite newer state.
+  - id: zustand-create-store-hook
+    description: Store hook is created with `create` from `zustand`
+  - id: request-identity-state-is-tracked
+    description: Store state must include `activeRequestId`
+  - id: request-identity-is-incremented-before-fetch
+    description: Must write `activeRequestId` through `set` before fetch
+  - id: search-request-uses-encoded-query-endpoint
+    description: Search fetch uses `encodeURIComponent` for query
+  - id: stale-request-guard-runs-after-async-work
+    description: After async fetch, must compare `activeRequestId` with local request id and return on mismatch

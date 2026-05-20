@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
   - id: stable-serializable-query-key
-    description: Must build a stable and serializable TanStack Query key that includes the active filter and pagination inputs.
+    description: Must define a key builder (for example `buildProductsQueryKey(filter, page, pageSize)`) that returns `['products', filter, page, pageSize] as const`.
   - id: no-unstable-query-key-members
-    description: Must avoid unstable or non-serializable values in query keys such as functions or freshly-created object identities that change every render.
+    description: Query key entries must remain primitive/serializable (`'products'`, filter string, page number, pageSize number) with no functions or object references.
   - id: queryfn-derived-from-querykey
-    description: Must derive request parameters from query key inputs inside the query function instead of hidden mutable external state.
+    description: Must destructure `activeFilter`, `activePage`, and `activePageSize` from `QueryFunctionContext<ProductsQueryKey>.queryKey`.
+  - id: implementation-rq-v5-object-signature
+    description: Must use TanStack Query v5 object-form APIs (`useQuery({ ... })`, client object filters), not legacy positional signatures.
+  - id: implementation-rq-placeholderdata-identity
+    description: Must set `placeholderData` as `(previous) => previous` to keep previous page/category data visible during refetch.

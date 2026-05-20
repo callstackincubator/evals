@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/banner.jpg
+requirements:
+  - id: implementation-render-imagebackground
+    description: Must import and render `ImageBackground` from `react-native`.
+  - id: imagebackground-uses-local-banner-asset
+    description: Must provide the background image source with static `require(...)` for `./banner.jpg`.
+  - id: background-image-flex-style
+    description: Must size the background image to fill the existing header area.
+  - id: background-image-resize-mode-cover
+    description: Must set the background image `resizeMode` to `cover`.

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native'
+import { scheduleOnRN } from 'react-native-worklets'
 import {
   Gesture,
   GestureDetector,
   GestureHandlerRootView,
 } from 'react-native-gesture-handler'
 import Animated, {
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -37,7 +37,7 @@ export default function App() {
           { duration: 160 },
           (finished) => {
             if (finished) {
-              runOnJS(setVisible)(false)
+              scheduleOnRN(setVisible, false)
             }
           }
         )

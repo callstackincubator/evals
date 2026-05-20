@@ -1,0 +1,11 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: implementation-render-keyboardavoidingview
+    description: Must import and render `KeyboardAvoidingView` from `react-native`.
+  - id: keyboardavoidingview-behavior-configured
+    description: Must set the `behavior` prop on `KeyboardAvoidingView`.
+  - id: existing-login-form-wrapped-by-keyboardavoidingview
+    description: Must wrap the existing login form content inside the `KeyboardAvoidingView`.

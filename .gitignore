@@ -2,10 +2,12 @@
 node_modules/
 
 # runner outputs
-runs/*
-!runs/.gitkeep
 results/*
 !results/.gitkeep
+generated/*
+!generated/.gitkeep
+runs/*
+!runs/.gitkeep
 
 # local env
 .env
@@ -16,5 +18,8 @@ results/*
 
 # macOS
 .DS_Store
+
+# IDE
+.idea/
 
 config.json

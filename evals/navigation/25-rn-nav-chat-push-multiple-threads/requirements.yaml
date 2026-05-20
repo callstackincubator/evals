@@ -1,9 +1,0 @@
-version: 1
-inputs:
-  files:
-    - app/App.tsx
-requirements:
-  - id: thread-push-semantics
-    description: Must use push-capable navigation for opening multiple thread route instances with different params.
-  - id: thread-param-rendering
-    description: Must render thread-specific state from route params for each pushed instance.

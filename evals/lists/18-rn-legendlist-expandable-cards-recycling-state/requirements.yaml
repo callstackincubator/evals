@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: implementation-render-legendlist
+    description: Must render the list with `LegendList`.
+  - id: implementation-provide-legendlist-key-extractor
+    description: Must provide `LegendList` `keyExtractor` using stable FAQ ids.
+  - id: recycle-items-enabled
+    description: Must enable `recycleItems` on the `LegendList`.
+  - id: implementation-use-recycling-state
+    description: Must use `useRecyclingState(...)` inside the expandable row component.

@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: implementation-render-flashlist
+    description: Must render the rail with `FlashList`.
+  - id: implementation-provide-flashlist-key-extractor
+    description: Must provide FlashList `keyExtractor` using stable item ids.
+  - id: horizontal-list-enabled
+    description: Must configure the `FlashList` as a horizontal list.
+  - id: list-header-component-renders-leading-card
+    description: Must render the leading header card through `ListHeaderComponent`.

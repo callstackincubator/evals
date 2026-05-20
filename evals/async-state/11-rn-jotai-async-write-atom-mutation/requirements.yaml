@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
-  - id: async-write-atom-mutation-action
-    description: Must implement mutation side effects inside an async write atom.
-  - id: pending-and-error-state-atoms
-    description: Must expose deterministic pending and error state for mutation lifecycle.
-  - id: success-commits-to-target-atoms
-    description: Must commit successful mutation results to the target atoms in a predictable way.
+  - id: submit-mutation-is-async-write-atom
+    description: Submit flow is implemented as a writable async Jotai atom action
+  - id: composer-uses-draft-posts-and-submit-state-atoms
+    description: Screen state includes separate atoms for draft text posts list and submit lifecycle
+  - id: submit-lifecycle-handles-pending-success-error
+    description: Submit action writes pending then commits success or error lifecycle state
+  - id: submit-success-commits-created-post-and-resets-draft
+    description: Successful mutation appends or prepends created post data and clears draft input atom
+  - id: submit-ui-dispatches-write-atom
+    description: Submit button triggers the async write atom through `useSetAtom` or `useAtom` dispatch

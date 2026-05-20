@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: deferred-query-derived-from-urgent-input
+    description: Query is stored with React `useState`, and deferred query is derived with React `useDeferredValue`
+  - id: fetch-effect-depends-on-deferred-value
+    description: Data loading runs in React `useEffect` with deferred query in the dependency list, performs `fetch(...)` from that deferred value
+  - id: fetch-effect-commits-status-transitions
+    description: Data loading commits loading then ready/error status transitions
+  - id: stale-indicator-compares-urgent-and-deferred
+    description: UI renders stale-results indicator when urgent and deferred values differ, with urgent value controlled by `TextInput` and deferred results rendered through `FlatList`

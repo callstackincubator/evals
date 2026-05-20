@@ -1,0 +1,11 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: implementation-render-flashlist
+    description: Must import `FlashList` from `@shopify/flash-list`.
+  - id: items-rendered-through-flashlist
+    description: Must render the list through `FlashList`.
+  - id: implementation-provide-flashlist-key-extractor
+    description: Must provide FlashList `keyExtractor` using stable item ids.

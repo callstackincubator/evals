@@ -1,3 +1,4 @@
+import React from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { create } from 'zustand'
 
@@ -12,43 +13,56 @@ type FeedStore = {
   reset: () => void
 }
 
-const useFeedStore = create<FeedStore>((set, get) => {
-  return {
-    attemptCount: 0,
-    errorMessage: null,
-    items: [],
-    status: 'idle',
-    fetchFeed: async () => {
-      const attempt = get().attemptCount + 1
-      set({ attemptCount: attempt, errorMessage: null, status: 'loading' })
+type StoreApi = {
+  set: (partial: Partial<FeedStore>) => void
+  get: () => FeedStore
+}
 
-      try {
-        await new Promise<void>((resolve) => {
-          setTimeout(resolve, 260)
-        })
+async function fetchFeedItems(endpoint: string): Promise<string[]> {
+  const response = await fetch(endpoint)
 
-        const shouldFail = attempt === 1
-        if (shouldFail) {
-          throw new Error('Temporary feed error (first attempt fails by design)')
-        }
-
-        set({
-          items: ['Release notes', 'Crash analytics', 'Regression triage'],
-          status: 'success',
-        })
-      } catch (error) {
-        set({
-          errorMessage:
-            error instanceof Error ? error.message : 'Unknown feed error',
-          status: 'error',
-        })
-      }
-    },
-    reset: () => {
-      set({ attemptCount: 0, errorMessage: null, items: [], status: 'idle' })
-    },
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
   }
-})
+
+  const json = (await response.json()) as {
+    todos: Array<{ id: number; todo: string }>
+  }
+
+  return json.todos.map((item) => item.todo)
+}
+
+const fetchFeed = async ({ set, get }: StoreApi) => {
+  const attempt = get().attemptCount + 1
+
+  set({ attemptCount: attempt, errorMessage: null, status: 'loading' })
+
+  const endpoint =
+    attempt === 1
+      ? 'https://dummyjson.com/todos/not-found'
+      : 'https://dummyjson.com/todos?limit=3&skip=0'
+
+  try {
+    const items = await fetchFeedItems(endpoint)
+    set({ items, status: 'success' })
+  } catch (error) {
+    set({
+      errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      status: 'error',
+    })
+  }
+}
+
+const useFeedStore = create<FeedStore>((set, get) => ({
+  attemptCount: 0,
+  errorMessage: null,
+  items: [],
+  status: 'idle',
+  fetchFeed: () => fetchFeed({ get, set }),
+  reset: () => {
+    set({ attemptCount: 0, errorMessage: null, items: [], status: 'idle' })
+  },
+}))
 
 export default function App() {
   const status = useFeedStore((state) => state.status)
@@ -57,9 +71,27 @@ export default function App() {
   const fetchFeed = useFeedStore((state) => state.fetchFeed)
   const reset = useFeedStore((state) => state.reset)
 
+  const statusContent = {
+    idle: <Text style={styles.meta}>Tap fetch to start.</Text>,
+    loading: <Text style={styles.meta}>Loading feed…</Text>,
+    success: items.map((item) => (
+      <View key={item} style={styles.item}>
+        <Text>{item}</Text>
+      </View>
+    )),
+    error: (
+      <View style={styles.errorCard}>
+        <Text style={styles.errorText}>{errorMessage}</Text>
+        <Pressable onPress={fetchFeed} style={styles.retryButton}>
+          <Text style={styles.retryButtonText}>Retry</Text>
+        </Pressable>
+      </View>
+    ),
+  } satisfies Record<FeedStatus, React.ReactNode>
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Feed lifecycle</Text>
+      <Text style={styles.title}>Feed</Text>
 
       <View style={styles.row}>
         <Pressable onPress={fetchFeed} style={styles.button}>
@@ -71,29 +103,9 @@ export default function App() {
         </Pressable>
       </View>
 
-      <Text style={styles.meta}>Status: {status}</Text>
+      <Text style={styles.meta}>Status {status}</Text>
 
-      {status === 'idle' ? <Text style={styles.meta}>Tap fetch to start.</Text> : null}
-      {status === 'loading' ? <Text style={styles.meta}>Loading feed…</Text> : null}
-
-      {status === 'success'
-        ? items.map((item) => {
-            return (
-              <View key={item} style={styles.item}>
-                <Text>{item}</Text>
-              </View>
-            )
-          })
-        : null}
-
-      {status === 'error' ? (
-        <View style={styles.errorCard}>
-          <Text style={styles.errorText}>{errorMessage}</Text>
-          <Pressable onPress={fetchFeed} style={styles.retryButton}>
-            <Text style={styles.retryButtonText}>Retry</Text>
-          </Pressable>
-        </View>
-      ) : null}
+      {statusContent[status]}
     </View>
   )
 }

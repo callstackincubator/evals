@@ -1,9 +1,0 @@
-version: 1
-inputs:
-  files:
-    - app/App.tsx
-requirements:
-  - id: deep-nested-linking-map
-    description: Must define linking config across drawer, tab, stack nesting levels.
-  - id: unknown-path-fallback-route
-    description: Must route unknown deep-link paths to a deterministic fallback screen.

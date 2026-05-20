@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: implementation-render-flashlist
+    description: Must render the gallery with `FlashList`.
+  - id: implementation-provide-flashlist-key-extractor
+    description: Must provide FlashList `keyExtractor` using stable photo ids.
+  - id: masonry-prop-enabled
+    description: Must enable masonry layout with the `masonry` prop on `FlashList`.
+  - id: masonry-num-columns-configured
+    description: Must configure `numColumns` for the masonry layout.
+  - id: no-deprecated-masonryflashlist
+    description: Must NOT use deprecated `MasonryFlashList` component.

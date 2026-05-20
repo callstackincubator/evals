@@ -1,12 +1,13 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
-  - id: loadable-wrapping-for-async-atom
-    description: Must wrap async atom access with a loadable pattern that exposes explicit loading, hasData, and hasError branches.
-  - id: explicit-non-suspense-state-branches
-    description: Must render explicit non-Suspense UI branches for loading success and failure paths.
-  - id: no-unhandled-promise-throw
-    description: Must avoid unhandled promise throws in render when no Suspense boundary is present.
+  - id: reports-source-is-async-atom
+    description: Reports are sourced from a Jotai async atom and include a refresh trigger read via `get`
+  - id: non-suspense-loadable-helper-construction
+    description: Implementation includes a helper that adapts an async atom using Jotai `unwrap` plus a derived `atom((get) => ...)` read function with try/catch error capture
+  - id: loadable-helper-state-shape-and-branching
+    description: Helper returns explicit loadable objects for loading data and error states (including payload for data/error), and UI branches directly on that returned state shape
+  - id: reload-action-triggers-refetch
+    description: Reload action updates the refresh trigger atom through `useSetAtom` or `useAtom` dispatch

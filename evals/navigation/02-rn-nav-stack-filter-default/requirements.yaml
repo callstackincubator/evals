@@ -3,9 +3,13 @@ inputs:
   files:
     - app/App.tsx
 requirements:
+  - id: notifications-screen-present
+    description: Must define and register a Notifications screen route in the stack navigator.
   - id: optional-filter-param
-    description: Must model filter as an optional navigation param for the notifications route.
+    description: Must model filter as an optional navigation param for the notifications screen.
   - id: default-filter-all
     description: Must default filter to all when the param is absent.
   - id: render-filter-value
     description: Must render the normalized filter value in the screen UI.
+  - id: static-api-navigation-construction
+    description: Must construct navigation with React Navigation static API and render it via `createStaticNavigation(...)`.

@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: implementation-render-flashlist
+    description: Must render the chat with `FlashList`.
+  - id: implementation-provide-flashlist-key-extractor
+    description: Must provide FlashList `keyExtractor` using stable message ids.
+  - id: maintain-visible-content-position-configured
+    description: Must configure `maintainVisibleContentPosition` on the `FlashList`.
+  - id: start-rendering-from-bottom-enabled
+    description: Must set `startRenderingFromBottom` inside `maintainVisibleContentPosition`.
+  - id: use-autoscrolltobottomthreshold-for-autoscroll-control
+    description: Must use `autoscrollToBottomThreshold` to control when autoscroll should occur on new messages.

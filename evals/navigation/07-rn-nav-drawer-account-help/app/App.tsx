@@ -1,21 +1,29 @@
-import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, Text, View } from 'react-native'
 
-export default function App() {
+function AccountScreen() {
   return (
     <View style={styles.container}>
-      <Text>Implement: Drawer with Account and Help</Text>
-      <StatusBar style="auto" />
+      <Text>Account section</Text>
     </View>
   )
+}
+
+function HelpScreen() {
+  return (
+    <View style={styles.container}>
+      <Text>Help section</Text>
+    </View>
+  )
+}
+
+export default function App() {
+  return <View />
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
   },
 })

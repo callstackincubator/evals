@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
-  - id: mutation-success-invalidates-list
-    description: Must invalidate the relevant list query key after mutation success.
-  - id: targeted-invalidation-scope
-    description: Must target invalidation to the affected query key family instead of broad unrelated cache resets.
-  - id: post-mutation-consistency
-    description: Must invalidate the same list query key family used by the rendered list so fresh server state is refetched after mutation success.
+  - id: app-is-wrapped-with-query-client-provider
+    description: App component renders `QueryClientProvider` with `client` set to `queryClient` and wraps `ItemsScreen`
+  - id: items-queryfn-uses-query-function-context-signal
+    description: Items `queryFn` reads `signal` from `QueryFunctionContext` and passes it to `fetchItems`
+  - id: create-mutation-uses-usemutation-object-form
+    description: Create flow uses `useMutation` object form with `mutationFn` set to `createItem`
+  - id: create-mutation-invalidates-items-key-on-success
+    description: Mutation `onSuccess` calls `reactQueryClient.invalidateQueries`
+  - id: create-button-disabled-is-bound-to-mutation-pending
+    description: Create button `disabled` prop uses `isPending` from mutation

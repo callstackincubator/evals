@@ -1,9 +1,0 @@
-version: 1
-inputs:
-  files:
-    - app/App.tsx
-requirements:
-  - id: numeric-orderid-parse
-    description: Must parse orderId from deep-link input into a numeric form before use.
-  - id: invalid-orderid-fallback
-    description: Must render a fallback route state for invalid numeric values.

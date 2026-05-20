@@ -1,12 +1,15 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
-  - id: explicit-async-lifecycle-state
-    description: Must model async fetch lifecycle explicitly in store state with idle loading success and error phases.
-  - id: async-action-updates-store
-    description: Must implement the fetch as a Zustand async action that updates store state via set.
-  - id: error-reset-or-retry-path
-    description: Must provide deterministic error handling with a clear retry or reset path.
+  - id: zustand-create-store-hook
+    description: Store hook is created with `create` from `zustand`
+  - id: async-action-sets-loading-before-await
+    description: Async fetch action calls `set` to write loading state before awaiting network work
+  - id: async-action-success-and-error-branches
+    description: Async fetch action writes success data and error state through `set` in separate branches
+  - id: retry-path-calls-same-store-action
+    description: Error UI retry trigger calls the same async store action used by initial fetch
+  - id: status-driven-ui-branching
+    description: UI output branches by lifecycle status values for idle loading success and error

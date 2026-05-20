@@ -3,7 +3,7 @@ inputs:
   files:
     - app/App.tsx
 requirements:
-  - id: profile-linking-config
-    description: Must provide a linking configuration that maps profile/:userId to the Profile route.
-  - id: deeplink-param-usage
-    description: Must read userId from deep-link route params.
+  - id: linking-prefixes-myapp
+    description: Must define a `linking` object with `prefixes` matching the requested prefix.
+  - id: profile-screen-linking-path
+    description: Must set `linking` with 'profile/:userId'` on the Profile screen configuration.

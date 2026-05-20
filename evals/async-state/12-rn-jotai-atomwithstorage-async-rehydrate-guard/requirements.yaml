@@ -1,12 +1,17 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
-  - id: atomwithstorage-async-backend
-    description: Must configure atomWithStorage with an asynchronous storage backend suitable for React Native.
-  - id: rehydration-complete-guard
-    description: Must guard dependent UI logic until stored value rehydration is complete.
-  - id: safe-default-before-hydration
-    description: Must provide a deterministic safe default behavior before persisted values are available.
+  - id: preferences-use-atomwithstorage-with-asyncstorage
+    description: Preferences persistence uses `atomWithStorage` with `createJSONStorage(() => AsyncStorage)`
+  - id: hydration-complete-state-is-explicit
+    description: Hydration completion is tracked in dedicated atom state
+  - id: pre-hydration-ui-is-gated
+    description: Preference-dependent content is gated behind a deterministic pre-hydration UI branch
+  - id: hydration-flow-runs-before-profile-load
+    description: Hydration action runs first and profile loading is triggered only after hydration completes
+  - id: profile-preview-fetches-and-maps-name
+    description: Post-hydration profile load fetches the users endpoint and builds preview text from `firstName` and `lastName`
+  - id: preference-updates-use-functional-updater
+    description: Preference toggle actions update persisted state through functional atom updater paths

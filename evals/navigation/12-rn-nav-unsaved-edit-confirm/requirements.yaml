@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: prevent-leave-when-dirty
+    description: Must derive an explicit dirty state for the edit form (for example comparing current input vs last saved value) and only block leaving when that state is dirty.
+  - id: usepreventremove-hook
+    description: Must intercept native-stack back/remove actions with `usePreventRemove(...)` on the edit screen.
+  - id: explicit-confirm-path
+    description: Must show an explicit confirmation choice when leaving with unsaved changes and resume on confirm (for example by dispatching `data.action`).
+  - id: no-confirm-when-clean
+    description: Must allow leaving the edit screen without a confirmation prompt when there are no unsaved changes.

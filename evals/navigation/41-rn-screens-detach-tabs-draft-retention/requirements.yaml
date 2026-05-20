@@ -1,9 +1,0 @@
-version: 1
-inputs:
-  files:
-    - app/App.tsx
-requirements:
-  - id: detach-inactive-tab-config
-    description: Must enable inactive tab detaching behavior through tab or screen configuration.
-  - id: draft-state-outside-detached-instance
-    description: Must persist draft state outside detached screen instance so returning to tab restores draft content.

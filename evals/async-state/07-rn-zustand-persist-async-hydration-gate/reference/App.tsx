@@ -3,36 +3,122 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
+const STORE_NAME = 'session-store'
+
+type ProfileStatus = 'idle' | 'loading' | 'ready' | 'error'
+
 type SessionStore = {
   hasHydrated: boolean
+  profileName: string | null
+  profileStatus: ProfileStatus
   token: string | null
-  login: () => void
+  login: () => Promise<void>
   logout: () => void
+  loadProfile: () => Promise<void>
   setHasHydrated: (value: boolean) => void
+}
+
+async function fetchSessionToken(): Promise<string> {
+  const response = await fetch('https://dummyjson.com/auth/login', {
+    body: JSON.stringify({
+      expiresInMins: 30,
+      password: 'emilyspass',
+      username: 'emilys',
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+  })
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
+  }
+
+  const json = (await response.json()) as {
+    accessToken?: string
+    token?: string
+  }
+
+  const token = json.accessToken ?? json.token
+
+  if (!token) {
+    throw new Error('Token missing in auth response')
+  }
+
+  return token
+}
+
+async function fetchProfileName(token: string): Promise<string> {
+  const response = await fetch('https://dummyjson.com/auth/me', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
+  }
+
+  const json = (await response.json()) as {
+    firstName: string
+    lastName: string
+  }
+
+  return `${json.firstName} ${json.lastName}`
 }
 
 const useSessionStore = create<SessionStore>()(
   persist(
-    (set) => {
-      return {
-        hasHydrated: false,
-        token: null,
-        login: () => {
-          set({ token: 'demo-token' })
-        },
-        logout: () => {
-          set({ token: null })
-        },
-        setHasHydrated: (value) => {
-          set({ hasHydrated: value })
-        },
-      }
-    },
+    (set, get) => ({
+      hasHydrated: false,
+      profileName: null,
+      profileStatus: 'idle',
+      token: null,
+      login: async () => {
+        set({ profileStatus: 'loading' })
+
+        try {
+          const token = await fetchSessionToken()
+          set({ token })
+          await get().loadProfile()
+        } catch {
+          set({ profileName: null, profileStatus: 'error', token: null })
+        }
+      },
+      logout: () => {
+        set({ profileName: null, profileStatus: 'idle', token: null })
+      },
+      loadProfile: async () => {
+        const token = get().token
+
+        if (!token) {
+          return
+        }
+
+        set({ profileStatus: 'loading' })
+
+        try {
+          const profileName = await fetchProfileName(token)
+          set({ profileName, profileStatus: 'ready' })
+        } catch {
+          set({ profileName: null, profileStatus: 'error' })
+        }
+      },
+      setHasHydrated: (value) => set({ hasHydrated: value }),
+    }),
     {
-      name: 'session-store',
-      onRehydrateStorage: () => {
-        return (state) => {
-          state?.setHasHydrated(true)
+      name: STORE_NAME,
+      onRehydrateStorage: () => (state, error) => {
+        if (!state || error) {
+          useSessionStore.getState().setHasHydrated(true)
+          return
+        }
+
+        state.setHasHydrated(true)
+
+        if (state.token) {
+          void state.loadProfile()
         }
       },
       partialize: (state) => ({ token: state.token }),
@@ -43,6 +129,8 @@ const useSessionStore = create<SessionStore>()(
 
 function HydrationGate() {
   const hasHydrated = useSessionStore((state) => state.hasHydrated)
+  const profileName = useSessionStore((state) => state.profileName)
+  const profileStatus = useSessionStore((state) => state.profileStatus)
   const token = useSessionStore((state) => state.token)
   const login = useSessionStore((state) => state.login)
   const logout = useSessionStore((state) => state.logout)
@@ -50,31 +138,42 @@ function HydrationGate() {
   if (!hasHydrated) {
     return (
       <View style={styles.screen}>
-        <Text style={styles.title}>Restoring session…</Text>
-        <Text style={styles.meta}>Protected UI is gated until hydration completes.</Text>
+        <Text style={styles.meta}>Loading your session...</Text>
       </View>
     )
   }
 
+  if (token && profileStatus === 'loading') {
+    return (
+      <View style={styles.screen}>
+        <Text style={styles.meta}>Loading profile...</Text>
+      </View>
+    )
+  }
+
+  const card = token
+    ? {
+        button: 'Log out',
+        label: `Authenticated as ${profileName ?? 'unknown user'}`,
+        action: logout,
+      }
+    : { label: 'Public content visible.', action: login, button: 'Log in' }
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Session gate</Text>
+      <Text style={styles.title}>Session Gate</Text>
 
-      {token ? (
-        <View style={styles.card}>
-          <Text style={styles.meta}>Authenticated content visible.</Text>
-          <Pressable onPress={logout} style={styles.button}>
-            <Text style={styles.buttonText}>Log out</Text>
-          </Pressable>
-        </View>
-      ) : (
-        <View style={styles.card}>
-          <Text style={styles.meta}>Public content visible.</Text>
-          <Pressable onPress={login} style={styles.button}>
-            <Text style={styles.buttonText}>Log in</Text>
-          </Pressable>
-        </View>
-      )}
+      <View style={styles.card}>
+        <Text style={styles.meta}>{card.label}</Text>
+
+        {profileStatus === 'error' ? (
+          <Text style={styles.error}>Token or profile request failed.</Text>
+        ) : null}
+
+        <Pressable onPress={card.action} style={styles.button}>
+          <Text style={styles.buttonText}>{card.button}</Text>
+        </Pressable>
+      </View>
     </View>
   )
 }
@@ -101,6 +200,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginTop: 12,
     padding: 12,
+  },
+  error: {
+    color: '#b91c1c',
+    marginTop: 6,
   },
   meta: {
     color: '#334155',

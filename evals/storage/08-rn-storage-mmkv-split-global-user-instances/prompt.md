@@ -1,1 +1,0 @@
-Implement MMKV storage with separate instances for global preferences and user scoped data, and ensure sign-out resets only user data.

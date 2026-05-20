@@ -1,37 +1,97 @@
+import { Atom, atom, useAtomValue, useSetAtom } from 'jotai'
+import { unwrap } from 'jotai/utils'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { atom, useAtomValue, useSetAtom } from 'jotai'
-import { loadable } from 'jotai/utils'
 
 type Report = {
   id: string
   title: string
 }
 
+type Loadable<Value> =
+  | {
+      state: 'loading'
+    }
+  | {
+      state: 'hasError'
+      error: unknown
+    }
+  | {
+      state: 'hasData'
+      data: Awaited<Value>
+    }
+
 const refreshIndexAtom = atom(0)
 
 const reportsAtom = atom(async (get): Promise<Report[]> => {
   const refreshIndex = get(refreshIndexAtom)
 
-  await new Promise<void>((resolve) => {
-    setTimeout(resolve, 260)
-  })
+  const endpoint =
+    refreshIndex % 2 === 1
+      ? 'https://dummyjson.com/todos/not-found'
+      : 'https://dummyjson.com/todos?limit=3&skip=0'
 
-  if (refreshIndex % 2 === 1) {
-    throw new Error('Failed to load reports on odd refresh attempts')
+  const response = await fetch(endpoint)
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
   }
 
-  return [
-    { id: 'r-1', title: 'Build health summary' },
-    { id: 'r-2', title: 'Crash-free session trend' },
-    { id: 'r-3', title: 'Release checklist status' },
-  ]
+  const json = (await response.json()) as {
+    todos: Array<{ id: number; todo: string }>
+  }
+
+  return json.todos.map((todo) => ({
+    id: String(todo.id),
+    title: todo.todo,
+  }))
 })
+
+function loadable<Value>(anAtom: Atom<Value>): Atom<Loadable<Value>> {
+  const LOADING: Loadable<Value> = { state: 'loading' }
+  const unwrappedAtom = unwrap(anAtom, () => LOADING)
+
+  return atom((get) => {
+    try {
+      const data = get(unwrappedAtom)
+
+      if (data === LOADING) {
+        return LOADING
+      }
+
+      return { state: 'hasData', data } as Loadable<Value>
+    } catch (error) {
+      return { state: 'hasError', error }
+    }
+  })
+}
 
 const loadableReportsAtom = loadable(reportsAtom)
 
-function ReportsScreen() {
+export default function App() {
   const reportsState = useAtomValue(loadableReportsAtom)
   const refresh = useSetAtom(refreshIndexAtom)
+
+  const renderContent = () => {
+    if (reportsState.state === 'loading') {
+      return <Text style={styles.meta}>Loading reports…</Text>
+    }
+
+    if (reportsState.state === 'hasError') {
+      return (
+        <Text style={styles.error}>
+          {reportsState.error instanceof Error
+            ? reportsState.error.message
+            : 'Unknown error'}
+        </Text>
+      )
+    }
+
+    return reportsState.data.map((report) => (
+      <View key={report.id} style={styles.item}>
+        <Text>{report.title}</Text>
+      </View>
+    ))
+  }
 
   return (
     <View style={styles.screen}>
@@ -46,33 +106,9 @@ function ReportsScreen() {
         <Text style={styles.buttonText}>Reload</Text>
       </Pressable>
 
-      {reportsState.state === 'loading' ? (
-        <Text style={styles.meta}>Loading reports…</Text>
-      ) : null}
-
-      {reportsState.state === 'hasData'
-        ? reportsState.data.map((report) => {
-            return (
-              <View key={report.id} style={styles.item}>
-                <Text>{report.title}</Text>
-              </View>
-            )
-          })
-        : null}
-
-      {reportsState.state === 'hasError' ? (
-        <Text style={styles.error}>
-          {reportsState.error instanceof Error
-            ? reportsState.error.message
-            : 'Unknown error'}
-        </Text>
-      ) : null}
+      {renderContent()}
     </View>
   )
-}
-
-export default function App() {
-  return <ReportsScreen />
 }
 
 const styles = StyleSheet.create({

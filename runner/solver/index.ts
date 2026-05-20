@@ -1,9 +1,18 @@
-import { Output, extractJsonMiddleware, generateText, wrapLanguageModel } from 'ai'
+import {
+  Output,
+  extractJsonMiddleware,
+  generateText,
+  wrapLanguageModel,
+} from 'ai'
 import { createOpencode } from 'ai-sdk-provider-opencode-sdk'
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { z } from 'zod'
 
+import {
+  collectOpencodeSessionSnapshot,
+  type OpencodeSessionSnapshot,
+} from 'runner/utils/opencode-session'
 import { ensureOpencodeServerStarted } from 'runner/utils/opencode'
 import type { LoadedFile } from 'runner/utils/fs'
 
@@ -13,23 +22,50 @@ const SYSTEM_PROMPT = `
   You must return all given files with applied modification.
 `
 
+const JSON_FALLBACK_SYSTEM_PROMPT = `
+  Return only valid JSON matching this shape:
+  {
+    "summary": "short summary",
+    "files": [{ "path": "relative/path.ext", "content": "full file contents" }]
+  }
+  Do not include markdown fences or any extra text.
+`
+
 const solverOutputSchema = z.object({
   summary: z.string().describe('Short summary of performed work'),
-  files: z.array(
-    z.object({
-      path: z.string(),
-      content: z.string(),
-    })
-  ).min(1),
+  files: z
+    .array(
+      z.object({
+        path: z.string(),
+        content: z.string(),
+      })
+    )
+    .min(1),
 })
 
 export type SolverResult = {
   files: LoadedFile[]
   summary?: string
+  opencodeSession?: OpencodeSessionSnapshot
 }
 
-function toPosixPath(value: string) {
-  return value.split(path.sep).join('/')
+function asRecord(value: unknown) {
+  if (typeof value !== 'object' || value === null) {
+    return undefined
+  }
+
+  return value as Record<string, unknown>
+}
+
+function extractOpencodeSessionId(response: unknown) {
+  const responseRecord = asRecord(response)
+  const providerMetadata = asRecord(responseRecord?.providerMetadata)
+  const opencodeMetadata = asRecord(providerMetadata?.opencode)
+
+  const maybeSessionId =
+    opencodeMetadata?.sessionId ?? opencodeMetadata?.sessionID
+
+  return typeof maybeSessionId === 'string' ? maybeSessionId : undefined
 }
 
 function sanitizeGeneratedPath(relativePath: string) {
@@ -55,7 +91,7 @@ export async function materializeFiles(
       await writeFile(absolutePath, file.content, 'utf8')
 
       return {
-        path: toPosixPath(safeRelativePath),
+        path: safeRelativePath,
         absolutePath,
         content: file.content,
       }
@@ -83,12 +119,45 @@ function buildSolverPrompt(prompt: string, inputFiles: LoadedFile[]) {
   `
 }
 
+function parseSolverOutputFromText(rawText: string) {
+  const normalized = rawText.trim()
+  const fencedMatch = normalized.match(/```(?:json)?\s*([\s\S]*?)\s*```/i)
+  const fencedCandidate = fencedMatch?.[1]?.trim()
+
+  const candidates = [fencedCandidate, normalized]
+    .filter((value): value is string => Boolean(value))
+    .flatMap((value) => {
+      const firstBrace = value.indexOf('{')
+      const lastBrace = value.lastIndexOf('}')
+      if (firstBrace === -1 || lastBrace === -1 || lastBrace <= firstBrace) {
+        return [value]
+      }
+
+      return [value, value.slice(firstBrace, lastBrace + 1)]
+    })
+
+  for (const candidate of candidates) {
+    try {
+      const parsedJson = JSON.parse(candidate)
+      const parsed = solverOutputSchema.safeParse(parsedJson)
+      if (parsed.success) {
+        return parsed
+      }
+    } catch {
+      continue
+    }
+  }
+
+  return solverOutputSchema.safeParse(null)
+}
+
 /*
   Runs an OpenCode-backed solver and materializes generated files for judges.
 */
 export async function runSolver(params: {
-  prompt: string,
-  files: LoadedFile[],
+  prompt: string
+  files: LoadedFile[]
+  workingDirectory: string
   model: string
   timeout: number
   port: number
@@ -102,19 +171,60 @@ export async function runSolver(params: {
 
   const prompt = buildSolverPrompt(params.prompt, params.files)
 
-  const { output } = await generateText({
-    model: wrapLanguageModel({
-      model: provider(params.model, { createNewSession: true }),
-      middleware: extractJsonMiddleware(),
+  const model = wrapLanguageModel({
+    model: provider(params.model, {
+      createNewSession: true,
+      cwd: params.workingDirectory,
     }),
-    prompt,
-    system: SYSTEM_PROMPT,
-    abortSignal: AbortSignal.timeout(params.timeout),
-    output: Output.object({
-      schema: solverOutputSchema,
-      description: 'Generated files that satisfy the task',
-    }),
+    middleware: extractJsonMiddleware(),
   })
 
-  return output
+  try {
+    const response = await generateText({
+      model,
+      prompt,
+      system: SYSTEM_PROMPT,
+      abortSignal: AbortSignal.timeout(params.timeout),
+      output: Output.object({
+        schema: solverOutputSchema,
+        description: 'Generated files that satisfy the task',
+      }),
+    })
+
+    return {
+      ...response.output,
+      opencodeSession: await collectOpencodeSessionSnapshot({
+        sessionId: extractOpencodeSessionId(response),
+        port: params.port,
+        directory: params.workingDirectory,
+      }),
+    }
+  } catch (structuredOutputError) {
+    const fallbackResponse = await generateText({
+      model,
+      prompt,
+      system: `${SYSTEM_PROMPT}\n${JSON_FALLBACK_SYSTEM_PROMPT}`,
+      abortSignal: AbortSignal.timeout(params.timeout),
+    })
+
+    const parsedOutput = parseSolverOutputFromText(fallbackResponse.text)
+    if (!parsedOutput.success) {
+      const originalMessage =
+        structuredOutputError instanceof Error
+          ? structuredOutputError.message
+          : String(structuredOutputError)
+      throw new Error(
+        `solver did not return valid file output (structured output failed: ${originalMessage})`
+      )
+    }
+
+    return {
+      ...parsedOutput.data,
+      opencodeSession: await collectOpencodeSessionSnapshot({
+        sessionId: extractOpencodeSessionId(fallbackResponse),
+        port: params.port,
+        directory: params.workingDirectory,
+      }),
+    }
+  }
 }

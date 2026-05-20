@@ -1,1 +1,0 @@
-Build an Expo SQLite schema migration pipeline that versions the schema and applies migrations transactionally and idempotently on startup.

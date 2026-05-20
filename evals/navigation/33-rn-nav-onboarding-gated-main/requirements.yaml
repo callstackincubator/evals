@@ -1,9 +1,0 @@
-version: 1
-inputs:
-  files:
-    - app/App.tsx
-requirements:
-  - id: onboarding-gated-routes
-    description: Must conditionally render onboarding vs main routes based on onboarding completion state.
-  - id: graph-switch-after-complete
-    description: Must switch route graph after onboarding completion without leaving onboarding route in active flow.

@@ -1,0 +1,16 @@
+% Requires: \usepackage{booktabs}
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Category & Score & Evals & Requirements & Failed requirements \\
+\midrule
+animation & 92.2\% & 130 & 53 & 37 \\
+async state & 97.3\% & 130 & 65 & 13 \\
+lists & 96.6\% & 180 & 79 & 23 \\
+navigation & 97.4\% & 130 & 45 & 12 \\
+react native apis & 91.9\% & 90 & 31 & 22 \\
+\bottomrule
+\end{tabular}
+\caption{Results by category for composer-2. Score: mean(per-eval passed/total weight) across evals and runs. Evals: count of evaluation tasks. Requirements: sum of requirement count per eval. Failed requirements: sum of failed requirement instances across runs.}
+\end{table}

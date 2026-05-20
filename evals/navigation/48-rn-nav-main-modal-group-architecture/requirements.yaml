@@ -1,9 +1,0 @@
-version: 1
-inputs:
-  files:
-    - app/App.tsx
-requirements:
-  - id: main-vs-modal-groups
-    description: Must separate main routes from modal routes with explicit navigator groups.
-  - id: predictable-modal-back-flow
-    description: Must provide predictable back/dismiss behavior for modal routes without corrupting main route graph.

@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: implementation-render-legendlist
+    description: Must render the chat with `LegendList`.
+  - id: implementation-provide-legendlist-key-extractor
+    description: Must provide `LegendList` `keyExtractor` using stable message ids.
+  - id: align-items-at-end-enabled
+    description: Must set `alignItemsAtEnd` on the `LegendList`.
+  - id: maintain-scroll-at-end-enabled
+    description: Must set `maintainScrollAtEnd` on the `LegendList`.
+  - id: maintain-scroll-at-end-threshold-configured
+    description: Must set `maintainScrollAtEndThreshold` on the `LegendList`.

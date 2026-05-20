@@ -1,50 +1,57 @@
-import { LinkingOptions, NavigationContainer } from '@react-navigation/native'
+import {
+  createStaticNavigation,
+  StaticParamList,
+  StaticScreenProps,
+  useNavigation,
+} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
-type RootStackParamList = {
-  Home: undefined
-  Profile: { userId: string }
-}
-
-const Stack = createNativeStackNavigator<RootStackParamList>()
-
-const linking: LinkingOptions<RootStackParamList> = {
-  prefixes: ['myapp://'],
-  config: {
-    screens: {
-      Home: '',
-      Profile: 'profile/:userId',
-    },
-  },
-}
-
-function HomeScreen({ navigation }: { navigation: any }) {
+function HomeScreen() {
   return (
     <View style={styles.container}>
-      <Button title='Open profile 123' onPress={() => navigation.navigate('Profile', { userId: '123' })} />
+       <Text style={styles.title}>Home</Text>
     </View>
   )
 }
 
-function ProfileScreen({ route }: { route: any }) {
+type ProfileProps = StaticScreenProps<{ userId: string }>
+
+function ProfileScreen({ route }: ProfileProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Profile</Text>
-      <Text>userId: {route.params?.userId}</Text>
+      <Text>userId: {route.params.userId}</Text>
     </View>
   )
 }
 
+const RootStack = createNativeStackNavigator({
+  screens: {
+    Home: HomeScreen,
+    Profile: {
+      screen: ProfileScreen,
+      linking: 'profile/:userId',
+    },
+  },
+})
+
+type RootStackParamList = StaticParamList<typeof RootStack>
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+const Navigation = createStaticNavigation(RootStack)
+
+const linking = {
+  prefixes: ['myapp://'],
+}
+
 export default function App() {
-  return (
-    <NavigationContainer linking={linking}>
-      <Stack.Navigator>
-        <Stack.Screen name='Home' component={HomeScreen} />
-        <Stack.Screen name='Profile' component={ProfileScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+  return <Navigation linking={linking} />
 }
 
 const styles = StyleSheet.create({

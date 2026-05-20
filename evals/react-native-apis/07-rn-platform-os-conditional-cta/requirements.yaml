@@ -1,0 +1,9 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: implementation-use-platform-api
+    description: Must import and use `Platform` from `react-native`.
+  - id: platform-os-name-rendered
+    description: Must render the current `Platform.OS` value in the UI.

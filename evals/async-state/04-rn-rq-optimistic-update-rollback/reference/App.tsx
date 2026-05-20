@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import {
   QueryClient,
   QueryClientProvider,
+  QueryFunctionContext,
   useMutation,
   useQuery,
   useQueryClient,
@@ -17,89 +18,118 @@ type ToggleContext = {
   snapshot: Todo[] | undefined
 }
 
+type TodosQueryKey = readonly ['todos']
+
+const TODOS_QUERY_KEY: TodosQueryKey = ['todos'] as const
+
 const queryClient = new QueryClient()
 
-let todosDb: Todo[] = [
-  { done: false, id: 'todo-1', title: 'Document async-state evals' },
-  { done: true, id: 'todo-2', title: 'Ship benchmark runner improvements' },
-  { done: false, id: 'todo-3', title: 'Trim rerenders in dashboard' },
-]
+const flipTodo = (todo: Todo, todoId: string, nextDone: boolean): Todo =>
+  todo.id === todoId ? { ...todo, done: nextDone } : todo
 
-function wait(ms: number) {
-  return new Promise<void>((resolve) => {
-    setTimeout(resolve, ms)
+const fetchTodos = async (signal?: AbortSignal): Promise<Todo[]> => {
+  const response = await fetch('https://dummyjson.com/todos?limit=10&skip=0', {
+    signal,
   })
-}
 
-async function fetchTodos() {
-  await wait(180)
-  return [...todosDb]
-}
-
-async function toggleTodoOnServer(todoId: string) {
-  await wait(240)
-
-  if (todoId === 'todo-3') {
-    throw new Error('Server rejected this toggle')
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
   }
 
-  todosDb = todosDb.map((todo) => {
-    if (todo.id !== todoId) {
-      return todo
-    }
+  const json = (await response.json()) as {
+    todos: Array<{ completed: boolean; id: number; todo: string }>
+  }
 
-    return { ...todo, done: !todo.done }
+  return json.todos.map((todo) => ({
+    done: todo.completed,
+    id: String(todo.id),
+    title: todo.todo,
+  }))
+}
+
+const toggleTodoOnServer = async ({
+  nextDone,
+  todoId,
+}: {
+  nextDone: boolean
+  todoId: string
+}) => {
+  const response = await fetch(`https://dummyjson.com/todos/${todoId}`, {
+    body: JSON.stringify({
+      completed: nextDone,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'PUT',
   })
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
+  }
 }
 
 function TodosScreen() {
   const reactQueryClient = useQueryClient()
 
   const todosQuery = useQuery({
-    queryFn: fetchTodos,
-    queryKey: ['todos'] as const,
+    queryFn: ({ signal }: QueryFunctionContext<TodosQueryKey>) =>
+      fetchTodos(signal),
+    queryKey: TODOS_QUERY_KEY,
   })
+
+  const onMutate = async ({
+    nextDone,
+    todoId,
+  }: {
+    nextDone: boolean
+    todoId: string
+  }): Promise<ToggleContext> => {
+    await reactQueryClient.cancelQueries({ queryKey: TODOS_QUERY_KEY })
+
+    const snapshot = reactQueryClient.getQueryData<Todo[]>(TODOS_QUERY_KEY)
+
+    reactQueryClient.setQueryData<Todo[]>(TODOS_QUERY_KEY, (current = []) =>
+      current.map((todo) => flipTodo(todo, todoId, nextDone))
+    )
+
+    return { snapshot }
+  }
+
+  const onError = (
+    _error: unknown,
+    _variables: { nextDone: boolean; todoId: string },
+    context: ToggleContext | undefined
+  ) => {
+    if (context?.snapshot) {
+      reactQueryClient.setQueryData(TODOS_QUERY_KEY, context.snapshot)
+    }
+  }
+
+  const onSettled = async () => {
+    await reactQueryClient.invalidateQueries({ queryKey: TODOS_QUERY_KEY })
+  }
 
   const toggleMutation = useMutation({
     mutationFn: toggleTodoOnServer,
-    onError: (_error, _todoId, context) => {
-      if (context?.snapshot) {
-        reactQueryClient.setQueryData(['todos'], context.snapshot)
-      }
-    },
-    onMutate: async (todoId): Promise<ToggleContext> => {
-      await reactQueryClient.cancelQueries({ queryKey: ['todos'] })
-
-      const snapshot = reactQueryClient.getQueryData<Todo[]>(['todos'])
-
-      reactQueryClient.setQueryData<Todo[]>(['todos'], (current = []) => {
-        return current.map((todo) => {
-          if (todo.id !== todoId) {
-            return todo
-          }
-
-          return { ...todo, done: !todo.done }
-        })
-      })
-
-      return { snapshot }
-    },
-    onSettled: () => {
-      reactQueryClient.invalidateQueries({ queryKey: ['todos'] })
-    },
+    onError,
+    onMutate,
+    onSettled,
   })
+
+  const handleTodoPressCallback = (todoId: string, nextDone: boolean) => () => {
+    toggleMutation.mutate({ nextDone, todoId })
+  }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Optimistic Toggle</Text>
+      <Text style={styles.title}>Todo List</Text>
 
       {todosQuery.data?.map((todo) => {
         return (
           <Pressable
             key={todo.id}
-            onPress={() => {
-              toggleMutation.mutate(todo.id)
-            }}
+            onPress={handleTodoPressCallback(todo.id, !todo.done)}
             style={styles.row}
           >
             <Text style={[styles.todoText, todo.done && styles.done]}>{todo.title}</Text>

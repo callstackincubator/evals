@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/PlatformMessage.ios.tsx
+    - app/PlatformMessage.android.tsx
+requirements:
+  - id: app-imports-shared-platform-message-path
+    description: Must import the component through a shared path like `./PlatformMessage`.
+  - id: platform-message-files-present
+    description: Must provide both `PlatformMessage.ios.tsx` and `PlatformMessage.android.tsx`.
+  - id: ios-and-android-components-render-different-copy
+    description: The iOS and Android component files must render different platform-specific copy.
+  - id: no-platform-branch-in-app-component
+    description: Must NOT branch on `Platform.OS` or `Platform.select(...)` inside `App.tsx` for this split.

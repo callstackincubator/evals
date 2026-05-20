@@ -1,49 +1,43 @@
 # Adding new category
 
-This document is the baseline for creating and reviewing React Native evals at scale.
+This document defines the category-level authoring workflow.
 
-## Rresearch
+## Workflow
 
-Use this workflow for every category before writing evals.
+1. Define category scope and baseline libraries.
+- Identify the API surface that the category should exercise.
+- Normalize library naming used in prompts, requirements, and README.
 
-1. **Read official docs first**
+2. Read official docs and recent release notes.
+- Capture source links for each core library.
+- Record dated API shifts that should become requirement constraints.
 
-- Collect core APIs, recommended patterns, and explicit caveats
-- Capture links to source sections used for task design
+3. Build category best-practice inventory.
+- Convert source guidance into concrete implementation expectations.
+- Keep entries deterministic and file-verifiable where possible.
 
-2. **Extract best-practice rules**
+4. Derive prompts from best practices.
+- Write prompts as forward-looking implementation asks.
+- Avoid bug-report framing.
+- Map each prompt to one or more best-practice targets.
 
-- Turn docs into a concise list of do/don't implementation rules
-- Keep rules concrete enough to assert in requirement checks (and unit tests when present)
+5. Define deterministic requirements.
+- Express requirements as file-verifiable checks.
+- Keep requirements atomic and concrete.
+- Use evidence-backed `MUST NOT` only for deprecations/removals/correctness caveats.
 
-3. **Dderive feature asks from best practices**
+6. Validate diversity and overlap.
+- Keep shared subgroup requirements small.
+- Ensure each eval has implementation-specific constraints.
 
-- Write prompts as requests a regular developer would make
-- Avoid bug-report language in prompt text
-- Map each prompt to one primary best-practice rule
+## Required category README artifact
 
-4. **Define deterministic checks**
+Every new category should include `evals/<category>/README.md` with exactly:
 
-- Express expected user-visible outcomes as deterministic assertions
-- Add minimal atomic requirement checks that enforce the target best practice
+- `category overview`
+- `library baseline and naming`
+- `best practices`
+  - official best-practice sources
+  - best-practice inventory
 
-5. **Mine common issues (secondary validation)**
-
-- Inspect top GitHub issues/discussions for main libraries in the category
-- Prioritize issues with high reactions, repeated duplicates, or recurring regressions
-- Tag each issue as: setup, API misuse, performance, platform parity, edge case, or tooling
-- Use issue clusters to stress-test coverage, not to define prompt language
-
-6. **Apply best-practice checks**
-
-- Verify task enforces recommended usage patterns from docs
-- Verify task avoids anti-patterns commonly seen in issue threads
-
-## Required research artifact
-
-Every new category should include a research note in the category root (for example `evals/navigation/README.md`) that includes:
-
-- Official docs links used for eval design
-- Explicit best-practice inventory (with source links)
-- Issue links grouped by pain-point tags (`setup`, `API misuse`, `performance`, `platform parity`, `edge case`, `tooling`) used only to validate robustness coverage
-- Traceability from each task to at least one best-practice source
+Keep category READMEs focused on those sections only.

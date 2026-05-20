@@ -1,0 +1,7 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: focus-effect-structure
+    description: Must implement focus logic using `useFocusEffect`.

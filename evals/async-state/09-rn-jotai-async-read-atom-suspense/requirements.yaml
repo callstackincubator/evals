@@ -1,12 +1,13 @@
 version: 1
 inputs:
   files:
-    - prompt.md
-    - requirements.yaml
+    - app/App.tsx
 requirements:
-  - id: async-read-atom-source
-    description: Must implement profile loading as an async read atom that resolves data via promise.
-  - id: suspense-boundary-for-async-atom
-    description: Must consume the async atom under a React Suspense boundary with an explicit fallback UI.
-  - id: no-duplicate-manual-loading-flag
-    description: Must avoid redundant component-level loading flags that duplicate the async atom plus Suspense contract.
+  - id: profile-uses-async-read-atom
+    description: Profile data source is modeled as a Jotai async read atom with `atom(async () => ...)`
+  - id: profile-fetch-uses-endpoint-and-status-guard
+    description: Profile read atom fetches from the users endpoint
+  - id: profile-consumer-reads-atom-value
+    description: Profile content reads the async atom through `useAtomValue`
+  - id: suspense-boundary-renders-loading-fallback
+    description: Profile consumer is rendered under `Suspense` with explicit loading fallback UI
