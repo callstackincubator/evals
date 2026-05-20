@@ -9,9 +9,13 @@ React Native Skia evals — testing how well LLMs implement high-performance 2D 
 - Shapes: https://shopify.github.io/react-native-skia/docs/shapes/rect
 - Path: https://shopify.github.io/react-native-skia/docs/shapes/path
 - Text: https://shopify.github.io/react-native-skia/docs/text/text
+- Paragraph: https://shopify.github.io/react-native-skia/docs/text/paragraph
+- Group: https://shopify.github.io/react-native-skia/docs/group
 - Images: https://shopify.github.io/react-native-skia/docs/images
 - Image filters: https://shopify.github.io/react-native-skia/docs/image-filters/overview
 - Shaders: https://shopify.github.io/react-native-skia/docs/shaders/overview
+- Gradients: https://shopify.github.io/react-native-skia/docs/shaders/gradients
+- Mask: https://shopify.github.io/react-native-skia/docs/mask
 - Animations: https://shopify.github.io/react-native-skia/docs/animations/animations
 - Gestures: https://shopify.github.io/react-native-skia/docs/animations/gestures
 
@@ -32,6 +36,9 @@ React Native Skia evals — testing how well LLMs implement high-performance 2D 
 | 11  | Use `matchFont` with a `fontStyle` object for system font resolution; the Text `y` origin is the text baseline, not the top             | text/text              |
 | 12  | Apply blend modes at the `Group` level with the `blendMode` prop to composite child elements                                            | paint/overview         |
 | 13  | Use `ClipRect` / `ClipPath` as children of a `Group` or drawing element to mask content                                                 | canvas/overview        |
+| 14  | Use `SweepGradient` / `TwoPointConicalGradient` for angular and conical fills beyond linear/radial                                      | shaders/gradients      |
+| 15  | Apply effects to a group composite with the `layer` prop (`<Paint>` + image filters), not per-child filters alone                       | group                  |
+| 16  | Use `Skia.ParagraphBuilder` + `<Paragraph>` for multi-style text layouts; call `layout(width)` before rendering                         | text/paragraph         |
 
 ## Eval traceability
 
@@ -41,7 +48,7 @@ React Native Skia evals — testing how well LLMs implement high-performance 2D 
 | 02 – shape-primitives             | 1                             |
 | 03 – path-drawing                 | 6                             |
 | 04 – paint-stroke-fill            | 7                             |
-| 05 – linear-gradient              | 1, 2                          |
+| 05 – linear-gradient              | 1, 2, 3                       |
 | 06 – radial-gradient              | 1                             |
 | 07 – image-display                | 1                             |
 | 08 – text-rendering               | 11                            |
@@ -57,6 +64,26 @@ React Native Skia evals — testing how well LLMs implement high-performance 2D 
 | 18 – svg-path-rendering           | 6                             |
 | 19 – runtime-effect-shader        | 9                             |
 | 20 – canvas-snapshot              | 10                            |
+| 21 – sweep-gradient               | 14                            |
+| 22 – group-layer-effect           | 15                            |
+| 23 – paragraph-styled-text        | 16                            |
+
+## API coverage notes
+
+The pack now covers all four built-in gradient shaders (linear, radial, sweep; conical remains untested). Major APIs still intentionally omitted — either asset-heavy, niche, or overlapping existing evals:
+
+| API area                  | Examples                                   | Why omitted                                                                |
+| ------------------------- | ------------------------------------------ | -------------------------------------------------------------------------- |
+| Conical gradient          | `TwoPointConicalGradient`                  | Overlaps sweep/radial family; add only if conical spotlight effects matter |
+| Mask compositing          | `<Mask>` with `alpha` or `luminance` mode  | Distinct from clip; good candidate if compositing pack expands             |
+| Neumorphism shadows       | `Box` + `BoxShadow`, `Shadow`/`DropShadow` | UI-specific; overlaps blur/filter evals conceptually                       |
+| Canvas sizing (UI thread) | `onSize` shared value prop                 | Partially covered by `useCanvasSize` in eval 01                            |
+| Per-element gestures      | `Animated.View` overlay tracking           | Documented in rule 4; eval 14 only tests canvas-level pan                  |
+| Nested image shaders      | `ImageShader` inside custom `Shader`       | Advanced; needs bundled image asset                                        |
+| Lottie playback           | `Skottie`, `Skia.Skottie.Make`             | Requires Lottie JSON + optional asset slots                                |
+| Recorded drawing          | `Picture`, `createPicture`                 | Immediate-mode performance API; low LLM failure signal                     |
+| Fitbox / Group clip props | `FitBox`, `Group clip` / `invertClip`      | Overlap path/SVG evals; `FitBox` is a strong future add                    |
+| Path / mask filters       | `DashPathEffect`, `BlurMask`, morphology   | Lower-level paint modifiers; narrow use cases                              |
 
 ## Common issue clusters
 

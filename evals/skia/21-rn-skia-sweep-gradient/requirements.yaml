@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
+  - id: uses-sweep-gradient-component
+    description: Must use the SweepGradient component from @shopify/react-native-skia as a child shader of a drawing element.
+  - id: sweep-has-multiple-colors
+    description: The SweepGradient colors array must include at least three distinct color stops to produce a visible angular color cycle.
+  - id: sweep-center-matches-shape-center
+    description: The SweepGradient c (center) coordinates must match the center of the shape it fills.

@@ -1,0 +1,1 @@
+Fill a circle on a Skia canvas with a SweepGradient shader that cycles through at least three distinct colors around the center point. The gradient center must match the circle center so the sweep reads as a radial color wheel or gauge segment.

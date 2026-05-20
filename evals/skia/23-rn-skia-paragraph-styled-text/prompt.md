@@ -1,0 +1,1 @@
+Render a multi-line text block on a Skia canvas using the Paragraph component and Skia.ParagraphBuilder. Apply at least two distinct text styles within the same paragraph (for example bold title plus regular subtitle) using pushStyle and pop, and center-align the paragraph with TextAlign.

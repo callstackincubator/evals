@@ -1,0 +1,16 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
+  - id: uses-paragraph-component
+    description: Must render text using the Paragraph component from @shopify/react-native-skia, not the low-level Text component alone.
+  - id: uses-paragraph-builder
+    description: Must build the paragraph with Skia.ParagraphBuilder.Make and chain addText calls.
+  - id: multiple-style-segments
+    description: Must apply at least two different text styles in the same paragraph using pushStyle and pop (e.g. different font sizes, weights, or colors).
+  - id: paragraph-uses-text-align
+    description: Must set a paragraph-level textAlign style such as TextAlign.Center on the ParagraphBuilder.Make options.
