@@ -91,7 +91,7 @@ export async function runSolver(params: {
   files: LoadedFile[],
   model: string
   timeout: number
-  port?: number
+  port: number
 }) {
   await ensureOpencodeServerStarted(params)
 

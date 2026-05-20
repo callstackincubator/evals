@@ -25,7 +25,7 @@ export async function runJudgeCall(
   prompt: string,
   model: string,
   timeout: number,
-  port?: number
+  port: number
 ) {
   await ensureOpencodeServerStarted({ timeout, port })
 

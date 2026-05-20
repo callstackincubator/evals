@@ -23,7 +23,7 @@ export function parseCliArgs(argv: string[] = Bun.argv.slice(2)) {
       'solver-model': { type: 'string' },
       'pattern': { type: 'string', default: 'evals/**/*' },
       'timeout': { type: 'string', default: '120000' },
-      'port': { type: 'string' },
+      'port': { type: 'string', default: '4096' },
     },
     strict: true,
     allowPositionals: false,
@@ -37,7 +37,7 @@ export function parseCliArgs(argv: string[] = Bun.argv.slice(2)) {
     solverModel: values['solver-model'],
     pattern: values.pattern,
     timeout: parsePositiveInteger(values.timeout, '--timeout'),
-    port: values.port ? parsePositiveInteger(values.port, '--port') : undefined,
+    port: parsePositiveInteger(values.port, '--port'),
   }
 }
 
