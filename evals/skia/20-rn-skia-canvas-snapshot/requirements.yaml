@@ -1,4 +1,7 @@
 version: 1
+inputs:
+  files:
+    - app/App.tsx
 requirements:
   - id: uses-canvas-component
     description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
