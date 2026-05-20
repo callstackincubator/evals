@@ -13,14 +13,14 @@ const path = (() => {
 export default function App() {
   return (
     <Canvas style={{ flex: 1 }}>
-      <Fill color='#0f172a' />
+      <Fill color="#0f172a" />
       <Path
         path={path}
-        color='#38bdf8'
-        style='stroke'
+        color="#38bdf8"
+        style="stroke"
         strokeWidth={STROKE_WIDTH}
-        strokeCap='round'
-        strokeJoin='round'
+        strokeCap="round"
+        strokeJoin="round"
       />
     </Canvas>
   )

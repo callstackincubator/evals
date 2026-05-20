@@ -13,19 +13,17 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Canvas style={styles.canvas}>
-        <Fill color='#0f172a' />
+        <Fill color="#0f172a" />
 
-        <Circle cx={160} cy={180} r={60} color='#22c55e' />
+        <Circle cx={160} cy={180} r={60} color="#22c55e" />
 
-        <Rect x={80} y={260} width={160} height={100} color='#6366f1'>
+        <Rect x={80} y={260} width={160} height={100} color="#6366f1">
           {blur > 0 && <Blur blur={blur} />}
         </Rect>
       </Canvas>
 
       <TouchableOpacity style={styles.button} onPress={cycleBlur}>
-        <Text style={styles.buttonText}>
-          Blur: {blur === 0 ? 'off' : blur}
-        </Text>
+        <Text style={styles.buttonText}>Blur: {blur === 0 ? 'off' : blur}</Text>
       </TouchableOpacity>
     </View>
   )

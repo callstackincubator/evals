@@ -1,5 +1,11 @@
 import { Platform } from 'react-native'
-import { Canvas, Fill, Text, matchFont, useCanvasSize } from '@shopify/react-native-skia'
+import {
+  Canvas,
+  Fill,
+  Text,
+  matchFont,
+  useCanvasSize,
+} from '@shopify/react-native-skia'
 
 const FONT_SIZE = 32
 
@@ -19,13 +25,13 @@ function CenteredText() {
   const x = (width - textWidth) / 2
   const y = height / 2 + FONT_SIZE / 2
 
-  return <Text x={x} y={y} text={LABEL} font={font} color='#f8fafc' />
+  return <Text x={x} y={y} text={LABEL} font={font} color="#f8fafc" />
 }
 
 export default function App() {
   return (
     <Canvas style={{ flex: 1 }}>
-      <Fill color='#1e293b' />
+      <Fill color="#1e293b" />
       <CenteredText />
     </Canvas>
   )

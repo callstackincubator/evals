@@ -1,12 +1,16 @@
 import { useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { Canvas, Circle, ColorMatrix, Fill, Group } from '@shopify/react-native-skia'
+import {
+  Canvas,
+  Circle,
+  ColorMatrix,
+  Fill,
+  Group,
+} from '@shopify/react-native-skia'
 
 const GRAYSCALE_MATRIX = [
-  0.2126, 0.7152, 0.0722, 0, 0,
-  0.2126, 0.7152, 0.0722, 0, 0,
-  0.2126, 0.7152, 0.0722, 0, 0,
-  0,      0,      0,      1, 0,
+  0.2126, 0.7152, 0.0722, 0, 0, 0.2126, 0.7152, 0.0722, 0, 0, 0.2126, 0.7152,
+  0.0722, 0, 0, 0, 0, 0, 1, 0,
 ]
 
 export default function App() {
@@ -15,17 +19,20 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Canvas style={styles.canvas}>
-        <Fill color='#f1f5f9' />
+        <Fill color="#f1f5f9" />
 
         <Group>
           {filtered && <ColorMatrix matrix={GRAYSCALE_MATRIX} />}
-          <Circle cx={130} cy={200} r={80} color='#ef4444' />
-          <Circle cx={230} cy={200} r={80} color='#3b82f6' />
-          <Circle cx={180} cy={290} r={80} color='#22c55e' />
+          <Circle cx={130} cy={200} r={80} color="#ef4444" />
+          <Circle cx={230} cy={200} r={80} color="#3b82f6" />
+          <Circle cx={180} cy={290} r={80} color="#22c55e" />
         </Group>
       </Canvas>
 
-      <TouchableOpacity style={styles.button} onPress={() => setFiltered((v) => !v)}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => setFiltered((v) => !v)}
+      >
         <Text style={styles.buttonText}>
           Grayscale: {filtered ? 'ON' : 'OFF'}
         </Text>
