@@ -1,4 +1,3 @@
-import { Platform } from 'react-native'
 import { Canvas, Fill } from '@shopify/react-native-skia'
 
 const SIZE = 300

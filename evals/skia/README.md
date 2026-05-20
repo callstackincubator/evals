@@ -42,7 +42,7 @@ React Native Skia evals — testing how well LLMs implement high-performance 2D 
 | 03 – path-drawing                 | 6                             |
 | 04 – paint-stroke-fill            | 7                             |
 | 05 – linear-gradient              | 1, 2                          |
-| 06 – radial-gradient              | 1, 2                          |
+| 06 – radial-gradient              | 1                             |
 | 07 – image-display                | 1                             |
 | 08 – text-rendering               | 11                            |
 | 09 – blur-filter                  | 8                             |
