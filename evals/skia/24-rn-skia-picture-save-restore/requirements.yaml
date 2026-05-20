@@ -1,0 +1,20 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
+  - id: uses-picture-recorder
+    description: Must create the drawing with Skia.PictureRecorder using beginRecording and finishRecordingAsPicture.
+  - id: uses-picture-component
+    description: Must render the recorded picture with the Picture component from @shopify/react-native-skia.
+  - id: uses-canvas-save-and-restore
+    description: Must call canvas.save() before each rotated draw and canvas.restore() after it, as paired stack operations.
+  - id: first-rect-rotated-45-degrees
+    description: The first rectangle must be drawn inside a save/restore block with a 45 degree rotation applied before the draw call.
+  - id: second-rect-axis-aligned
+    description: The second rectangle must be drawn without an active rotation transform — axis-aligned at 0 degrees between the two rotated rectangles.
+  - id: third-rect-rotated-minus-23-degrees
+    description: The third rectangle must be drawn inside a save/restore block with a -23 degree rotation applied before the draw call.

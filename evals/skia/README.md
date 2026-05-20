@@ -15,6 +15,7 @@ React Native Skia evals — testing how well LLMs implement high-performance 2D 
 - Image filters: https://shopify.github.io/react-native-skia/docs/image-filters/overview
 - Shaders: https://shopify.github.io/react-native-skia/docs/shaders/overview
 - Gradients: https://shopify.github.io/react-native-skia/docs/shaders/gradients
+- Pictures: https://shopify.github.io/react-native-skia/docs/shapes/pictures
 - Mask: https://shopify.github.io/react-native-skia/docs/mask
 - Animations: https://shopify.github.io/react-native-skia/docs/animations/animations
 - Gestures: https://shopify.github.io/react-native-skia/docs/animations/gestures
@@ -39,6 +40,7 @@ React Native Skia evals — testing how well LLMs implement high-performance 2D 
 | 14  | Use `SweepGradient` / `TwoPointConicalGradient` for angular and conical fills beyond linear/radial                                      | shaders/gradients      |
 | 15  | Apply effects to a group composite with the `layer` prop (`<Paint>` + image filters), not per-child filters alone                       | group                  |
 | 16  | Use `Skia.ParagraphBuilder` + `<Paragraph>` for multi-style text layouts; call `layout(width)` before rendering                         | text/paragraph         |
+| 17  | Isolate imperative canvas transforms with `canvas.save()` / `canvas.restore()` inside a recorded `Picture`                              | shapes/pictures        |
 
 ## Eval traceability
 
@@ -67,6 +69,7 @@ React Native Skia evals — testing how well LLMs implement high-performance 2D 
 | 21 – sweep-gradient               | 14                            |
 | 22 – group-layer-effect           | 15                            |
 | 23 – paragraph-styled-text        | 16                            |
+| 24 – picture-save-restore         | 17                            |
 
 ## API coverage notes
 
@@ -81,7 +84,6 @@ The pack now covers all four built-in gradient shaders (linear, radial, sweep; c
 | Per-element gestures      | `Animated.View` overlay tracking           | Documented in rule 4; eval 14 only tests canvas-level pan                  |
 | Nested image shaders      | `ImageShader` inside custom `Shader`       | Advanced; needs bundled image asset                                        |
 | Lottie playback           | `Skottie`, `Skia.Skottie.Make`             | Requires Lottie JSON + optional asset slots                                |
-| Recorded drawing          | `Picture`, `createPicture`                 | Immediate-mode performance API; low LLM failure signal                     |
 | Fitbox / Group clip props | `FitBox`, `Group clip` / `invertClip`      | Overlap path/SVG evals; `FitBox` is a strong future add                    |
 | Path / mask filters       | `DashPathEffect`, `BlurMask`, morphology   | Lower-level paint modifiers; narrow use cases                              |
 

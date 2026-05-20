@@ -1,0 +1,1 @@
+Record a Skia Picture with Skia.PictureRecorder and draw three rectangles on the imperative canvas: first rotated 45 degrees, then one axis-aligned at 0 degrees, then one rotated -23 degrees. Use the imperative canvas API to apply the transforms and draw the rectangles.
