@@ -73,7 +73,7 @@ React Native Skia evals — testing how well LLMs implement high-performance 2D 
 
 ## API coverage notes
 
-The pack now covers all four built-in gradient shaders (linear, radial, sweep; conical remains untested). Major APIs still intentionally omitted — either asset-heavy, niche, or overlapping existing evals:
+The pack now covers three built-in gradient shaders (linear, radial, sweep). Major APIs still intentionally omitted — either asset-heavy, niche, or overlapping existing evals:
 
 | API area                  | Examples                                   | Why omitted                                                                |
 | ------------------------- | ------------------------------------------ | -------------------------------------------------------------------------- |
@@ -83,7 +83,6 @@ The pack now covers all four built-in gradient shaders (linear, radial, sweep; c
 | Canvas sizing (UI thread) | `onSize` shared value prop                 | Partially covered by `useCanvasSize` in eval 01                            |
 | Per-element gestures      | `Animated.View` overlay tracking           | Documented in rule 4; eval 14 only tests canvas-level pan                  |
 | Nested image shaders      | `ImageShader` inside custom `Shader`       | Advanced; needs bundled image asset                                        |
-| Lottie playback           | `Skottie`, `Skia.Skottie.Make`             | Requires Lottie JSON + optional asset slots                                |
 | Fitbox / Group clip props | `FitBox`, `Group clip` / `invertClip`      | Overlap path/SVG evals; `FitBox` is a strong future add                    |
 | Path / mask filters       | `DashPathEffect`, `BlurMask`, morphology   | Lower-level paint modifiers; narrow use cases                              |
 
