@@ -10,6 +10,9 @@ import {
 const SIZE = 320
 const CY = 160
 
+const COLOR1 = '#6366f1'
+const COLOR2 = '#ec4899'
+
 export default function App() {
   return (
     <Canvas
