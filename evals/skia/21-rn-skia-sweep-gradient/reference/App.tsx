@@ -10,6 +10,7 @@ const SIZE = 320
 const CX = SIZE / 2
 const CY = SIZE / 2
 const R = 120
+const COLORS = ['#06b6d4', '#8b5cf6', '#f472b6', '#06b6d4']
 
 export default function App() {
   return (
