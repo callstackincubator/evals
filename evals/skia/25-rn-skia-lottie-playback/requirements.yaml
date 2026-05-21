@@ -1,0 +1,18 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
+  - id: uses-skottie-make
+    description: Must create the animation with Skia.Skottie.Make, passing the Lottie JSON via JSON.stringify.
+  - id: uses-skottie-component
+    description: Must render the Skottie component from @shopify/react-native-skia with the created animation and a frame prop.
+  - id: uses-use-clock
+    description: Must use the useClock hook from @shopify/react-native-skia to drive playback timing.
+  - id: uses-derived-value-for-frame
+    description: Must compute the Skottie frame prop with useDerivedValue from react-native-reanimated, reading the clock shared value.
+  - id: frame-loops-with-duration-and-fps
+    description: Must wrap the derived frame index with modulo using the animation fps() and duration() so playback loops continuously.

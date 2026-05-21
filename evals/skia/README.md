@@ -19,6 +19,7 @@ React Native Skia evals — testing how well LLMs implement high-performance 2D 
 - Mask: https://shopify.github.io/react-native-skia/docs/mask
 - Animations: https://shopify.github.io/react-native-skia/docs/animations/animations
 - Gestures: https://shopify.github.io/react-native-skia/docs/animations/gestures
+- Skottie: https://shopify.github.io/react-native-skia/docs/skottie
 
 ## Best-practice inventory
 
@@ -41,6 +42,7 @@ React Native Skia evals — testing how well LLMs implement high-performance 2D 
 | 15  | Apply effects to a group composite with the `layer` prop (`<Paint>` + image filters), not per-child filters alone                       | group                  |
 | 16  | Use `Skia.ParagraphBuilder` + `<Paragraph>` for multi-style text layouts; call `layout(width)` before rendering                         | text/paragraph         |
 | 17  | Isolate imperative canvas transforms with `canvas.save()` / `canvas.restore()` inside a recorded `Picture`                              | shapes/pictures        |
+| 18  | Load Lottie JSON with `Skia.Skottie.Make(JSON.stringify(...))`; drive `<Skottie>` playback with `useClock` and a Reanimated derived frame | skottie                |
 
 ## Eval traceability
 
@@ -70,6 +72,7 @@ React Native Skia evals — testing how well LLMs implement high-performance 2D 
 | 22 – group-layer-effect           | 15                            |
 | 23 – paragraph-styled-text        | 16                            |
 | 24 – picture-save-restore         | 17                            |
+| 25 – lottie-playback              | 1, 2, 18                      |
 
 ## API coverage notes
 

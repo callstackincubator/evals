@@ -1,0 +1,1 @@
+Load the provided Lottie JSON with Skia.Skottie.Make(JSON.stringify(...)) and render it on a Skia canvas using the Skottie component. Drive looping playback by deriving the current frame from useClock with useDerivedValue, using the animation fps() and duration() to wrap the frame index. Assume the given Lottie JSON resource variable (LOTTIE_JSON) is complete.
