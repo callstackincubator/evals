@@ -7,7 +7,7 @@ import type { LoadedFile } from 'runner/utils/fs'
 type LlmJudgeStageOptions = {
   model: string
   timeout: number
-  port?: number
+  port: number
   directory?: string
   requirementIds?: string[]
 }

@@ -4,7 +4,7 @@ import { type LoadedFile } from 'runner/utils/fs'
 type SolverStageOptions = {
   solverModel: string
   timeout: number
-  port?: number
+  port: number
 }
 
 /*
@@ -28,9 +28,6 @@ export async function runSolverStage(
   return {
     summary: result.summary,
     opencodeSession: result.opencodeSession,
-    files: await materializeFiles(
-      workingDir,
-      result.files
-    ),
+    files: await materializeFiles(workingDir, result.files),
   }
 }
