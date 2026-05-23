@@ -12,7 +12,12 @@ import { runLlmJudgeStage } from './evaluators/llm/run'
 import { computeScore, type RequirementResult } from './evaluators/llm/utils'
 import { runWithConcurrency } from './solver/concurrency'
 import { partitionEvalRuns } from './utils/eval-runs'
-import { loadFile, loadFiles, sanitizeSegment } from './utils/fs'
+import { loadFiles, sanitizeSegment } from './utils/fs'
+import {
+  logOpencodeWorkerLegend,
+  prepareOpencodeDockerRuntime,
+  runWithOpencodeWorkerContext,
+} from './utils/opencode'
 
 function roundTo(value: number, decimals: number) {
   const scale = 10 ** decimals
@@ -34,6 +39,10 @@ function getEvalResultSubdirectory(generatedPath: string) {
     return ''
   }
   return parentDirectory
+}
+
+function filterGeneratedSubmissionFiles(files: Awaited<ReturnType<typeof loadFiles>>) {
+  return files.filter((file) => file.path !== 'opencode-session.solver.json')
 }
 
 function formatUnknownError(error: unknown) {
@@ -195,6 +204,8 @@ async function runJudgeForManifestEval(options: {
   manifestEval: ManifestEval
   index: number
   total: number
+  workerId: number
+  workerCount: number
   cliOptions: ReturnType<typeof parseJudgeCliArgs>
   inputDirectory: string
   outputDirectories: Awaited<ReturnType<typeof createRunOutputDirectories>>
@@ -207,33 +218,47 @@ async function runJudgeForManifestEval(options: {
     options.inputDirectory,
     manifestEval.generatedPath
   )
-  const generatedFiles = await loadFiles(generatedEvalRunDirectory)
+  const generatedFiles = filterGeneratedSubmissionFiles(
+    await loadFiles(generatedEvalRunDirectory)
+  )
   if (generatedFiles.length === 0) {
     throw new Error(
       `no generated files found in ${toRelativePath(generatedEvalRunDirectory)}`
     )
   }
 
-  const [requirements, prompt] = await Promise.all([
+  const [requirements, prompt, referenceFiles] = await Promise.all([
     readFile(path.join(evalDirectory, 'requirements.yaml'), 'utf-8'),
     readFile(path.join(evalDirectory, 'prompt.md'), 'utf-8'),
+    loadFiles(path.join(evalDirectory, 'reference')),
   ])
 
-  const packageJson = await loadFile(path.join(process.cwd(), 'testbench/package.json'))
-
-  const llmJudgeStage = await runWithRetries(
+  const llmJudgeStage = await runWithOpencodeWorkerContext(
+    {
+      workerId: options.workerId,
+      workerCount: options.workerCount,
+      taskLabel: manifestEval.evalId,
+    },
     () =>
-      runLlmJudgeStage([packageJson, ...generatedFiles], requirements, {
-        ...options.cliOptions,
-        directory: process.cwd(),
-      }),
-    options.cliOptions.maxRetries,
-    (attempt, error) => {
-      const errorMessage = error instanceof Error ? error.message : String(error)
-      console.warn(
-        `[judge-stage][${manifestEval.evalId}] attempt ${attempt}/${options.cliOptions.maxRetries} failed: ${errorMessage}`
+      runWithRetries(
+        () =>
+          runLlmJudgeStage(
+            {
+              requirements,
+              referenceFiles,
+              generatedFiles,
+              prompt,
+            },
+            options.cliOptions
+          ),
+        options.cliOptions.maxRetries,
+        (attempt, error) => {
+          const errorMessage = error instanceof Error ? error.message : String(error)
+          console.warn(
+            `[judge-stage][${manifestEval.evalId}] attempt ${attempt}/${options.cliOptions.maxRetries} failed: ${errorMessage}`
+          )
+        }
       )
-    }
   )
 
   const stageResult = {
@@ -333,6 +358,7 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
   const manifestEvals = generationManifest.evals
 
   console.log(`judge output: ${toRelativePath(outputDirectories.runDirectory)}`)
+  await prepareOpencodeDockerRuntime()
   const rerunMissingJudgements = cliOptions.rerunMissingJudgements
   const rerunRequirementId = cliOptions.rerunRequirementId
   const rerunRequirementsFile = cliOptions.rerunRequirementsFile
@@ -363,15 +389,23 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
       `rerunning missing judgements: ${missingManifestEvals.length} eval(s)`
     )
 
+    const judgeWorkerCount = Math.min(
+      cliOptions.concurrency,
+      missingManifestEvals.length
+    )
+    logOpencodeWorkerLegend({ workerCount: judgeWorkerCount, role: 'judge' })
+
     const evalRuns = await runWithConcurrency(
       missingManifestEvals,
       cliOptions.concurrency,
-      async (manifestEval, index) => {
+      async (manifestEval, index, workerIndex) => {
         try {
           const stageResult = await runJudgeForManifestEval({
             manifestEval,
             index,
             total: missingManifestEvals.length,
+            workerId: workerIndex + 1,
+            workerCount: judgeWorkerCount,
             cliOptions,
             inputDirectory,
             outputDirectories,
@@ -456,39 +490,57 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
       console.log(`rerunning all requirements: ${manifestEval.evalId}`)
     }
 
+    logOpencodeWorkerLegend({ workerCount: 1, role: 'judge' })
+
     const evalDirectory = path.resolve(process.cwd(), manifestEval.evalPath)
     const generatedEvalRunDirectory = path.join(
       inputDirectory,
       manifestEval.generatedPath
     )
-    const generatedFiles = await loadFiles(generatedEvalRunDirectory)
+    const generatedFiles = filterGeneratedSubmissionFiles(
+      await loadFiles(generatedEvalRunDirectory)
+    )
     if (generatedFiles.length === 0) {
       throw new Error(
         `no generated files found in ${toRelativePath(generatedEvalRunDirectory)}`
       )
     }
 
-    const [requirements, prompt] = await Promise.all([
+    const [requirements, prompt, referenceFiles] = await Promise.all([
       readFile(path.join(evalDirectory, 'requirements.yaml'), 'utf-8'),
       readFile(path.join(evalDirectory, 'prompt.md'), 'utf-8'),
+      loadFiles(path.join(evalDirectory, 'reference')),
     ])
 
-    const packageJson = await loadFile(path.join(process.cwd(), 'testbench/package.json'))
-
-    const llmJudgeStage = await runWithRetries(
+    const llmJudgeStage = await runWithOpencodeWorkerContext(
+      {
+        workerId: 1,
+        workerCount: 1,
+        taskLabel: manifestEval.evalId,
+      },
       () =>
-        runLlmJudgeStage([packageJson, ...generatedFiles], requirements, {
-          ...cliOptions,
-          directory: process.cwd(),
-          requirementIds: rerunRequirementId ? [rerunRequirementId] : undefined,
-        }),
-      cliOptions.maxRetries,
-      (attempt, error) => {
-        const errorMessage = error instanceof Error ? error.message : String(error)
-        console.warn(
-          `[judge-stage][${manifestEval.evalId}] attempt ${attempt}/${cliOptions.maxRetries} failed: ${errorMessage}`
+        runWithRetries(
+          () =>
+            runLlmJudgeStage(
+              {
+                requirements,
+                referenceFiles,
+                generatedFiles,
+                prompt,
+              },
+              {
+                ...cliOptions,
+                requirementIds: rerunRequirementId ? [rerunRequirementId] : undefined,
+              }
+            ),
+          cliOptions.maxRetries,
+          (attempt, error) => {
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            console.warn(
+              `[judge-stage][${manifestEval.evalId}] attempt ${attempt}/${cliOptions.maxRetries} failed: ${errorMessage}`
+            )
+          }
         )
-      }
     )
 
     const resultFilePath = getResultFilePath(
@@ -605,15 +657,20 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
   const startedAt = new Date().toISOString()
   console.log(`starting judge: ${manifestEvals.length} eval(s)`)
 
+  const judgeWorkerCount = Math.min(cliOptions.concurrency, manifestEvals.length)
+  logOpencodeWorkerLegend({ workerCount: judgeWorkerCount, role: 'judge' })
+
   const evalRuns = await runWithConcurrency(
     manifestEvals,
     cliOptions.concurrency,
-    async (manifestEval, index) => {
+    async (manifestEval, index, workerIndex) => {
       try {
         const stageResult = await runJudgeForManifestEval({
           manifestEval,
           index,
           total: manifestEvals.length,
+          workerId: workerIndex + 1,
+          workerCount: judgeWorkerCount,
           cliOptions,
           inputDirectory,
           outputDirectories,

@@ -3,13 +3,25 @@ import { buildJudgePrompt } from './prompt'
 import { loadRequirements, type RequirementDefinition } from './requirements'
 import { computeScore, normalizeWeight } from './utils'
 import type { LoadedFile } from 'runner/utils/fs'
+import {
+  cleanupOpencodeTempDir,
+  createOpencodeTempDir,
+  runWithOpencodeDockerServer,
+} from 'runner/utils/opencode'
+import { materializeJudgeWorkspace } from 'runner/utils/opencode-workspace'
 
 type LlmJudgeStageOptions = {
   model: string
   timeout: number
   port?: number
-  directory?: string
   requirementIds?: string[]
+}
+
+type JudgeStageInput = {
+  requirements: string
+  referenceFiles: LoadedFile[]
+  generatedFiles: LoadedFile[]
+  prompt?: string
 }
 
 // todo: this could be handled by structured output to make sure all requirements are satisfied
@@ -46,11 +58,10 @@ function mapRequirementResults(
   Runs one LLM judge stage on generated files against declared requirements.
 */
 export async function runLlmJudgeStage(
-  files: LoadedFile[],
-  rawRequirements: string,
+  input: JudgeStageInput,
   cliOptions: LlmJudgeStageOptions
 ) {
-  const requirements = await loadRequirements(rawRequirements)
+  const requirements = await loadRequirements(input.requirements)
   const requirementIdsFilter = cliOptions.requirementIds
   const selectedRequirements = requirementIdsFilter
     ? requirements.filter((requirement) =>
@@ -73,22 +84,46 @@ export async function runLlmJudgeStage(
     )
   }
 
-  const prompt = buildJudgePrompt(selectedRequirements, files)
+  const hostWorkspace = await createOpencodeTempDir()
 
-  const judgeCall = await runJudgeCall({
-    prompt,
-    ...cliOptions,
-  })
+  try {
+    await materializeJudgeWorkspace(hostWorkspace, input)
 
-  const mappedRequirements = mapRequirementResults(
-    selectedRequirements,
-    judgeCall.requirements
-  )
+    return await runWithOpencodeDockerServer(
+      {
+        hostWorkspace,
+        timeout: cliOptions.timeout,
+        port: cliOptions.port,
+      },
+      async (server) => {
+        const prompt = buildJudgePrompt(
+          selectedRequirements,
+          input.generatedFiles
+        )
 
-  return {
-    requirements: mappedRequirements,
-    summary: judgeCall.summary,
-    score: computeScore(mappedRequirements),
-    opencodeSession: judgeCall.opencodeSession,
+        const judgeCall = await runJudgeCall({
+          prompt,
+          model: cliOptions.model,
+          timeout: cliOptions.timeout,
+          port: server.port,
+          cwd: server.containerWorkspace,
+          directory: server.containerWorkspace,
+        })
+
+        const mappedRequirements = mapRequirementResults(
+          selectedRequirements,
+          judgeCall.requirements
+        )
+
+        return {
+          requirements: mappedRequirements,
+          summary: judgeCall.summary,
+          score: computeScore(mappedRequirements),
+          opencodeSession: judgeCall.opencodeSession,
+        }
+      }
+    )
+  } finally {
+    await cleanupOpencodeTempDir(hostWorkspace)
   }
 }

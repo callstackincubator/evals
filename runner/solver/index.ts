@@ -1,5 +1,4 @@
 import { Output, generateText } from 'ai'
-import { createOpencode } from 'ai-sdk-provider-opencode-sdk'
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { z } from 'zod'
@@ -8,7 +7,7 @@ import {
   collectOpencodeSessionSnapshot,
   type OpencodeSessionSnapshot,
 } from 'runner/utils/opencode-session'
-import { ensureOpencodeServerStarted } from 'runner/utils/opencode'
+import { createIsolatedOpencodeModel } from 'runner/utils/opencode-model'
 import type { LoadedFile } from 'runner/utils/fs'
 
 const SYSTEM_PROMPT = `
@@ -155,65 +154,67 @@ export async function runSolver(params: {
   timeout: number
   port?: number
 }) {
-  await ensureOpencodeServerStarted(params)
+  if (params.port === undefined) {
+    throw new Error('runSolver requires an opencode server port')
+  }
 
-  const provider = createOpencode({
+  const { model, dispose } = createIsolatedOpencodeModel(params.model, {
     port: params.port,
-    autoStartServer: false,
-  })
-
-  const prompt = buildSolverPrompt(params.prompt, params.files)
-  const model = provider(params.model, {
-    createNewSession: true,
     cwd: params.workingDirectory,
   })
 
+  const prompt = buildSolverPrompt(params.prompt, params.files)
+
   try {
-    const response = await generateText({
-      model,
-      prompt,
-      system: SYSTEM_PROMPT,
-      abortSignal: AbortSignal.timeout(params.timeout),
-      output: Output.object({
-        schema: solverOutputSchema,
-        description: 'Generated files that satisfy the task',
-      }),
-    })
+    try {
+      const response = await generateText({
+        model,
+        prompt,
+        system: SYSTEM_PROMPT,
+        abortSignal: AbortSignal.timeout(params.timeout),
+        output: Output.object({
+          schema: solverOutputSchema,
+          description: 'Generated files that satisfy the task',
+        }),
+      })
 
-    return {
-      ...response.output,
-      opencodeSession: await collectOpencodeSessionSnapshot({
-        sessionId: extractOpencodeSessionId(response),
-        port: params.port,
-        directory: params.workingDirectory,
-      }),
-    }
-  } catch (structuredOutputError) {
-    const fallbackResponse = await generateText({
-      model,
-      prompt,
-      system: `${SYSTEM_PROMPT}\n${JSON_FALLBACK_SYSTEM_PROMPT}`,
-      abortSignal: AbortSignal.timeout(params.timeout),
-    })
+      return {
+        ...response.output,
+        opencodeSession: await collectOpencodeSessionSnapshot({
+          sessionId: extractOpencodeSessionId(response),
+          port: params.port,
+          directory: params.workingDirectory,
+        }),
+      }
+    } catch (structuredOutputError) {
+      const fallbackResponse = await generateText({
+        model,
+        prompt,
+        system: `${SYSTEM_PROMPT}\n${JSON_FALLBACK_SYSTEM_PROMPT}`,
+        abortSignal: AbortSignal.timeout(params.timeout),
+      })
 
-    const parsedOutput = parseSolverOutputFromText(fallbackResponse.text)
-    if (!parsedOutput.success) {
-      const originalMessage =
-        structuredOutputError instanceof Error
-          ? structuredOutputError.message
-          : String(structuredOutputError)
-      throw new Error(
-        `solver did not return valid file output (structured output failed: ${originalMessage})`
-      )
-    }
+      const parsedOutput = parseSolverOutputFromText(fallbackResponse.text)
+      if (!parsedOutput.success) {
+        const originalMessage =
+          structuredOutputError instanceof Error
+            ? structuredOutputError.message
+            : String(structuredOutputError)
+        throw new Error(
+          `solver did not return valid file output (structured output failed: ${originalMessage})`
+        )
+      }
 
-    return {
-      ...parsedOutput.data,
-      opencodeSession: await collectOpencodeSessionSnapshot({
-        sessionId: extractOpencodeSessionId(fallbackResponse),
-        port: params.port,
-        directory: params.workingDirectory,
-      }),
+      return {
+        ...parsedOutput.data,
+        opencodeSession: await collectOpencodeSessionSnapshot({
+          sessionId: extractOpencodeSessionId(fallbackResponse),
+          port: params.port,
+          directory: params.workingDirectory,
+        }),
+      }
     }
+  } finally {
+    await dispose()
   }
 }

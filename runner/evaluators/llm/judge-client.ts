@@ -1,12 +1,10 @@
 import { Output, generateText } from 'ai'
-import { createOpencode } from 'ai-sdk-provider-opencode-sdk'
 import { z } from 'zod'
 import {
   collectOpencodeSessionSnapshot,
   type OpencodeSessionSnapshot,
 } from 'runner/utils/opencode-session'
-import { ensureOpencodeServerStarted } from 'runner/utils/opencode'
-
+import { createIsolatedOpencodeModel } from 'runner/utils/opencode-model'
 const JSON_FALLBACK_SYSTEM_PROMPT = `
   Return only valid JSON matching this shape:
   {
@@ -51,6 +49,7 @@ type RunJudgeCallOptions = {
   timeout: number
   port?: number
   directory?: string
+  cwd?: string
 }
 
 function asRecord(value: unknown) {
@@ -110,63 +109,70 @@ function parseJudgeOutputFromText(rawText: string) {
 export async function runJudgeCall(
   options: RunJudgeCallOptions
 ): Promise<JudgeCallResult> {
-  await ensureOpencodeServerStarted({ timeout: options.timeout, port: options.port })
+  if (options.port === undefined) {
+    throw new Error('runJudgeCall requires an opencode server port')
+  }
 
-  const provider = createOpencode({
-    autoStartServer: false,
-    port: options.port,
-  })
-
-  const judgeModel = provider(options.model, { createNewSession: true })
+  const { model: judgeModel, dispose } = createIsolatedOpencodeModel(
+    options.model,
+    {
+      port: options.port,
+      cwd: options.cwd,
+    }
+  )
 
   try {
-    const response = await generateText({
-      model: judgeModel,
-      prompt: options.prompt,
-      abortSignal: AbortSignal.timeout(options.timeout),
-      output: Output.object({
-        schema: structuredOutputSchema,
-        name: 'eval_requirements_result',
-        description: 'Requirement verdicts for a React Native eval',
-      }),
-    })
+    try {
+      const response = await generateText({
+        model: judgeModel,
+        prompt: options.prompt,
+        abortSignal: AbortSignal.timeout(options.timeout),
+        output: Output.object({
+          schema: structuredOutputSchema,
+          name: 'eval_requirements_result',
+          description: 'Requirement verdicts for a React Native eval',
+        }),
+      })
 
-    return {
-      summary: response.output.summary,
-      requirements: response.output.requirements,
-      opencodeSession: await collectOpencodeSessionSnapshot({
-        sessionId: extractOpencodeSessionId(response),
-        port: options.port,
-        directory: options.directory,
-      }),
-    }
-  } catch (structuredOutputError) {
-    const fallbackResponse = await generateText({
-      model: judgeModel,
-      prompt: options.prompt,
-      system: JSON_FALLBACK_SYSTEM_PROMPT,
-      abortSignal: AbortSignal.timeout(options.timeout),
-    })
+      return {
+        summary: response.output.summary,
+        requirements: response.output.requirements,
+        opencodeSession: await collectOpencodeSessionSnapshot({
+          sessionId: extractOpencodeSessionId(response),
+          port: options.port,
+          directory: options.directory,
+        }),
+      }
+    } catch (structuredOutputError) {
+      const fallbackResponse = await generateText({
+        model: judgeModel,
+        prompt: options.prompt,
+        system: JSON_FALLBACK_SYSTEM_PROMPT,
+        abortSignal: AbortSignal.timeout(options.timeout),
+      })
 
-    const parsedOutput = parseJudgeOutputFromText(fallbackResponse.text)
-    if (!parsedOutput.success) {
-      const originalMessage =
-        structuredOutputError instanceof Error
-          ? structuredOutputError.message
-          : String(structuredOutputError)
-      throw new Error(
-        `judge did not return valid requirement output (structured output failed: ${originalMessage})`
-      )
-    }
+      const parsedOutput = parseJudgeOutputFromText(fallbackResponse.text)
+      if (!parsedOutput.success) {
+        const originalMessage =
+          structuredOutputError instanceof Error
+            ? structuredOutputError.message
+            : String(structuredOutputError)
+        throw new Error(
+          `judge did not return valid requirement output (structured output failed: ${originalMessage})`
+        )
+      }
 
-    return {
-      summary: parsedOutput.data.summary,
-      requirements: parsedOutput.data.requirements,
-      opencodeSession: await collectOpencodeSessionSnapshot({
-        sessionId: extractOpencodeSessionId(fallbackResponse),
-        port: options.port,
-        directory: options.directory,
-      }),
+      return {
+        summary: parsedOutput.data.summary,
+        requirements: parsedOutput.data.requirements,
+        opencodeSession: await collectOpencodeSessionSnapshot({
+          sessionId: extractOpencodeSessionId(fallbackResponse),
+          port: options.port,
+          directory: options.directory,
+        }),
+      }
     }
+  } finally {
+    await dispose()
   }
 }
