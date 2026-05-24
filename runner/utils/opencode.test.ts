@@ -7,6 +7,8 @@ import {
   cleanupOpencodeTempDir,
   createOpencodeTempDir,
   DEFAULT_OPENCODE_PORT,
+  forceStopEvalsOpencodeContainersSync,
+  formatContainerLogLine,
 } from './opencode'
 
 describe('opencode temp workspace', () => {
@@ -102,5 +104,19 @@ describe('opencode port allocation', () => {
     expect(await allocateHostPort(DEFAULT_OPENCODE_PORT)).toBe(
       DEFAULT_OPENCODE_PORT
     )
+  })
+})
+
+describe('opencode container log formatting', () => {
+  test('prefixes container log lines with the opencode docker tag', () => {
+    expect(formatContainerLogLine('server ready')).toBe(
+      '[opencode-docker][global][container] server ready'
+    )
+  })
+})
+
+describe('opencode container shutdown', () => {
+  test('force stop returns zero when no eval containers are listed', () => {
+    expect(forceStopEvalsOpencodeContainersSync('test')).toBe(0)
   })
 })

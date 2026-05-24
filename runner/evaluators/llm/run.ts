@@ -15,6 +15,7 @@ type LlmJudgeStageOptions = {
   timeout: number
   port?: number
   requirementIds?: string[]
+  agentLogs?: boolean
 }
 
 type JudgeStageInput = {
@@ -94,6 +95,7 @@ export async function runLlmJudgeStage(
         hostWorkspace,
         timeout: cliOptions.timeout,
         port: cliOptions.port,
+        agentLogs: cliOptions.agentLogs,
       },
       async (server) => {
         const prompt = buildJudgePrompt(

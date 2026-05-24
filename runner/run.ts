@@ -14,9 +14,10 @@ import { discoverEvals } from './utils/discovery'
 import { partitionEvalRuns } from './utils/eval-runs'
 import { loadFiles, sanitizeSegment } from './utils/fs'
 import {
-  logOpencodeWorkerLegend,
+  configureOpencodeDockerLogging,
   prepareOpencodeDockerRuntime,
   runWithOpencodeWorkerContext,
+  shutdownAllOpencodeDockerContainers,
 } from './utils/opencode'
 
 function toRelativePath(value: string) {
@@ -62,6 +63,7 @@ async function runWithRetries<T>(
 */
 export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
   const cliOptions = parseRunCliArgs(argv)
+  configureOpencodeDockerLogging({ agentLogs: cliOptions.agentLogs })
   const discoveredEvals = await discoverEvals(cliOptions.pattern)
   const runId = new Date().toISOString().replace(/[:.]/g, '-')
   const startedAt = new Date().toISOString()
@@ -76,10 +78,6 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
 
   if (cliOptions.model !== 'noop') {
     await prepareOpencodeDockerRuntime()
-    logOpencodeWorkerLegend({
-      workerCount: Math.min(cliOptions.concurrency, discoveredEvals.length),
-      role: 'solver',
-    })
   }
 
   const solverWorkerCount = Math.min(
@@ -131,11 +129,17 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
                 }
               }
 
-              return runSolverStage(prompt, appFiles, generatedEvalRunDirectory, {
-                solverModel: cliOptions.model,
-                timeout: cliOptions.timeout,
-                port: cliOptions.port,
-              })
+              return runSolverStage(
+                prompt,
+                appFiles,
+                generatedEvalRunDirectory,
+                {
+                  solverModel: cliOptions.model,
+                  timeout: cliOptions.timeout,
+                  port: cliOptions.port,
+                  agentLogs: cliOptions.agentLogs,
+                }
+              )
             }
 
             const solverStage = await runWithRetries(
@@ -210,7 +214,11 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
   }
 
   const manifestPath = getGenerationManifestPath(outputDirectory)
-  await writeFile(manifestPath, stringifyGenerationManifest(manifestPayload), 'utf8')
+  await writeFile(
+    manifestPath,
+    stringifyGenerationManifest(manifestPayload),
+    'utf8'
+  )
 
   console.log(`generation complete: ${toRelativePath(outputDirectory)}`)
   console.log(`manifest: ${toRelativePath(manifestPath)}`)
@@ -222,11 +230,18 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
 }
 
 if (import.meta.main) {
+  let exitCode = 0
+
   try {
     await runGenerationEntry()
-    process.exit(0)
   } catch (error) {
     console.error(formatUnknownError(error))
-    process.exit(1)
+    exitCode = 1
+  } finally {
+    await shutdownAllOpencodeDockerContainers(
+      exitCode === 0 ? 'generation completed' : 'generation failed'
+    )
   }
+
+  process.exit(exitCode)
 }

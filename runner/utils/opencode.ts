@@ -1,10 +1,12 @@
-import { spawn } from 'node:child_process'
+import { spawn, spawnSync } from 'node:child_process'
 import { AsyncLocalStorage } from 'node:async_hooks'
 import { access, copyFile, mkdir, mkdtemp, rm } from 'node:fs/promises'
 import { createConnection, createServer } from 'node:net'
 import os from 'node:os'
 import path from 'node:path'
 import { randomUUID } from 'node:crypto'
+
+import { startOpencodeAgentActivityLogging } from './opencode-agent-activity'
 
 type OpencodeWorkerContext = {
   workerId: number
@@ -13,12 +15,15 @@ type OpencodeWorkerContext = {
 }
 
 const opencodeWorkerContext = new AsyncLocalStorage<OpencodeWorkerContext>()
+let agentActivityLoggingEnabled = false
 
 const OPENCODE_TEMP_PREFIX = 'evals-opencode-'
 const OPENCODE_HOME_PREFIX = 'evals-opencode-home-'
+const OPENCODE_CONTAINER_NAME_PREFIX = 'evals-opencode-'
 const DEFAULT_DOCKER_IMAGE = 'evals-opencode:latest'
 export const DEFAULT_OPENCODE_PORT = 4096
 const DOCKER_SERVER_START_TIMEOUT_MS = 120_000
+const DEFAULT_OPENCODE_SERVER_LOG_LEVEL = 'INFO'
 
 export const OPENCODE_CONTAINER_WORKSPACE = '/workspace'
 
@@ -47,33 +52,269 @@ function logOpencodeError(message: string, scope: 'auto' | 'global' = 'auto') {
   console.error(`${formatOpencodeLogTag(scope)} ${message}`)
 }
 
-function logOpencodeWarn(message: string, scope: 'auto' | 'global' = 'auto') {
+export function logOpencodeWarn(
+  message: string,
+  scope: 'auto' | 'global' = 'auto'
+) {
   console.warn(`${formatOpencodeLogTag(scope)} ${message}`)
 }
 
-export function logOpencodeWorkerLegend(options: {
-  workerCount: number
-  role: 'solver' | 'judge'
+export function logOpencodeAgent(message: string) {
+  console.log(`${formatOpencodeLogTag('auto')}[agent] ${message}`)
+}
+
+export function configureOpencodeDockerLogging(options: {
+  agentLogs?: boolean
 }) {
-  const workerLabel =
-    options.workerCount === 1 ? '1 worker' : `${options.workerCount} workers`
-  logOpencode(
-    `worker legend: ${workerLabel} numbered 1..${options.workerCount}; each worker runs one ${options.role} opencode docker session at a time with an isolated /workspace bind mount`,
-    'global'
-  )
-  logOpencode(
-    'shared legend: docker image ensure, host port allocation, and container start are serialized globally across all workers',
-    'global'
-  )
+  if (options.agentLogs !== undefined) {
+    agentActivityLoggingEnabled = options.agentLogs
+  }
+}
+
+export function isOpencodeAgentLoggingEnabled() {
+  return agentActivityLoggingEnabled
 }
 
 export async function runWithOpencodeWorkerContext<T>(
   context: OpencodeWorkerContext & { taskLabel: string },
   run: () => Promise<T>
 ) {
-  logOpencode(`assigned ${context.taskLabel}`)
-  return opencodeWorkerContext.run(context, run)
+  return opencodeWorkerContext.run(context, async () => {
+    logOpencode(`assigned ${context.taskLabel}`)
+    return run()
+  })
 }
+
+type ActiveOpencodeContainer = {
+  containerName: string
+  stopLogFollower: () => void
+  close: () => Promise<void>
+}
+
+const activeOpencodeContainers = new Map<string, ActiveOpencodeContainer>()
+let shutdownHandlersInstalled = false
+let shutdownInProgress = false
+let shutdownPromise: Promise<void> | undefined
+let shutdownSignalCount = 0
+
+function shouldStreamContainerLogs() {
+  return process.env.OPENCODE_STREAM_CONTAINER_LOGS !== '0'
+}
+
+function buildOpencodeServeArgs() {
+  const logLevel = agentActivityLoggingEnabled
+    ? 'DEBUG'
+    : (process.env.OPENCODE_SERVER_LOG_LEVEL ??
+      DEFAULT_OPENCODE_SERVER_LOG_LEVEL)
+  const args = [
+    'serve',
+    '--hostname=0.0.0.0',
+    `--port=${DEFAULT_OPENCODE_PORT}`,
+    `--log-level=${logLevel}`,
+  ]
+
+  if (
+    agentActivityLoggingEnabled ||
+    process.env.OPENCODE_SERVER_PRINT_LOGS === '1'
+  ) {
+    args.push('--print-logs')
+  }
+
+  return args
+}
+
+export function formatContainerLogLine(line: string) {
+  return `${formatOpencodeLogTag('auto')}[container] ${line}`
+}
+
+function emitContainerLogLine(line: string, stream: 'stdout' | 'stderr') {
+  const trimmed = line.trimEnd()
+  if (trimmed.length === 0) {
+    return
+  }
+
+  const formatted = formatContainerLogLine(trimmed)
+  if (stream === 'stderr') {
+    console.error(formatted)
+    return
+  }
+
+  console.log(formatted)
+}
+
+function followContainerLogs(containerName: string) {
+  if (!shouldStreamContainerLogs()) {
+    return () => {}
+  }
+
+  const child = spawn('docker', ['logs', '-f', '--timestamps', containerName], {
+    stdio: ['ignore', 'pipe', 'pipe'],
+  })
+
+  let stdoutBuffer = ''
+  let stderrBuffer = ''
+
+  const flushBuffer = (
+    buffer: string,
+    stream: 'stdout' | 'stderr',
+    final = false
+  ) => {
+    const parts = buffer.split('\n')
+    const remainder = final ? '' : (parts.pop() ?? '')
+
+    for (const line of parts) {
+      emitContainerLogLine(line, stream)
+    }
+
+    return remainder
+  }
+
+  child.stdout?.on('data', (chunk) => {
+    stdoutBuffer += chunk.toString()
+    stdoutBuffer = flushBuffer(stdoutBuffer, 'stdout')
+  })
+
+  child.stderr?.on('data', (chunk) => {
+    stderrBuffer += chunk.toString()
+    stderrBuffer = flushBuffer(stderrBuffer, 'stderr')
+  })
+
+  child.on('close', () => {
+    stdoutBuffer = flushBuffer(stdoutBuffer, 'stdout', true)
+    stderrBuffer = flushBuffer(stderrBuffer, 'stderr', true)
+  })
+
+  return () => {
+    child.kill('SIGTERM')
+  }
+}
+
+function registerActiveOpencodeContainer(container: ActiveOpencodeContainer) {
+  activeOpencodeContainers.set(container.containerName, container)
+}
+
+function unregisterActiveOpencodeContainer(containerName: string) {
+  activeOpencodeContainers.delete(containerName)
+}
+
+function listEvalsOpencodeContainerRefs() {
+  const result = spawnSync(
+    'docker',
+    ['ps', '-aq', '--filter', `name=${OPENCODE_CONTAINER_NAME_PREFIX}`],
+    { encoding: 'utf8' }
+  )
+
+  if (result.error) {
+    console.error(
+      `[opencode-docker][global] failed to list containers: ${result.error.message}`
+    )
+    return []
+  }
+
+  if (result.status !== 0) {
+    const output = `${result.stderr}${result.stdout}`.trim()
+    if (output.length > 0) {
+      console.error(
+        `[opencode-docker][global] failed to list containers: ${output}`
+      )
+    }
+    return []
+  }
+
+  return result.stdout
+    .split('\n')
+    .map((value) => value.trim())
+    .filter(Boolean)
+}
+
+export function forceStopEvalsOpencodeContainersSync(reason: string) {
+  for (const container of activeOpencodeContainers.values()) {
+    container.stopLogFollower()
+  }
+
+  const containerRefs = listEvalsOpencodeContainerRefs()
+  if (containerRefs.length === 0) {
+    return 0
+  }
+
+  console.error(
+    `[opencode-docker][global] force stopping ${containerRefs.length} container(s) (${reason})`
+  )
+
+  const stopResult = spawnSync('docker', ['rm', '-f', ...containerRefs], {
+    encoding: 'utf8',
+  })
+
+  if (stopResult.status !== 0) {
+    const output =
+      `${stopResult.stderr}${stopResult.stdout}`.trim() ||
+      stopResult.error?.message ||
+      'unknown docker rm error'
+    console.error(`[opencode-docker][global] docker rm failed: ${output}`)
+  }
+
+  activeOpencodeContainers.clear()
+  return containerRefs.length
+}
+
+async function stopOrphanEvalsOpencodeContainers(reason: string) {
+  forceStopEvalsOpencodeContainersSync(reason)
+}
+
+export async function shutdownAllOpencodeDockerContainers(reason: string) {
+  if (shutdownInProgress) {
+    await shutdownPromise
+    return
+  }
+
+  shutdownInProgress = true
+  shutdownPromise = (async () => {
+    const activeContainers = [...activeOpencodeContainers.values()]
+    if (activeContainers.length > 0) {
+      logOpencode(
+        `shutting down ${activeContainers.length} active container(s) (${reason})`,
+        'global'
+      )
+      await Promise.allSettled(
+        activeContainers.map((container) => container.close())
+      )
+    }
+
+    await stopOrphanEvalsOpencodeContainers(reason)
+  })()
+
+  await shutdownPromise
+}
+
+function installOpencodeDockerShutdownHandlers() {
+  if (shutdownHandlersInstalled) {
+    return
+  }
+
+  shutdownHandlersInstalled = true
+
+  const handleSignal = (signal: 'SIGINT' | 'SIGTERM') => {
+    shutdownSignalCount += 1
+
+    if (shutdownSignalCount > 1) {
+      console.error('[opencode-docker][global] force exit')
+      process.exit(signal === 'SIGINT' ? 130 : 143)
+    }
+
+    if (shutdownInProgress) {
+      return
+    }
+
+    shutdownInProgress = true
+    forceStopEvalsOpencodeContainersSync(signal)
+    process.exit(signal === 'SIGINT' ? 130 : 143)
+  }
+
+  process.on('SIGINT', () => handleSignal('SIGINT'))
+  process.on('SIGTERM', () => handleSignal('SIGTERM'))
+}
+
+installOpencodeDockerShutdownHandlers()
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -288,7 +529,10 @@ export async function allocateHostPort(preferredPort?: number) {
     logOpencode(`checking preferred port ${preferredPort}`, 'global')
 
     if (await isPortAvailable(preferredPort)) {
-      logOpencode(`selected port ${preferredPort} (preferred port available)`, 'global')
+      logOpencode(
+        `selected port ${preferredPort} (preferred port available)`,
+        'global'
+      )
       return preferredPort
     }
 
@@ -363,7 +607,10 @@ export async function ensureOpencodeDockerImage(image = getDockerImage()) {
       dockerImageEnsurePromises.delete(image)
     })
   } else {
-    logOpencode(`waiting for in-progress docker image ensure ${image}`, 'global')
+    logOpencode(
+      `waiting for in-progress docker image ensure ${image}`,
+      'global'
+    )
   }
 
   return ensurePromise
@@ -372,7 +619,10 @@ export async function ensureOpencodeDockerImage(image = getDockerImage()) {
 export async function prepareOpencodeDockerRuntime(image = getDockerImage()) {
   logOpencode(`preparing docker runtime (image=${image})`, 'global')
   await ensureOpencodeDockerImage(image)
-  logOpencode('docker runtime ready', 'global')
+  logOpencode(
+    `docker runtime ready (serve log level=${agentActivityLoggingEnabled ? 'DEBUG' : (process.env.OPENCODE_SERVER_LOG_LEVEL ?? DEFAULT_OPENCODE_SERVER_LOG_LEVEL)}, stream container logs=${shouldStreamContainerLogs()}, agent logs=${agentActivityLoggingEnabled})`,
+    'global'
+  )
 }
 
 function buildDockerEnvArgs() {
@@ -403,10 +653,7 @@ async function buildDockerVolumeArgs(hostWorkspace: string) {
   )
 
   const homeDirectory = process.env.HOME ?? os.homedir()
-  const authSource = path.join(
-    homeDirectory,
-    '.local/share/opencode/auth.json'
-  )
+  const authSource = path.join(homeDirectory, '.local/share/opencode/auth.json')
 
   if (await pathExists(authSource)) {
     const runtimeDataDirectory = await mkdtemp(
@@ -415,10 +662,7 @@ async function buildDockerVolumeArgs(hostWorkspace: string) {
     cleanupPaths.push(runtimeDataDirectory)
     await mkdir(runtimeDataDirectory, { recursive: true })
     await copyFile(authSource, path.join(runtimeDataDirectory, 'auth.json'))
-    args.push(
-      '-v',
-      `${runtimeDataDirectory}:/root/.local/share/opencode:rw`
-    )
+    args.push('-v', `${runtimeDataDirectory}:/root/.local/share/opencode:rw`)
     logOpencode(
       `bind mount: ${runtimeDataDirectory} -> /root/.local/share/opencode (rw, isolated auth.json)`
     )
@@ -461,7 +705,7 @@ export async function startOpencodeDockerServer(options: {
         attempt += 1
       ) {
         const hostPort = await allocateHostPort(options.port)
-        const containerName = `evals-opencode-${randomUUID()}`
+        const containerName = `${OPENCODE_CONTAINER_NAME_PREFIX}${randomUUID()}`
 
         logOpencode(
           `starting container ${containerName} (image=${image}, hostPort=${hostPort}, containerPort=${DEFAULT_OPENCODE_PORT}, cwd=${OPENCODE_CONTAINER_WORKSPACE}, attempt=${attempt}/${DOCKER_CONTAINER_START_MAX_ATTEMPTS})`
@@ -483,9 +727,7 @@ export async function startOpencodeDockerServer(options: {
           '-w',
           OPENCODE_CONTAINER_WORKSPACE,
           image,
-          'serve',
-          '--hostname=0.0.0.0',
-          `--port=${DEFAULT_OPENCODE_PORT}`,
+          ...buildOpencodeServeArgs(),
         ]
 
         const runResult = await execCommand('docker', runArgs, {
@@ -493,15 +735,22 @@ export async function startOpencodeDockerServer(options: {
         })
         if (runResult.exitCode !== 0) {
           const failureOutput = runResult.stderr || runResult.stdout
-          logOpencodeError(
-            `failed to start container ${containerName}: ${failureOutput}`
-          )
-
-          if (
+          const willRetry =
             isDockerPortPublishError(failureOutput) &&
             attempt < DOCKER_CONTAINER_START_MAX_ATTEMPTS
-          ) {
-            logOpencode(
+
+          if (willRetry) {
+            logOpencodeWarn(
+              `failed to start container ${containerName}: ${failureOutput}`
+            )
+          } else {
+            logOpencodeError(
+              `failed to start container ${containerName}: ${failureOutput}`
+            )
+          }
+
+          if (willRetry) {
+            logOpencodeWarn(
               `container start hit podman/docker port proxy conflict; retrying after backoff`
             )
             await sleep(500 * attempt)
@@ -523,6 +772,47 @@ export async function startOpencodeDockerServer(options: {
           )
         }
 
+        const logFollower = {
+          stop: () => {},
+        }
+        let containerClosed = false
+
+        async function closeContainer() {
+          if (containerClosed) {
+            return
+          }
+
+          containerClosed = true
+          logFollower.stop()
+          unregisterActiveOpencodeContainer(containerName)
+
+          logOpencode(`stopping container ${containerName}`)
+          const stopResult = await execCommand('docker', [
+            'rm',
+            '-f',
+            containerName,
+          ])
+          if (stopResult.exitCode !== 0) {
+            logOpencodeWarn(
+              `failed to stop container ${containerName}: ${stopResult.stderr || stopResult.stdout}`
+            )
+          } else {
+            logOpencode(`stopped container ${containerName}`)
+          }
+
+          await Promise.all(
+            cleanupPaths.map((cleanupPath) =>
+              rm(cleanupPath, { recursive: true, force: true })
+            )
+          )
+        }
+
+        registerActiveOpencodeContainer({
+          containerName,
+          stopLogFollower: () => logFollower.stop(),
+          close: closeContainer,
+        })
+
         try {
           await waitForPort(hostPort, serverStartTimeout)
         } catch (error) {
@@ -533,9 +823,11 @@ export async function startOpencodeDockerServer(options: {
           if (containerLogs) {
             logOpencodeError(`container logs:\n${containerLogs}`)
           }
-          await execCommand('docker', ['rm', '-f', containerName])
+          await closeContainer()
           throw error
         }
+
+        logFollower.stop = followContainerLogs(containerName)
 
         return {
           port: hostPort,
@@ -543,27 +835,7 @@ export async function startOpencodeDockerServer(options: {
           containerWorkspace: OPENCODE_CONTAINER_WORKSPACE,
           containerName,
           cleanupPaths,
-          async close() {
-            logOpencode(`stopping container ${containerName}`)
-            const stopResult = await execCommand('docker', [
-              'rm',
-              '-f',
-              containerName,
-            ])
-            if (stopResult.exitCode !== 0) {
-              logOpencodeWarn(
-                `failed to stop container ${containerName}: ${stopResult.stderr || stopResult.stdout}`
-              )
-            } else {
-              logOpencode(`stopped container ${containerName}`)
-            }
-
-            await Promise.all(
-              cleanupPaths.map((cleanupPath) =>
-                rm(cleanupPath, { recursive: true, force: true })
-              )
-            )
-          },
+          close: closeContainer,
         }
       }
 
@@ -587,6 +859,7 @@ export async function runWithOpencodeDockerServer<T>(
     hostWorkspace: string
     timeout?: number
     port?: number
+    agentLogs?: boolean
   },
   run: (server: OpencodeDockerServer) => Promise<T>
 ) {
@@ -594,10 +867,19 @@ export async function runWithOpencodeDockerServer<T>(
     `session start (workspace=${path.resolve(options.hostWorkspace)})`
   )
   const server = await startOpencodeDockerServer(options)
+  const shouldLogAgentActivity =
+    options.agentLogs ?? agentActivityLoggingEnabled
+  const agentActivityLogger = shouldLogAgentActivity
+    ? startOpencodeAgentActivityLogging({
+        port: server.port,
+        directory: server.containerWorkspace,
+      })
+    : undefined
 
   try {
     return await run(server)
   } finally {
+    agentActivityLogger?.stop()
     await server.close()
     logOpencode(
       `session end (container=${server.containerName}, port=${server.port})`

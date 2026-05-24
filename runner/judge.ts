@@ -14,9 +14,10 @@ import { runWithConcurrency } from './solver/concurrency'
 import { partitionEvalRuns } from './utils/eval-runs'
 import { loadFiles, sanitizeSegment } from './utils/fs'
 import {
-  logOpencodeWorkerLegend,
+  configureOpencodeDockerLogging,
   prepareOpencodeDockerRuntime,
   runWithOpencodeWorkerContext,
+  shutdownAllOpencodeDockerContainers,
 } from './utils/opencode'
 
 function roundTo(value: number, decimals: number) {
@@ -41,7 +42,9 @@ function getEvalResultSubdirectory(generatedPath: string) {
   return parentDirectory
 }
 
-function filterGeneratedSubmissionFiles(files: Awaited<ReturnType<typeof loadFiles>>) {
+function filterGeneratedSubmissionFiles(
+  files: Awaited<ReturnType<typeof loadFiles>>
+) {
   return files.filter((file) => file.path !== 'opencode-session.solver.json')
 }
 
@@ -77,7 +80,9 @@ type PersistedEvalResult = {
   judgeSessionArtifactPath?: string
 }
 
-type ManifestEval = Awaited<ReturnType<typeof readGenerationManifest>>['evals'][number]
+type ManifestEval = Awaited<
+  ReturnType<typeof readGenerationManifest>
+>['evals'][number]
 
 function parsePersistedEvalResult(
   raw: string,
@@ -253,7 +258,8 @@ async function runJudgeForManifestEval(options: {
           ),
         options.cliOptions.maxRetries,
         (attempt, error) => {
-          const errorMessage = error instanceof Error ? error.message : String(error)
+          const errorMessage =
+            error instanceof Error ? error.message : String(error)
           console.warn(
             `[judge-stage][${manifestEval.evalId}] attempt ${attempt}/${options.cliOptions.maxRetries} failed: ${errorMessage}`
           )
@@ -282,7 +288,9 @@ async function runJudgeForManifestEval(options: {
   }
 
   const resultFileName = `${sanitizeSegment(stageResult.evalId)}.json`
-  const resultSubdirectory = getEvalResultSubdirectory(manifestEval.generatedPath)
+  const resultSubdirectory = getEvalResultSubdirectory(
+    manifestEval.generatedPath
+  )
   const resultDirectory = path.join(
     options.outputDirectories.evalDirectory,
     resultSubdirectory
@@ -305,7 +313,10 @@ async function runJudgeForManifestEval(options: {
   }
 
   stageResult.judgeSessionArtifactPath = judgeSessionArtifactPath
-    ? toPosixRelativePath(options.outputDirectories.runDirectory, judgeSessionArtifactPath)
+    ? toPosixRelativePath(
+        options.outputDirectories.runDirectory,
+        judgeSessionArtifactPath
+      )
     : undefined
 
   await writeFile(
@@ -351,6 +362,7 @@ async function runWithRetries<T>(
 */
 export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
   const cliOptions = parseJudgeCliArgs(argv)
+  configureOpencodeDockerLogging({ agentLogs: cliOptions.agentLogs })
   const inputDirectory = path.resolve(process.cwd(), cliOptions.input)
   const outputDirectory = cliOptions.output ?? path.dirname(inputDirectory)
   const outputDirectories = await createRunOutputDirectories(outputDirectory)
@@ -393,7 +405,6 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
       cliOptions.concurrency,
       missingManifestEvals.length
     )
-    logOpencodeWorkerLegend({ workerCount: judgeWorkerCount, role: 'judge' })
 
     const evalRuns = await runWithConcurrency(
       missingManifestEvals,
@@ -436,7 +447,9 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
       )
     }
 
-    const summaryBackupPath = await backupExistingSummary(outputDirectories.runDirectory)
+    const summaryBackupPath = await backupExistingSummary(
+      outputDirectories.runDirectory
+    )
     if (summaryBackupPath) {
       console.log(`summary backup: ${toRelativePath(summaryBackupPath)}`)
     }
@@ -490,8 +503,6 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
       console.log(`rerunning all requirements: ${manifestEval.evalId}`)
     }
 
-    logOpencodeWorkerLegend({ workerCount: 1, role: 'judge' })
-
     const evalDirectory = path.resolve(process.cwd(), manifestEval.evalPath)
     const generatedEvalRunDirectory = path.join(
       inputDirectory,
@@ -530,12 +541,15 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
               },
               {
                 ...cliOptions,
-                requirementIds: rerunRequirementId ? [rerunRequirementId] : undefined,
+                requirementIds: rerunRequirementId
+                  ? [rerunRequirementId]
+                  : undefined,
               }
             ),
           cliOptions.maxRetries,
           (attempt, error) => {
-            const errorMessage = error instanceof Error ? error.message : String(error)
+            const errorMessage =
+              error instanceof Error ? error.message : String(error)
             console.warn(
               `[judge-stage][${manifestEval.evalId}] attempt ${attempt}/${cliOptions.maxRetries} failed: ${errorMessage}`
             )
@@ -608,7 +622,8 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
       llmJudgeRequirements: updatedRequirements,
       score: computeScore(updatedRequirements),
       outputFiles:
-        existingEvalResult.outputFiles && existingEvalResult.outputFiles.length > 0
+        existingEvalResult.outputFiles &&
+        existingEvalResult.outputFiles.length > 0
           ? existingEvalResult.outputFiles
           : generatedFiles.map((file) => file.path),
       judgeSessionArtifactPath: judgeSessionArtifactPath
@@ -619,7 +634,11 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
         : existingEvalResult.judgeSessionArtifactPath,
     }
 
-    await writeFile(resultFilePath, JSON.stringify(updatedEvalResult, null, 2), 'utf8')
+    await writeFile(
+      resultFilePath,
+      JSON.stringify(updatedEvalResult, null, 2),
+      'utf8'
+    )
 
     if (cliOptions.debug) {
       await writeDebugArtifacts(
@@ -630,7 +649,9 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
       )
     }
 
-    const summaryBackupPath = await backupExistingSummary(outputDirectories.runDirectory)
+    const summaryBackupPath = await backupExistingSummary(
+      outputDirectories.runDirectory
+    )
     if (summaryBackupPath) {
       console.log(`summary backup: ${toRelativePath(summaryBackupPath)}`)
     }
@@ -657,8 +678,10 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
   const startedAt = new Date().toISOString()
   console.log(`starting judge: ${manifestEvals.length} eval(s)`)
 
-  const judgeWorkerCount = Math.min(cliOptions.concurrency, manifestEvals.length)
-  logOpencodeWorkerLegend({ workerCount: judgeWorkerCount, role: 'judge' })
+  const judgeWorkerCount = Math.min(
+    cliOptions.concurrency,
+    manifestEvals.length
+  )
 
   const evalRuns = await runWithConcurrency(
     manifestEvals,
@@ -749,11 +772,18 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
 }
 
 if (import.meta.main) {
+  let exitCode = 0
+
   try {
     await runJudgeEntry()
-    process.exit(0)
   } catch (error) {
     console.error(formatUnknownError(error))
-    process.exit(1)
+    exitCode = 1
+  } finally {
+    await shutdownAllOpencodeDockerContainers(
+      exitCode === 0 ? 'judge completed' : 'judge failed'
+    )
   }
+
+  process.exit(exitCode)
 }
