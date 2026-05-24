@@ -63,7 +63,10 @@ async function runWithRetries<T>(
 */
 export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
   const cliOptions = parseRunCliArgs(argv)
-  configureOpencodeDockerLogging({ agentLogs: cliOptions.agentLogs })
+  configureOpencodeDockerLogging({
+    agentLogs: cliOptions.agentLogs,
+    verbose: cliOptions.verbose,
+  })
   const discoveredEvals = await discoverEvals(cliOptions.pattern)
   const runId = new Date().toISOString().replace(/[:.]/g, '-')
   const startedAt = new Date().toISOString()

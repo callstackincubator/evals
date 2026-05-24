@@ -5,6 +5,11 @@ import {
   type OpencodeSessionSnapshot,
 } from 'runner/utils/opencode-session'
 import { createIsolatedOpencodeModel } from 'runner/utils/opencode-model'
+import {
+  logOpencodeTrace,
+  runTracedOpencodeCall,
+  startOpencodeCallTracer,
+} from 'runner/utils/opencode-trace'
 const JSON_FALLBACK_SYSTEM_PROMPT = `
   Return only valid JSON matching this shape:
   {
@@ -50,6 +55,7 @@ type RunJudgeCallOptions = {
   port?: number
   directory?: string
   cwd?: string
+  verbose?: boolean
 }
 
 function asRecord(value: unknown) {
@@ -113,6 +119,16 @@ export async function runJudgeCall(
     throw new Error('runJudgeCall requires an opencode server port')
   }
 
+  const promptBytes = Buffer.byteLength(options.prompt, 'utf8')
+  const tracer = startOpencodeCallTracer({
+    label: 'judge',
+    model: options.model,
+    port: options.port,
+    directory: options.directory ?? options.cwd,
+    timeoutMs: options.timeout,
+    inputSummary: `promptBytes=${promptBytes}`,
+  })
+
   const { model: judgeModel, dispose } = createIsolatedOpencodeModel(
     options.model,
     {
@@ -123,16 +139,23 @@ export async function runJudgeCall(
 
   try {
     try {
-      const response = await generateText({
-        model: judgeModel,
-        prompt: options.prompt,
-        abortSignal: AbortSignal.timeout(options.timeout),
-        output: Output.object({
-          schema: structuredOutputSchema,
-          name: 'eval_requirements_result',
-          description: 'Requirement verdicts for a React Native eval',
-        }),
-      })
+      const response = await runTracedOpencodeCall(
+        tracer,
+        'generateText:structured-output',
+        () =>
+          generateText({
+            model: judgeModel,
+            prompt: options.prompt,
+            abortSignal: AbortSignal.timeout(options.timeout),
+            output: Output.object({
+              schema: structuredOutputSchema,
+              name: 'eval_requirements_result',
+              description: 'Requirement verdicts for a React Native eval',
+            }),
+          })
+      )
+
+      tracer.noteSessionId(extractOpencodeSessionId(response) ?? 'unknown')
 
       return {
         summary: response.output.summary,
@@ -144,12 +167,25 @@ export async function runJudgeCall(
         }),
       }
     } catch (structuredOutputError) {
-      const fallbackResponse = await generateText({
-        model: judgeModel,
-        prompt: options.prompt,
-        system: JSON_FALLBACK_SYSTEM_PROMPT,
-        abortSignal: AbortSignal.timeout(options.timeout),
-      })
+      logOpencodeTrace(
+        `structured output failed; trying JSON fallback: ${structuredOutputError instanceof Error ? structuredOutputError.message : String(structuredOutputError)}`
+      )
+
+      const fallbackResponse = await runTracedOpencodeCall(
+        tracer,
+        'generateText:json-fallback',
+        () =>
+          generateText({
+            model: judgeModel,
+            prompt: options.prompt,
+            system: JSON_FALLBACK_SYSTEM_PROMPT,
+            abortSignal: AbortSignal.timeout(options.timeout),
+          })
+      )
+
+      tracer.noteSessionId(
+        extractOpencodeSessionId(fallbackResponse) ?? 'unknown'
+      )
 
       const parsedOutput = parseJudgeOutputFromText(fallbackResponse.text)
       if (!parsedOutput.success) {
@@ -173,6 +209,7 @@ export async function runJudgeCall(
       }
     }
   } finally {
+    tracer.stop()
     await dispose()
   }
 }

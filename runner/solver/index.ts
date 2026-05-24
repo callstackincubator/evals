@@ -8,6 +8,11 @@ import {
   type OpencodeSessionSnapshot,
 } from 'runner/utils/opencode-session'
 import { createIsolatedOpencodeModel } from 'runner/utils/opencode-model'
+import {
+  logOpencodeTrace,
+  runTracedOpencodeCall,
+  startOpencodeCallTracer,
+} from 'runner/utils/opencode-trace'
 import type { LoadedFile } from 'runner/utils/fs'
 
 const SYSTEM_PROMPT = `
@@ -27,12 +32,14 @@ const JSON_FALLBACK_SYSTEM_PROMPT = `
 
 const solverOutputSchema = z.object({
   summary: z.string().describe('Short summary of performed work'),
-  files: z.array(
-    z.object({
-      path: z.string(),
-      content: z.string(),
-    })
-  ).min(1),
+  files: z
+    .array(
+      z.object({
+        path: z.string(),
+        content: z.string(),
+      })
+    )
+    .min(1),
 })
 
 export type SolverResult = {
@@ -147,9 +154,9 @@ function parseSolverOutputFromText(rawText: string) {
   Runs an OpenCode-backed solver and materializes generated files for judges.
 */
 export async function runSolver(params: {
-  prompt: string,
-  files: LoadedFile[],
-  workingDirectory: string,
+  prompt: string
+  files: LoadedFile[]
+  workingDirectory: string
   model: string
   timeout: number
   port?: number
@@ -158,25 +165,41 @@ export async function runSolver(params: {
     throw new Error('runSolver requires an opencode server port')
   }
 
+  const prompt = buildSolverPrompt(params.prompt, params.files)
+  const promptBytes = Buffer.byteLength(prompt, 'utf8')
+  const tracer = startOpencodeCallTracer({
+    label: 'solver',
+    model: params.model,
+    port: params.port,
+    directory: params.workingDirectory,
+    timeoutMs: params.timeout,
+    inputSummary: `files=${params.files.length} promptBytes=${promptBytes}`,
+  })
+
   const { model, dispose } = createIsolatedOpencodeModel(params.model, {
     port: params.port,
     cwd: params.workingDirectory,
   })
 
-  const prompt = buildSolverPrompt(params.prompt, params.files)
-
   try {
     try {
-      const response = await generateText({
-        model,
-        prompt,
-        system: SYSTEM_PROMPT,
-        abortSignal: AbortSignal.timeout(params.timeout),
-        output: Output.object({
-          schema: solverOutputSchema,
-          description: 'Generated files that satisfy the task',
-        }),
-      })
+      const response = await runTracedOpencodeCall(
+        tracer,
+        'generateText:structured-output',
+        () =>
+          generateText({
+            model,
+            prompt,
+            system: SYSTEM_PROMPT,
+            abortSignal: AbortSignal.timeout(params.timeout),
+            output: Output.object({
+              schema: solverOutputSchema,
+              description: 'Generated files that satisfy the task',
+            }),
+          })
+      )
+
+      tracer.noteSessionId(extractOpencodeSessionId(response) ?? 'unknown')
 
       return {
         ...response.output,
@@ -187,12 +210,25 @@ export async function runSolver(params: {
         }),
       }
     } catch (structuredOutputError) {
-      const fallbackResponse = await generateText({
-        model,
-        prompt,
-        system: `${SYSTEM_PROMPT}\n${JSON_FALLBACK_SYSTEM_PROMPT}`,
-        abortSignal: AbortSignal.timeout(params.timeout),
-      })
+      logOpencodeTrace(
+        `structured output failed; trying JSON fallback: ${structuredOutputError instanceof Error ? structuredOutputError.message : String(structuredOutputError)}`
+      )
+
+      const fallbackResponse = await runTracedOpencodeCall(
+        tracer,
+        'generateText:json-fallback',
+        () =>
+          generateText({
+            model,
+            prompt,
+            system: `${SYSTEM_PROMPT}\n${JSON_FALLBACK_SYSTEM_PROMPT}`,
+            abortSignal: AbortSignal.timeout(params.timeout),
+          })
+      )
+
+      tracer.noteSessionId(
+        extractOpencodeSessionId(fallbackResponse) ?? 'unknown'
+      )
 
       const parsedOutput = parseSolverOutputFromText(fallbackResponse.text)
       if (!parsedOutput.success) {
@@ -215,6 +251,7 @@ export async function runSolver(params: {
       }
     }
   } finally {
+    tracer.stop()
     await dispose()
   }
 }

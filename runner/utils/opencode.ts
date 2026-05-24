@@ -7,6 +7,11 @@ import path from 'node:path'
 import { randomUUID } from 'node:crypto'
 
 import { startOpencodeAgentActivityLogging } from './opencode-agent-activity'
+import {
+  configureOpencodeVerboseLogging,
+  isOpencodeVerboseLoggingEnabled,
+  logOpencodeTrace,
+} from './opencode-trace'
 
 type OpencodeWorkerContext = {
   workerId: number
@@ -65,9 +70,18 @@ export function logOpencodeAgent(message: string) {
 
 export function configureOpencodeDockerLogging(options: {
   agentLogs?: boolean
+  verbose?: boolean
 }) {
+  if (options.verbose !== undefined) {
+    configureOpencodeVerboseLogging({ verbose: options.verbose })
+  }
+
   if (options.agentLogs !== undefined) {
     agentActivityLoggingEnabled = options.agentLogs
+  }
+
+  if (options.verbose) {
+    agentActivityLoggingEnabled = true
   }
 }
 
@@ -620,7 +634,7 @@ export async function prepareOpencodeDockerRuntime(image = getDockerImage()) {
   logOpencode(`preparing docker runtime (image=${image})`, 'global')
   await ensureOpencodeDockerImage(image)
   logOpencode(
-    `docker runtime ready (serve log level=${agentActivityLoggingEnabled ? 'DEBUG' : (process.env.OPENCODE_SERVER_LOG_LEVEL ?? DEFAULT_OPENCODE_SERVER_LOG_LEVEL)}, stream container logs=${shouldStreamContainerLogs()}, agent logs=${agentActivityLoggingEnabled})`,
+    `docker runtime ready (serve log level=${agentActivityLoggingEnabled ? 'DEBUG' : (process.env.OPENCODE_SERVER_LOG_LEVEL ?? DEFAULT_OPENCODE_SERVER_LOG_LEVEL)}, stream container logs=${shouldStreamContainerLogs()}, agent logs=${agentActivityLoggingEnabled}, verbose=${isOpencodeVerboseLoggingEnabled()})`,
     'global'
   )
 }
@@ -860,6 +874,7 @@ export async function runWithOpencodeDockerServer<T>(
     timeout?: number
     port?: number
     agentLogs?: boolean
+    verbose?: boolean
   },
   run: (server: OpencodeDockerServer) => Promise<T>
 ) {
@@ -877,7 +892,19 @@ export async function runWithOpencodeDockerServer<T>(
     : undefined
 
   try {
-    return await run(server)
+    if (options.verbose) {
+      logOpencodeTrace(
+        `docker session ready container=${server.containerName} port=${server.port} directory=${server.containerWorkspace}; starting model call`
+      )
+    }
+    const startedAt = Date.now()
+    const result = await run(server)
+    if (options.verbose) {
+      logOpencodeTrace(
+        `docker session model call finished in ${Date.now() - startedAt}ms container=${server.containerName}`
+      )
+    }
+    return result
   } finally {
     agentActivityLogger?.stop()
     await server.close()

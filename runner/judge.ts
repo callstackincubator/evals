@@ -362,7 +362,10 @@ async function runWithRetries<T>(
 */
 export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
   const cliOptions = parseJudgeCliArgs(argv)
-  configureOpencodeDockerLogging({ agentLogs: cliOptions.agentLogs })
+  configureOpencodeDockerLogging({
+    agentLogs: cliOptions.agentLogs,
+    verbose: cliOptions.verbose,
+  })
   const inputDirectory = path.resolve(process.cwd(), cliOptions.input)
   const outputDirectory = cliOptions.output ?? path.dirname(inputDirectory)
   const outputDirectories = await createRunOutputDirectories(outputDirectory)
