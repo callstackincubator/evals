@@ -328,7 +328,7 @@ async function runJudgeForManifestEval(options: {
   const position = options.index + 1
   console.log(
     `[${position}/${options.total}] ${manifestEval.evalId} ` +
-      `-> llm:${stageResult.score.ratio}`
+      `-> llm score:${stageResult.score.ratio}`
   )
 
   return stageResult

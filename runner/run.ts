@@ -12,7 +12,7 @@ import { materializeFiles } from './solver'
 import { runSolverStage } from './solver/pipeline'
 import { discoverEvals } from './utils/discovery'
 import { partitionEvalRuns } from './utils/eval-runs'
-import { loadFiles, sanitizeSegment } from './utils/fs'
+import { loadFiles, resetEvalOutputDirectory, sanitizeSegment } from './utils/fs'
 import {
   configureOpencodeDockerLogging,
   prepareOpencodeDockerRuntime,
@@ -116,6 +116,8 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
               generatedPath
             )
             const runSingleEval = async () => {
+              await resetEvalOutputDirectory(generatedEvalRunDirectory)
+
               if (cliOptions.model === 'noop') {
                 return {
                   summary: 'Copied reference files',

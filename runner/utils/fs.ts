@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { readFile, readdir } from 'node:fs/promises'
+import { mkdir, readFile, readdir, rm } from 'node:fs/promises'
 import path from 'node:path'
 import { Glob } from 'bun'
 
@@ -80,4 +80,12 @@ export async function loadFiles(dir: string): Promise<LoadedFile[]> {
 
 export function sanitizeSegment(value: string) {
   return value.replace(/[^a-zA-Z0-9._-]/g, '_')
+}
+
+/*
+  Removes an eval output directory and recreates it empty before a new attempt.
+*/
+export async function resetEvalOutputDirectory(directory: string) {
+  await rm(directory, { recursive: true, force: true })
+  await mkdir(directory, { recursive: true })
 }
