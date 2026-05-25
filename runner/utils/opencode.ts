@@ -751,6 +751,20 @@ async function buildDockerVolumeArgs(hostWorkspace: string) {
     )
   }
 
+  for (const filename of ['opencode.json', 'opencode.jsonc'] as const) {
+    const repoConfigSource = path.join(process.cwd(), filename)
+    if (await pathExists(repoConfigSource)) {
+      args.push(
+        '-v',
+        `${repoConfigSource}:/root/.config/opencode/${filename}:ro`
+      )
+      logOpencode(
+        `bind mount: ${repoConfigSource} -> /root/.config/opencode/${filename} (ro, global config)`
+      )
+      break
+    }
+  }
+
   return { args, cleanupPaths }
 }
 
