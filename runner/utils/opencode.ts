@@ -370,7 +370,8 @@ function installOpencodeDockerShutdownHandlers() {
     shutdownSignalCount += 1
 
     if (shutdownSignalCount > 1) {
-      console.error('[opencode-docker][global] force exit')
+      logOpencodeError('force exit after repeated interrupt', 'global')
+      forceStopEvalsOpencodeContainersSync('force exit')
       process.exit(signal === 'SIGINT' ? 130 : 143)
     }
 
@@ -379,17 +380,22 @@ function installOpencodeDockerShutdownHandlers() {
     }
 
     shutdownInProgress = true
+    logOpencodeError(`received ${signal}; stopping containers`, 'global')
     forceStopEvalsOpencodeContainersSync(signal)
     process.exit(signal === 'SIGINT' ? 130 : 143)
   }
 
-  process.on('SIGINT', () => handleSignal('SIGINT'))
-  process.on('SIGTERM', () => handleSignal('SIGTERM'))
+  // ai-sdk-provider-opencode-sdk registers its own SIGINT handler that calls
+  // process.exit(0). prependListener ensures container cleanup runs first.
+  process.prependListener('SIGINT', () => handleSignal('SIGINT'))
+  process.prependListener('SIGTERM', () => handleSignal('SIGTERM'))
 }
 
 function ensureOpencodeDockerShutdownHandlers() {
   installOpencodeDockerShutdownHandlers()
 }
+
+installOpencodeDockerShutdownHandlers()
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))

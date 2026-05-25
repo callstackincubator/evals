@@ -125,6 +125,15 @@ describe('opencode container shutdown', () => {
 describe('opencode docker env passthrough', () => {
   const originalExtraPrefixes = process.env.OPENCODE_DOCKER_EXTRA_ENV_PREFIXES
 
+  test('registers interrupt handlers before ai-sdk-provider-opencode-sdk', async () => {
+    await import('ai-sdk-provider-opencode-sdk')
+
+    const listeners = process.rawListeners('SIGINT')
+    expect(listeners.length).toBeGreaterThanOrEqual(2)
+    expect(String(listeners[0])).toContain('handleSignal')
+    expect(String(listeners.at(-1))).toContain('cleanup')
+  })
+
   test('passes worker required env vars through to containers', () => {
     expect(shouldPassthroughOpencodeDockerEnvKey('AI_GATEWAY_API_KEY')).toBe(
       true
