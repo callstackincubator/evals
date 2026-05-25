@@ -6,13 +6,13 @@ The runner starts OpenCode inside Docker for solver and judge model calls. This 
 
 Each worker session bind-mounts three things into the container:
 
-| Host source                                           | Container path                          | Mode                           | Purpose                            |
-| ----------------------------------------------------- | --------------------------------------- | ------------------------------ | ---------------------------------- |
-| Eval workspace directory                              | `/workspace`                            | read-write                     | Files the agent reads and edits    |
-| Copy of `~/.local/share/opencode/auth.json`           | `/root/.local/share/opencode/auth.json` | read-write (isolated temp dir) | OpenCode provider credentials      |
-| Repo `opencode.json` or `opencode.jsonc` (if present) | `/root/.config/opencode/<filename>`     | read-only                      | Provider/model config (no secrets) |
+| Host source | Container path | Mode | Purpose |
+| --- | --- | --- | --- |
+| Eval workspace directory | `/workspace` | read-write | Files the agent reads and edits |
+| Isolated temp dir with copied `~/.local/share/opencode/auth.json` | `/root/.local/share/opencode` (`auth.json` inside) | read-write | OpenCode provider credentials |
+| Repo `opencode.json` or `opencode.jsonc` (if present) | `/root/.config/opencode/<filename>` | read-only | Provider/model config (no secrets) |
 
-The auth file is copied into a per-container temp directory before mount so concurrent workers do not share or overwrite the same host file.
+The host `auth.json` is copied into a per-container temp directory, and that directory is bind-mounted to `/root/.local/share/opencode` so concurrent workers do not share or overwrite the same host file.
 
 Provider access depends on 3 optional sources:
 
