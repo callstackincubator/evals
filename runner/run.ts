@@ -12,7 +12,11 @@ import { materializeFiles } from './solver'
 import { runSolverStage } from './solver/pipeline'
 import { discoverEvals } from './utils/discovery'
 import { partitionEvalRuns } from './utils/eval-runs'
-import { loadFiles, resetEvalOutputDirectory, sanitizeSegment } from './utils/fs'
+import {
+  loadFiles,
+  resetEvalOutputDirectory,
+  sanitizeSegment,
+} from './utils/fs'
 import {
   configureOpencodeDockerLogging,
   prepareOpencodeDockerRuntime,
@@ -143,6 +147,7 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
                   timeout: cliOptions.timeout,
                   port: cliOptions.port,
                   agentLogs: cliOptions.agentLogs,
+                  verbose: cliOptions.verbose,
                 }
               )
             }

@@ -12,6 +12,7 @@ type SolverStageOptions = {
   timeout: number
   port?: number
   agentLogs?: boolean
+  verbose?: boolean
 }
 
 /*
@@ -34,6 +35,7 @@ export async function runSolverStage(
         timeout: options.timeout,
         port: options.port,
         agentLogs: options.agentLogs,
+        verbose: options.verbose,
       },
       async (server) => {
         const result = await runSolver({
