@@ -1,6 +1,6 @@
 import { createServer } from 'node:net'
 import { access } from 'node:fs/promises'
-import { describe, expect, test } from 'bun:test'
+import { afterEach, describe, expect, test } from 'bun:test'
 
 import {
   allocateHostPort,
@@ -9,6 +9,7 @@ import {
   DEFAULT_OPENCODE_PORT,
   forceStopEvalsOpencodeContainersSync,
   formatContainerLogLine,
+  shouldPassthroughOpencodeDockerEnvKey,
 } from './opencode'
 
 describe('opencode temp workspace', () => {
@@ -118,5 +119,49 @@ describe('opencode container log formatting', () => {
 describe('opencode container shutdown', () => {
   test('force stop returns zero when no eval containers are listed', () => {
     expect(forceStopEvalsOpencodeContainersSync('test')).toBe(0)
+  })
+})
+
+describe('opencode docker env passthrough', () => {
+  const originalExtraPrefixes = process.env.OPENCODE_DOCKER_EXTRA_ENV_PREFIXES
+
+  test('passes worker required env vars through to containers', () => {
+    expect(shouldPassthroughOpencodeDockerEnvKey('AI_GATEWAY_API_KEY')).toBe(
+      true
+    )
+    expect(shouldPassthroughOpencodeDockerEnvKey('CLOUDFLARE_API_TOKEN')).toBe(
+      true
+    )
+    expect(
+      shouldPassthroughOpencodeDockerEnvKey('CLOUDFLARE_ACCOUNT_ID')
+    ).toBe(true)
+    expect(
+      shouldPassthroughOpencodeDockerEnvKey('CLOUDFLARE_GATEWAY_ID')
+    ).toBe(true)
+  })
+
+  test('passes provider-prefixed env vars through to containers', () => {
+    expect(shouldPassthroughOpencodeDockerEnvKey('OPENAI_API_KEY')).toBe(true)
+    expect(shouldPassthroughOpencodeDockerEnvKey('ANTHROPIC_API_KEY')).toBe(
+      true
+    )
+    expect(shouldPassthroughOpencodeDockerEnvKey('OPENCODE_SERVER_LOG_LEVEL')).toBe(
+      true
+    )
+  })
+
+  test('does not pass unrelated env vars through to containers', () => {
+    expect(shouldPassthroughOpencodeDockerEnvKey('PATH')).toBe(false)
+    expect(shouldPassthroughOpencodeDockerEnvKey('HOME')).toBe(false)
+    expect(shouldPassthroughOpencodeDockerEnvKey('GITHUB_TOKEN')).toBe(false)
+  })
+
+  afterEach(() => {
+    if (originalExtraPrefixes === undefined) {
+      delete process.env.OPENCODE_DOCKER_EXTRA_ENV_PREFIXES
+      return
+    }
+
+    process.env.OPENCODE_DOCKER_EXTRA_ENV_PREFIXES = originalExtraPrefixes
   })
 })

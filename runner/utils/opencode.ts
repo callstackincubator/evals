@@ -8,6 +8,7 @@ import { randomUUID } from 'node:crypto'
 
 import { startOpencodeAgentActivityLogging } from './opencode-agent-activity'
 import {
+  DEFAULT_OPENCODE_DOCKER_PASSTHROUGH_ENV_PREFIXES,
   DEFAULT_OPENCODE_PORT,
   OPENCODE_CONTAINER_WORKSPACE,
 } from './opencode-constants'
@@ -35,10 +36,43 @@ const DEFAULT_DOCKER_IMAGE = 'evals-opencode:latest'
 const DOCKER_SERVER_START_TIMEOUT_MS = 120_000
 const DEFAULT_OPENCODE_SERVER_LOG_LEVEL = 'INFO'
 
-export const OPENCODE_CONTAINER_WORKSPACE = '/workspace'
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
 
-const PASSTHROUGH_ENV_PATTERN =
-  /^(OPENCODE_|OPENAI_|ANTHROPIC_|GOOGLE_|GEMINI_|AZURE_|AWS_|GITHUB_|GH_|PARASAIL_)/
+function buildPassthroughEnvPattern(prefixes: readonly string[]) {
+  return new RegExp(`^(${prefixes.map(escapeRegExp).join('|')})`)
+}
+
+const DEFAULT_PASSTHROUGH_ENV_PATTERN = buildPassthroughEnvPattern(
+  DEFAULT_OPENCODE_DOCKER_PASSTHROUGH_ENV_PREFIXES
+)
+
+export function shouldPassthroughOpencodeDockerEnvKey(key: string) {
+  return getPassthroughEnvPattern().test(key)
+}
+
+function getPassthroughEnvPattern() {
+  const extraPrefixes = process.env.OPENCODE_DOCKER_EXTRA_ENV_PREFIXES
+  if (!extraPrefixes) {
+    return DEFAULT_PASSTHROUGH_ENV_PATTERN
+  }
+
+  const escapedPrefixes = extraPrefixes
+    .split(',')
+    .map((prefix) => prefix.trim())
+    .filter(Boolean)
+    .map(escapeRegExp)
+
+  if (escapedPrefixes.length === 0) {
+    return DEFAULT_PASSTHROUGH_ENV_PATTERN
+  }
+
+  return buildPassthroughEnvPattern([
+    ...escapedPrefixes,
+    ...DEFAULT_OPENCODE_DOCKER_PASSTHROUGH_ENV_PREFIXES,
+  ])
+}
 
 function formatOpencodeLogTag(scope: 'auto' | 'global' = 'auto') {
   if (scope === 'global') {
@@ -646,9 +680,10 @@ export async function prepareOpencodeDockerRuntime(image = getDockerImage()) {
 
 function buildDockerEnvArgs() {
   const args: string[] = []
+  const passthroughEnvPattern = getPassthroughEnvPattern()
 
   for (const [key, value] of Object.entries(process.env)) {
-    if (value && PASSTHROUGH_ENV_PATTERN.test(key)) {
+    if (value && passthroughEnvPattern.test(key)) {
       args.push('-e', `${key}=${value}`)
     }
   }
