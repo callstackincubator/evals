@@ -20,6 +20,8 @@ export function parseRunCliArgs(argv: string[] = Bun.argv.slice(2)) {
   const { values } = parseArgv({
     args: argv,
     options: {
+      'agent-logs': { type: 'boolean', default: false },
+      'verbose': { type: 'boolean', default: false },
       'concurrency': { type: 'string', default: '4' },
       'fail-fast': { type: 'boolean', default: false },
       'max-retries': { type: 'string', default: '1' },
@@ -38,6 +40,8 @@ export function parseRunCliArgs(argv: string[] = Bun.argv.slice(2)) {
   }
 
   return {
+    agentLogs: values['agent-logs'] ?? false,
+    verbose: values.verbose ?? false,
     concurrency: parsePositiveInteger(values.concurrency, '--concurrency'),
     failFast: values['fail-fast'] ?? false,
     maxRetries: parsePositiveInteger(values['max-retries'], '--max-retries'),
@@ -56,6 +60,8 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
   const { values } = parseArgv({
     args: argv,
     options: {
+      'agent-logs': { type: 'boolean', default: false },
+      'verbose': { type: 'boolean', default: false },
       'concurrency': { type: 'string', default: '4' },
       'debug': { type: 'boolean', default: false },
       'fail-fast': { type: 'boolean', default: false },
@@ -101,6 +107,8 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
   }
 
   return {
+    agentLogs: values['agent-logs'] ?? false,
+    verbose: values.verbose ?? false,
     concurrency: parsePositiveInteger(values.concurrency, '--concurrency'),
     debug: values.debug ?? false,
     failFast: values['fail-fast'] ?? false,

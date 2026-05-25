@@ -6,16 +6,16 @@ A benchmark suite for evaluating how coding models solve real React Native tasks
 
 Groups map to top-level folders under `evals/`.
 
-| Group | Path | Status |
-| --- | --- | --- |
-| animation | `evals/animation` | Active |
-| async-state | `evals/async-state` | Active | 
-| navigation | `evals/navigation` | Active |
+| Group             | Path                      | Status |
+| ----------------- | ------------------------- | ------ |
+| animation         | `evals/animation`         | Active |
+| async-state       | `evals/async-state`       | Active |
+| navigation        | `evals/navigation`        | Active |
 | react-native-apis | `evals/react-native-apis` | Active |
-| expo-sdk | `evals/expo-sdk` | WIP |
-| brownfield | `evals/brownfield` | WIP |
-| nitro-modules | `evals/nitro-modules` | WIP |
-| lists | `evals/lists` | Active |
+| expo-sdk          | `evals/expo-sdk`          | WIP    |
+| brownfield        | `evals/brownfield`        | WIP    |
+| nitro-modules     | `evals/nitro-modules`     | WIP    |
+| lists             | `evals/lists`             | Active |
 
 > Want a group that is not listed here? [Open an issue](https://github.com/callstackincubator/evals/issues/new/choose) to request it. Contributions are also welcome.
 
@@ -26,6 +26,10 @@ bun install
 bun runner/run.ts --model openai/gpt-4.1-mini --output generated/my-generated
 bun runner/judge.ts --model openai/gpt-5.3-codex --input generated/my-generated
 ```
+
+OpenCode runs in Docker for solver and judge calls. Credentials reach containers via copied `~/.local/share/opencode/auth.json`, passthrough env vars (`OPENAI_*`, `CLOUDFLARE_*`, and others), and an optional repo-level `opencode.json`. See [docs/opencode-docker.md](./docs/opencode-docker.md) for the full mount and secrets reference.
+
+For debugging OpenCode runs, pass `--agent-logs` to stream agent/session events, or `--verbose` for per-call session heartbeats and phase traces (`--verbose` also enables agent logs). Both flags work on `run.ts` and `judge.ts`.
 
 For full command reference and workflows, see [docs](./docs) and [CONTRIBUTING.md](./CONTRIBUTING.md).
 

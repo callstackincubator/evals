@@ -12,7 +12,17 @@ import { materializeFiles } from './solver'
 import { runSolverStage } from './solver/pipeline'
 import { discoverEvals } from './utils/discovery'
 import { partitionEvalRuns } from './utils/eval-runs'
-import { loadFiles, sanitizeSegment } from './utils/fs'
+import {
+  loadFiles,
+  resetEvalOutputDirectory,
+  sanitizeSegment,
+} from './utils/fs'
+import {
+  configureOpencodeDockerLogging,
+  prepareOpencodeDockerRuntime,
+  runWithOpencodeWorkerContext,
+  shutdownAllOpencodeDockerContainers,
+} from './utils/opencode'
 
 function toRelativePath(value: string) {
   return path.relative(process.cwd(), value).split(path.sep).join('/')
@@ -57,6 +67,10 @@ async function runWithRetries<T>(
 */
 export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
   const cliOptions = parseRunCliArgs(argv)
+  configureOpencodeDockerLogging({
+    agentLogs: cliOptions.agentLogs,
+    verbose: cliOptions.verbose,
+  })
   const discoveredEvals = await discoverEvals(cliOptions.pattern)
   const runId = new Date().toISOString().replace(/[:.]/g, '-')
   const startedAt = new Date().toISOString()
@@ -69,98 +83,130 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
 
   console.log(`starting generation: ${discoveredEvals.length} eval(s)`)
 
+  if (cliOptions.model !== 'noop') {
+    await prepareOpencodeDockerRuntime()
+  }
+
+  const solverWorkerCount = Math.min(
+    cliOptions.concurrency,
+    discoveredEvals.length
+  )
+
   const evalRuns = await runWithConcurrency(
     discoveredEvals,
     cliOptions.concurrency,
-    async (evalItem, index) => {
-      try {
-        const [appFiles, prompt] = await Promise.all([
-          loadFiles(path.join(evalItem.evalPath, 'app')),
-          readFile(path.join(evalItem.evalPath, 'prompt.md'), 'utf-8'),
-        ])
+    async (evalItem, index, workerIndex) =>
+      runWithOpencodeWorkerContext(
+        {
+          workerId: workerIndex + 1,
+          workerCount: solverWorkerCount,
+          taskLabel: evalItem.evalId,
+        },
+        async () => {
+          try {
+            const [appFiles, prompt] = await Promise.all([
+              loadFiles(path.join(evalItem.evalPath, 'app')),
+              readFile(path.join(evalItem.evalPath, 'prompt.md'), 'utf-8'),
+            ])
 
-        const evalsRoot = path.resolve(process.cwd(), 'evals')
-        const relativeToEvals = path.relative(evalsRoot, evalItem.evalPath)
-        const generatedPath =
-          relativeToEvals !== '' && !relativeToEvals.startsWith('..')
-            ? relativeToEvals
-            : path.relative(process.cwd(), evalItem.evalPath)
-        const generatedEvalRunDirectory = path.join(outputDirectory, generatedPath)
-        const runSingleEval = async () => {
-          if (cliOptions.model === 'noop') {
-            return {
-              summary: 'Copied reference files',
-              opencodeSession: undefined,
-              files: await materializeFiles(
+            const evalsRoot = path.resolve(process.cwd(), 'evals')
+            const relativeToEvals = path.relative(evalsRoot, evalItem.evalPath)
+            const generatedPath =
+              relativeToEvals !== '' && !relativeToEvals.startsWith('..')
+                ? relativeToEvals
+                : path.relative(process.cwd(), evalItem.evalPath)
+            const generatedEvalRunDirectory = path.join(
+              outputDirectory,
+              generatedPath
+            )
+            const runSingleEval = async () => {
+              await resetEvalOutputDirectory(generatedEvalRunDirectory)
+
+              if (cliOptions.model === 'noop') {
+                return {
+                  summary: 'Copied reference files',
+                  opencodeSession: undefined,
+                  files: await materializeFiles(
+                    generatedEvalRunDirectory,
+                    (
+                      await loadFiles(path.join(evalItem.evalPath, 'reference'))
+                    ).map((file) => ({
+                      path: file.path,
+                      content: file.content,
+                    }))
+                  ),
+                }
+              }
+
+              return runSolverStage(
+                prompt,
+                appFiles,
                 generatedEvalRunDirectory,
-                (await loadFiles(path.join(evalItem.evalPath, 'reference'))).map(
-                  (file) => ({
-                    path: file.path,
-                    content: file.content,
-                  })
+                {
+                  solverModel: cliOptions.model,
+                  timeout: cliOptions.timeout,
+                  port: cliOptions.port,
+                  agentLogs: cliOptions.agentLogs,
+                  verbose: cliOptions.verbose,
+                }
+              )
+            }
+
+            const solverStage = await runWithRetries(
+              runSingleEval,
+              cliOptions.maxRetries,
+              (attempt, error) => {
+                const errorMessage =
+                  error instanceof Error ? error.message : String(error)
+                console.warn(
+                  `[run-stage][${evalItem.evalId}] attempt ${attempt}/${cliOptions.maxRetries} failed: ${errorMessage}`
                 )
-              ),
+              }
+            )
+
+            const position = index + 1
+            console.log(
+              `[${position}/${discoveredEvals.length}] ${evalItem.evalId} -> generated`
+            )
+
+            const solverSessionArtifactPath = path.join(
+              generatedEvalRunDirectory,
+              'opencode-session.solver.json'
+            )
+            await writeFile(
+              solverSessionArtifactPath,
+              JSON.stringify(solverStage.opencodeSession ?? {}, null, 2),
+              'utf8'
+            )
+
+            return {
+              kind: 'success' as const,
+              index,
+              result: {
+                evalId: evalItem.evalId,
+                evalPath: toRelativePath(evalItem.evalPath),
+                outputFiles: solverStage.files.map((file) => file.path),
+                generatedPath,
+                solverSessionArtifactPath: toRelativePath(
+                  solverSessionArtifactPath
+                ),
+              },
+            }
+          } catch (error) {
+            const errorMessage = formatUnknownError(error)
+            console.error(`[run-stage][${evalItem.evalId}] ${errorMessage}`)
+
+            if (cliOptions.failFast) {
+              throw error
+            }
+
+            return {
+              kind: 'error' as const,
+              index,
             }
           }
-
-          return runSolverStage(prompt, appFiles, generatedEvalRunDirectory, {
-            solverModel: cliOptions.model,
-            timeout: cliOptions.timeout,
-            port: cliOptions.port,
-          })
         }
-
-        const solverStage = await runWithRetries(
-          runSingleEval,
-          cliOptions.maxRetries,
-          (attempt, error) => {
-            const errorMessage = error instanceof Error ? error.message : String(error)
-            console.warn(
-              `[run-stage][${evalItem.evalId}] attempt ${attempt}/${cliOptions.maxRetries} failed: ${errorMessage}`
-            )
-          }
-        )
-
-        const position = index + 1
-        console.log(
-          `[${position}/${discoveredEvals.length}] ${evalItem.evalId} -> generated`
-        )
-
-        const solverSessionArtifactPath = path.join(
-          generatedEvalRunDirectory,
-          'opencode-session.solver.json'
-        )
-        await writeFile(
-          solverSessionArtifactPath,
-          JSON.stringify(solverStage.opencodeSession ?? {}, null, 2),
-          'utf8'
-        )
-
-        return {
-          kind: 'success' as const,
-          index,
-          result: {
-            evalId: evalItem.evalId,
-            evalPath: toRelativePath(evalItem.evalPath),
-            outputFiles: solverStage.files.map((file) => file.path),
-            generatedPath,
-            solverSessionArtifactPath: toRelativePath(solverSessionArtifactPath),
-          },
-        }
-      } catch (error) {
-        const errorMessage = formatUnknownError(error)
-        console.error(`[run-stage][${evalItem.evalId}] ${errorMessage}`)
-
-        if (cliOptions.failFast) {
-          throw error
-        }
-
-        return {
-          kind: 'error' as const,
-          index,
-        }
-      }
-    }
+      )
   )
 
   const { successfulRuns, errorRuns } = partitionEvalRuns(evalRuns)
@@ -178,7 +224,11 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
   }
 
   const manifestPath = getGenerationManifestPath(outputDirectory)
-  await writeFile(manifestPath, stringifyGenerationManifest(manifestPayload), 'utf8')
+  await writeFile(
+    manifestPath,
+    stringifyGenerationManifest(manifestPayload),
+    'utf8'
+  )
 
   console.log(`generation complete: ${toRelativePath(outputDirectory)}`)
   console.log(`manifest: ${toRelativePath(manifestPath)}`)
@@ -190,11 +240,18 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
 }
 
 if (import.meta.main) {
+  let exitCode = 0
+
   try {
     await runGenerationEntry()
-    process.exit(0)
   } catch (error) {
     console.error(formatUnknownError(error))
-    process.exit(1)
+    exitCode = 1
+  } finally {
+    await shutdownAllOpencodeDockerContainers(
+      exitCode === 0 ? 'generation completed' : 'generation failed'
+    )
   }
+
+  process.exit(exitCode)
 }

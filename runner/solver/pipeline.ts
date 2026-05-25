@@ -1,10 +1,18 @@
 import { materializeFiles, runSolver } from './index'
-import { type LoadedFile } from 'runner/utils/fs'
+import type { LoadedFile } from 'runner/utils/fs'
+import {
+  cleanupOpencodeTempDir,
+  createOpencodeTempDir,
+  runWithOpencodeDockerServer,
+} from 'runner/utils/opencode'
+import { materializeSolverWorkspace } from 'runner/utils/opencode-workspace'
 
 type SolverStageOptions = {
   solverModel: string
   timeout: number
   port?: number
+  agentLogs?: boolean
+  verbose?: boolean
 }
 
 /*
@@ -13,24 +21,40 @@ type SolverStageOptions = {
 export async function runSolverStage(
   prompt: string,
   files: LoadedFile[],
-  workingDir: string,
+  outputDir: string,
   options: SolverStageOptions
 ) {
-  const result = await runSolver({
-    model: options.solverModel,
-    timeout: options.timeout,
-    port: options.port,
-    prompt,
-    files,
-    workingDirectory: workingDir,
-  })
+  const hostWorkspace = await createOpencodeTempDir()
 
-  return {
-    summary: result.summary,
-    opencodeSession: result.opencodeSession,
-    files: await materializeFiles(
-      workingDir,
-      result.files
-    ),
+  try {
+    await materializeSolverWorkspace(hostWorkspace, prompt, files)
+
+    return await runWithOpencodeDockerServer(
+      {
+        hostWorkspace,
+        timeout: options.timeout,
+        port: options.port,
+        agentLogs: options.agentLogs,
+        verbose: options.verbose,
+      },
+      async (server) => {
+        const result = await runSolver({
+          model: options.solverModel,
+          timeout: options.timeout,
+          port: server.port,
+          prompt,
+          files,
+          workingDirectory: server.containerWorkspace,
+        })
+
+        return {
+          summary: result.summary,
+          opencodeSession: result.opencodeSession,
+          files: await materializeFiles(outputDir, result.files),
+        }
+      }
+    )
+  } finally {
+    await cleanupOpencodeTempDir(hostWorkspace)
   }
 }

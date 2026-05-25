@@ -1,5 +1,4 @@
 import { Output, generateText } from 'ai'
-import { createOpencode } from 'ai-sdk-provider-opencode-sdk'
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { z } from 'zod'
@@ -8,7 +7,12 @@ import {
   collectOpencodeSessionSnapshot,
   type OpencodeSessionSnapshot,
 } from 'runner/utils/opencode-session'
-import { ensureOpencodeServerStarted } from 'runner/utils/opencode'
+import { createIsolatedOpencodeModel } from 'runner/utils/opencode-model'
+import {
+  logOpencodeTrace,
+  runTracedOpencodeCall,
+  startOpencodeCallTracer,
+} from 'runner/utils/opencode-trace'
 import type { LoadedFile } from 'runner/utils/fs'
 
 const SYSTEM_PROMPT = `
@@ -28,12 +32,14 @@ const JSON_FALLBACK_SYSTEM_PROMPT = `
 
 const solverOutputSchema = z.object({
   summary: z.string().describe('Short summary of performed work'),
-  files: z.array(
-    z.object({
-      path: z.string(),
-      content: z.string(),
-    })
-  ).min(1),
+  files: z
+    .array(
+      z.object({
+        path: z.string(),
+        content: z.string(),
+      })
+    )
+    .min(1),
 })
 
 export type SolverResult = {
@@ -148,72 +154,104 @@ function parseSolverOutputFromText(rawText: string) {
   Runs an OpenCode-backed solver and materializes generated files for judges.
 */
 export async function runSolver(params: {
-  prompt: string,
-  files: LoadedFile[],
-  workingDirectory: string,
+  prompt: string
+  files: LoadedFile[]
+  workingDirectory: string
   model: string
   timeout: number
   port?: number
 }) {
-  await ensureOpencodeServerStarted(params)
-
-  const provider = createOpencode({
-    port: params.port,
-    autoStartServer: false,
-  })
+  if (params.port === undefined) {
+    throw new Error('runSolver requires an opencode server port')
+  }
 
   const prompt = buildSolverPrompt(params.prompt, params.files)
-  const model = provider(params.model, {
-    createNewSession: true,
+  const promptBytes = Buffer.byteLength(prompt, 'utf8')
+  const tracer = startOpencodeCallTracer({
+    label: 'solver',
+    model: params.model,
+    port: params.port,
+    directory: params.workingDirectory,
+    timeoutMs: params.timeout,
+    inputSummary: `files=${params.files.length} promptBytes=${promptBytes}`,
+  })
+
+  const { model, dispose } = createIsolatedOpencodeModel(params.model, {
+    port: params.port,
     cwd: params.workingDirectory,
   })
 
   try {
-    const response = await generateText({
-      model,
-      prompt,
-      system: SYSTEM_PROMPT,
-      abortSignal: AbortSignal.timeout(params.timeout),
-      output: Output.object({
-        schema: solverOutputSchema,
-        description: 'Generated files that satisfy the task',
-      }),
-    })
-
-    return {
-      ...response.output,
-      opencodeSession: await collectOpencodeSessionSnapshot({
-        sessionId: extractOpencodeSessionId(response),
-        port: params.port,
-        directory: params.workingDirectory,
-      }),
-    }
-  } catch (structuredOutputError) {
-    const fallbackResponse = await generateText({
-      model,
-      prompt,
-      system: `${SYSTEM_PROMPT}\n${JSON_FALLBACK_SYSTEM_PROMPT}`,
-      abortSignal: AbortSignal.timeout(params.timeout),
-    })
-
-    const parsedOutput = parseSolverOutputFromText(fallbackResponse.text)
-    if (!parsedOutput.success) {
-      const originalMessage =
-        structuredOutputError instanceof Error
-          ? structuredOutputError.message
-          : String(structuredOutputError)
-      throw new Error(
-        `solver did not return valid file output (structured output failed: ${originalMessage})`
+    try {
+      const response = await runTracedOpencodeCall(
+        tracer,
+        'generateText:structured-output',
+        () =>
+          generateText({
+            model,
+            prompt,
+            system: SYSTEM_PROMPT,
+            abortSignal: AbortSignal.timeout(params.timeout),
+            output: Output.object({
+              schema: solverOutputSchema,
+              description: 'Generated files that satisfy the task',
+            }),
+          })
       )
-    }
 
-    return {
-      ...parsedOutput.data,
-      opencodeSession: await collectOpencodeSessionSnapshot({
-        sessionId: extractOpencodeSessionId(fallbackResponse),
-        port: params.port,
-        directory: params.workingDirectory,
-      }),
+      tracer.noteSessionId(extractOpencodeSessionId(response))
+
+      return {
+        ...response.output,
+        opencodeSession: await collectOpencodeSessionSnapshot({
+          sessionId: extractOpencodeSessionId(response),
+          port: params.port,
+          directory: params.workingDirectory,
+        }),
+      }
+    } catch (structuredOutputError) {
+      logOpencodeTrace(
+        `structured output failed; trying JSON fallback: ${structuredOutputError instanceof Error ? structuredOutputError.message : String(structuredOutputError)}`
+      )
+
+      const fallbackResponse = await runTracedOpencodeCall(
+        tracer,
+        'generateText:json-fallback',
+        () =>
+          generateText({
+            model,
+            prompt,
+            system: `${SYSTEM_PROMPT}\n${JSON_FALLBACK_SYSTEM_PROMPT}`,
+            abortSignal: AbortSignal.timeout(params.timeout),
+          })
+      )
+
+      tracer.noteSessionId(
+        extractOpencodeSessionId(fallbackResponse)
+      )
+
+      const parsedOutput = parseSolverOutputFromText(fallbackResponse.text)
+      if (!parsedOutput.success) {
+        const originalMessage =
+          structuredOutputError instanceof Error
+            ? structuredOutputError.message
+            : String(structuredOutputError)
+        throw new Error(
+          `solver did not return valid file output (structured output failed: ${originalMessage})`
+        )
+      }
+
+      return {
+        ...parsedOutput.data,
+        opencodeSession: await collectOpencodeSessionSnapshot({
+          sessionId: extractOpencodeSessionId(fallbackResponse),
+          port: params.port,
+          directory: params.workingDirectory,
+        }),
+      }
     }
+  } finally {
+    tracer.stop()
+    await dispose()
   }
 }
