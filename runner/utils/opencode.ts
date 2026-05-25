@@ -8,10 +8,16 @@ import { randomUUID } from 'node:crypto'
 
 import { startOpencodeAgentActivityLogging } from './opencode-agent-activity'
 import {
+  DEFAULT_OPENCODE_PORT,
+  OPENCODE_CONTAINER_WORKSPACE,
+} from './opencode-constants'
+import {
   configureOpencodeVerboseLogging,
   isOpencodeVerboseLoggingEnabled,
   logOpencodeTrace,
 } from './opencode-trace'
+
+export { DEFAULT_OPENCODE_PORT, OPENCODE_CONTAINER_WORKSPACE }
 
 type OpencodeWorkerContext = {
   workerId: number
@@ -26,7 +32,6 @@ const OPENCODE_TEMP_PREFIX = 'evals-opencode-'
 const OPENCODE_HOME_PREFIX = 'evals-opencode-home-'
 const OPENCODE_CONTAINER_NAME_PREFIX = 'evals-opencode-'
 const DEFAULT_DOCKER_IMAGE = 'evals-opencode:latest'
-export const DEFAULT_OPENCODE_PORT = 4096
 const DOCKER_SERVER_START_TIMEOUT_MS = 120_000
 const DEFAULT_OPENCODE_SERVER_LOG_LEVEL = 'INFO'
 

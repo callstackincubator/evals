@@ -5,7 +5,7 @@ import {
   type Part,
 } from '@opencode-ai/sdk'
 
-import { DEFAULT_OPENCODE_PORT } from 'runner/utils/opencode'
+import { DEFAULT_OPENCODE_PORT } from 'runner/utils/opencode-constants'
 
 export type OpencodeSessionMessageSnapshot = {
   id: string
