@@ -463,10 +463,6 @@ async function pathExists(targetPath: string) {
   }
 }
 
-function getDockerImage() {
-  return process.env.OPENCODE_DOCKER_IMAGE ?? DEFAULT_DOCKER_IMAGE
-}
-
 function getDockerBuildContext() {
   return path.resolve(process.cwd(), 'runner/docker/opencode')
 }
@@ -679,7 +675,7 @@ async function ensureOpencodeDockerImageOnce(image: string) {
   return buildOpencodeDockerImage(image)
 }
 
-export async function ensureOpencodeDockerImage(image = getDockerImage()) {
+export async function ensureOpencodeDockerImage(image = DEFAULT_DOCKER_IMAGE) {
   let ensurePromise = dockerImageEnsurePromises.get(image)
   if (!ensurePromise) {
     ensurePromise = ensureOpencodeDockerImageOnce(image)
@@ -697,7 +693,7 @@ export async function ensureOpencodeDockerImage(image = getDockerImage()) {
   return ensurePromise
 }
 
-export async function prepareOpencodeDockerRuntime(image = getDockerImage()) {
+export async function prepareOpencodeDockerRuntime(image = DEFAULT_DOCKER_IMAGE) {
   ensureOpencodeDockerShutdownHandlers()
   logOpencode(`preparing docker runtime (image=${image})`, 'global')
   await ensureOpencodeDockerImage(image)

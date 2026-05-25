@@ -136,7 +136,7 @@ describe('opencode docker env passthrough', () => {
 
   test('passes worker required env vars through to containers', () => {
     expect(shouldPassthroughOpencodeDockerEnvKey('AI_GATEWAY_API_KEY')).toBe(
-      true
+      false
     )
     expect(shouldPassthroughOpencodeDockerEnvKey('CLOUDFLARE_API_TOKEN')).toBe(
       true

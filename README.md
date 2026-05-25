@@ -27,7 +27,9 @@ bun runner/run.ts --model openai/gpt-4.1-mini --output generated/my-generated
 bun runner/judge.ts --model openai/gpt-5.3-codex --input generated/my-generated
 ```
 
-To enable agent logs, add the `--agent-logs` flag to the command.
+OpenCode runs in Docker for solver and judge calls. Credentials reach containers via copied `~/.local/share/opencode/auth.json`, passthrough env vars (`OPENAI_*`, `CLOUDFLARE_*`, and others), and an optional repo-level `opencode.json`. See [docs/opencode-docker.md](./docs/opencode-docker.md) for the full mount and secrets reference.
+
+For debugging OpenCode runs, pass `--agent-logs` to stream agent/session events, or `--verbose` for per-call session heartbeats and phase traces (`--verbose` also enables agent logs). Both flags work on `run.ts` and `judge.ts`.
 
 For full command reference and workflows, see [docs](./docs) and [CONTRIBUTING.md](./CONTRIBUTING.md).
 

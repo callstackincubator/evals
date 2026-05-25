@@ -12,6 +12,5 @@ export const DEFAULT_OPENCODE_DOCKER_PASSTHROUGH_ENV_PREFIXES = [
   'GEMINI_',
   'AZURE_',
   'PARASAIL_',
-  'AI_GATEWAY_',
   'CLOUDFLARE_',
 ] as const
