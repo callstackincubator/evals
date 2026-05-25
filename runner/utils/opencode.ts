@@ -11,6 +11,7 @@ import {
   DEFAULT_OPENCODE_DOCKER_PASSTHROUGH_ENV_PREFIXES,
   DEFAULT_OPENCODE_PORT,
   OPENCODE_CONTAINER_WORKSPACE,
+  OPENCODE_DOCKER_RUN_LABEL,
 } from './opencode-constants'
 import {
   configureOpencodeVerboseLogging,
@@ -33,6 +34,7 @@ const OPENCODE_TEMP_PREFIX = 'evals-opencode-'
 const OPENCODE_HOME_PREFIX = 'evals-opencode-home-'
 const OPENCODE_CONTAINER_NAME_PREFIX = 'evals-opencode-'
 const DEFAULT_DOCKER_IMAGE = 'evals-opencode:latest'
+const opencodeDockerRunId = randomUUID()
 const DOCKER_SERVER_START_TIMEOUT_MS = 120_000
 const DEFAULT_OPENCODE_SERVER_LOG_LEVEL = 'INFO'
 
@@ -200,6 +202,7 @@ function followContainerLogs(containerName: string) {
     return () => {}
   }
 
+  let stopped = false
   const child = spawn('docker', ['logs', '-f', '--timestamps', containerName], {
     stdio: ['ignore', 'pipe', 'pipe'],
   })
@@ -237,7 +240,19 @@ function followContainerLogs(containerName: string) {
     stderrBuffer = flushBuffer(stderrBuffer, 'stderr', true)
   })
 
+  child.on('error', (error) => {
+    if (stopped) {
+      return
+    }
+
+    stopped = true
+    logOpencodeWarn(
+      `failed to stream logs for container ${containerName}: ${error.message}`
+    )
+  })
+
   return () => {
+    stopped = true
     child.kill('SIGTERM')
   }
 }
@@ -253,7 +268,12 @@ function unregisterActiveOpencodeContainer(containerName: string) {
 function listEvalsOpencodeContainerRefs() {
   const result = spawnSync(
     'docker',
-    ['ps', '-aq', '--filter', `name=${OPENCODE_CONTAINER_NAME_PREFIX}`],
+    [
+      'ps',
+      '-aq',
+      '--filter',
+      `label=${OPENCODE_DOCKER_RUN_LABEL}=${opencodeDockerRunId}`,
+    ],
     { encoding: 'utf8' }
   )
 
@@ -367,7 +387,9 @@ function installOpencodeDockerShutdownHandlers() {
   process.on('SIGTERM', () => handleSignal('SIGTERM'))
 }
 
-installOpencodeDockerShutdownHandlers()
+function ensureOpencodeDockerShutdownHandlers() {
+  installOpencodeDockerShutdownHandlers()
+}
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -670,6 +692,7 @@ export async function ensureOpencodeDockerImage(image = getDockerImage()) {
 }
 
 export async function prepareOpencodeDockerRuntime(image = getDockerImage()) {
+  ensureOpencodeDockerShutdownHandlers()
   logOpencode(`preparing docker runtime (image=${image})`, 'global')
   await ensureOpencodeDockerImage(image)
   logOpencode(
@@ -740,6 +763,7 @@ export async function startOpencodeDockerServer(options: {
   port?: number
 }): Promise<OpencodeDockerServer> {
   return withDockerContainerStartLock(async () => {
+    ensureOpencodeDockerShutdownHandlers()
     const image = await ensureOpencodeDockerImage()
     const serverStartTimeout = Math.max(
       DOCKER_SERVER_START_TIMEOUT_MS,
@@ -774,6 +798,8 @@ export async function startOpencodeDockerServer(options: {
           '--init',
           '--security-opt',
           'no-new-privileges',
+          '--label',
+          `${OPENCODE_DOCKER_RUN_LABEL}=${opencodeDockerRunId}`,
           '-p',
           `127.0.0.1:${hostPort}:${DEFAULT_OPENCODE_PORT}`,
           ...volumeArgs,

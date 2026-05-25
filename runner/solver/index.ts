@@ -199,7 +199,7 @@ export async function runSolver(params: {
           })
       )
 
-      tracer.noteSessionId(extractOpencodeSessionId(response) ?? 'unknown')
+      tracer.noteSessionId(extractOpencodeSessionId(response))
 
       return {
         ...response.output,
@@ -227,7 +227,7 @@ export async function runSolver(params: {
       )
 
       tracer.noteSessionId(
-        extractOpencodeSessionId(fallbackResponse) ?? 'unknown'
+        extractOpencodeSessionId(fallbackResponse)
       )
 
       const parsedOutput = parseSolverOutputFromText(fallbackResponse.text)

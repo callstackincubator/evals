@@ -158,7 +158,7 @@ async function fetchSessionProgress(options: {
 
 export type OpencodeCallTracer = {
   setPhase(phase: string): void
-  noteSessionId(sessionId: string): void
+  noteSessionId(sessionId: string | undefined): void
   stop(): void
 }
 
@@ -217,6 +217,10 @@ export function startOpencodeCallTracer(options: {
       )
     },
     noteSessionId(nextSessionId) {
+      if (!nextSessionId) {
+        return
+      }
+
       sessionId = nextSessionId
       logOpencodeTrace(
         `${options.label} session-id=${nextSessionId} phase=${phase} elapsed=${formatElapsed(Date.now() - startedAt)}`

@@ -29,6 +29,8 @@ describe('opencode trace logging', () => {
       port: 4096,
       timeoutMs: 1000,
     })
+    verboseTracer.noteSessionId(undefined)
+    verboseTracer.noteSessionId('session-123')
     verboseTracer.stop()
 
     configureOpencodeVerboseLogging({ verbose: false })

@@ -155,7 +155,7 @@ export async function runJudgeCall(
           })
       )
 
-      tracer.noteSessionId(extractOpencodeSessionId(response) ?? 'unknown')
+      tracer.noteSessionId(extractOpencodeSessionId(response))
 
       return {
         summary: response.output.summary,
@@ -184,7 +184,7 @@ export async function runJudgeCall(
       )
 
       tracer.noteSessionId(
-        extractOpencodeSessionId(fallbackResponse) ?? 'unknown'
+        extractOpencodeSessionId(fallbackResponse)
       )
 
       const parsedOutput = parseJudgeOutputFromText(fallbackResponse.text)
