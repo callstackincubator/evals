@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import Image from "next/image";
 import { ArrowDownRight, ArrowUpRight } from "@phosphor-icons/react";
 import { cn, formatPct } from "@/lib/utils";
 
@@ -56,6 +57,12 @@ const cursorLogo = `<?xml version="1.0" encoding="UTF-8"?>
   <path class="st4" d="M448.35,142.54c1.31,2.26,1.49,5.16,0,7.74l-209.83,363.42c-1.41,2.46-5.16,1.45-5.16-1.38v-239.48c0-1.91-.51-3.75-1.44-5.36l216.42-124.95h.01Z"/>
   <path class="st2" d="M448.35,142.54l-216.42,124.95c-.92-1.6-2.26-2.96-3.92-3.92L20.62,143.83c-2.46-1.41-1.45-5.16,1.38-5.16h419.65c2.98,0,5.4,1.61,6.7,3.87Z"/>
 </svg>`;
+
+const apexLogoSrc = "/model-logos/apex.png";
+
+type ModelLogo =
+  | { svg: string; className?: string }
+  | { src: string; className?: string };
 
 function escapeSvgText(value: string): string {
   return value
@@ -135,7 +142,7 @@ function getSizedLogoSvg(svg: string, className?: string): string {
   );
 }
 
-function modelLogoById(modelId: string): { svg: string; className?: string } | null {
+function modelLogoById(modelId: string): ModelLogo | null {
   const normalizedId = modelId.toLowerCase();
 
   if (modelId.startsWith("claude-")) {
@@ -194,6 +201,10 @@ function modelLogoById(modelId: string): { svg: string; className?: string } | n
     return { svg: cursorLogo };
   }
 
+  if (normalizedId.includes("apex")) {
+    return { src: apexLogoSrc };
+  }
+
   return null;
 }
 
@@ -201,6 +212,10 @@ export function getModelLogoDataUri(modelId: string, modelLabel: string): string
   const logo = modelLogoById(modelId);
 
   if (logo) {
+    if ("src" in logo) {
+      return logo.src;
+    }
+
     const sizedSvg = getSizedLogoSvg(logo.svg, logo.className);
     return `data:image/svg+xml;utf8,${encodeURIComponent(sizedSvg)}`;
   }
@@ -229,7 +244,19 @@ export function ModelLogoSquare({ modelId, modelLabel }: { modelId: string; mode
   return (
     <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center">
       {logo ? (
-        <ModelLogoMarkup svg={logo.svg} className={logo.className} />
+        "src" in logo ? (
+          <Image
+            src={logo.src}
+            alt=""
+            width={16}
+            height={16}
+            className={cn("block h-4 w-4", logo.className)}
+            aria-hidden
+            unoptimized
+          />
+        ) : (
+          <ModelLogoMarkup svg={logo.svg} className={logo.className} />
+        )
       ) : (
         <span className="text-[10px] font-semibold uppercase leading-none text-zinc-300">{fallback}</span>
       )}

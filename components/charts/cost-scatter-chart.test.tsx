@@ -75,7 +75,7 @@ describe("CostScatterChart", () => {
   it("renders mobile and desktop chart containers", () => {
     const { container } = render(<CostScatterChart category={category} models={models} />);
 
-    expect(screen.getAllByText(/on pareto frontier/i)).toHaveLength(2);
+    expect(screen.getAllByText(/on pareto frontier/i)).toHaveLength(1);
     expect(container.querySelector(".lg\\:hidden")).not.toBeNull();
     expect(container.querySelector(".hidden.lg\\:block")).not.toBeNull();
   });

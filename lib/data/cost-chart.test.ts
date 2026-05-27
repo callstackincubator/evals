@@ -9,11 +9,7 @@ describe("cost scatter data", () => {
     expect(chartData.frontierPoints.map((point) => point.modelId)).toEqual([
       "GPT-OSS-20B",
       "GPT-OSS-120B",
-      "GLM-5",
-      "kimi-k2.5",
-      "GPT-5.3-Codex",
-      "GPT-5.4",
-      "claude-opus-4.6",
+      "Apex",
     ]);
   });
 
@@ -25,7 +21,11 @@ describe("cost scatter data", () => {
 
     const chartData = buildCategoryCostScatterData(navigation!, data.models);
 
-    expect(chartData.omittedModelIds).toEqual([]);
+    expect(chartData.omittedModelIds).toEqual([
+      "composer-2",
+      "composer-2-fast",
+      "gemma-4-31B-it",
+    ]);
     expect(chartData.points.some((point) => point.modelId === "DeepSeek-r1-distill-qwen-32B")).toBe(true);
     expect(chartData.points.some((point) => point.modelId === "qwen2.5-coder-32B-instruct")).toBe(true);
   });
