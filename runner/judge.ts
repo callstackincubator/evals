@@ -15,6 +15,7 @@ import { partitionEvalRuns } from './utils/eval-runs'
 import { loadFiles, sanitizeSegment } from './utils/fs'
 import {
   configureOpencodeDockerLogging,
+  configureOpencodeHostTmpdir,
   prepareOpencodeDockerRuntime,
   runWithOpencodeWorkerContext,
   shutdownAllOpencodeDockerContainers,
@@ -366,6 +367,7 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
     agentLogs: cliOptions.agentLogs,
     verbose: cliOptions.verbose,
   })
+  configureOpencodeHostTmpdir({ hostTmpdir: cliOptions.hostTmpdir })
   const inputDirectory = path.resolve(process.cwd(), cliOptions.input)
   const outputDirectory = cliOptions.output ?? path.dirname(inputDirectory)
   const outputDirectories = await createRunOutputDirectories(outputDirectory)
