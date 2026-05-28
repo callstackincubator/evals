@@ -29,6 +29,7 @@ type OpencodeWorkerContext = {
 
 const opencodeWorkerContext = new AsyncLocalStorage<OpencodeWorkerContext>()
 let agentActivityLoggingEnabled = false
+let configuredHostTmpdir: string | undefined
 
 const OPENCODE_TEMP_PREFIX = 'evals-opencode-'
 const OPENCODE_HOME_PREFIX = 'evals-opencode-home-'
@@ -107,6 +108,12 @@ export function logOpencodeWarn(
 
 export function logOpencodeAgent(message: string) {
   console.log(`${formatOpencodeLogTag('auto')}[agent] ${message}`)
+}
+
+export function configureOpencodeHostTmpdir(options: { hostTmpdir?: string }) {
+  configuredHostTmpdir = options.hostTmpdir?.trim()
+    ? path.resolve(options.hostTmpdir.trim())
+    : undefined
 }
 
 export function configureOpencodeDockerLogging(options: {
@@ -467,8 +474,19 @@ function getDockerBuildContext() {
   return path.resolve(process.cwd(), 'runner/docker/opencode')
 }
 
+export function getOpencodeTempRoot() {
+  return configuredHostTmpdir ?? os.tmpdir()
+}
+
+async function ensureOpencodeTempRoot() {
+  const tempRoot = getOpencodeTempRoot()
+  await mkdir(tempRoot, { recursive: true })
+  return tempRoot
+}
+
 export async function createOpencodeTempDir() {
-  return mkdtemp(path.join(os.tmpdir(), OPENCODE_TEMP_PREFIX))
+  const tempRoot = await ensureOpencodeTempRoot()
+  return mkdtemp(path.join(tempRoot, OPENCODE_TEMP_PREFIX))
 }
 
 export async function cleanupOpencodeTempDir(directory: string) {
@@ -693,9 +711,15 @@ export async function ensureOpencodeDockerImage(image = DEFAULT_DOCKER_IMAGE) {
   return ensurePromise
 }
 
-export async function prepareOpencodeDockerRuntime(image = DEFAULT_DOCKER_IMAGE) {
+export async function prepareOpencodeDockerRuntime(
+  image = DEFAULT_DOCKER_IMAGE
+) {
   ensureOpencodeDockerShutdownHandlers()
   logOpencode(`preparing docker runtime (image=${image})`, 'global')
+  if (configuredHostTmpdir) {
+    const tempRoot = await ensureOpencodeTempRoot()
+    logOpencode(`host temp root: ${tempRoot}`, 'global')
+  }
   await ensureOpencodeDockerImage(image)
   logOpencode(
     `docker runtime ready (serve log level=${agentActivityLoggingEnabled ? 'DEBUG' : (process.env.OPENCODE_SERVER_LOG_LEVEL ?? DEFAULT_OPENCODE_SERVER_LOG_LEVEL)}, stream container logs=${shouldStreamContainerLogs()}, agent logs=${agentActivityLoggingEnabled}, verbose=${isOpencodeVerboseLoggingEnabled()})`,
@@ -735,8 +759,9 @@ async function buildDockerVolumeArgs(hostWorkspace: string) {
   const authSource = path.join(homeDirectory, '.local/share/opencode/auth.json')
 
   if (await pathExists(authSource)) {
+    const tempRoot = await ensureOpencodeTempRoot()
     const runtimeDataDirectory = await mkdtemp(
-      path.join(os.tmpdir(), OPENCODE_HOME_PREFIX)
+      path.join(tempRoot, OPENCODE_HOME_PREFIX)
     )
     cleanupPaths.push(runtimeDataDirectory)
     await mkdir(runtimeDataDirectory, { recursive: true })

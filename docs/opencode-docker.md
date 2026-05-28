@@ -20,6 +20,30 @@ Provider access depends on 3 optional sources:
 2. passthrough env vars
 3. config referenced from `opencode.json`/`opencode.jsonc` placed in this repo root
 
+## Running the runner inside Docker
+
+When the runner itself runs in a container with access to the host Docker socket, solver/judge workspaces and auth isolation dirs must live on a host-visible path. The Docker daemon resolves bind-mount sources on the host, not inside the runner container.
+
+Pass `--host-tmpdir` to a directory that exists on the host and is bind-mounted into the runner container at the **same path**:
+
+```bash
+# on the host
+mkdir -p /var/tmp/evals-runner
+
+docker run \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v /var/tmp/evals-runner:/var/tmp/evals-runner \
+  ... \
+  bun runner/run.ts \
+    --model openai/gpt-4.1-mini \
+    --host-tmpdir /var/tmp/evals-runner \
+    --output generated/my-generated
+```
+
+When omitted, the runner uses the process temp directory (`os.tmpdir()`, typically `/tmp`). That works for local runs where the runner process and Docker daemon share the same filesystem namespace.
+
+The runner creates per-session subdirectories under this root with prefixes `evals-opencode-` (workspaces) and `evals-opencode-home-` (isolated auth copies). They are removed when each session finishes.
+
 ## Environment variable passthrough
 
 The runner forwards matching host environment variables into the container with `docker run -e`.
@@ -56,6 +80,10 @@ Extra prefixes are merged with the defaults above.
 ## Debugging flags
 
 Both `bun runner/run.ts` and `bun runner/judge.ts` accept:
+
+### `--host-tmpdir`
+
+Optional host-visible temp root for solver/judge workspaces and isolated auth copies. Use when the runner runs inside a container with access to the host Docker socket. See [Running the runner inside Docker](#running-the-runner-inside-docker).
 
 ### `--agent-logs`
 

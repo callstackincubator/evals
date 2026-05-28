@@ -1,19 +1,24 @@
 import { createServer } from 'node:net'
-import { access } from 'node:fs/promises'
+import { access, mkdtemp, rm } from 'node:fs/promises'
+import os from 'node:os'
+import path from 'node:path'
 import { afterEach, describe, expect, test } from 'bun:test'
 
 import {
   allocateHostPort,
   cleanupOpencodeTempDir,
+  configureOpencodeHostTmpdir,
   createOpencodeTempDir,
   DEFAULT_OPENCODE_PORT,
   forceStopEvalsOpencodeContainersSync,
   formatContainerLogLine,
+  getOpencodeTempRoot,
   shouldPassthroughOpencodeDockerEnvKey,
 } from './opencode'
 
 describe('opencode temp workspace', () => {
   test('creates and cleans up a temp directory', async () => {
+    configureOpencodeHostTmpdir({})
     const workspace = await createOpencodeTempDir()
 
     expect(workspace.includes('evals-opencode-')).toBe(true)
@@ -22,6 +27,27 @@ describe('opencode temp workspace', () => {
     await cleanupOpencodeTempDir(workspace)
 
     await expect(access(workspace)).rejects.toThrow()
+  })
+
+  test('uses --host-tmpdir when configured', async () => {
+    const configuredRoot = await mkdtemp(
+      path.join(os.tmpdir(), 'runner-opencode-host-tmp-')
+    )
+    configureOpencodeHostTmpdir({ hostTmpdir: configuredRoot })
+
+    try {
+      const workspace = await createOpencodeTempDir()
+      expect(workspace.startsWith(configuredRoot)).toBe(true)
+      expect(getOpencodeTempRoot()).toBe(configuredRoot)
+      await cleanupOpencodeTempDir(workspace)
+    } finally {
+      configureOpencodeHostTmpdir({})
+      await rm(configuredRoot, { recursive: true, force: true })
+    }
+  })
+
+  afterEach(() => {
+    configureOpencodeHostTmpdir({})
   })
 })
 

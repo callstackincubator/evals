@@ -29,6 +29,7 @@ export function parseRunCliArgs(argv: string[] = Bun.argv.slice(2)) {
       'pattern': { type: 'string', default: 'evals/**/*' },
       'timeout': { type: 'string', default: '120000' },
       'port': { type: 'string' },
+      'host-tmpdir': { type: 'string' },
       'output': { type: 'string' },
     },
     strict: true,
@@ -49,6 +50,7 @@ export function parseRunCliArgs(argv: string[] = Bun.argv.slice(2)) {
     pattern: values.pattern,
     timeout: parsePositiveInteger(values.timeout, '--timeout'),
     port: parsePort(values.port),
+    hostTmpdir: values['host-tmpdir'],
     output: values.output,
   }
 }
@@ -72,6 +74,7 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
       'rerun-requirements-file': { type: 'string' },
       'timeout': { type: 'string', default: '120000' },
       'port': { type: 'string' },
+      'host-tmpdir': { type: 'string' },
       'input': { type: 'string' },
       'output': { type: 'string' },
     },
@@ -119,6 +122,7 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
     rerunRequirementsFile: values['rerun-requirements-file'],
     timeout: parsePositiveInteger(values.timeout, '--timeout'),
     port: parsePort(values.port),
+    hostTmpdir: values['host-tmpdir'],
     input: values.input,
     output: values.output,
   }

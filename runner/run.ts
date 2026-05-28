@@ -19,6 +19,7 @@ import {
 } from './utils/fs'
 import {
   configureOpencodeDockerLogging,
+  configureOpencodeHostTmpdir,
   prepareOpencodeDockerRuntime,
   runWithOpencodeWorkerContext,
   shutdownAllOpencodeDockerContainers,
@@ -71,6 +72,7 @@ export async function runGenerationEntry(argv: string[] = Bun.argv.slice(2)) {
     agentLogs: cliOptions.agentLogs,
     verbose: cliOptions.verbose,
   })
+  configureOpencodeHostTmpdir({ hostTmpdir: cliOptions.hostTmpdir })
   const discoveredEvals = await discoverEvals(cliOptions.pattern)
   const runId = new Date().toISOString().replace(/[:.]/g, '-')
   const startedAt = new Date().toISOString()
