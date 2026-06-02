@@ -9,11 +9,12 @@ describe("cost scatter data", () => {
     expect(chartData.frontierPoints.map((point) => point.modelId)).toEqual([
       "GPT-OSS-20B",
       "GPT-OSS-120B",
+      "mimo-v2.5-pro",
       "Apex",
     ]);
   });
 
-  it("includes every model in category cost views after effective fallback", () => {
+  it("reports models with incomplete category cost data as omitted", () => {
     const data = loadDashboardData();
     const navigation = data.categories.find((category) => category.id === "navigation");
 
@@ -24,6 +25,8 @@ describe("cost scatter data", () => {
     expect(chartData.omittedModelIds).toEqual([
       "composer-2",
       "composer-2-fast",
+      "minimax-m3",
+      "gemini-3.5-flash",
       "gemma-4-31B-it",
     ]);
     expect(chartData.points.some((point) => point.modelId === "DeepSeek-r1-distill-qwen-32B")).toBe(true);
