@@ -12,7 +12,14 @@ import { runLlmJudgeStage } from './evaluators/llm/run'
 import { computeScore, type RequirementResult } from './evaluators/llm/utils'
 import { runWithConcurrency } from './solver/concurrency'
 import { partitionEvalRuns } from './utils/eval-runs'
-import { loadFile, loadFiles, sanitizeSegment } from './utils/fs'
+import { loadFiles, sanitizeSegment } from './utils/fs'
+import {
+  configureOpencodeDockerLogging,
+  configureOpencodeHostTmpdir,
+  prepareOpencodeDockerRuntime,
+  runWithOpencodeWorkerContext,
+  shutdownAllOpencodeDockerContainers,
+} from './utils/opencode'
 
 function roundTo(value: number, decimals: number) {
   const scale = 10 ** decimals
@@ -34,6 +41,12 @@ function getEvalResultSubdirectory(generatedPath: string) {
     return ''
   }
   return parentDirectory
+}
+
+function filterGeneratedSubmissionFiles(
+  files: Awaited<ReturnType<typeof loadFiles>>
+) {
+  return files.filter((file) => file.path !== 'opencode-session.solver.json')
 }
 
 function formatUnknownError(error: unknown) {
@@ -68,7 +81,9 @@ type PersistedEvalResult = {
   judgeSessionArtifactPath?: string
 }
 
-type ManifestEval = Awaited<ReturnType<typeof readGenerationManifest>>['evals'][number]
+type ManifestEval = Awaited<
+  ReturnType<typeof readGenerationManifest>
+>['evals'][number]
 
 function parsePersistedEvalResult(
   raw: string,
@@ -195,6 +210,8 @@ async function runJudgeForManifestEval(options: {
   manifestEval: ManifestEval
   index: number
   total: number
+  workerId: number
+  workerCount: number
   cliOptions: ReturnType<typeof parseJudgeCliArgs>
   inputDirectory: string
   outputDirectories: Awaited<ReturnType<typeof createRunOutputDirectories>>
@@ -207,33 +224,48 @@ async function runJudgeForManifestEval(options: {
     options.inputDirectory,
     manifestEval.generatedPath
   )
-  const generatedFiles = await loadFiles(generatedEvalRunDirectory)
+  const generatedFiles = filterGeneratedSubmissionFiles(
+    await loadFiles(generatedEvalRunDirectory)
+  )
   if (generatedFiles.length === 0) {
     throw new Error(
       `no generated files found in ${toRelativePath(generatedEvalRunDirectory)}`
     )
   }
 
-  const [requirements, prompt] = await Promise.all([
+  const [requirements, prompt, referenceFiles] = await Promise.all([
     readFile(path.join(evalDirectory, 'requirements.yaml'), 'utf-8'),
     readFile(path.join(evalDirectory, 'prompt.md'), 'utf-8'),
+    loadFiles(path.join(evalDirectory, 'reference')),
   ])
 
-  const packageJson = await loadFile(path.join(process.cwd(), 'testbench/package.json'))
-
-  const llmJudgeStage = await runWithRetries(
+  const llmJudgeStage = await runWithOpencodeWorkerContext(
+    {
+      workerId: options.workerId,
+      workerCount: options.workerCount,
+      taskLabel: manifestEval.evalId,
+    },
     () =>
-      runLlmJudgeStage([packageJson, ...generatedFiles], requirements, {
-        ...options.cliOptions,
-        directory: process.cwd(),
-      }),
-    options.cliOptions.maxRetries,
-    (attempt, error) => {
-      const errorMessage = error instanceof Error ? error.message : String(error)
-      console.warn(
-        `[judge-stage][${manifestEval.evalId}] attempt ${attempt}/${options.cliOptions.maxRetries} failed: ${errorMessage}`
+      runWithRetries(
+        () =>
+          runLlmJudgeStage(
+            {
+              requirements,
+              referenceFiles,
+              generatedFiles,
+              prompt,
+            },
+            options.cliOptions
+          ),
+        options.cliOptions.maxRetries,
+        (attempt, error) => {
+          const errorMessage =
+            error instanceof Error ? error.message : String(error)
+          console.warn(
+            `[judge-stage][${manifestEval.evalId}] attempt ${attempt}/${options.cliOptions.maxRetries} failed: ${errorMessage}`
+          )
+        }
       )
-    }
   )
 
   const stageResult = {
@@ -257,7 +289,9 @@ async function runJudgeForManifestEval(options: {
   }
 
   const resultFileName = `${sanitizeSegment(stageResult.evalId)}.json`
-  const resultSubdirectory = getEvalResultSubdirectory(manifestEval.generatedPath)
+  const resultSubdirectory = getEvalResultSubdirectory(
+    manifestEval.generatedPath
+  )
   const resultDirectory = path.join(
     options.outputDirectories.evalDirectory,
     resultSubdirectory
@@ -280,7 +314,10 @@ async function runJudgeForManifestEval(options: {
   }
 
   stageResult.judgeSessionArtifactPath = judgeSessionArtifactPath
-    ? toPosixRelativePath(options.outputDirectories.runDirectory, judgeSessionArtifactPath)
+    ? toPosixRelativePath(
+        options.outputDirectories.runDirectory,
+        judgeSessionArtifactPath
+      )
     : undefined
 
   await writeFile(
@@ -292,7 +329,7 @@ async function runJudgeForManifestEval(options: {
   const position = options.index + 1
   console.log(
     `[${position}/${options.total}] ${manifestEval.evalId} ` +
-      `-> llm:${stageResult.score.ratio}`
+      `-> llm score:${stageResult.score.ratio}`
   )
 
   return stageResult
@@ -326,6 +363,11 @@ async function runWithRetries<T>(
 */
 export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
   const cliOptions = parseJudgeCliArgs(argv)
+  configureOpencodeDockerLogging({
+    agentLogs: cliOptions.agentLogs,
+    verbose: cliOptions.verbose,
+  })
+  configureOpencodeHostTmpdir({ hostTmpdir: cliOptions.hostTmpdir })
   const inputDirectory = path.resolve(process.cwd(), cliOptions.input)
   const outputDirectory = cliOptions.output ?? path.dirname(inputDirectory)
   const outputDirectories = await createRunOutputDirectories(outputDirectory)
@@ -333,6 +375,7 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
   const manifestEvals = generationManifest.evals
 
   console.log(`judge output: ${toRelativePath(outputDirectories.runDirectory)}`)
+  await prepareOpencodeDockerRuntime()
   const rerunMissingJudgements = cliOptions.rerunMissingJudgements
   const rerunRequirementId = cliOptions.rerunRequirementId
   const rerunRequirementsFile = cliOptions.rerunRequirementsFile
@@ -363,15 +406,22 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
       `rerunning missing judgements: ${missingManifestEvals.length} eval(s)`
     )
 
+    const judgeWorkerCount = Math.min(
+      cliOptions.concurrency,
+      missingManifestEvals.length
+    )
+
     const evalRuns = await runWithConcurrency(
       missingManifestEvals,
       cliOptions.concurrency,
-      async (manifestEval, index) => {
+      async (manifestEval, index, workerIndex) => {
         try {
           const stageResult = await runJudgeForManifestEval({
             manifestEval,
             index,
             total: missingManifestEvals.length,
+            workerId: workerIndex + 1,
+            workerCount: judgeWorkerCount,
             cliOptions,
             inputDirectory,
             outputDirectories,
@@ -402,7 +452,9 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
       )
     }
 
-    const summaryBackupPath = await backupExistingSummary(outputDirectories.runDirectory)
+    const summaryBackupPath = await backupExistingSummary(
+      outputDirectories.runDirectory
+    )
     if (summaryBackupPath) {
       console.log(`summary backup: ${toRelativePath(summaryBackupPath)}`)
     }
@@ -461,34 +513,53 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
       inputDirectory,
       manifestEval.generatedPath
     )
-    const generatedFiles = await loadFiles(generatedEvalRunDirectory)
+    const generatedFiles = filterGeneratedSubmissionFiles(
+      await loadFiles(generatedEvalRunDirectory)
+    )
     if (generatedFiles.length === 0) {
       throw new Error(
         `no generated files found in ${toRelativePath(generatedEvalRunDirectory)}`
       )
     }
 
-    const [requirements, prompt] = await Promise.all([
+    const [requirements, prompt, referenceFiles] = await Promise.all([
       readFile(path.join(evalDirectory, 'requirements.yaml'), 'utf-8'),
       readFile(path.join(evalDirectory, 'prompt.md'), 'utf-8'),
+      loadFiles(path.join(evalDirectory, 'reference')),
     ])
 
-    const packageJson = await loadFile(path.join(process.cwd(), 'testbench/package.json'))
-
-    const llmJudgeStage = await runWithRetries(
+    const llmJudgeStage = await runWithOpencodeWorkerContext(
+      {
+        workerId: 1,
+        workerCount: 1,
+        taskLabel: manifestEval.evalId,
+      },
       () =>
-        runLlmJudgeStage([packageJson, ...generatedFiles], requirements, {
-          ...cliOptions,
-          directory: process.cwd(),
-          requirementIds: rerunRequirementId ? [rerunRequirementId] : undefined,
-        }),
-      cliOptions.maxRetries,
-      (attempt, error) => {
-        const errorMessage = error instanceof Error ? error.message : String(error)
-        console.warn(
-          `[judge-stage][${manifestEval.evalId}] attempt ${attempt}/${cliOptions.maxRetries} failed: ${errorMessage}`
+        runWithRetries(
+          () =>
+            runLlmJudgeStage(
+              {
+                requirements,
+                referenceFiles,
+                generatedFiles,
+                prompt,
+              },
+              {
+                ...cliOptions,
+                requirementIds: rerunRequirementId
+                  ? [rerunRequirementId]
+                  : undefined,
+              }
+            ),
+          cliOptions.maxRetries,
+          (attempt, error) => {
+            const errorMessage =
+              error instanceof Error ? error.message : String(error)
+            console.warn(
+              `[judge-stage][${manifestEval.evalId}] attempt ${attempt}/${cliOptions.maxRetries} failed: ${errorMessage}`
+            )
+          }
         )
-      }
     )
 
     const resultFilePath = getResultFilePath(
@@ -556,7 +627,8 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
       llmJudgeRequirements: updatedRequirements,
       score: computeScore(updatedRequirements),
       outputFiles:
-        existingEvalResult.outputFiles && existingEvalResult.outputFiles.length > 0
+        existingEvalResult.outputFiles &&
+        existingEvalResult.outputFiles.length > 0
           ? existingEvalResult.outputFiles
           : generatedFiles.map((file) => file.path),
       judgeSessionArtifactPath: judgeSessionArtifactPath
@@ -567,7 +639,11 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
         : existingEvalResult.judgeSessionArtifactPath,
     }
 
-    await writeFile(resultFilePath, JSON.stringify(updatedEvalResult, null, 2), 'utf8')
+    await writeFile(
+      resultFilePath,
+      JSON.stringify(updatedEvalResult, null, 2),
+      'utf8'
+    )
 
     if (cliOptions.debug) {
       await writeDebugArtifacts(
@@ -578,7 +654,9 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
       )
     }
 
-    const summaryBackupPath = await backupExistingSummary(outputDirectories.runDirectory)
+    const summaryBackupPath = await backupExistingSummary(
+      outputDirectories.runDirectory
+    )
     if (summaryBackupPath) {
       console.log(`summary backup: ${toRelativePath(summaryBackupPath)}`)
     }
@@ -605,15 +683,22 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
   const startedAt = new Date().toISOString()
   console.log(`starting judge: ${manifestEvals.length} eval(s)`)
 
+  const judgeWorkerCount = Math.min(
+    cliOptions.concurrency,
+    manifestEvals.length
+  )
+
   const evalRuns = await runWithConcurrency(
     manifestEvals,
     cliOptions.concurrency,
-    async (manifestEval, index) => {
+    async (manifestEval, index, workerIndex) => {
       try {
         const stageResult = await runJudgeForManifestEval({
           manifestEval,
           index,
           total: manifestEvals.length,
+          workerId: workerIndex + 1,
+          workerCount: judgeWorkerCount,
           cliOptions,
           inputDirectory,
           outputDirectories,
@@ -692,11 +777,18 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
 }
 
 if (import.meta.main) {
+  let exitCode = 0
+
   try {
     await runJudgeEntry()
-    process.exit(0)
   } catch (error) {
     console.error(formatUnknownError(error))
-    process.exit(1)
+    exitCode = 1
+  } finally {
+    await shutdownAllOpencodeDockerContainers(
+      exitCode === 0 ? 'judge completed' : 'judge failed'
+    )
   }
+
+  process.exit(exitCode)
 }

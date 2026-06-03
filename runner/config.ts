@@ -22,13 +22,16 @@ export function parseRunCliArgs(argv: string[] = Bun.argv.slice(2)) {
   const { values } = parseArgv({
     args: argv,
     options: {
+      'agent-logs': { type: 'boolean', default: false },
+      'verbose': { type: 'boolean', default: false },
       'concurrency': { type: 'string', default: '4' },
       'fail-fast': { type: 'boolean', default: false },
       'max-retries': { type: 'string', default: '1' },
       'model': { type: 'string' },
       'pattern': { type: 'string', default: 'evals/**/*' },
       'timeout': { type: 'string', default: '120000' },
-      'port': { type: 'string', default: OPENCODE_DEFAULT_PORT },
+      'port': { type: 'string' },
+      'host-tmpdir': { type: 'string' },
       'output': { type: 'string' },
     },
     strict: true,
@@ -40,6 +43,8 @@ export function parseRunCliArgs(argv: string[] = Bun.argv.slice(2)) {
   }
 
   return {
+    agentLogs: values['agent-logs'] ?? false,
+    verbose: values.verbose ?? false,
     concurrency: parsePositiveInteger(values.concurrency, '--concurrency'),
     failFast: values['fail-fast'] ?? false,
     maxRetries: parsePositiveInteger(values['max-retries'], '--max-retries'),
@@ -47,6 +52,7 @@ export function parseRunCliArgs(argv: string[] = Bun.argv.slice(2)) {
     pattern: values.pattern,
     timeout: parsePositiveInteger(values.timeout, '--timeout'),
     port: parsePort(values.port),
+    hostTmpdir: values['host-tmpdir'],
     output: values.output,
   }
 }
@@ -58,6 +64,8 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
   const { values } = parseArgv({
     args: argv,
     options: {
+      'agent-logs': { type: 'boolean', default: false },
+      'verbose': { type: 'boolean', default: false },
       'concurrency': { type: 'string', default: '4' },
       'debug': { type: 'boolean', default: false },
       'fail-fast': { type: 'boolean', default: false },
@@ -67,7 +75,8 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
       'rerun-requirement-id': { type: 'string' },
       'rerun-requirements-file': { type: 'string' },
       'timeout': { type: 'string', default: '120000' },
-      'port': { type: 'string', default: OPENCODE_DEFAULT_PORT },
+      'port': { type: 'string' },
+      'host-tmpdir': { type: 'string' },
       'input': { type: 'string' },
       'output': { type: 'string' },
     },
@@ -103,6 +112,8 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
   }
 
   return {
+    agentLogs: values['agent-logs'] ?? false,
+    verbose: values.verbose ?? false,
     concurrency: parsePositiveInteger(values.concurrency, '--concurrency'),
     debug: values.debug ?? false,
     failFast: values['fail-fast'] ?? false,
@@ -113,6 +124,7 @@ export function parseJudgeCliArgs(argv: string[] = Bun.argv.slice(2)) {
     rerunRequirementsFile: values['rerun-requirements-file'],
     timeout: parsePositiveInteger(values.timeout, '--timeout'),
     port: parsePort(values.port),
+    hostTmpdir: values['host-tmpdir'],
     input: values.input,
     output: values.output,
   }

@@ -13,4 +13,6 @@ If you are starting fresh, read these in order:
 3. [`testing-your-evals.md`](./testing-your-evals.md) for focused verification before opening a PR.
 4. [`adding-new-category.md`](./adding-new-category.md) for category README and requirement-design workflow.
 
+For OpenCode Docker credentials, env passthrough, and `--agent-logs` / `--verbose` debugging, see [`opencode-docker.md`](./opencode-docker.md).
+
 For contribution workflow, command examples, and PR conventions, see [`../CONTRIBUTING.md`](../CONTRIBUTING.md) and [`../AGENTS.md`](../AGENTS.md).

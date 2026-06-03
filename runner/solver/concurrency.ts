@@ -4,14 +4,15 @@
 export async function runWithConcurrency<T, TResult>(
   items: readonly T[],
   limit: number,
-  worker: (item: T, index: number) => Promise<TResult>
+  worker: (item: T, index: number, workerIndex: number) => Promise<TResult>
 ) {
   const boundedLimit = Math.max(1, Math.floor(limit))
+  const workerCount = Math.min(boundedLimit, items.length)
 
   const results = new Array<TResult>(items.length)
   let nextIndex = 0
 
-  async function runWorker() {
+  async function runWorker(workerIndex: number) {
     while (true) {
       const currentIndex = nextIndex
       nextIndex += 1
@@ -20,13 +21,16 @@ export async function runWithConcurrency<T, TResult>(
         return
       }
 
-      results[currentIndex] = await worker(items[currentIndex]!, currentIndex)
+      results[currentIndex] = await worker(
+        items[currentIndex]!,
+        currentIndex,
+        workerIndex
+      )
     }
   }
 
-  const workers = Array.from(
-    { length: Math.min(boundedLimit, items.length) },
-    () => runWorker()
+  const workers = Array.from({ length: workerCount }, (_, workerIndex) =>
+    runWorker(workerIndex)
   )
   await Promise.all(workers)
 
