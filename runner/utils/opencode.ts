@@ -499,10 +499,8 @@ async function isPortInUse(port: number, host = '127.0.0.1') {
       socket.destroy()
       resolve(true)
     })
-    return res.ok
-  } catch {
-    return false
-  }
+    socket.on('error', () => resolve(false))
+  })
 }
 
 async function canBindPort(port: number, host = '127.0.0.1') {

@@ -1,7 +1,5 @@
 import { parseArgs as parseArgv } from 'node:util'
 
-const OPENCODE_DEFAULT_PORT = '4096'
-
 function parsePositiveInteger(rawValue: string, flagName: string) {
   const parsedValue = Number.parseInt(rawValue, 10)
   if (!Number.isInteger(parsedValue) || parsedValue <= 0) {
@@ -11,8 +9,8 @@ function parsePositiveInteger(rawValue: string, flagName: string) {
   return parsedValue
 }
 
-function parsePort(rawValue: string) {
-  return parsePositiveInteger(rawValue, '--port')
+function parsePort(rawValue: string | undefined) {
+  return rawValue ? parsePositiveInteger(rawValue, '--port') : undefined
 }
 
 /*
