@@ -1,0 +1,1 @@
+Build an animated background that continuously cycles through a sequence of colors using Skia's interpolateColors function. Use useDerivedValue to compute the current color from a Reanimated progress value. Do not use interpolateColor from react-native-reanimated.

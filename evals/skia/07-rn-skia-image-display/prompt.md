@@ -1,0 +1,1 @@
+Load an image using the useImage hook and display it on a Skia canvas using the Image component with the "cover" fit mode. Handle the loading state gracefully by rendering a placeholder rectangle while the image is not yet available.

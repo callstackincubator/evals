@@ -1,0 +1,16 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
+  - id: uses-color-matrix-component
+    description: Must use the ColorMatrix component from @shopify/react-native-skia.
+  - id: color-matrix-is-child-of-drawing
+    description: ColorMatrix must be used as a child image filter of a Group, Image, or other drawing element — not as a standalone element.
+  - id: filter-can-be-toggled
+    description: Must provide a button or control that enables and disables the ColorMatrix filter at runtime.
+  - id: matrix-produces-visible-change
+    description: The color matrix values must produce a noticeable visual transformation (desaturation, inversion, hue rotation, or similar), not an identity matrix.

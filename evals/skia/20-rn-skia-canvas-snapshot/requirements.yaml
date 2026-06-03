@@ -1,0 +1,16 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
+  - id: uses-canvas-ref
+    description: Must use useCanvasRef from @shopify/react-native-skia to obtain a ref to the Canvas component.
+  - id: calls-make-image-snapshot
+    description: Must call makeImageSnapshot() on the canvas ref object to capture the current canvas drawing as an SkImage.
+  - id: encodes-image-to-bytes
+    description: Must call encodeToBytes() or encodeToBase64() on the resulting SkImage to produce a usable data representation.
+  - id: snapshot-triggered-by-user-action
+    description: The snapshot must be triggered by a user action such as pressing a button, not automatically on mount.

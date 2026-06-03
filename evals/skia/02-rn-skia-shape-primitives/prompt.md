@@ -1,0 +1,1 @@
+Draw a composition of basic shapes on a Skia canvas: a filled rectangle, a filled circle, a rounded rectangle, and a straight line. Give each shape a distinct color and arrange them so they are all visible without overlap.

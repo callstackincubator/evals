@@ -1,0 +1,18 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
+  - id: uses-rect-component
+    description: Must render a Rect component from @shopify/react-native-skia.
+  - id: uses-circle-component
+    description: Must render a Circle component from @shopify/react-native-skia.
+  - id: uses-rounded-rect-component
+    description: Must render a RoundedRect or equivalent rounded rectangle component from @shopify/react-native-skia.
+  - id: uses-line-component
+    description: Must render a Line component from @shopify/react-native-skia.
+  - id: shapes-have-distinct-colors
+    description: Each shape must use a visually distinct color.

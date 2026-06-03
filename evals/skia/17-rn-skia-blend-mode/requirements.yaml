@@ -1,0 +1,16 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
+  - id: uses-blend-mode-on-group
+    description: Must set the blendMode prop on a Group component from @shopify/react-native-skia to composite the child elements.
+  - id: uses-multiply-blend-mode
+    description: The blendMode must be "multiply" (or another subtractive/compositing mode such as "screen" or "overlay"), not "normal".
+  - id: three-overlapping-circles
+    description: Must render at least three circle elements with overlapping regions so the blend mode visibly affects the intersection areas.
+  - id: circles-use-primary-colors
+    description: The circles should use cyan, magenta, and yellow (or equivalent primary colors) to produce recognizable secondary blended colors.

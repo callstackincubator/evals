@@ -1,0 +1,16 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
+  - id: uses-derived-value
+    description: Must use useDerivedValue from react-native-reanimated to compute one or more Skia property values from a shared value.
+  - id: multiple-props-from-single-source
+    description: At least two different Skia properties (e.g. r and cy) must be derived from the same source shared value.
+  - id: uses-with-timing-or-spring
+    description: Must use withTiming or withSpring to drive the source shared value.
+  - id: animation-loops-continuously
+    description: Must use withRepeat so the animation runs continuously without stopping.

@@ -1,0 +1,16 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
+  - id: uses-match-font
+    description: Must use matchFont from @shopify/react-native-skia to resolve the font from the system font manager.
+  - id: font-style-specifies-bold
+    description: The fontStyle object passed to matchFont must include a bold font weight (fontWeight "bold" or "700" or higher).
+  - id: uses-text-component
+    description: Must use the Text component from @shopify/react-native-skia to render the text on the canvas.
+  - id: text-y-accounts-for-baseline
+    description: The y value passed to the Text component must account for the fact that y is the text baseline, not the top edge (y should be at least fontSize to be visible).

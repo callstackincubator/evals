@@ -1,0 +1,1 @@
+Draw at least two overlapping shapes inside a Skia Group and apply a blur to their combined composite using the Group layer prop. Pass a Paint element with a Blur child to layer — do not attach Blur directly to each shape individually.

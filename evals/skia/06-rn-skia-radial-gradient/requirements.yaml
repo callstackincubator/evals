@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
+  - id: uses-radial-gradient-component
+    description: Must use the RadialGradient component from @shopify/react-native-skia as a child of a drawing element.
+  - id: gradient-center-matches-shape-center
+    description: The RadialGradient center coordinates (cx, cy) must match the center of the shape it fills.
+  - id: uses-transparency-in-gradient
+    description: Must include at least one gradient color stop with an alpha (transparency) value, such as 'transparent' or a color with 0 alpha.

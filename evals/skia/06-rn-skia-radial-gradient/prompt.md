@@ -1,0 +1,1 @@
+Draw a circle filled with a radial gradient using the RadialGradient component as a child shader. The gradient should radiate from the circle's center, transitioning from a bright opaque inner color to a fully transparent outer edge.

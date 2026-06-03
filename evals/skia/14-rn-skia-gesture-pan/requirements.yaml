@@ -1,0 +1,16 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
+  - id: uses-gesture-detector
+    description: Must wrap the Canvas with GestureDetector from react-native-gesture-handler.
+  - id: uses-pan-gesture-on-change
+    description: Must use Gesture.Pan() with an onChange handler that updates position shared values on the UI thread.
+  - id: uses-with-decay-on-end
+    description: Must apply withDecay in the Pan gesture onEnd handler to produce inertia-based deceleration after the gesture ends.
+  - id: circle-position-driven-by-shared-values
+    description: The draggable circle's cx and cy props must be driven directly by Reanimated shared values.

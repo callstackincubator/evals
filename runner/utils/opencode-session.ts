@@ -83,7 +83,10 @@ function extractMessageContent(parts: Part[]) {
     }
 
     if (part.type === 'tool') {
-      if (part.state.status === 'completed' && part.state.output.trim().length > 0) {
+      if (
+        part.state.status === 'completed' &&
+        part.state.output.trim().length > 0
+      ) {
         segments.push(part.state.output)
       }
       continue
@@ -181,12 +184,14 @@ function uniqueTouchedFiles(
 }
 
 function summarizeChanges(
-  sessionSummary: {
-    additions: number
-    deletions: number
-    files: number
-    diffs?: FileDiff[]
-  } | undefined,
+  sessionSummary:
+    | {
+        additions: number
+        deletions: number
+        files: number
+        diffs?: FileDiff[]
+      }
+    | undefined,
   sessionDiffs: FileDiff[]
 ) {
   const sessionDiffAdditions = sessionDiffs.reduce(
@@ -210,7 +215,7 @@ function summarizeChanges(
 
 export async function collectOpencodeSessionSnapshot(params: {
   sessionId?: string
-  port?: number
+  port: number
   directory?: string
 }): Promise<OpencodeSessionSnapshot | undefined> {
   if (!params.sessionId) {
@@ -228,21 +233,21 @@ export async function collectOpencodeSessionSnapshot(params: {
   try {
     const [sessionResponse, messagesResponse, sessionDiffsResponse] =
       await Promise.all([
-      client.session.get({
-        path: { id: params.sessionId },
-        query: { directory: params.directory },
-        throwOnError: true,
-      }),
-      client.session.messages({
-        path: { id: params.sessionId },
-        query: { directory: params.directory, limit: 500 },
-        throwOnError: true,
-      }),
-      client.session.diff({
-        path: { id: params.sessionId },
-        query: { directory: params.directory },
-        throwOnError: true,
-      }),
+        client.session.get({
+          path: { id: params.sessionId },
+          query: { directory: params.directory },
+          throwOnError: true,
+        }),
+        client.session.messages({
+          path: { id: params.sessionId },
+          query: { directory: params.directory, limit: 500 },
+          throwOnError: true,
+        }),
+        client.session.diff({
+          path: { id: params.sessionId },
+          query: { directory: params.directory },
+          throwOnError: true,
+        }),
       ])
 
     session = sessionResponse.data
@@ -286,9 +291,7 @@ export async function collectOpencodeSessionSnapshot(params: {
 
   const messageSnapshots = typedMessages
     .map((message) => summarizeMessage(message))
-    .sort((first, second) =>
-      first.createdAt.localeCompare(second.createdAt)
-    )
+    .sort((first, second) => first.createdAt.localeCompare(second.createdAt))
 
   const userTurns = messageSnapshots.filter(
     (message) => message.role === 'user'

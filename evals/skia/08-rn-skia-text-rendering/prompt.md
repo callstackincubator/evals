@@ -1,0 +1,1 @@
+Render a centered line of text on a Skia canvas using the Text component. Resolve the font from the system using matchFont with a bold font weight. Account for the fact that the Text component's y coordinate refers to the text baseline, not the top edge.

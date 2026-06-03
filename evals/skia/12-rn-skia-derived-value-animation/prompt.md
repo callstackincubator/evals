@@ -1,0 +1,1 @@
+Create a pulsing animation where both the radius and the vertical position of a circle on a Skia canvas change in sync. Derive both Skia properties from a single Reanimated shared value using useDerivedValue, so one animated source drives multiple visual attributes.

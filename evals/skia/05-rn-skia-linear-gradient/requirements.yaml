@@ -1,0 +1,16 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
+  - id: uses-linear-gradient-component
+    description: Must use LinearGradient from @shopify/react-native-skia as a child shader of Fill or another drawing element.
+  - id: uses-skia-interpolate-colors
+    description: Must use interpolateColors from @shopify/react-native-skia for color transitions, not interpolateColor from react-native-reanimated.
+  - id: uses-reanimated-shared-value
+    description: Must use useSharedValue from react-native-reanimated to drive the gradient animation progress.
+  - id: animation-is-infinite-loop
+    description: Must use withRepeat to create a continuous looping color animation.

@@ -52,7 +52,7 @@ type RunJudgeCallOptions = {
   prompt: string
   model: string
   timeout: number
-  port?: number
+  port: number
   directory?: string
   cwd?: string
   verbose?: boolean
@@ -183,9 +183,7 @@ export async function runJudgeCall(
           })
       )
 
-      tracer.noteSessionId(
-        extractOpencodeSessionId(fallbackResponse)
-      )
+      tracer.noteSessionId(extractOpencodeSessionId(fallbackResponse))
 
       const parsedOutput = parseJudgeOutputFromText(fallbackResponse.text)
       if (!parsedOutput.success) {

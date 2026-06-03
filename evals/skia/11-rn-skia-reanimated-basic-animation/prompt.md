@@ -1,0 +1,1 @@
+Animate a circle that bounces horizontally across a Skia canvas. Drive the circle's cx position directly with a Reanimated useSharedValue animated with withRepeat and withTiming. Do not use createAnimatedComponent or useAnimatedProps — pass the shared value directly as a Skia prop.

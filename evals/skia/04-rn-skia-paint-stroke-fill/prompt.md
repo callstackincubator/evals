@@ -1,0 +1,1 @@
+Render a circle that has a solid fill and two concentric strokes of different widths using nested Paint components. Wrap multiple shapes in a Group to demonstrate paint attribute inheritance, where the group-level color is shared by all children.

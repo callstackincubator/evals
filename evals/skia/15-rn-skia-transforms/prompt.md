@@ -1,0 +1,1 @@
+Display a set of shapes inside a Skia Group that continuously rotates around the canvas center. Drive the rotation with a Reanimated shared value passed as the transform prop. Nest a second Group inside the rotating group and apply a scale transform to it to demonstrate transform composition.

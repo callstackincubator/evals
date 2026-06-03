@@ -19,6 +19,7 @@ export function createIsolatedOpencodeModel(
   modelId: string,
   options: CreateIsolatedOpencodeModelOptions
 ) {
+  // @ts-expect-error - OpencodeClientManager's constructor is a private API
   const clientManager = new OpencodeClientManager({
     baseUrl: `http://127.0.0.1:${options.port}`,
     autoStartServer: false,

@@ -159,7 +159,7 @@ export async function runSolver(params: {
   workingDirectory: string
   model: string
   timeout: number
-  port?: number
+  port: number
 }) {
   if (params.port === undefined) {
     throw new Error('runSolver requires an opencode server port')
@@ -226,9 +226,7 @@ export async function runSolver(params: {
           })
       )
 
-      tracer.noteSessionId(
-        extractOpencodeSessionId(fallbackResponse)
-      )
+      tracer.noteSessionId(extractOpencodeSessionId(fallbackResponse))
 
       const parsedOutput = parseSolverOutputFromText(fallbackResponse.text)
       if (!parsedOutput.success) {

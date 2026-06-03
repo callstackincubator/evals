@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-canvas-component
+    description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
+    weight: 0.1
+  - id: uses-group-layer-prop
+    description: Must set the layer prop on a Group component from @shopify/react-native-skia.
+  - id: layer-uses-paint-with-blur
+    description: The layer prop must be a Paint element that contains a Blur image filter as a child.
+  - id: group-has-multiple-shapes
+    description: The Group with the layer effect must contain at least two drawing elements (e.g. circles or rects) so the effect applies to a composite, not a single shape.
