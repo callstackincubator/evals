@@ -393,20 +393,26 @@ For technical categories (for example navigation, animation, storage), requireme
 
 These controls are authoring policy for dataset quality; they are not independently enforced by runner schema validation.
 
-\subsection{Judge Prompt Construction}
+\subsection{Judge Prompt Construction (v2)}
+\label{sec:judge-prompt-v2}
 The judge prompt includes:
 \begin{itemize}
   \item declared requirements (including weights when present)
-  \item generated files under evaluation
-  \item rules instructing the judge to use only provided files as evidence and return one result per declared requirement ID
+  \item generated files under evaluation, each tagged with its file path so that path-scoped and import-scoped criteria can be verified against the correct file
+  \item rules instructing the judge to grade each requirement on its underlying \emph{intent} (a behavior, correctness property, or API constraint) rather than on literal API-name matching, to award full credit when a different but valid and idiomatic React Native implementation achieves that intent, and to reserve low scores for genuinely unmet goals, incorrect code, or explicit evidence-gated prohibitions
 \end{itemize}
 
-\subsection{Structured Judge Output}
+This intent-based rubric is the central methodological change in v2. Under v1, requirements that named a specific API rejected functionally correct submissions that reached the same goal through a different idiomatic mechanism; v2 credits such valid variety while still penalizing broken behavior and non-idiomatic anti-patterns.
+
+\subsection{Structured Judge Output (v2)}
 The judge returns structured output with:
 \begin{itemize}
   \item optional \texttt{summary}
-  \item \texttt{requirements[]}, where each row includes \texttt{id}, \texttt{passed}, \texttt{reason}, \texttt{evidence[]}, and optional \texttt{confidence}
+  \item \texttt{requirements[]}, where each row includes \texttt{id}, a graded \texttt{score} \(\in [0,1]\) (partial credit), \texttt{passed} (a derived boolean, true when \(\texttt{score} \ge 0.5\)), \texttt{reason}, \texttt{evidence[]}, and optional \texttt{confidence}
+  \item an overall \texttt{codeQuality} judgment (\texttt{score} \(\in [0,1]\) with short \texttt{notes}) assessing how idiomatic, correct, and production-ready the submission is, independent of literal requirement matching
 \end{itemize}
+
+For backward compatibility the runner accepts judge rows that omit \texttt{score}, falling back to the binary \texttt{passed} flag (\(1\) or \(0\)); v1 outputs are therefore a special case of the v2 scoring model.
 
 \subsection{Requirement Mapping and Failure Policy}
 Judge rows are mapped back to declared requirements by ID.
@@ -436,13 +442,13 @@ w_i & \text{if } w_i \text{ is finite and } w_i > 0 \\
 
 This normalization is defensive. In normal operation, the runtime schema already requires positive weights when provided.
 
-\subsection{Per-Eval Weighted Requirement Score}
-For an eval with declared requirements \(R\), normalized weights \(w_i'\), and binary pass indicators \(p_i\):
+\subsection{Per-Eval Weighted Requirement Score (v2: graded partial credit)}
+For an eval with declared requirements \(R\), normalized weights \(w_i'\), and graded per-requirement scores \(s_i \in [0,1]\) (\cref{sec:judge-prompt-v2}; clamped to \([0,1]\), and falling back to the binary \texttt{passed} flag when a graded score is absent):
 \[
 \text{totalWeight} = \sum_{i \in R} w_i'
 \]
 \[
-\text{passedWeight} = \sum_{i \in R} p_i \cdot w_i'
+\text{passedWeight} = \sum_{i \in R} s_i \cdot w_i'
 \]
 \[
 \text{scoreRatio} =
@@ -452,13 +458,13 @@ For an eval with declared requirements \(R\), normalized weights \(w_i'\), and b
 \end{cases}
 \]
 
-The runner rounds \texttt{passedWeight}, \texttt{totalWeight}, and \texttt{scoreRatio} to 4 decimal places.
+The runner rounds \texttt{passedWeight}, \texttt{totalWeight}, and \texttt{scoreRatio} to 4 decimal places. The v1 binary policy is recovered as the special case \(s_i \in \{0,1\}\).
 
-\textbf{Interpretation example.} If requirements have weights \([2, 2, 1]\) and pass outcomes \([1, 0, 1]\), then the per-eval score is:
+\textbf{Interpretation example.} If requirements have weights \([2, 2, 1]\) and graded scores \([1, 0.5, 0.75]\), then the per-eval score is:
 \[
-\frac{2 + 0 + 1}{2 + 2 + 1} = \frac{3}{5} = 0.6
+\frac{2 \cdot 1 + 2 \cdot 0.5 + 1 \cdot 0.75}{2 + 2 + 1} = \frac{3.75}{5} = 0.75
 \]
-This pattern is relevant only when authors intentionally assign non-default weights to specific requirements.
+Partial credit lets functionally correct, idiomatic implementations earn proportional score even when they do not reproduce a requirement's exact named API.
 
 \subsection{Run-Level Aggregate Score}
 Let \(E^+\) be the set of evals that complete successfully (i.e., without an unrecovered pipeline error). The summary field \texttt{weightedAverageScore} is:
@@ -476,14 +482,20 @@ rounded to 4 decimal places.
 \subsection{Additional Summary Metrics}
 The run summary also reports:
 \begin{itemize}
+  \item \texttt{methodologyVersion} (\(=2\) for graded scoring; identifies the scoring contract so v1 and v2 results are not silently mixed)
   \item \texttt{requirementsTotal}
-  \item \texttt{requirementsPassed}
+  \item \texttt{requirementsPassed} (count of requirements with \(\texttt{score} \ge 0.5\))
+  \item \texttt{averageCodeQuality} (mean of the per-eval idiomatic code-quality scores, or \texttt{null} when none were reported)
   \item \texttt{evalsErrored}
 \end{itemize}
 
 For successful evals, each row includes \texttt{requirementsTotal}, \texttt{requirementsPassed},
 and \texttt{scoreRatio}. For pipeline errors, each row includes \texttt{status=error}
 along with the eval identifier and path.
+
+\subsection{Methodology Versioning and Re-Ranking}
+\label{sec:versioning}
+The scoring contract is versioned via \texttt{methodologyVersion}. Version~1 used binary per-requirement outcomes; version~2 (this revision) uses graded partial credit with intent-based judging, an idiomatic code-quality signal, and file-path-aware judge prompts. Because v2 credits valid idiomatic alternatives that v1 marked as failures, v2 scores are systematically higher and are \emph{not} comparable to previously published v1 numbers. Consequently, any cross-model leaderboard reported under v1 must be re-judged under v2 before models are compared or re-ranked. Re-judging requires only the stored generation artifacts (the solver outputs and \texttt{manifest.json}); it does not require regenerating solver outputs, since the judge stage is independent of generation. Where generation artifacts are unavailable, affected models must be regenerated before re-judging.
 
 \section{Artifacts and Output Schema}
 Each run writes artifacts to deterministic generation and judge directories:
@@ -575,7 +587,8 @@ Repeat runs are recommended. The \texttt{bench:repeat} script (or \texttt{script
 \begin{itemize}
   \item \textbf{Judge dependence:} requirement verdicts depend on the configured LLM judge model and prompt behavior.
   \item \textbf{Requirement-interpretation ambiguity:} without seeded reference context, ambiguous requirement phrasing can increase variance in judge decisions.
-  \item \textbf{Binary requirement outcomes:} there is no partial credit within a single requirement.
+  \item \textbf{Graded outcomes depend on judge calibration (v2):} partial-credit and intent-based grading remove the v1 over-penalization of valid idiomatic alternatives, but shift more responsibility onto the judge's calibration of the \([0,1]\) scale; multi-judge consensus remains future work.
+  \item \textbf{Cross-version incomparability:} v2 graded scores are systematically higher than v1 binary scores for the same submission, so the two contracts must not be mixed. The \texttt{methodologyVersion} field marks each run, and any leaderboard must be re-judged under a single version (\cref{sec:versioning}).
   \item \textbf{Run-level averaging choice:} the summary score is unweighted across evals, which can underweight larger evals.
   \item \textbf{Pipeline error exclusion from mean:} errored evals are counted separately and excluded from the run-level score average.
   \item \textbf{Authoring-convention variability:} conventions such as \texttt{implementation} improve consistency but are not enforced by the runtime parser.

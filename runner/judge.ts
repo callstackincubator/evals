@@ -9,7 +9,11 @@ import {
   writeSummary,
 } from './evaluators/llm/output'
 import { runLlmJudgeStage } from './evaluators/llm/run'
-import { computeScore, type RequirementResult } from './evaluators/llm/utils'
+import {
+  computeScore,
+  JUDGE_METHODOLOGY_VERSION,
+  type RequirementResult,
+} from './evaluators/llm/utils'
 import { runWithConcurrency } from './solver/concurrency'
 import { partitionEvalRuns } from './utils/eval-runs'
 import { loadFiles, sanitizeSegment } from './utils/fs'
@@ -66,6 +70,24 @@ function isNotFoundError(error: unknown) {
   )
 }
 
+/*
+  Mean idiomatic code-quality score across evals that produced one, or null when
+  no eval reported a code-quality judgment.
+ */
+function averageCodeQualityScore(
+  entries: ({ score: number } | undefined)[]
+): number | null {
+  const scores = entries
+    .map((entry) => entry?.score)
+    .filter((score): score is number => typeof score === 'number')
+
+  if (scores.length === 0) {
+    return null
+  }
+
+  return roundTo(scores.reduce((sum, score) => sum + score, 0) / scores.length, 4)
+}
+
 type PersistedEvalResult = {
   evalId: string
   evalPath: string
@@ -76,6 +98,10 @@ type PersistedEvalResult = {
     passedWeight: number
     totalWeight: number
     ratio: number
+  }
+  codeQuality?: {
+    score: number
+    notes?: string
   }
   outputFiles: string[]
   judgeSessionArtifactPath?: string
@@ -189,10 +215,15 @@ async function rebuildSummaryFromExistingResults(options: {
           4
         )
 
+  const averageCodeQuality = averageCodeQualityScore(
+    successfulRuns.map((run) => run.codeQuality)
+  )
+
   return {
     runId,
     startedAt,
     finishedAt: new Date().toISOString(),
+    methodologyVersion: JUDGE_METHODOLOGY_VERSION,
     judgeModel: options.judgeModel,
     solverModel: options.generationManifest.solverModel,
     pattern: options.generationManifest.pattern,
@@ -203,6 +234,7 @@ async function rebuildSummaryFromExistingResults(options: {
     requirementsTotal,
     requirementsPassed,
     weightedAverageScore,
+    averageCodeQuality,
   }
 }
 
@@ -271,10 +303,12 @@ async function runJudgeForManifestEval(options: {
   const stageResult = {
     evalId: manifestEval.evalId,
     evalPath,
+    methodologyVersion: JUDGE_METHODOLOGY_VERSION,
     judgeModel: options.cliOptions.model,
     solverModel: options.solverModel,
     llmJudgeRequirements: llmJudgeStage.requirements,
     score: llmJudgeStage.score,
+    codeQuality: llmJudgeStage.codeQuality,
     outputFiles: generatedFiles.map((file) => file.path),
     judgeSessionArtifactPath: undefined as string | undefined,
   }
@@ -748,10 +782,15 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
           4
         )
 
+  const averageCodeQuality = averageCodeQualityScore(
+    successfulRuns.map((run) => run.result.codeQuality)
+  )
+
   const summaryPayload = {
     runId,
     startedAt,
     finishedAt: new Date().toISOString(),
+    methodologyVersion: JUDGE_METHODOLOGY_VERSION,
     judgeModel: cliOptions.model,
     solverModel: generationManifest.solverModel,
     pattern: generationManifest.pattern,
@@ -762,6 +801,7 @@ export async function runJudgeEntry(argv: string[] = Bun.argv.slice(2)) {
     requirementsTotal,
     requirementsPassed,
     weightedAverageScore,
+    averageCodeQuality,
   }
 
   const summaryPath = await writeSummary(

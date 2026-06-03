@@ -17,27 +17,41 @@ const JSON_FALLBACK_SYSTEM_PROMPT = `
     "requirements": [
       {
         "id": "requirement-id",
+        "score": 0.75,
         "passed": true,
         "reason": "short concrete reason",
         "evidence": ["short file/path or code evidence"],
         "confidence": 0.8
       }
-    ]
+    ],
+    "codeQuality": {
+      "score": 0.8,
+      "notes": "short idiomatic/production-quality assessment"
+    }
   }
-  Do not include markdown fences or extra text.
+  "score" is graded partial credit in [0, 1]; "passed" is true when score >= 0.5.
+  Credit valid idiomatic alternatives that meet the intent; do not require the
+  exact API named. Do not include markdown fences or extra text.
 `
+
+const codeQualitySchema = z.object({
+  score: z.number().min(0).max(1),
+  notes: z.string().optional(),
+})
 
 const structuredOutputSchema = z.object({
   summary: z.string().optional(),
   requirements: z.array(
     z.object({
       id: z.string().min(1),
-      passed: z.boolean(),
+      score: z.number().min(0).max(1).optional(),
+      passed: z.boolean().optional(),
       reason: z.string().min(1),
       evidence: z.array(z.string()).default([]),
       confidence: z.number().min(0).max(1).optional(),
     })
   ),
+  codeQuality: codeQualitySchema.optional(),
 })
 
 export type JudgeOutput = z.infer<typeof structuredOutputSchema>
@@ -45,6 +59,7 @@ export type JudgeOutput = z.infer<typeof structuredOutputSchema>
 type JudgeCallResult = {
   summary?: string
   requirements: JudgeOutput['requirements']
+  codeQuality?: JudgeOutput['codeQuality']
   opencodeSession?: OpencodeSessionSnapshot
 }
 
@@ -160,6 +175,7 @@ export async function runJudgeCall(
       return {
         summary: response.output.summary,
         requirements: response.output.requirements,
+        codeQuality: response.output.codeQuality,
         opencodeSession: await collectOpencodeSessionSnapshot({
           sessionId: extractOpencodeSessionId(response),
           port: options.port,
@@ -201,6 +217,7 @@ export async function runJudgeCall(
       return {
         summary: parsedOutput.data.summary,
         requirements: parsedOutput.data.requirements,
+        codeQuality: parsedOutput.data.codeQuality,
         opencodeSession: await collectOpencodeSessionSnapshot({
           sessionId: extractOpencodeSessionId(fallbackResponse),
           port: options.port,
