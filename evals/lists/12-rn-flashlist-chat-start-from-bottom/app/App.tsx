@@ -7,11 +7,7 @@ const INITIAL_MESSAGES = Array.from({ length: 8 }, (_, index) => ({
   text: `Chat message ${index + 1}`,
 }))
 
-function MessageBubble({
-  item,
-}: {
-  item: (typeof INITIAL_MESSAGES)[number]
-}) {
+function MessageBubble({ item }: { item: (typeof INITIAL_MESSAGES)[number] }) {
   return (
     <View style={styles.bubble}>
       <Text style={styles.sender}>{item.from}</Text>
@@ -21,9 +17,7 @@ function MessageBubble({
 }
 
 export default function App() {
-  return (
-    <View style={styles.screen} />
-  )
+  return <View style={styles.screen} />
 }
 
 const styles = StyleSheet.create({

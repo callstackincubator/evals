@@ -1,7 +1,12 @@
 import { useEffect } from 'react'
 import { useWindowDimensions } from 'react-native'
 import { Canvas, Fill, Shader, Skia, vec } from '@shopify/react-native-skia'
-import { useDerivedValue, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
+import {
+  useDerivedValue,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated'
 
 const SKSL = `
 uniform float2 resolution;
@@ -23,7 +28,11 @@ export default function App() {
   const time = useSharedValue(0)
 
   useEffect(() => {
-    time.value = withRepeat(withTiming(Math.PI * 2, { duration: 3000 }), -1, false)
+    time.value = withRepeat(
+      withTiming(Math.PI * 2, { duration: 3000 }),
+      -1,
+      false
+    )
   }, [time])
 
   const uniforms = useDerivedValue(() => ({

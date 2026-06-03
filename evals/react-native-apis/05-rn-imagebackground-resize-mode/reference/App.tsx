@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-  ImageBackground,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { ImageBackground, StyleSheet, Text, View } from 'react-native'
 
 export default function App() {
   return (
@@ -14,7 +9,7 @@ export default function App() {
         source={require('./banner.jpg')}
         imageStyle={styles.headerImage}
         style={styles.header}
-        resizeMode='cover'
+        resizeMode="cover"
       >
         <View style={styles.headerContent}>
           <Text style={styles.headerTitle}>Dock overview</Text>

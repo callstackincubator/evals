@@ -23,25 +23,25 @@ React Native Skia evals — testing how well LLMs implement high-performance 2D 
 
 ## Best-practice inventory
 
-| #   | Rule                                                                                                                                    | Source                 |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| 1   | Render all Skia drawing inside a `<Canvas>` root component                                                                              | canvas/overview        |
-| 2   | Pass Reanimated `useSharedValue` / `useDerivedValue` directly as Skia props — no `createAnimatedComponent` or `useAnimatedProps` needed | animations/animations  |
-| 3   | Use `interpolateColors` from `@shopify/react-native-skia`, not `interpolateColor` from Reanimated, for color transitions                | animations/animations  |
-| 4   | Wrap gesture handlers around the `<Canvas>` using `GestureDetector`; for per-element gesture tracking, overlay an `Animated.View`       | animations/gestures    |
-| 5   | Use `useCanvasSize` (JS thread) or the `onSize` shared value prop (UI thread) to read canvas dimensions reactively                      | canvas/overview        |
-| 6   | Build paths imperatively with `Skia.Path.Make()` or parse SVG strings with `Skia.Path.MakeFromSVGString`                                | shapes/path            |
-| 7   | Use `Paint` children on drawing elements for multiple fills/strokes; inherit paint attributes via `Group`                               | paint/overview         |
-| 8   | Compose image filters by nesting `Blur`, `ColorMatrix`, etc. as children of the target drawing element or `Group`                       | image-filters/overview |
-| 9   | Compile custom SKSL shaders with `Skia.RuntimeEffect.Make`; use the `Shader` component as a child of `Fill`                             | shaders/overview       |
-| 10  | Capture canvas output with `makeImageSnapshot()` via `useCanvasRef`; call `encodeToBytes()` for raw pixel data                          | canvas/overview        |
-| 11  | Use `matchFont` with a `fontStyle` object for system font resolution; the Text `y` origin is the text baseline, not the top             | text/text              |
-| 12  | Apply blend modes at the `Group` level with the `blendMode` prop to composite child elements                                            | paint/overview         |
-| 13  | Use `ClipRect` / `ClipPath` as children of a `Group` or drawing element to mask content                                                 | canvas/overview        |
-| 14  | Use `SweepGradient` / `TwoPointConicalGradient` for angular and conical fills beyond linear/radial                                      | shaders/gradients      |
-| 15  | Apply effects to a group composite with the `layer` prop (`<Paint>` + image filters), not per-child filters alone                       | group                  |
-| 16  | Use `Skia.ParagraphBuilder` + `<Paragraph>` for multi-style text layouts; call `layout(width)` before rendering                         | text/paragraph         |
-| 17  | Isolate imperative canvas transforms with `canvas.save()` / `canvas.restore()` inside a recorded `Picture`                              | shapes/pictures        |
+| #   | Rule                                                                                                                                      | Source                 |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| 1   | Render all Skia drawing inside a `<Canvas>` root component                                                                                | canvas/overview        |
+| 2   | Pass Reanimated `useSharedValue` / `useDerivedValue` directly as Skia props — no `createAnimatedComponent` or `useAnimatedProps` needed   | animations/animations  |
+| 3   | Use `interpolateColors` from `@shopify/react-native-skia`, not `interpolateColor` from Reanimated, for color transitions                  | animations/animations  |
+| 4   | Wrap gesture handlers around the `<Canvas>` using `GestureDetector`; for per-element gesture tracking, overlay an `Animated.View`         | animations/gestures    |
+| 5   | Use `useCanvasSize` (JS thread) or the `onSize` shared value prop (UI thread) to read canvas dimensions reactively                        | canvas/overview        |
+| 6   | Build paths imperatively with `Skia.Path.Make()` or parse SVG strings with `Skia.Path.MakeFromSVGString`                                  | shapes/path            |
+| 7   | Use `Paint` children on drawing elements for multiple fills/strokes; inherit paint attributes via `Group`                                 | paint/overview         |
+| 8   | Compose image filters by nesting `Blur`, `ColorMatrix`, etc. as children of the target drawing element or `Group`                         | image-filters/overview |
+| 9   | Compile custom SKSL shaders with `Skia.RuntimeEffect.Make`; use the `Shader` component as a child of `Fill`                               | shaders/overview       |
+| 10  | Capture canvas output with `makeImageSnapshot()` via `useCanvasRef`; call `encodeToBytes()` for raw pixel data                            | canvas/overview        |
+| 11  | Use `matchFont` with a `fontStyle` object for system font resolution; the Text `y` origin is the text baseline, not the top               | text/text              |
+| 12  | Apply blend modes at the `Group` level with the `blendMode` prop to composite child elements                                              | paint/overview         |
+| 13  | Use `ClipRect` / `ClipPath` as children of a `Group` or drawing element to mask content                                                   | canvas/overview        |
+| 14  | Use `SweepGradient` / `TwoPointConicalGradient` for angular and conical fills beyond linear/radial                                        | shaders/gradients      |
+| 15  | Apply effects to a group composite with the `layer` prop (`<Paint>` + image filters), not per-child filters alone                         | group                  |
+| 16  | Use `Skia.ParagraphBuilder` + `<Paragraph>` for multi-style text layouts; call `layout(width)` before rendering                           | text/paragraph         |
+| 17  | Isolate imperative canvas transforms with `canvas.save()` / `canvas.restore()` inside a recorded `Picture`                                | shapes/pictures        |
 | 18  | Load Lottie JSON with `Skia.Skottie.Make(JSON.stringify(...))`; drive `<Skottie>` playback with `useClock` and a Reanimated derived frame | skottie                |
 
 ## Eval traceability

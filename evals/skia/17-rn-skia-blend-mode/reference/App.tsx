@@ -10,11 +10,11 @@ export default function App() {
 
   return (
     <Canvas style={{ flex: 1 }}>
-      <Fill color='white' />
-      <Group blendMode='multiply'>
-        <Circle cx={cx} cy={cy - offset} r={r} color='cyan' />
-        <Circle cx={cx - offset} cy={cy + offset / 2} r={r} color='magenta' />
-        <Circle cx={cx + offset} cy={cy + offset / 2} r={r} color='yellow' />
+      <Fill color="white" />
+      <Group blendMode="multiply">
+        <Circle cx={cx} cy={cy - offset} r={r} color="cyan" />
+        <Circle cx={cx - offset} cy={cy + offset / 2} r={r} color="magenta" />
+        <Circle cx={cx + offset} cy={cy + offset / 2} r={r} color="yellow" />
       </Group>
     </Canvas>
   )

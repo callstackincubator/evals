@@ -167,12 +167,12 @@ describe('opencode docker env passthrough', () => {
     expect(shouldPassthroughOpencodeDockerEnvKey('CLOUDFLARE_API_TOKEN')).toBe(
       true
     )
-    expect(
-      shouldPassthroughOpencodeDockerEnvKey('CLOUDFLARE_ACCOUNT_ID')
-    ).toBe(true)
-    expect(
-      shouldPassthroughOpencodeDockerEnvKey('CLOUDFLARE_GATEWAY_ID')
-    ).toBe(true)
+    expect(shouldPassthroughOpencodeDockerEnvKey('CLOUDFLARE_ACCOUNT_ID')).toBe(
+      true
+    )
+    expect(shouldPassthroughOpencodeDockerEnvKey('CLOUDFLARE_GATEWAY_ID')).toBe(
+      true
+    )
   })
 
   test('passes provider-prefixed env vars through to containers', () => {
@@ -180,9 +180,9 @@ describe('opencode docker env passthrough', () => {
     expect(shouldPassthroughOpencodeDockerEnvKey('ANTHROPIC_API_KEY')).toBe(
       true
     )
-    expect(shouldPassthroughOpencodeDockerEnvKey('OPENCODE_SERVER_LOG_LEVEL')).toBe(
-      true
-    )
+    expect(
+      shouldPassthroughOpencodeDockerEnvKey('OPENCODE_SERVER_LOG_LEVEL')
+    ).toBe(true)
   })
 
   test('does not pass unrelated env vars through to containers', () => {

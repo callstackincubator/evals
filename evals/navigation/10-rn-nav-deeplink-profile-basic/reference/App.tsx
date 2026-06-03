@@ -10,7 +10,7 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 function HomeScreen() {
   return (
     <View style={styles.container}>
-       <Text style={styles.title}>Home</Text>
+      <Text style={styles.title}>Home</Text>
     </View>
   )
 }

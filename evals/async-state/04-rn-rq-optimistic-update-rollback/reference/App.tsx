@@ -132,13 +132,17 @@ function TodosScreen() {
             onPress={handleTodoPressCallback(todo.id, !todo.done)}
             style={styles.row}
           >
-            <Text style={[styles.todoText, todo.done && styles.done]}>{todo.title}</Text>
+            <Text style={[styles.todoText, todo.done && styles.done]}>
+              {todo.title}
+            </Text>
           </Pressable>
         )
       })}
 
       {toggleMutation.error ? (
-        <Text style={styles.error}>Toggle failed. Cache rolled back and revalidated.</Text>
+        <Text style={styles.error}>
+          Toggle failed. Cache rolled back and revalidated.
+        </Text>
       ) : null}
     </View>
   )

@@ -7,6 +7,7 @@
 - Tone: practical, technical, direct; short sections; concrete claims; end with a clear call to action.
 
 Section plan:
+
 1. What is React Native Evals?
 2. Why we made it
 3. What models and categories are currently benchmarked
@@ -27,12 +28,14 @@ Today we are open-sourcing **React Native Evals**, a benchmark suite designed to
 React Native Evals is a task-based benchmark for model-generated code.
 
 Each eval is a self-contained task in `evals/<category>/<eval-id>/` with:
+
 - a task prompt (`prompt.md`)
 - judgeable requirements (`requirements.yaml`)
 - a baseline app scaffold (`app/`)
 - a reference implementation (`reference/`)
 
 The repository currently includes **136 evals** across seven category groups:
+
 - `animation` (13)
 - `async-state` (13)
 - `device-permissions` (24)
@@ -52,11 +55,13 @@ React Native Evals focuses on those implementation details so teams can compare 
 ### What models and categories are currently benchmarked?
 
 Based on current repository run artifacts (as of **February 27, 2026**), benchmark runs include:
+
 - `gpt-4.1-mini`
 - `gpt-5.3-codex`
 - `noop` reference baseline mode (used to validate the judging pipeline without solver generation)
 
 Category coverage is currently:
+
 - animation
 - async state
 - device permissions
@@ -70,6 +75,7 @@ Category coverage is currently:
 There is no fixed public roadmap list of future category names in-repo yet.
 
 Current direction is to:
+
 - continue expanding depth and coverage in the existing seven categories
 - add new categories through the documented category workflow (`docs/adding-new-category.md`)
 - prioritize categories with clear, judgeable implementation constraints and strong primary-source API guidance
@@ -81,11 +87,13 @@ If you publish this post with a committed roadmap, replace this section with you
 React Native Evals uses a split pipeline:
 
 1. **Generation stage** (`bun runner/run.ts`)
+
 - discovers evals from `requirements.yaml`
 - runs a solver model against each eval prompt + baseline files
 - writes generated outputs plus a manifest
 
 2. **Judge stage** (`bun runner/judge.ts`)
+
 - reads generated outputs
 - evaluates each declared requirement with an LLM judge
 - writes per-eval results and run summaries

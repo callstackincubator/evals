@@ -13,21 +13,19 @@ describe('opencode workspace materialization', () => {
     const workspace = await createOpencodeTempDir()
 
     try {
-      await materializeSolverWorkspace(
-        workspace,
-        'Implement the task.',
-        [
-          {
-            path: 'App.tsx',
-            absolutePath: '/unused/App.tsx',
-            content: 'export default function App() {}',
-          },
-        ]
-      )
+      await materializeSolverWorkspace(workspace, 'Implement the task.', [
+        {
+          path: 'App.tsx',
+          absolutePath: '/unused/App.tsx',
+          content: 'export default function App() {}',
+        },
+      ])
 
       await access(path.join(workspace, 'prompt.md'))
       await access(path.join(workspace, 'app', 'App.tsx'))
-      await expect(access(path.join(workspace, 'requirements.yaml'))).rejects.toThrow()
+      await expect(
+        access(path.join(workspace, 'requirements.yaml'))
+      ).rejects.toThrow()
       await expect(access(path.join(workspace, 'reference'))).rejects.toThrow()
     } finally {
       await cleanupOpencodeTempDir(workspace)

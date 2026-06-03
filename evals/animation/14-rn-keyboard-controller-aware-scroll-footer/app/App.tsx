@@ -1,4 +1,11 @@
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native'
 
 const FIELDS = [
   'First name',
@@ -20,7 +27,7 @@ export default function App() {
             <Text style={styles.label}>{field}</Text>
             <TextInput
               placeholder={field}
-              placeholderTextColor='#64748b'
+              placeholderTextColor="#64748b"
               style={styles.input}
             />
           </View>

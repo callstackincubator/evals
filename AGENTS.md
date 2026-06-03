@@ -20,9 +20,11 @@ Benchmark execution uses two CLIs:
 2. `bun runner/judge.ts` reads generated artifacts, runs LLM judging, and writes results under `results/<run-id>/`.
 
 Generation details (`runner/solver/pipeline.ts`):
+
 - `--model` is required and is always used for generation.
 
 Judge details (`runner/evaluators/llm/run.ts`):
+
 - `--model` is required and LLM judge always runs against generated artifacts.
 
 Key output behavior:

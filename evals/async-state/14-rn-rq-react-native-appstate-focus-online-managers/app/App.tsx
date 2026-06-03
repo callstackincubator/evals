@@ -1,9 +1,4 @@
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import {
   QueryClient,
   QueryClientProvider,

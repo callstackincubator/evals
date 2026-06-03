@@ -7,11 +7,7 @@ const VIDEOS = Array.from({ length: 10 }, (_, index) => ({
   creator: index % 2 === 0 ? 'Studio North' : 'Studio South',
 }))
 
-function VideoCard({
-  item,
-}: {
-  item: (typeof VIDEOS)[number]
-}) {
+function VideoCard({ item }: { item: (typeof VIDEOS)[number] }) {
   return (
     <View style={styles.card}>
       <View style={styles.thumbnail} />
@@ -22,9 +18,7 @@ function VideoCard({
 }
 
 export default function App() {
-  return (
-    <View style={styles.screen} />
-  )
+  return <View style={styles.screen} />
 }
 
 const styles = StyleSheet.create({

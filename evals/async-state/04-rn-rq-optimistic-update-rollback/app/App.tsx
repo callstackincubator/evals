@@ -15,26 +15,23 @@ function TodosScreen() {
 
       {data.map((todo) => {
         return (
-          <Pressable
-            key={todo.id}
-            onPress={() => {}}
-            style={styles.row}
-          >
-            <Text style={[styles.todoText, todo.done && styles.done]}>{todo.title}</Text>
+          <Pressable key={todo.id} onPress={() => {}} style={styles.row}>
+            <Text style={[styles.todoText, todo.done && styles.done]}>
+              {todo.title}
+            </Text>
           </Pressable>
         )
       })}
 
-      <Text style={styles.error}>Toggle failed. Cache rolled back and revalidated.</Text>
+      <Text style={styles.error}>
+        Toggle failed. Cache rolled back and revalidated.
+      </Text>
     </View>
   )
 }
 
-
 export default function App() {
-  return (
-    <TodosScreen />
-  )
+  return <TodosScreen />
 }
 
 const styles = StyleSheet.create({

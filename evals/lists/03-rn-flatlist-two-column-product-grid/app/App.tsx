@@ -8,9 +8,7 @@ const PRODUCTS = Array.from({ length: 8 }, (_, index) => ({
 }))
 
 export default function App() {
-  return (
-    <View style={styles.screen}></View>
-  )
+  return <View style={styles.screen}></View>
 }
 
 const styles = StyleSheet.create({

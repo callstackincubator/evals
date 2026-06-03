@@ -17,7 +17,7 @@ export default function App() {
             y={0}
             width={CANVAS_SIZE}
             height={CANVAS_SIZE}
-            fit='cover'
+            fit="cover"
           />
         ) : (
           <Rect
@@ -25,7 +25,7 @@ export default function App() {
             y={0}
             width={CANVAS_SIZE}
             height={CANVAS_SIZE}
-            color='#334155'
+            color="#334155"
           />
         )}
       </Canvas>

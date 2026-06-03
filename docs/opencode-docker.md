@@ -6,11 +6,11 @@ The runner starts OpenCode inside Docker for solver and judge model calls. This 
 
 Each worker session bind-mounts three things into the container:
 
-| Host source | Container path | Mode | Purpose |
-| --- | --- | --- | --- |
-| Eval workspace directory | `/workspace` | read-write | Files the agent reads and edits |
-| Isolated temp dir with copied `~/.local/share/opencode/auth.json` | `/root/.local/share/opencode` (`auth.json` inside) | read-write | OpenCode provider credentials |
-| Repo `opencode.json` or `opencode.jsonc` (if present) | `/root/.config/opencode/<filename>` | read-only | Provider/model config (no secrets) |
+| Host source                                                       | Container path                                     | Mode       | Purpose                            |
+| ----------------------------------------------------------------- | -------------------------------------------------- | ---------- | ---------------------------------- |
+| Eval workspace directory                                          | `/workspace`                                       | read-write | Files the agent reads and edits    |
+| Isolated temp dir with copied `~/.local/share/opencode/auth.json` | `/root/.local/share/opencode` (`auth.json` inside) | read-write | OpenCode provider credentials      |
+| Repo `opencode.json` or `opencode.jsonc` (if present)             | `/root/.config/opencode/<filename>`                | read-only  | Provider/model config (no secrets) |
 
 The host `auth.json` is copied into a per-container temp directory, and that directory is bind-mounted to `/root/.local/share/opencode` so concurrent workers do not share or overwrite the same host file.
 
@@ -129,11 +129,11 @@ bun runner/judge.ts \
 
 ## Related environment variables
 
-| Variable                             | Default                                  | Effect                                                     |
-| ------------------------------------ | ---------------------------------------- | ---------------------------------------------------------- |
-| `OPENCODE_STREAM_CONTAINER_LOGS`     | enabled                                  | Set to `0` to stop streaming `[container]` docker logs     |
-| `OPENCODE_SERVER_LOG_LEVEL`          | `INFO`                                   | Server log level when `--agent-logs` is off                |
-| `OPENCODE_SERVER_PRINT_LOGS`         | off                                      | Set to `1` to enable `--print-logs` without `--agent-logs` |
-| `OPENCODE_DOCKER_EXTRA_ENV_PREFIXES` | unset                                    | Comma-separated extra env key prefixes to forward          |
+| Variable                             | Default | Effect                                                     |
+| ------------------------------------ | ------- | ---------------------------------------------------------- |
+| `OPENCODE_STREAM_CONTAINER_LOGS`     | enabled | Set to `0` to stop streaming `[container]` docker logs     |
+| `OPENCODE_SERVER_LOG_LEVEL`          | `INFO`  | Server log level when `--agent-logs` is off                |
+| `OPENCODE_SERVER_PRINT_LOGS`         | off     | Set to `1` to enable `--print-logs` without `--agent-logs` |
+| `OPENCODE_DOCKER_EXTRA_ENV_PREFIXES` | unset   | Comma-separated extra env key prefixes to forward          |
 
 When a run starts, the runner prints a single line summarizing the effective logging settings (`serve log level`, `agent logs`, `verbose`).

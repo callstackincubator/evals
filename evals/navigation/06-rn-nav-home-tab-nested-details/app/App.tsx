@@ -1,5 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { createStaticNavigation, StaticScreenProps } from '@react-navigation/native'
+import {
+  createStaticNavigation,
+  StaticScreenProps,
+} from '@react-navigation/native'
 import { Button, StyleSheet, Text, View } from 'react-native'
 
 function HomeFeedScreen() {
@@ -9,10 +12,7 @@ function HomeFeedScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>HomeFeed</Text>
       <Text style={styles.copy}>Latest stories</Text>
-      <Button
-        title="Open"
-        onPress={handleNavigateToArticleDetails}
-      />
+      <Button title="Open" onPress={handleNavigateToArticleDetails} />
     </View>
   )
 }
@@ -39,7 +39,7 @@ function SettingsScreen() {
 }
 
 const TabNavigator = createBottomTabNavigator({
-  id: "bottom-tab",
+  id: 'bottom-tab',
   screens: {
     HomeTab: HomeFeedScreen,
     Settings: SettingsScreen,

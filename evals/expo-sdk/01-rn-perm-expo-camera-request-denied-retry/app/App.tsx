@@ -9,8 +9,13 @@ export default function App() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Camera Access</Text>
-      <Text style={styles.subtitle}>Request, retry, and recover camera permission.</Text>
-      <Pressable style={styles.button} onPress={() => requestCameraPermissionAction()}>
+      <Text style={styles.subtitle}>
+        Request, retry, and recover camera permission.
+      </Text>
+      <Pressable
+        style={styles.button}
+        onPress={() => requestCameraPermissionAction()}
+      >
         <Text style={styles.buttonText}>Open</Text>
       </Pressable>
     </View>

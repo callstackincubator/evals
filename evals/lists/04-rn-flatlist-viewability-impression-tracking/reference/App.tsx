@@ -1,11 +1,5 @@
 import React, { useState } from 'react'
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  View,
-  ViewToken,
-} from 'react-native'
+import { FlatList, StyleSheet, Text, View, ViewToken } from 'react-native'
 
 const VIDEOS = Array.from({ length: 10 }, (_, index) => ({
   id: `clip-${index + 1}`,

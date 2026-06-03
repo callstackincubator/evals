@@ -1,4 +1,8 @@
-import { createOpencodeClient, type Event, type ToolPart } from '@opencode-ai/sdk'
+import {
+  createOpencodeClient,
+  type Event,
+  type ToolPart,
+} from '@opencode-ai/sdk'
 
 import { logOpencodeAgent, logOpencodeWarn } from './opencode'
 
@@ -139,8 +143,8 @@ export function startOpencodeAgentActivityLogging(options: {
     `subscribing to agent events on port ${options.port}${options.directory ? ` directory=${options.directory}` : ''}`
   )
 
-  void client
-    .event.subscribe({
+  void client.event
+    .subscribe({
       query: options.directory ? { directory: options.directory } : undefined,
       signal: abortController.signal,
       onSseEvent: (sseEvent) => {

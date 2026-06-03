@@ -25,7 +25,12 @@ export default function App() {
     canvas.translate(CX, 90)
     canvas.rotate(FIRST_RECT_ROTATION_DEG)
     canvas.drawRect(
-      { x: -RECT_WIDTH / 2, y: -RECT_HEIGHT / 2, width: RECT_WIDTH, height: RECT_HEIGHT },
+      {
+        x: -RECT_WIDTH / 2,
+        y: -RECT_HEIGHT / 2,
+        width: RECT_WIDTH,
+        height: RECT_HEIGHT,
+      },
       paint
     )
     canvas.restore()
@@ -38,7 +43,12 @@ export default function App() {
     canvas.translate(CX, 230)
     canvas.rotate(THIRD_RECT_ROTATION_DEG)
     canvas.drawRect(
-      { x: -RECT_WIDTH / 2, y: -RECT_HEIGHT / 2, width: RECT_WIDTH, height: RECT_HEIGHT },
+      {
+        x: -RECT_WIDTH / 2,
+        y: -RECT_HEIGHT / 2,
+        width: RECT_WIDTH,
+        height: RECT_HEIGHT,
+      },
       paint
     )
     canvas.restore()

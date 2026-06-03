@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
 
 const CONTACTS = [
   { id: 'contact-1', name: 'Alicia Stone', role: 'Design' },

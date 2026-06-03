@@ -9,9 +9,7 @@ const MESSAGES = Array.from({ length: 18 }, (_, index) => ({
 }))
 
 export default function App() {
-  return (
-    <View style={styles.screen}></View>
-  )
+  return <View style={styles.screen}></View>
 }
 
 const styles = StyleSheet.create({

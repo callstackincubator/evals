@@ -9,9 +9,7 @@ const VIDEOS = [
 ]
 
 export default function App() {
-  return (
-    <View style={styles.screen} />
-  )
+  return <View style={styles.screen} />
 }
 
 const styles = StyleSheet.create({

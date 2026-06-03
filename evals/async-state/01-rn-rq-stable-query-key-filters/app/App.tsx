@@ -1,11 +1,7 @@
 import { useState } from 'react'
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
 
-const FILTER_OPTIONS = [
-  'all',
-  'smartphones',
-  'laptops',
-] as const
+const FILTER_OPTIONS = ['all', 'smartphones', 'laptops'] as const
 
 type Product = {
   id: number
@@ -14,8 +10,8 @@ type Product = {
 }
 
 function TransactionsScreen() {
-  const [filter, setFilter] = useState<typeof FILTER_OPTIONS[number]>('all')
-  
+  const [filter, setFilter] = useState<(typeof FILTER_OPTIONS)[number]>('all')
+
   // Update these with real data and logic in later steps
   const page = 1
   const totalPages = 1
@@ -34,7 +30,10 @@ function TransactionsScreen() {
               onPress={() => {
                 setFilter(candidate)
               }}
-              style={[styles.filterButton, isActive && styles.filterButtonActive]}
+              style={[
+                styles.filterButton,
+                isActive && styles.filterButtonActive,
+              ]}
             >
               <Text
                 style={[
@@ -78,7 +77,10 @@ function TransactionsScreen() {
         <Pressable
           disabled={page >= totalPages}
           onPress={() => {}}
-          style={[styles.pageButton, page >= totalPages && styles.pageButtonDisabled]}
+          style={[
+            styles.pageButton,
+            page >= totalPages && styles.pageButtonDisabled,
+          ]}
         >
           <Text style={styles.pageButtonText}>Next</Text>
         </Pressable>

@@ -49,7 +49,8 @@ const runSearch = async (nextQuery: string, { set, get }: StoreApi) => {
   }
 
   set({
-    result: titles.length > 0 ? titles.join(' • ') : `No results for ${nextQuery}`,
+    result:
+      titles.length > 0 ? titles.join(' • ') : `No results for ${nextQuery}`,
     status: 'ready',
   })
 }
@@ -76,8 +77,8 @@ export default function App() {
 
       <TextInput
         onChangeText={setQuery}
-        placeholder='Type a query'
-        placeholderTextColor='#94a3b8'
+        placeholder="Type a query"
+        placeholderTextColor="#94a3b8"
         style={styles.input}
         value={query}
       />

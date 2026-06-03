@@ -7,9 +7,7 @@ const VIDEOS = Array.from({ length: 8 }, (_, index) => ({
 }))
 
 export default function App() {
-  return (
-    <View style={styles.screen} />
-  )
+  return <View style={styles.screen} />
 }
 
 const styles = StyleSheet.create({

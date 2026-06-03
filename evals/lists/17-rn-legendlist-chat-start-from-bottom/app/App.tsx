@@ -1,10 +1,5 @@
 import React, { useState } from 'react'
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 const INITIAL_MESSAGES = Array.from({ length: 8 }, (_, index) => ({
   id: `message-${index + 1}`,

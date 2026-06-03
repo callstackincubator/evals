@@ -17,10 +17,10 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Canvas style={styles.canvas} ref={ref}>
-        <Fill color='#1e293b' />
-        <Circle cx={160} cy={200} r={80} color='#38bdf8' />
-        <Circle cx={100} cy={320} r={50} color='#f472b6' />
-        <Circle cx={220} cy={320} r={50} color='#4ade80' />
+        <Fill color="#1e293b" />
+        <Circle cx={160} cy={200} r={80} color="#38bdf8" />
+        <Circle cx={100} cy={320} r={50} color="#f472b6" />
+        <Circle cx={220} cy={320} r={50} color="#4ade80" />
       </Canvas>
 
       <TouchableOpacity style={styles.button} onPress={handleSave}>

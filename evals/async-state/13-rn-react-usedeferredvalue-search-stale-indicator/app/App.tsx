@@ -1,19 +1,11 @@
 import { useState } from 'react'
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native'
+import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native'
 
 export default function App() {
   const [query, setQuery] = useState('')
 
   const renderItem = () => {
-    return (
-      <View style={styles.row}></View>
-    )
+    return <View style={styles.row}></View>
   }
 
   return (
@@ -28,10 +20,7 @@ export default function App() {
         value={query}
       />
 
-      <FlatList
-        data={[]}
-        renderItem={renderItem}
-      />
+      <FlatList data={[]} renderItem={renderItem} />
     </View>
   )
 }

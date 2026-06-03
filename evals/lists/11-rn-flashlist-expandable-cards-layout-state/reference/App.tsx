@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { FlashList, useLayoutState } from '@shopify/flash-list'
 
 const FAQS = [
@@ -25,11 +20,7 @@ const FAQS = [
   },
 ]
 
-function FaqCard({
-  item,
-}: {
-  item: (typeof FAQS)[number]
-}) {
+function FaqCard({ item }: { item: (typeof FAQS)[number] }) {
   const [isExpanded, setIsExpanded] = useLayoutState(false)
 
   return (

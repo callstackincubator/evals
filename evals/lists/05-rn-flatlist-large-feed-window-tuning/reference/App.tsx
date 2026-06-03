@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
 
 const POSTS = Array.from({ length: 80 }, (_, index) => ({
   id: `post-${index + 1}`,

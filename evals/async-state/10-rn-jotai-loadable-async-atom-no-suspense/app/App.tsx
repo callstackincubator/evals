@@ -4,10 +4,7 @@ export default function App() {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Reports</Text>
-      <Pressable
-        onPress={() => {}}
-        style={styles.button}
-      >
+      <Pressable onPress={() => {}} style={styles.button}>
         <Text style={styles.buttonText}>Reload</Text>
       </Pressable>
     </View>
