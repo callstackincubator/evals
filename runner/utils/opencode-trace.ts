@@ -4,7 +4,9 @@ const HEARTBEAT_INTERVAL_MS = 3_000
 
 let verboseLoggingEnabled = false
 
-export function configureOpencodeVerboseLogging(options: { verbose?: boolean }) {
+export function configureOpencodeVerboseLogging(options: {
+  verbose?: boolean
+}) {
   if (options.verbose !== undefined) {
     verboseLoggingEnabled = options.verbose
   }
@@ -51,7 +53,7 @@ function summarizeLatestActivity(parts: Part[]) {
   for (let index = parts.length - 1; index >= 0; index -= 1) {
     const part = parts[index]
 
-    if (part.type === 'tool') {
+    if (part?.type === 'tool') {
       if (part.state.status === 'running') {
         return `tool ${part.tool} running title=${part.state.title ?? 'n/a'}`
       }
@@ -69,15 +71,15 @@ function summarizeLatestActivity(parts: Part[]) {
       }
     }
 
-    if (part.type === 'reasoning' && part.text.trim().length > 0) {
+    if (part?.type === 'reasoning' && part.text.trim().length > 0) {
       return `reasoning chars=${part.text.length}`
     }
 
-    if (part.type === 'text' && part.text.trim().length > 0) {
+    if (part?.type === 'text' && part.text.trim().length > 0) {
       return `text chars=${part.text.length}`
     }
 
-    if (part.type === 'step-finish') {
+    if (part?.type === 'step-finish') {
       return `step-finish reason=${part.reason} tokens=${part.tokens.input}/${part.tokens.output}`
     }
   }
@@ -109,7 +111,7 @@ async function fetchSessionProgress(options: {
     const latestSession = [...sessions].sort(
       (first, second) => second.time.updated - first.time.updated
     )[0]
-    sessionId = latestSession.id
+    sessionId = latestSession?.id
   }
 
   const [statusResponse, messagesResponse] = await Promise.all([
@@ -117,7 +119,7 @@ async function fetchSessionProgress(options: {
       query: options.directory ? { directory: options.directory } : undefined,
     }),
     client.session.messages({
-      path: { id: sessionId },
+      path: { id: sessionId! },
       query: {
         directory: options.directory,
         limit: 20,
@@ -128,7 +130,7 @@ async function fetchSessionProgress(options: {
   const statusRecord = statusResponse.data
   const sessionStatus =
     statusRecord && typeof statusRecord === 'object'
-      ? statusRecord[sessionId]
+      ? statusRecord[sessionId!]
       : undefined
 
   let statusLabel = 'unknown'
