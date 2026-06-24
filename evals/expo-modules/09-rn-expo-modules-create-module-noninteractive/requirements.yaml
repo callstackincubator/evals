@@ -2,6 +2,8 @@ version: 1
 inputs:
   files:
     - app/App.tsx
+    - app/README.md
+    - app/scripts/create-module.sh
 requirements:
   - id: noninteractive-command
     description: "Must provide a noninteractive create-expo-module command or script."
