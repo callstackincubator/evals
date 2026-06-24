@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: task-defined-at-module-scope
+    description: "Must define the TaskManager background task at module scope rather than inside the component render body."
+  - id: foreground-before-background
+    description: "Must request foreground location permission and verify it is granted before requesting background permission."
+  - id: background-start-gated
+    description: "Must call startLocationUpdatesAsync only after background permission is granted."
+  - id: no-duplicate-start
+    description: "Must check hasStartedLocationUpdatesAsync or equivalent state to avoid starting duplicate background updates."
+  - id: stop-background-updates-action
+    description: "Must provide a user action that calls stopLocationUpdatesAsync for the same task name."

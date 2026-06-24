@@ -1,0 +1,1 @@
+Build a screen-level system UI controller using current expo-status-bar, expo-navigation-bar, and expo-glass-effect APIs. Prefer component/namespace APIs, gate Liquid Glass usage with availability checks, and clean up listeners.

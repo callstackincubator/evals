@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: android-channel-before-token
+    description: "Must call Notifications.setNotificationChannelAsync on Android before getExpoPushTokenAsync."
+  - id: permission-gated-token
+    description: "Must request/check notification permission and avoid getExpoPushTokenAsync when permission is not granted."
+  - id: project-id-passed
+    description: "Must pass a projectId option to getExpoPushTokenAsync."
+  - id: token-error-state
+    description: "Must catch token registration errors and render a deterministic error state."
+  - id: no-deprecated-notification-field
+    description: "Must not rely on the removed top-level app config notification field for runtime channel setup."

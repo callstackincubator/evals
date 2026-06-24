@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: swift-file-class-match
+    description: "Must make the Swift file name match the Swift module class name."
+  - id: swift-name-matches-class
+    description: "Must set Name(\"...\") to the same module name or omit it only when inference is correct."
+  - id: uses-expo-modules-core
+    description: "Must import ExpoModulesCore and conform to Module."
+  - id: js-wrapper-same-name
+    description: "Must require the native module from JS using the same name."

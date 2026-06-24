@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: imports-universal-host
+    description: "Must import Host from @expo/ui."
+  - id: host-root-wraps-native-ui
+    description: "Must render Expo UI native components inside a Host root."
+  - id: rn-host-view-only-for-rn-children
+    description: "Must use RNHostView only when intentionally hosting React Native children inside native UI."
+  - id: no-glass-effect
+    description: "Must not import expo-glass-effect or treat GlassEffect as part of @expo/ui."

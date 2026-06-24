@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-expo-video
+    description: "Must import VideoView and useVideoPlayer from expo-video."
+  - id: no-expo-av-video
+    description: "Must not import Video or playback APIs from expo-av."
+  - id: player-created-with-hook
+    description: "Must create the player with useVideoPlayer and configure looping/muted/playback in the setup callback or player API."
+  - id: videoview-receives-player
+    description: "Must pass the player object to VideoView."
+  - id: visibility-lifecycle
+    description: "Must pause or avoid autoplay when the app is backgrounded or the view is not active."

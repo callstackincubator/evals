@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: community-bottom-sheet-import
+    description: "Must import BottomSheet APIs from @expo/ui/community/bottom-sheet."
+  - id: controlled-present-dismiss
+    description: "Must expose controlled present/dismiss behavior through a ref or state."
+  - id: uses-bottom-sheet-view
+    description: "Must place sheet content in BottomSheetView or documented sheet child wrappers."
+  - id: no-gorhom-import
+    description: "Must not import @gorhom/bottom-sheet directly."

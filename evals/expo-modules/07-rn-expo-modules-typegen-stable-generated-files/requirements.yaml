@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: expo-module-config-platforms
+    description: "Must keep expo-module.config.json platforms and module class names explicit."
+  - id: generated-types-stable-path
+    description: "Must write generated TypeScript declarations to a stable committed path."
+  - id: exports-types
+    description: "Must export the public TypeScript types from the package entrypoint."
+  - id: no-ephemeral-output-only
+    description: "Must not rely only on an ignored temp typegen output directory."

@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: config-plugin-export
+    description: "Must export a ConfigPlugin from the plugin file."
+  - id: ios-permission-string
+    description: "Must write the iOS permission string through withInfoPlist or equivalent config-plugin mod."
+  - id: android-permission-idempotent
+    description: "Must add Android permission through AndroidConfig.Permissions helpers or idempotent manifest editing."
+  - id: plugin-used-in-app-config
+    description: "Must wire the local config plugin into app.config.ts/app.json."

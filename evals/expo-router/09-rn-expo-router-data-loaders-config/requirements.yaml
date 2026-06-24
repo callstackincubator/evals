@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - app/_layout.tsx
+    - app/index.tsx
+requirements:
+  - id: loader-exported-from-route
+    description: "Must export a loader from the route module."
+  - id: uses-use-loader-data
+    description: "Must read loader results with useLoaderData typed to the loader."
+  - id: router-plugin-configured
+    description: "Must configure expo-router/app config for data-loader compatible web/server output."
+  - id: no-client-fetch-duplication
+    description: "Must not duplicate the same data fetch in a client mount effect."

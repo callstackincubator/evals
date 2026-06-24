@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - app/_layout.tsx
+    - app/index.tsx
+requirements:
+  - id: serializable-link-params
+    description: "Must navigate with serializable primitive search params."
+  - id: uses-local-search-params
+    description: "Must read route params with useLocalSearchParams or useGlobalSearchParams from expo-router."
+  - id: param-fallbacks
+    description: "Must handle missing params with fallback values."
+  - id: no-object-function-params
+    description: "Must not pass functions, class instances, or non-serializable objects as route params."

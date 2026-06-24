@@ -1,0 +1,1 @@
+Create a background-location opt-in screen. It must ask for foreground permission before background permission, register a TaskManager task once, and avoid starting updates until both permissions are granted.

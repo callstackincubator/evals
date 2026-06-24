@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - app/_layout.tsx
+    - app/index.tsx
+requirements:
+  - id: uses-protected-routes
+    description: "Must use Stack.Protected, Tabs.Protected, or the Expo Router protected route API."
+  - id: signed-out-fallback
+    description: "Must provide a deterministic signed-out fallback route."
+  - id: guard-boolean-explicit
+    description: "Must pass explicit guard booleans derived from auth state."
+  - id: no-redirect-loop
+    description: "Must avoid unconditional redirects that can loop between protected and sign-in routes."

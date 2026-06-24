@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: supported-props-only
+    description: "Must avoid unsupported community DateTimePicker props from legacy packages."
+  - id: uses-onchange-or-onvaluechange
+    description: "Must handle date changes through onChange or onValueChange."
+  - id: fallback-for-platform-differences
+    description: "Must render fallback copy for unsupported picker modes/platform behavior."
+  - id: no-react-native-community-datetimepicker-import
+    description: "Must not import @react-native-community/datetimepicker directly."

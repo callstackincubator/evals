@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - app/_layout.tsx
+    - app/index.tsx
+requirements:
+  - id: imports-from-expo-router
+    description: "Must import router hooks/themes/navigation helpers from expo-router exports rather than direct @react-navigation packages."
+  - id: no-direct-react-navigation-imports
+    description: "Must not import from @react-navigation/native or @react-navigation/native-stack in app route files."
+  - id: keeps-file-system-layout
+    description: "Must keep navigation defined through Expo Router layout and route files."
+  - id: uses-sdk56-exported-hooks
+    description: "Must use SDK 56-compatible exports such as useNavigation from expo-router."

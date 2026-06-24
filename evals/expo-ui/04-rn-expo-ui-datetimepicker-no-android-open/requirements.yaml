@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: community-datetime-import
+    description: "Must import DateTimePicker from @expo/ui/community/datetime-picker."
+  - id: no-android-open-api
+    description: "Must not use DateTimePickerAndroid.open."
+  - id: controlled-date-value
+    description: "Must keep selected Date in controlled state."
+  - id: handles-undefined-date
+    description: "Must guard onChange date being undefined when events cancel."

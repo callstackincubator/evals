@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: permission-before-query
+    description: "Must request contacts permission before calling Contacts.Contact.getAllDetails or another current Contact class query API."
+  - id: field-allowlist
+    description: "Must pass a ContactField allowlist that includes only the rendered fields, such as FULL_NAME, EMAILS, and IMAGE."
+  - id: empty-list-fallback
+    description: "Must handle an empty data array with deterministic fallback UI."
+  - id: no-query-on-mount-permission-prompt
+    description: "Must not prompt for contacts permission on initial mount."
+  - id: config-plugin-fields-mentioned
+    description: "Must include or preserve contacts permission strings in app config when adding config files for the eval."

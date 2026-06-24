@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: view-definition-used
+    description: "Must define a View(...) in the native module definition."
+  - id: typed-props
+    description: "Must declare native view props in native code and in the JS wrapper."
+  - id: events-declared
+    description: "Must declare emitted events in the module definition and expose handlers in TS props."
+  - id: require-native-view-manager
+    description: "Must use requireNativeViewManager for the React wrapper."

@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-expo-audio
+    description: "Must import playback APIs from expo-audio and not from expo-av."
+  - id: uses-managed-player-hook
+    description: "Must use useAudioPlayer for component-managed player lifecycle."
+  - id: uses-player-status-hook
+    description: "Must use useAudioPlayerStatus or an equivalent current status subscription for UI state."
+  - id: audio-mode-explicit
+    description: "Must call setAudioModeAsync with deliberate playback/interruption options."
+  - id: pause-or-stop-on-background
+    description: "Must pause playback when AppState leaves active or the component unmounts."

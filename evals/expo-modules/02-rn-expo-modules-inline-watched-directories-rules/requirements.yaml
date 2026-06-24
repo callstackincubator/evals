@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: watched-directories-valid
+    description: "Must configure watchedDirectories as project subdirectories, not ./, /, ../, or parent directories."
+  - id: no-overlapping-watched-dirs
+    description: "Must not include both a directory and its nested child in watchedDirectories."
+  - id: no-special-router-group-path
+    description: "Must not put special-character route groups such as app/(tabs) in watchedDirectories."
+  - id: nested-files-covered-by-parent
+    description: "Must rely on the parent watched directory to include nested inline module files."
