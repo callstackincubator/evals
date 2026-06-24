@@ -1,7 +1,14 @@
 import { File, Paths } from 'expo-file-system'
 import * as MediaLibrary from 'expo-media-library'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AppState, Image, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
+
+const transparentPng = Uint8Array.from([
+  137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 1,
+  0, 0, 0, 1, 8, 6, 0, 0, 0, 31, 21, 196, 137, 0, 0, 0, 13, 73, 68, 65,
+  84, 120, 156, 99, 248, 255, 255, 63, 0, 5, 254, 2, 254, 167, 53, 129, 132,
+  0, 0, 0, 0, 73, 69, 78, 68, 174, 66, 96, 130,
+])
 
 export default function App() {
   const [message, setMessage] = useState('No asset saved.')
@@ -12,11 +19,19 @@ export default function App() {
       setMessage('Cannot save without photo permission.')
       return
     }
-    const file = new File(Paths.cache, 'generated-photo.txt')
-    file.write('placeholder-image-bytes')
+    const file = new File(Paths.cache, 'generated-photo.png')
+    file.write(transparentPng)
+    if (!file.exists) {
+      setMessage('Generated file was not written.')
+      return
+    }
     const asset = await MediaLibrary.Asset.create(file.uri)
-    const album = (await MediaLibrary.Album.get('Exports')) ?? await MediaLibrary.Album.create('Exports', [asset], false)
-    await album.add(asset)
+    const album = await MediaLibrary.Album.get('Exports')
+    if (album) {
+      await album.add(asset)
+    } else {
+      await MediaLibrary.Album.create('Exports', [asset], false)
+    }
     setMessage(await asset.getFilename())
   }
 
@@ -39,21 +54,6 @@ const styles = StyleSheet.create({
   actionText: {
     color: '#fff',
     fontWeight: '600',
-  },
-  card: {
-    backgroundColor: '#f9fafb',
-    borderColor: '#e5e7eb',
-    borderRadius: 12,
-    borderWidth: 1,
-    padding: 14,
-    width: '100%',
-  },
-  media: {
-    backgroundColor: '#e5e7eb',
-    borderRadius: 12,
-    height: 180,
-    overflow: 'hidden',
-    width: '100%',
   },
   screen: {
     backgroundColor: '#fff',
