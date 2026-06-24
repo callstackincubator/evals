@@ -1,7 +1,13 @@
 {
   "expo": {
     "plugins": [
-      ["expo-router", { "asyncRoutes": true }]
+      [
+        "expo-router",
+        {
+          "unstable_useServerDataLoaders": true,
+          "unstable_useServerRendering": true
+        }
+      ]
     ],
     "web": {
       "bundler": "metro",
