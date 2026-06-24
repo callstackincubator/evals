@@ -2,6 +2,9 @@ version: 1
 inputs:
   files:
     - app/App.tsx
+    - app/INLINE_MODULES.md
+    - app/app.json
+    - app/src/modules/DeviceAuditModule.kt
 requirements:
   - id: inline-modules-enabled
     description: "Must set expo.experiments.inlineModules in app config."
