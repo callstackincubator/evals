@@ -25,12 +25,14 @@ Expo SDK evals cover current SDK 56 behavior across Expo capability modules, per
 - Expo FileSystem: https://docs.expo.dev/versions/latest/sdk/filesystem/
 - Expo MediaLibrary: https://docs.expo.dev/versions/latest/sdk/media-library/
 - Expo Calendar: https://docs.expo.dev/versions/latest/sdk/calendar/
+- Expo Contacts: https://docs.expo.dev/versions/latest/sdk/contacts/
 - Expo Audio: https://docs.expo.dev/versions/latest/sdk/audio/
 - Expo Video: https://docs.expo.dev/versions/latest/sdk/video/
 - Expo Updates: https://docs.expo.dev/versions/latest/sdk/updates/
 - Expo StatusBar: https://docs.expo.dev/versions/latest/sdk/status-bar/
 - Expo NavigationBar: https://docs.expo.dev/versions/latest/sdk/navigation-bar/
 - Expo BuildProperties: https://docs.expo.dev/versions/latest/sdk/build-properties/
+- Expo GlassEffect: https://docs.expo.dev/versions/latest/sdk/glass-effect/
 
 ### best-practice inventory
 
