@@ -1,0 +1,9 @@
+{
+  "expo": {
+    "experiments": {
+      "inlineModules": {
+        "watchedDirectories": ["src/modules"]
+      }
+    }
+  }
+}

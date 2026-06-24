@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: no-expo-video-thumbnails
+    description: "Must not import or call expo-video-thumbnails."
+  - id: uses-video-player-thumbnail-api
+    description: "Must use the expo-video player thumbnail API such as generateThumbnailsAsync."
+  - id: handles-empty-thumbnail-array
+    description: "Must handle an empty thumbnails array with fallback UI."
+  - id: thumbnail-time-explicit
+    description: "Must request thumbnails at explicit second offsets."
+  - id: thumbnail-image-rendered
+    description: "Must render the generated thumbnail image/URI or a deterministic fallback."

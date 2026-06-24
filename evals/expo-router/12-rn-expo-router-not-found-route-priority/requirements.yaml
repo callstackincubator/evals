@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - app/_layout.tsx
+    - app/index.tsx
+requirements:
+  - id: plus-not-found-route
+    description: "Must implement +not-found.tsx as the not-found route."
+  - id: uses-unmatched-or-home-link
+    description: "Must render Unmatched or equivalent missing-route context plus a link back home."
+  - id: catch-all-does-not-shadow-not-found
+    description: "Must not rely only on a catch-all route for unknown routes."
+  - id: deterministic-not-found-copy
+    description: "Must render deterministic not-found UI."

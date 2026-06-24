@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: kotlin-file-class-match
+    description: "Must make the Kotlin file name match the Kotlin module class name."
+  - id: kotlin-name-matches-class
+    description: "Must set Name(\"...\") to the same module name or omit it only when inference is correct."
+  - id: uses-kotlin-module-dsl
+    description: "Must extend expo.modules.kotlin.modules.Module and return ModuleDefinition."
+  - id: js-wrapper-same-name
+    description: "Must require the native module from JS using the same name."

@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - app/_layout.tsx
+    - app/index.tsx
+requirements:
+  - id: imports-unstable-native-tabs
+    description: "Must import NativeTabs from expo-router/unstable-native-tabs."
+  - id: uses-trigger-api
+    description: "Must use NativeTabs.Trigger entries instead of Tabs.Screen for this native-tabs layout."
+  - id: trigger-names-match-routes
+    description: "Must ensure every Trigger name matches a route file."
+  - id: no-react-navigation-tabs
+    description: "Must not import bottom-tabs from @react-navigation for native tabs."

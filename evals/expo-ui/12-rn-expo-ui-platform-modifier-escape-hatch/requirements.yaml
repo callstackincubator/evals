@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: platform-entrypoints-isolated
+    description: "Must import SwiftUI APIs from @expo/ui/swift-ui and Jetpack APIs from @expo/ui/jetpack-compose in platform-isolated code."
+  - id: modifiers-from-platform-package
+    description: "Must import modifiers from the matching platform modifiers entrypoint."
+  - id: platform-branch
+    description: "Must branch platform-specific UI with Platform.OS or platform files."
+  - id: no-cross-platform-modifier-mixing
+    description: "Must not pass SwiftUI modifiers to Jetpack components or vice versa."

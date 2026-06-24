@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: inline-modules-enabled
+    description: "Must set expo.experiments.inlineModules in app config."
+  - id: watched-directory-valid
+    description: "Must place inline native files in a configured watched directory."
+  - id: module-dsl-used
+    description: "Must define the native module with Expo Module/ModuleDefinition DSL."
+  - id: prebuild-note
+    description: "Must make it clear that changing inlineModules config requires prebuild/build regeneration."

@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - app/_layout.tsx
+    - app/index.tsx
+requirements:
+  - id: large-title-option
+    description: "Must set headerLargeTitle or equivalent large-title Stack option."
+  - id: scroll-view-first-child
+    description: "Must make the page content start with a ScrollView or compatible scrollable child."
+  - id: content-inset-adjustment
+    description: "Must configure automatic content inset behavior for iOS large titles."
+  - id: stack-only
+    description: "Must use Expo Router Stack, not a manually created native stack."

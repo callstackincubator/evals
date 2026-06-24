@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: jetpack-compose-entrypoint
+    description: "Must import Android Material color helpers/components from @expo/ui/jetpack-compose."
+  - id: uses-material-colors
+    description: "Must use useMaterialColors or getMaterialColors for palette values."
+  - id: host-themed-surface
+    description: "Must render themed UI under the Jetpack Compose Host."
+  - id: no-hardcoded-only-palette
+    description: "Must not replace Material colors with only hardcoded hex constants."

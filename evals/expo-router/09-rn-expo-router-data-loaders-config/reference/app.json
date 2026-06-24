@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "plugins": [
+      ["expo-router", { "asyncRoutes": true }]
+    ],
+    "web": {
+      "bundler": "metro",
+      "output": "server"
+    }
+  }
+}

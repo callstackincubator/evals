@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-file-download-file-async
+    description: "Must use File.downloadFileAsync with a Directory or File destination from the object API."
+  - id: destination-directory-created
+    description: "Must create the destination Directory idempotently before downloading."
+  - id: upload-uses-fetch-formdata
+    description: "Must upload using fetch with FormData or another current web-compatible API instead of root uploadAsync."
+  - id: no-root-download-upload-async
+    description: "Must not call root FileSystem.downloadAsync or uploadAsync from expo-file-system."
+  - id: download-error-state
+    description: "Must catch download/upload errors and render a deterministic failure state."

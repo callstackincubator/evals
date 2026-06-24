@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: project-id-from-constants
+    description: "Must derive projectId from Constants.easConfig?.projectId or Constants.expoConfig?.extra?.eas?.projectId."
+  - id: undefined-project-id-guard
+    description: "Must branch before getExpoPushTokenAsync when projectId is missing."
+  - id: expo-go-or-dev-message
+    description: "Must render a clear local-development/Expo Go fallback message for missing projectId."
+  - id: permission-before-token
+    description: "Must request notification permission before requesting the push token."
+  - id: token-request-passes-object
+    description: "Must call getExpoPushTokenAsync with an options object containing projectId."

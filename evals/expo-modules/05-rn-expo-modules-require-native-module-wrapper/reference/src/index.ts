@@ -1,0 +1,1 @@
+export { getBatteryLabel } from './NativeDeviceAudit'

@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: platform-added-to-config
+    description: "Must add the new platform to expo-module.config.json."
+  - id: platform-implementation-file
+    description: "Must include an implementation file for the added platform."
+  - id: js-export-preserved
+    description: "Must preserve the JS/TS public export surface."
+  - id: autolinking-not-broken
+    description: "Must not remove existing iOS/Android autolinking module declarations while adding the new platform."

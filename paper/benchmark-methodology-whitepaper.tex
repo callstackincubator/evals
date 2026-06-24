@@ -70,11 +70,16 @@ The benchmark we propose in this work includes evaluation cases (referred to as 
 \toprule
 \textbf{Category} & \textbf{\# Evals} & \textbf{Scope} \\
 \midrule
-Animation & 14 & React Native animation behavior, including \texttt{Animated} and \texttt{react-native-reanimated}. \\
-Asynchronous state & 14 & Async state/data-flow tasks with \texttt{TanStack Query}, \texttt{Zustand}, and \texttt{Jotai}. \\
+Animation & 13 & React Native animation behavior, including \texttt{Animated} and \texttt{react-native-reanimated}. \\
+Asynchronous state & 13 & Async state/data-flow tasks with \texttt{TanStack Query}, \texttt{Zustand}, and \texttt{Jotai}. \\
+Expo Modules & 10 & Static Expo Modules API tasks covering inline modules, native naming, JS wrappers, type generation, config plugins, and scaffolding. \\
+Expo Router & 12 & Expo Router SDK 56 tasks covering import boundaries, layouts, native tabs, protected routes, data loaders, suspense, and not-found routing. \\
+Expo SDK & 26 & Expo SDK 56 capability-module behavior covering permissions, media, FileSystem, notifications, updates, system UI, and native config. \\
+Expo UI & 12 & \texttt{@expo/ui} universal components, community drop-in replacements, native state, and platform-native entrypoints. \\
 Lists & 18 & List rendering, item interactions, virtualization patterns, and sectioned data presentation. \\
-Navigation & 15 & Screen transitions, stack/modal flows, route params, and navigation state handling. \\
+Navigation & 13 & Screen transitions, stack/modal flows, route params, and navigation state handling. \\
 React Native APIs & 9 & Core platform API usage such as layout, keyboard, accessibility, and device integration primitives. \\
+Skia & 25 & \texttt{@shopify/react-native-skia} drawing, shaders, images, text, gestures, animation, and canvas APIs. \\
 \bottomrule
 \end{tabularx}
 \caption{Benchmark categories, number of evals per category, and short scope descriptions.}
@@ -590,7 +595,7 @@ Text drafting and editorial refinement used artificial intelligence-assisted too
 The authors are affiliated with Callstack. The experiments used commercially available infrastructure acquired and operated independently; no direct sponsorship, funding, or editorial influence was provided for this work.
 
 \section{Conclusion}
-We evaluated \textbf{18} solver models on the React Native eval suite (\textbf{66} evals in total), with \textbf{10 repeated runs per model} under the same pipeline and scoring rules. Across completed runs, the highest mean \texttt{weightedAverageScore} was \textbf{0.961} (\textbf{96.1\%}, model: \texttt{composer-2}); the median across models was \textbf{0.761} (\textbf{76.1\%}). Category-level analysis (\cref{fig:model-comparison}) shows strongest performance on \textbf{navigation} and \textbf{react native apis}, while \textbf{animation} remains the weakest and most discriminative category; \textbf{lists} and \textbf{async state} provide additional separation among otherwise closely clustered models. Recurring failures were concentrated in behavior-heavy requirements, especially animation dynamics and async-state consistency/invalidation logic.
+The current repository state contains \textbf{151} evals across the categories in \cref{tab:category-evals-scope}. The benchmark result snapshot reported below was run earlier on a \textbf{66}-eval suite: we evaluated \textbf{18} solver models with \textbf{10 repeated runs per model} under the same pipeline and scoring rules. Across completed runs, the highest mean \texttt{weightedAverageScore} was \textbf{0.961} (\textbf{96.1\%}, model: \texttt{composer-2}); the median across models was \textbf{0.761} (\textbf{76.1\%}). Category-level analysis (\cref{fig:model-comparison}) shows strongest performance on \textbf{navigation} and \textbf{react native apis}, while \textbf{animation} remains the weakest and most discriminative category; \textbf{lists} and \textbf{async state} provide additional separation among otherwise closely clustered models. Recurring failures were concentrated in behavior-heavy requirements, especially animation dynamics and async-state consistency/invalidation logic.
 
 Two practical implications follow. First, React Native development difficulty is not uniform: models that are competitive on navigation and structural code generation can still be unreliable on behavior-heavy work, where correctness depends on timing, gesture/animation dynamics, and state invalidation semantics. For practitioners, this suggests applying the most scrutiny (and the most automated protection via tests and runtime validation) to animation and async-state code paths, even when a model performs strongly overall. Second, requirement-level evaluation yields actionable signals: per-requirement verdict traces support targeted prompt iteration, scaffolding improvements, and dataset evolution without collapsing all behavior into a single task-level pass/fail.
 

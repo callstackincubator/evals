@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: permission-checked-before-picker
+    description: "Must call getMediaLibraryPermissionsAsync/requestMediaLibraryPermissionsAsync before launching the picker."
+  - id: request-not-on-mount
+    description: "Must request media-library permission from a user action, not on initial mount."
+  - id: current-video-media-type
+    description: "Must use mediaTypes: [\"videos\"] or \"videos\" instead of deprecated MediaTypeOptions.Videos."
+  - id: handles-limited-or-denied
+    description: "Must render a deterministic UI for denied or limited media access and avoid assuming full-library access."
+  - id: video-asset-guard
+    description: "Must verify the selected asset exists and is a video before reading uri/duration fields."

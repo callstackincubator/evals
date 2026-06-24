@@ -1,0 +1,16 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/app.config.ts
+requirements:
+  - id: uses-expo-build-properties-plugin
+    description: "Must configure expo-build-properties in the app config plugins array."
+  - id: ios-precompiled-rn-enabled
+    description: "Must opt into the SDK 56-era precompiled React Native dependency path with buildReactNativeFromSource: false or the current equivalent."
+  - id: keeps-static-frameworks-intent
+    description: "Must preserve useFrameworks: \"static\" when the project requires static frameworks."
+  - id: android-sdk-values-current
+    description: "Must set Android compile/target SDK values compatible with SDK 56."
+  - id: no-stale-property-names
+    description: "Must not use removed or guessed build-properties keys for precompiled headers."

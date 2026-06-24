@@ -1,0 +1,1 @@
+Build an audio preview component with expo-audio, not expo-av. Use the managed player hook, subscribe to player status, configure audio mode deliberately, and release/stop playback on lifecycle changes.

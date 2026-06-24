@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - app/_layout.tsx
+    - app/index.tsx
+requirements:
+  - id: uses-stack-toolbar-components
+    description: "Must compose header actions with Stack.Toolbar child components."
+  - id: route-options-in-layout
+    description: "Must keep screen options in Expo Router Stack layout/screen configuration."
+  - id: action-callback-defined
+    description: "Must wire header action callbacks to deterministic handlers."
+  - id: no-react-navigation-headerleft
+    description: "Must not import React Navigation header types/components directly."

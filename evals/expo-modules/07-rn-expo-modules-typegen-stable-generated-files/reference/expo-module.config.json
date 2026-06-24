@@ -1,0 +1,6 @@
+{
+  "platforms": ["ios", "android"],
+  "ios": { "modules": ["AuditModule"] },
+  "android": { "modules": ["expo.modules.audit.AuditModule"] },
+  "apple": { "modules": ["AuditModule"] }
+}
