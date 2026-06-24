@@ -2,6 +2,8 @@ version: 1
 inputs:
   files:
     - app/App.tsx
+    - app/app.json
+    - app/src/modules/DirectoryAuditModule.kt
 requirements:
   - id: watched-directories-valid
     description: "Must configure watchedDirectories as project subdirectories, not ./, /, ../, or parent directories."

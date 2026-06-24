@@ -2,6 +2,8 @@ version: 1
 inputs:
   files:
     - app/App.tsx
+    - app/src/NativeDeviceAudit.ts
+    - app/src/index.ts
 requirements:
   - id: uses-require-native-module
     description: "Must import requireNativeModule from expo-modules-core."

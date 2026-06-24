@@ -2,6 +2,8 @@ version: 1
 inputs:
   files:
     - app/App.tsx
+    - app/app.config.ts
+    - app/plugin/withAuditPermissions.ts
 requirements:
   - id: config-plugin-export
     description: "Must export a ConfigPlugin from the plugin file."

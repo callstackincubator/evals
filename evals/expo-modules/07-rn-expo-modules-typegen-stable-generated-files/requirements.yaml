@@ -2,6 +2,9 @@ version: 1
 inputs:
   files:
     - app/App.tsx
+    - app/build/index.d.ts
+    - app/expo-module.config.json
+    - app/src/index.ts
 requirements:
   - id: expo-module-config-platforms
     description: "Must keep expo-module.config.json platforms and module class names explicit."

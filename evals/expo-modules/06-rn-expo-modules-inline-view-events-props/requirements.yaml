@@ -2,6 +2,9 @@ version: 1
 inputs:
   files:
     - app/App.tsx
+    - app/ios/AuditLabelModule.swift
+    - app/ios/AuditLabelView.swift
+    - app/src/AuditLabel.tsx
 requirements:
   - id: view-definition-used
     description: "Must define a View(...) in the native module definition."
