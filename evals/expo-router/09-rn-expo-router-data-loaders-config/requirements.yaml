@@ -1,6 +1,7 @@
 version: 1
 inputs:
   files:
+    - app/app.json
     - app/_layout.tsx
     - app/index.tsx
 requirements:
@@ -9,6 +10,6 @@ requirements:
   - id: uses-use-loader-data
     description: "Must read loader results with useLoaderData typed to the loader."
   - id: router-plugin-configured
-    description: "Must configure expo-router/app config for data-loader compatible web/server output."
+    description: "Must configure the expo-router plugin with unstable_useServerDataLoaders and web output set to static or server."
   - id: no-client-fetch-duplication
     description: "Must not duplicate the same data fetch in a client mount effect."
