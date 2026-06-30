@@ -1,11 +1,10 @@
-import { Link } from 'expo-router'
 import { StyleSheet, Text, View } from 'react-native'
 
-export default function Index() {
+export default function Account() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Products</Text>
-      <Link href={{ pathname: '/details', params: { id: '42' } }}>View details</Link>
+      <Text style={styles.title}>Account</Text>
+      <Text>Signed-in profile details.</Text>
     </View>
   )
 }

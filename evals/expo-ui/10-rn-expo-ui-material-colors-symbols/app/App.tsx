@@ -1,44 +1,41 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
+
+const COLORS = {
+  primary: '#2563eb',
+  onPrimary: '#ffffff',
+  surface: '#f4f4f5',
+  onSurface: '#18181b',
+}
 
 export default function App() {
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Expo UI Material colors</Text>
-      <Text style={styles.subtitle}>Replace this scaffold with the requested Expo implementation.</Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Start</Text>
-      </Pressable>
+    <View style={[styles.screen, { backgroundColor: COLORS.surface }]}>
+      <Text style={[styles.heading, { color: COLORS.onSurface }]}>Today</Text>
+      <View style={[styles.banner, { backgroundColor: COLORS.primary }]}>
+        <Text style={[styles.bannerText, { color: COLORS.onPrimary }]}>
+          You have 3 tasks due
+        </Text>
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+  banner: {
+    borderRadius: 12,
+    padding: 16,
   },
-  buttonText: {
-    color: '#fff',
+  bannerText: {
+    fontSize: 16,
     fontWeight: '600',
+  },
+  heading: {
+    fontSize: 24,
+    fontWeight: '700',
   },
   screen: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
     flex: 1,
-    justifyContent: 'center',
     padding: 20,
-    rowGap: 10,
-  },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
-  },
-  title: {
-    color: '#111827',
-    fontSize: 20,
-    fontWeight: '600',
-    textAlign: 'center',
+    rowGap: 16,
   },
 })

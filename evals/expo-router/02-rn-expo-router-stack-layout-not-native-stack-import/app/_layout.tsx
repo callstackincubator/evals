@@ -1,5 +1,5 @@
-import { Text } from 'react-native'
+import { Slot } from 'expo-router'
 
 export default function Layout() {
-  return <Text>Replace with Expo Router layout.</Text>
+  return <Slot />
 }

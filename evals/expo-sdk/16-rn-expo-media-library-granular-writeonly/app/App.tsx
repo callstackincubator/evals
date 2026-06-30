@@ -1,12 +1,40 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
+
+const GENERATED_IMAGE_URI = 'https://example.com/generated/poster.png'
+
+type SaveState = 'idle' | 'saving' | 'saved' | 'denied'
 
 export default function App() {
+  const [saveState, setSaveState] = useState<SaveState>('idle')
+
+  const saveToLibrary = async () => {
+    setSaveState('saving')
+    // Request write-only photo access and save GENERATED_IMAGE_URI.
+    setSaveState('saved')
+  }
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>MediaLibrary granular write-only</Text>
-      <Text style={styles.subtitle}>Replace this scaffold with the requested Expo implementation.</Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Start</Text>
+      <Text style={styles.title}>Save poster</Text>
+
+      <Image source={{ uri: GENERATED_IMAGE_URI }} style={styles.preview} />
+
+      {saveState === 'saved' ? (
+        <Text style={styles.status}>Saved to your photos.</Text>
+      ) : null}
+      {saveState === 'denied' ? (
+        <Text style={styles.error}>
+          Photo access is required to save this image.
+        </Text>
+      ) : null}
+
+      <Pressable
+        style={styles.button}
+        disabled={saveState === 'saving'}
+        onPress={saveToLibrary}
+      >
+        <Text style={styles.buttonText}>Save to photos</Text>
       </Pressable>
     </View>
   )
@@ -23,22 +51,27 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
   },
+  error: {
+    color: '#b91c1c',
+  },
+  preview: {
+    backgroundColor: '#e5e7eb',
+    borderRadius: 12,
+    height: 220,
+    width: '100%',
+  },
   screen: {
-    alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
-    justifyContent: 'center',
     padding: 20,
-    rowGap: 10,
+    rowGap: 12,
   },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+  status: {
+    color: '#4b5563',
   },
   title: {
     color: '#111827',
     fontSize: 20,
-    fontWeight: '600',
-    textAlign: 'center',
+    fontWeight: '700',
   },
 })

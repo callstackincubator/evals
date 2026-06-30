@@ -1,1 +1,3 @@
-// Export the inline Swift module wrapper from here.
+import { requireNativeModule } from 'expo-modules-core'
+
+export const WeatherInlineModule = requireNativeModule('WeatherInlineModule')

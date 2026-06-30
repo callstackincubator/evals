@@ -4,6 +4,7 @@ inputs:
     - app/App.tsx
     - app/build/index.d.ts
     - app/expo-module.config.json
+    - app/package.json
     - app/src/index.ts
 requirements:
   - id: expo-module-config-platforms

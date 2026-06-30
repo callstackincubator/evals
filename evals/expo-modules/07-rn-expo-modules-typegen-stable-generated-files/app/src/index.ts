@@ -1,1 +1,7 @@
-// Export public runtime helpers and public TypeScript types from here.
+export type AuditResult = {
+  ok: boolean
+}
+
+export async function audit(): Promise<AuditResult> {
+  return { ok: true }
+}

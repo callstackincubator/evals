@@ -1,44 +1,79 @@
+import { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
+type BarStyle = 'light' | 'dark'
+
 export default function App() {
+  const [barStyle, setBarStyle] = useState<BarStyle>('dark')
+  const [glass, setGlass] = useState(false)
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Status and navigation bars</Text>
-      <Text style={styles.subtitle}>Replace this scaffold with the requested Expo implementation.</Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Start</Text>
-      </Pressable>
+      <Text style={styles.title}>Appearance</Text>
+
+      <View style={styles.controls}>
+        <Pressable
+          style={styles.toggle}
+          onPress={() =>
+            setBarStyle((current) => (current === 'dark' ? 'light' : 'dark'))
+          }
+        >
+          <Text style={styles.toggleText}>Bar style: {barStyle}</Text>
+        </Pressable>
+
+        <Pressable
+          style={[styles.toggle, glass && styles.toggleActive]}
+          onPress={() => setGlass((current) => !current)}
+        >
+          <Text style={[styles.toggleText, glass && styles.toggleTextActive]}>
+            {glass ? 'Glass on' : 'Glass off'}
+          </Text>
+        </Pressable>
+      </View>
+
+      <Text style={styles.subtitle}>
+        Controls the system status and navigation bars.
+      </Text>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
+  controls: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
   },
   screen: {
-    alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
-    justifyContent: 'center',
     padding: 20,
-    rowGap: 10,
+    rowGap: 12,
   },
   subtitle: {
     color: '#6b7280',
-    textAlign: 'center',
   },
   title: {
     color: '#111827',
     fontSize: 20,
+    fontWeight: '700',
+  },
+  toggle: {
+    borderColor: '#94a3b8',
+    borderRadius: 999,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  toggleActive: {
+    backgroundColor: '#0f172a',
+    borderColor: '#0f172a',
+  },
+  toggleText: {
+    color: '#334155',
     fontWeight: '600',
-    textAlign: 'center',
+  },
+  toggleTextActive: {
+    color: '#fff',
   },
 })

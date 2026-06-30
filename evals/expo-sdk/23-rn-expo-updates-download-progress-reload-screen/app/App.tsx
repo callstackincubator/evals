@@ -1,12 +1,40 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 
 export default function App() {
+  const [status, setStatus] = useState('Up to date.')
+
+  const checkForUpdate = async () => {
+    // Check for an available update, download it, and apply it.
+    setStatus('Checking…')
+  }
+
+  const isDownloading = false
+  const downloadProgress = 0
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Updates progress reload screen</Text>
-      <Text style={styles.subtitle}>Replace this scaffold with the requested Expo implementation.</Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Start</Text>
+      <Text style={styles.title}>App updates</Text>
+
+      {isDownloading ? (
+        <View style={styles.progressRow}>
+          <ActivityIndicator />
+          <Text style={styles.status}>
+            Downloading {Math.round(downloadProgress * 100)}%
+          </Text>
+        </View>
+      ) : (
+        <Text style={styles.status}>{status}</Text>
+      )}
+
+      <Pressable style={styles.button} onPress={checkForUpdate}>
+        <Text style={styles.buttonText}>Check for updates</Text>
       </Pressable>
     </View>
   )
@@ -23,22 +51,23 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
   },
-  screen: {
+  progressRow: {
     alignItems: 'center',
+    columnGap: 10,
+    flexDirection: 'row',
+  },
+  screen: {
     backgroundColor: '#fff',
     flex: 1,
-    justifyContent: 'center',
     padding: 20,
-    rowGap: 10,
+    rowGap: 12,
   },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+  status: {
+    color: '#4b5563',
   },
   title: {
     color: '#111827',
     fontSize: 20,
-    fontWeight: '600',
-    textAlign: 'center',
+    fontWeight: '700',
   },
 })

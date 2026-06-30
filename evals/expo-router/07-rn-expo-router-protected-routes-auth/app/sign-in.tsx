@@ -1,11 +1,12 @@
-import { Link } from 'expo-router'
 import { StyleSheet, Text, View } from 'react-native'
 
-export default function Index() {
+export default function SignIn() {
+  const handleSignIn = () => {}
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Products</Text>
-      <Link href={{ pathname: '/details', params: { id: '42' } }}>View details</Link>
+      <Text style={styles.title}>Sign in</Text>
+      <Text>Authenticate to access your account.</Text>
     </View>
   )
 }

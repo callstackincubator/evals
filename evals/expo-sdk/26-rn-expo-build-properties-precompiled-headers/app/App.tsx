@@ -1,35 +1,24 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Build properties</Text>
-      <Text style={styles.subtitle}>Replace this scaffold with the requested Expo implementation.</Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Start</Text>
-      </Pressable>
+      <Text style={styles.title}>Build properties audit</Text>
+      <Text style={styles.subtitle}>
+        Native build configuration is managed in app.config.ts.
+      </Text>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
   screen: {
     alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    rowGap: 10,
+    rowGap: 8,
   },
   subtitle: {
     color: '#6b7280',
@@ -38,7 +27,6 @@ const styles = StyleSheet.create({
   title: {
     color: '#111827',
     fontSize: 20,
-    fontWeight: '600',
-    textAlign: 'center',
+    fontWeight: '700',
   },
 })

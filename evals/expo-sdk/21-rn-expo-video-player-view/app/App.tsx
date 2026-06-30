@@ -1,44 +1,91 @@
+import { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
+const VIDEO_URL = 'https://example.com/clip.mp4'
+
 export default function App() {
+  const [muted, setMuted] = useState(true)
+  const [looping, setLooping] = useState(true)
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Video player view</Text>
-      <Text style={styles.subtitle}>Replace this scaffold with the requested Expo implementation.</Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Start</Text>
-      </Pressable>
+      <Text style={styles.title}>Video player</Text>
+
+      <View style={styles.surface}>
+        <Text style={styles.surfaceText}>Video</Text>
+      </View>
+
+      <View style={styles.controls}>
+        <Pressable
+          style={[styles.toggle, muted && styles.toggleActive]}
+          onPress={() => setMuted((current) => !current)}
+        >
+          <Text style={[styles.toggleText, muted && styles.toggleTextActive]}>
+            {muted ? 'Muted' : 'Sound on'}
+          </Text>
+        </Pressable>
+
+        <Pressable
+          style={[styles.toggle, looping && styles.toggleActive]}
+          onPress={() => setLooping((current) => !current)}
+        >
+          <Text style={[styles.toggleText, looping && styles.toggleTextActive]}>
+            {looping ? 'Looping' : 'No loop'}
+          </Text>
+        </Pressable>
+      </View>
+
+      <Text style={styles.subtitle}>{VIDEO_URL}</Text>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
+  controls: {
+    flexDirection: 'row',
+    gap: 8,
   },
   screen: {
-    alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
-    justifyContent: 'center',
     padding: 20,
-    rowGap: 10,
+    rowGap: 12,
   },
   subtitle: {
     color: '#6b7280',
-    textAlign: 'center',
+  },
+  surface: {
+    alignItems: 'center',
+    backgroundColor: '#111827',
+    borderRadius: 12,
+    height: 200,
+    justifyContent: 'center',
+    width: '100%',
+  },
+  surfaceText: {
+    color: '#9ca3af',
   },
   title: {
     color: '#111827',
     fontSize: 20,
+    fontWeight: '700',
+  },
+  toggle: {
+    borderColor: '#94a3b8',
+    borderRadius: 999,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  toggleActive: {
+    backgroundColor: '#0f172a',
+    borderColor: '#0f172a',
+  },
+  toggleText: {
+    color: '#334155',
     fontWeight: '600',
-    textAlign: 'center',
+  },
+  toggleTextActive: {
+    color: '#fff',
   },
 })

@@ -1,1 +1,7 @@
-// Export a ConfigPlugin that writes iOS and Android permission config.
+import { ConfigPlugin } from 'expo/config-plugins'
+
+export const withAuditPermissions: ConfigPlugin = (config) => {
+  return config
+}
+
+export default withAuditPermissions

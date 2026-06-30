@@ -1,44 +1,53 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import { StyleSheet, Switch, Text, View } from 'react-native'
 
 export default function App() {
+  const [pushEnabled, setPushEnabled] = useState(true)
+  const [emailEnabled, setEmailEnabled] = useState(false)
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Expo UI layout controls</Text>
-      <Text style={styles.subtitle}>Replace this scaffold with the requested Expo implementation.</Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Start</Text>
-      </Pressable>
+      <Text style={styles.title}>Notifications</Text>
+
+      <View style={styles.row}>
+        <Text style={styles.rowLabel}>Push notifications</Text>
+        <Switch value={pushEnabled} onValueChange={setPushEnabled} />
+      </View>
+
+      <View style={styles.row}>
+        <Text style={styles.rowLabel}>Email updates</Text>
+        <Switch value={emailEnabled} onValueChange={setEmailEnabled} />
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+  row: {
+    alignItems: 'center',
+    backgroundColor: '#f9fafb',
+    borderColor: '#e5e7eb',
+    borderRadius: 12,
+    borderWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
+  rowLabel: {
+    color: '#111827',
+    fontSize: 16,
   },
   screen: {
-    alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
-    justifyContent: 'center',
     padding: 20,
-    rowGap: 10,
-  },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+    rowGap: 12,
   },
   title: {
     color: '#111827',
-    fontSize: 20,
-    fontWeight: '600',
-    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 4,
   },
 })

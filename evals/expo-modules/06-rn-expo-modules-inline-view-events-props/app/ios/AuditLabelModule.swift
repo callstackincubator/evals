@@ -1,3 +1,7 @@
 import ExpoModulesCore
 
-// Define the native module and its View(...) declaration here.
+public class AuditLabelModule: Module {
+  public func definition() -> ModuleDefinition {
+    Name("AuditLabel")
+  }
+}

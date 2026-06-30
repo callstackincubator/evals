@@ -1,3 +1,3 @@
 export async function getProfile() {
-  return {}
+  return { name: process.env.PROFILE_NAME ?? 'Expo' }
 }

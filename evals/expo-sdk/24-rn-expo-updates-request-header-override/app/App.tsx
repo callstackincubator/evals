@@ -1,44 +1,88 @@
+import { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
+const CHANNELS = ['production', 'staging', 'beta'] as const
+
+type Channel = (typeof CHANNELS)[number]
+
 export default function App() {
+  const [channel, setChannel] = useState<Channel>('production')
+  const [status, setStatus] = useState('')
+
+  const selectChannel = async (next: Channel) => {
+    setChannel(next)
+    // Apply the channel selection and check for updates from it.
+    setStatus(`Checking ${next}…`)
+  }
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Updates request headers</Text>
-      <Text style={styles.subtitle}>Replace this scaffold with the requested Expo implementation.</Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Start</Text>
-      </Pressable>
+      <Text style={styles.title}>Release channel</Text>
+
+      <View style={styles.channelRow}>
+        {CHANNELS.map((option) => {
+          const isActive = option === channel
+          return (
+            <Pressable
+              key={option}
+              onPress={() => selectChannel(option)}
+              style={[styles.chip, isActive && styles.chipActive]}
+            >
+              <Text
+                style={[styles.chipText, isActive && styles.chipTextActive]}
+              >
+                {option}
+              </Text>
+            </Pressable>
+          )
+        })}
+      </View>
+
+      <Text style={styles.subtitle}>Active channel: {channel}</Text>
+      {status ? <Text style={styles.status}>{status}</Text> : null}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+  channelRow: {
+    flexDirection: 'row',
+    gap: 8,
   },
-  buttonText: {
-    color: '#fff',
+  chip: {
+    borderColor: '#94a3b8',
+    borderRadius: 999,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  chipActive: {
+    backgroundColor: '#0f172a',
+    borderColor: '#0f172a',
+  },
+  chipText: {
+    color: '#334155',
     fontWeight: '600',
+    textTransform: 'capitalize',
+  },
+  chipTextActive: {
+    color: '#fff',
   },
   screen: {
-    alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
-    justifyContent: 'center',
     padding: 20,
-    rowGap: 10,
+    rowGap: 12,
+  },
+  status: {
+    color: '#6b7280',
   },
   subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+    color: '#4b5563',
   },
   title: {
     color: '#111827',
     fontSize: 20,
-    fontWeight: '600',
-    textAlign: 'center',
+    fontWeight: '700',
   },
 })

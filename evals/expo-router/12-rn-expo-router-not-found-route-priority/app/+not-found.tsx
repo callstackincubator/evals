@@ -1,5 +1,9 @@
-import { Text } from 'react-native'
+import { Text, View } from 'react-native'
 
 export default function NotFound() {
-  return <Text>Not Found</Text>
+  return (
+    <View>
+      <Text>Not found</Text>
+    </View>
+  )
 }

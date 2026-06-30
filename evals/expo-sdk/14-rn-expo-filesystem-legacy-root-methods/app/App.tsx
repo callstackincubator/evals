@@ -1,44 +1,74 @@
+import {
+  cacheDirectory,
+  makeDirectoryAsync,
+  readAsStringAsync,
+  writeAsStringAsync,
+} from 'expo-file-system'
+import { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
+const PROFILE_DIR = `${cacheDirectory}profile/`
+const PROFILE_FILE = `${PROFILE_DIR}profile.json`
+
 export default function App() {
+  const [message, setMessage] = useState('Ready.')
+
+  const saveProfile = async () => {
+    try {
+      await makeDirectoryAsync(PROFILE_DIR, { intermediates: true })
+      await writeAsStringAsync(PROFILE_FILE, JSON.stringify({ name: 'Expo' }))
+      setMessage('Saved profile.')
+    } catch (error) {
+      setMessage(`Save failed: ${String(error)}`)
+    }
+  }
+
+  const loadProfile = async () => {
+    try {
+      const contents = await readAsStringAsync(PROFILE_FILE)
+      setMessage(contents)
+    } catch (error) {
+      setMessage(`Load failed: ${String(error)}`)
+    }
+  }
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>FileSystem legacy import boundary</Text>
-      <Text style={styles.subtitle}>Replace this scaffold with the requested Expo implementation.</Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Start</Text>
+      <Text style={styles.title}>Filesystem helper</Text>
+      <Text style={styles.subtitle}>{message}</Text>
+      <Pressable onPress={saveProfile} style={styles.action}>
+        <Text style={styles.actionText}>Save profile</Text>
+      </Pressable>
+      <Pressable onPress={loadProfile} style={styles.action}>
+        <Text style={styles.actionText}>Load profile</Text>
       </Pressable>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
+  action: {
     backgroundColor: '#111827',
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
-  buttonText: {
+  actionText: {
     color: '#fff',
     fontWeight: '600',
   },
   screen: {
-    alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
-    justifyContent: 'center',
     padding: 20,
-    rowGap: 10,
+    rowGap: 12,
   },
   subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+    color: '#4b5563',
   },
   title: {
     color: '#111827',
     fontSize: 20,
-    fontWeight: '600',
-    textAlign: 'center',
+    fontWeight: '700',
   },
 })

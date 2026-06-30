@@ -1,1 +1,1 @@
-// Commit generated public TypeScript declarations here.
+export declare function audit(): Promise<any>

@@ -1,1 +1,1 @@
-// Re-export the public JS helper from here.
+export { DeviceAudit } from './NativeDeviceAudit'

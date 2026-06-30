@@ -1,12 +1,17 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 export default function App() {
+  const handleSendTest = () => {}
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Notifications config</Text>
-      <Text style={styles.subtitle}>Replace this scaffold with the requested Expo implementation.</Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Start</Text>
+      <Text style={styles.title}>Notifications</Text>
+      <Text style={styles.subtitle}>
+        Notification appearance is configured at the native level.
+      </Text>
+
+      <Pressable style={styles.button} onPress={handleSendTest}>
+        <Text style={styles.buttonText}>Send Test Notification</Text>
       </Pressable>
     </View>
   )
@@ -22,23 +27,21 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontWeight: '600',
+    textAlign: 'center',
   },
   screen: {
-    alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    rowGap: 10,
+    rowGap: 12,
   },
   subtitle: {
     color: '#6b7280',
-    textAlign: 'center',
   },
   title: {
     color: '#111827',
-    fontSize: 20,
-    fontWeight: '600',
-    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '700',
   },
 })

@@ -1,5 +1,12 @@
-import { Text } from 'react-native'
+import { useLocalSearchParams } from 'expo-router'
+import { Text, View } from 'react-native'
 
 export default function CatchAll() {
-  return <Text>Catch All</Text>
+  const { slug } = useLocalSearchParams<{ slug?: string[] }>()
+
+  return (
+    <View>
+      <Text>Docs: {slug?.join('/') ?? 'index'}</Text>
+    </View>
+  )
 }

@@ -1,28 +1,26 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { useEffect, useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+
+import { audit, type AuditResult } from './src'
 
 export default function App() {
+  const [result, setResult] = useState<AuditResult | null>(null)
+
+  useEffect(() => {
+    audit().then(setResult)
+  }, [])
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Expo Modules 7</Text>
-      <Text style={styles.subtitle}>Replace this scaffold with the requested Expo implementation.</Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Start</Text>
-      </Pressable>
+      <Text style={styles.title}>Audit</Text>
+      <Text style={styles.subtitle}>
+        Status: {result ? (result.ok ? 'ok' : 'failed') : 'running…'}
+      </Text>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
   screen: {
     alignItems: 'center',
     backgroundColor: '#fff',
@@ -31,14 +29,14 @@ const styles = StyleSheet.create({
     padding: 20,
     rowGap: 10,
   },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
-  },
   title: {
     color: '#111827',
     fontSize: 20,
     fontWeight: '600',
+    textAlign: 'center',
+  },
+  subtitle: {
+    color: '#6b7280',
     textAlign: 'center',
   },
 })

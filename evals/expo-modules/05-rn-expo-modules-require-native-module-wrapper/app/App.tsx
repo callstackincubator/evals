@@ -1,28 +1,27 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { useEffect, useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+
+import { DeviceAudit } from './src'
 
 export default function App() {
+  const [battery, setBattery] = useState('loading…')
+
+  useEffect(() => {
+    // No types here, so this call site is unchecked.
+    DeviceAudit.getBatteryLabelAsync()
+      .then((label: string) => setBattery(label))
+      .catch(() => setBattery('unavailable'))
+  }, [])
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Expo Modules 5</Text>
-      <Text style={styles.subtitle}>Replace this scaffold with the requested Expo implementation.</Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Start</Text>
-      </Pressable>
+      <Text style={styles.title}>Device Audit</Text>
+      <Text style={styles.subtitle}>Battery: {battery}</Text>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
   screen: {
     alignItems: 'center',
     backgroundColor: '#fff',
@@ -31,14 +30,14 @@ const styles = StyleSheet.create({
     padding: 20,
     rowGap: 10,
   },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
-  },
   title: {
     color: '#111827',
     fontSize: 20,
     fontWeight: '600',
+    textAlign: 'center',
+  },
+  subtitle: {
+    color: '#6b7280',
     textAlign: 'center',
   },
 })

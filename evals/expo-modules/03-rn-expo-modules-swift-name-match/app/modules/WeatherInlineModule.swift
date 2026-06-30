@@ -1,3 +1,15 @@
 import ExpoModulesCore
 
-// Replace with a Swift inline module whose file, class, and Name match.
+public class WeatherModule: Module {
+  public func definition() -> ModuleDefinition {
+    Name("WeatherModule")
+
+    Function("unit") {
+      return "celsius"
+    }
+
+    Function("currentTemperature") {
+      return 21
+    }
+  }
+}

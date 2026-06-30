@@ -1,12 +1,25 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 
 export default function App() {
+  const [imageUri, setImageUri] = useState<string | null>(null)
+
+  const handlePickImage = () => {}
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>ImagePicker canceled guard</Text>
-      <Text style={styles.subtitle}>Replace this scaffold with the requested Expo implementation.</Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Start</Text>
+      <Text style={styles.title}>Profile Photo</Text>
+
+      <View style={styles.preview}>
+        {imageUri ? (
+          <Image source={{ uri: imageUri }} style={styles.image} />
+        ) : (
+          <Text style={styles.previewText}>No image selected</Text>
+        )}
+      </View>
+
+      <Pressable style={styles.button} onPress={handlePickImage}>
+        <Text style={styles.buttonText}>Choose from Library</Text>
       </Pressable>
     </View>
   )
@@ -22,23 +35,34 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontWeight: '600',
+    textAlign: 'center',
+  },
+  image: {
+    height: '100%',
+    width: '100%',
+  },
+  preview: {
+    alignItems: 'center',
+    aspectRatio: 1,
+    backgroundColor: '#f3f4f6',
+    borderRadius: 12,
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: '100%',
+  },
+  previewText: {
+    color: '#9ca3af',
   },
   screen: {
-    alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    rowGap: 10,
-  },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+    rowGap: 16,
   },
   title: {
     color: '#111827',
-    fontSize: 20,
-    fontWeight: '600',
-    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '700',
   },
 })

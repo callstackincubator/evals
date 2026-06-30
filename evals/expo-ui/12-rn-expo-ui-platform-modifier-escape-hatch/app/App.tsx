@@ -1,44 +1,51 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Platform, StyleSheet, Text, View } from 'react-native'
 
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Expo UI platform modifiers</Text>
-      <Text style={styles.subtitle}>Replace this scaffold with the requested Expo implementation.</Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Start</Text>
-      </Pressable>
+      <Text style={styles.title}>Featured</Text>
+      <View style={[styles.card, Platform.OS === 'ios' ? styles.cardIos : styles.cardAndroid]}>
+        <Text style={styles.cardTitle}>Weekly digest</Text>
+        <Text style={styles.cardBody}>Your top stories, every Monday.</Text>
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+  card: {
+    backgroundColor: '#fff',
+    padding: 16,
+    rowGap: 6,
   },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
+  cardAndroid: {
+    borderRadius: 4,
+    elevation: 4,
+  },
+  cardBody: {
+    color: '#4b5563',
+  },
+  cardIos: {
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+  },
+  cardTitle: {
+    color: '#111827',
+    fontSize: 18,
+    fontWeight: '700',
   },
   screen: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#f4f4f5',
     flex: 1,
-    justifyContent: 'center',
     padding: 20,
-    rowGap: 10,
-  },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+    rowGap: 16,
   },
   title: {
     color: '#111827',
-    fontSize: 20,
-    fontWeight: '600',
-    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '700',
   },
 })

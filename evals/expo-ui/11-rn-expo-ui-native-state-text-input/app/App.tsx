@@ -1,44 +1,47 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import { StyleSheet, Text, TextInput, View } from 'react-native'
 
 export default function App() {
+  const [query, setQuery] = useState('')
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Expo UI native state TextInput</Text>
-      <Text style={styles.subtitle}>Replace this scaffold with the requested Expo implementation.</Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Start</Text>
-      </Pressable>
+      <Text style={styles.title}>Search</Text>
+      <TextInput
+        value={query}
+        onChangeText={setQuery}
+        placeholder="Type to filter"
+        autoCapitalize="none"
+        style={styles.input}
+      />
+      <Text style={styles.preview}>
+        {query ? `Searching for "${query}"` : 'Start typing above'}
+      </Text>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
+  input: {
+    backgroundColor: '#f9fafb',
+    borderColor: '#e5e7eb',
     borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
   },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
+  preview: {
+    color: '#6b7280',
   },
   screen: {
-    alignItems: 'center',
     backgroundColor: '#fff',
     flex: 1,
-    justifyContent: 'center',
     padding: 20,
-    rowGap: 10,
-  },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+    rowGap: 12,
   },
   title: {
     color: '#111827',
-    fontSize: 20,
-    fontWeight: '600',
-    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '700',
   },
 })

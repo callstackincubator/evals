@@ -3,6 +3,7 @@ inputs:
   files:
     - app/_layout.tsx
     - app/index.tsx
+    - app/settings.tsx
 requirements:
   - id: selected-default-icon-state
     description: "Must configure selected/default icon or label state through NativeTabs.Trigger children."
