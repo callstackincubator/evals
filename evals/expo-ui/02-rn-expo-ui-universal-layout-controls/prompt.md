@@ -1,1 +1,1 @@
-Build a settings panel with Expo UI universal Column/Row/Text/Button/Switch controls and controlled state.
+Build a settings panel in App.tsx using Expo UI universal layout and control components with controlled state.

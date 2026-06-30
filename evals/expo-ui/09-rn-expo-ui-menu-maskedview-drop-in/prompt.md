@@ -1,1 +1,1 @@
-Use @expo/ui/community/menu and @expo/ui/community/masked-view drop-ins with deterministic actions and children.
+Migrate the context menu and masked view in App.tsx to their Expo UI equivalents.

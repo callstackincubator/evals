@@ -1,1 +1,1 @@
-Build a video-library picker that models media-library permission separately from picking, handles limited/denied access, and uses the current mediaTypes value shape.
+Build a video-library picker that lets the user select a video from their library. Handle all permission states and picker outcomes correctly.

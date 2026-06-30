@@ -1,1 +1,1 @@
-Enable Expo inline modules in app config and add a minimal Kotlin or Swift inline module inside a watched project directory.
+The project has a native Kotlin module at src/modules/DeviceAuditModule.kt that should work as an Expo inline module. Make whatever changes are needed so the module is recognized by the Expo build system.

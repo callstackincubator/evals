@@ -1,1 +1,1 @@
-Build a production-ready camera entry flow with expo-camera. Request camera access only when the user initiates it, handle retry and settings-recovery states, keep permission state accurate after returning from settings, and render CameraView only while access is granted.
+Build a production-ready camera entry flow with expo-camera that handles all permission states, including denial and the user returning from system settings.

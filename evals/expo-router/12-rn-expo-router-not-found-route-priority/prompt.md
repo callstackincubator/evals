@@ -1,1 +1,1 @@
-Implement a +not-found route that has priority over catch-all content and gives users a route back home.
+Handle unknown routes gracefully and give users a way back to known content.

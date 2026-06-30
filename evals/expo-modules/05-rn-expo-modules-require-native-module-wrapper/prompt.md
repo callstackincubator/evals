@@ -1,1 +1,1 @@
-Wrap a native module with requireNativeModule from expo-modules-core and expose typed JS helpers.
+Create a typed JS wrapper module for the DeviceAudit native module so consumers have type-safe access to its functions.

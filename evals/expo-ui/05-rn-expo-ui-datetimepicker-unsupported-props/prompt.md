@@ -1,1 +1,1 @@
-Implement cross-platform date/time selection using only supported Expo UI DateTimePicker props and fallback text for unsupported modes.
+Add cross-platform date and time selection to App.tsx using Expo UI, handling any platform differences gracefully.

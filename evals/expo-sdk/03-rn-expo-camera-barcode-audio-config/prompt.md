@@ -1,1 +1,1 @@
-Build a combined barcode scanner and video-ready camera screen with expo-camera. Configure barcode types explicitly, avoid stale BarCodeScanner APIs, and request microphone permission only when the user enables video capture with audio.
+Build a camera screen that scans barcodes and optionally records video with audio. Handle permissions appropriately and use current expo-camera APIs.

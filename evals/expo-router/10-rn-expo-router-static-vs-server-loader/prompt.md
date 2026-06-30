@@ -1,1 +1,1 @@
-Split static loader-safe data from server-only code and avoid importing server secrets into client routes.
+Fetch data in an Expo Router web route while keeping server secrets out of the client bundle.

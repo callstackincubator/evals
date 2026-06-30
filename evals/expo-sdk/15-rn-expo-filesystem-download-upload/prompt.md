@@ -1,1 +1,1 @@
-Implement a download-and-upload flow with the current expo-file-system File API. Download into a cache Directory/File destination, expose progress/status, and upload the File as a Blob-compatible value with fetch/FormData.
+Implement a flow that downloads a remote file to local storage and then uploads it to a server endpoint. Use expo-file-system and show download progress.

@@ -1,1 +1,1 @@
-Build a video player using expo-video. Create the player with useVideoPlayer, render it with VideoView, avoid expo-av Video, and clean up or pause playback when the component loses visibility.
+Build a video player component that plays a video URL, supports looping and mute controls, and handles visibility changes properly. Use current Expo video APIs.

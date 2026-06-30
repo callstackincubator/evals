@@ -1,1 +1,1 @@
-Build a screen-level system UI controller using current expo-status-bar, expo-navigation-bar, and expo-glass-effect APIs. Prefer component/namespace APIs, gate Liquid Glass usage with availability checks, and clean up listeners.
+Build a screen that controls the system status bar and navigation bar appearance and optionally applies a glass/blur effect when the platform supports it. Clean up properly on unmount.

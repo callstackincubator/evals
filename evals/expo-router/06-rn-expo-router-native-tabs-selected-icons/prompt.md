@@ -1,1 +1,1 @@
-Configure native tabs with selected/default labels, icons, and badges using NativeTabs.Trigger child APIs.
+Configure native tab icons, labels, and badges with selected and default states.

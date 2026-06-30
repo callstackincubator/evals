@@ -1,1 +1,1 @@
-Replace a gorhom bottom sheet with @expo/ui/community/bottom-sheet and controlled present/dismiss behavior.
+Migrate the bottom sheet in App.tsx to use the Expo UI equivalent with controlled open and close behavior.

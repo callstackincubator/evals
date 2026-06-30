@@ -1,1 +1,1 @@
-Implement a camera preview that pauses native camera work when the screen is backgrounded, manually disabled, or no longer focused, and fully unmounts CameraView when access is not available.
+Build a camera preview screen that handles being backgrounded, switching away, or manually disabled. The camera should work correctly when the user returns to the screen.

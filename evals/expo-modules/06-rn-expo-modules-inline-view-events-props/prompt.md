@@ -1,1 +1,1 @@
-Define an Expo module View with typed props, events, and a JS wrapper that forwards props safely. (iOS)
+Build a native iOS label component (AuditLabel) exposed as a React component. It should display text and notify JS when the user interacts with it.

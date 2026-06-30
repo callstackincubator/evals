@@ -1,1 +1,1 @@
-Implement a foreground location flow that requests permission on demand, guards geocoding behind granted foreground access, and handles empty reverse-geocode results without crashing.
+Implement a foreground location flow that requests permission on demand, retrieves the user's current location, and reverse-geocodes it to a human-readable address.

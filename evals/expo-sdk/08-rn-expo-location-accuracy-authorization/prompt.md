@@ -1,1 +1,1 @@
-Build a foreground-location status panel that distinguishes permission status from accuracy/authorization details and degrades gracefully when exact accuracy is unavailable.
+Build a foreground-location status panel that shows the user's current location permission state and accuracy level. Handle all the ways permission and accuracy can differ across platforms.

@@ -1,1 +1,1 @@
-Create a Kotlin inline module whose file name, class name, and module Name all match.
+The existing Kotlin inline module at modules/WeatherInlineModule.kt is not being picked up at runtime. Fix it so the module loads correctly and is accessible from JS.

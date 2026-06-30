@@ -1,1 +1,1 @@
-Use SwiftUI/Jetpack modifiers through their platform entrypoints and keep platform-specific code isolated.
+Add platform-specific native styling modifiers to the Expo UI components in App.tsx, supporting both iOS and Android.

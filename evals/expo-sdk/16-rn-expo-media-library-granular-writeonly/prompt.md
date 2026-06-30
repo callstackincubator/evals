@@ -1,1 +1,1 @@
-Create a save-to-photos permission flow that requests write-only photo access with Android granular permissions and clearly separates write-only from read-library access.
+Create a feature that saves a generated image to the user's photo library. The app only needs to save photos, not browse existing ones. Handle permissions appropriately on both platforms.

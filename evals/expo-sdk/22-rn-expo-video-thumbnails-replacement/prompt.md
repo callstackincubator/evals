@@ -1,1 +1,1 @@
-Replace a stale expo-video-thumbnails helper with expo-video thumbnail generation. Generate thumbnails from the VideoPlayer, handle empty output, and avoid importing expo-video-thumbnails.
+A video thumbnail feature is broken after an SDK upgrade. Fix it to generate thumbnail images from a video file at specific time offsets using current Expo APIs. Handle cases where no thumbnails are generated.

@@ -1,1 +1,1 @@
-Move notification native configuration into the expo-notifications config plugin. Do not use the removed top-level notification field in app config.
+Configure native notification settings (icon, color, default channel) for an Expo project using current SDK conventions. The project has notification configuration in app.config.ts that may need updating.

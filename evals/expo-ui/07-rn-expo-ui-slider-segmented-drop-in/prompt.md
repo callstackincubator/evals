@@ -1,1 +1,1 @@
-Migrate controls to @expo/ui/community slider/segmented-control imports with controlled values.
+Migrate the slider and segmented control in App.tsx to their Expo UI equivalents.

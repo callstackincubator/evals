@@ -1,1 +1,1 @@
-Create an update-ready screen with expo-updates. Use useUpdates for state/progress, show a reload screen while applying a downloaded update, and avoid unsafe JS assumptions after reloadAsync resolves.
+Create a screen that checks for OTA updates, shows download progress, and applies the update when ready. Use expo-updates and handle errors and the case where no update is available.

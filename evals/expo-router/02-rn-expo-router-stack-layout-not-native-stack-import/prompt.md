@@ -1,1 +1,1 @@
-Implement a stack layout using Expo Router Stack, not createNativeStackNavigator, and keep route files file-system based.
+Implement a stack layout in an Expo Router app with a main and details screen.

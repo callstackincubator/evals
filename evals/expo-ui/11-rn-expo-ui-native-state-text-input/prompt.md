@@ -1,1 +1,1 @@
-Use Expo UI TextInput with useNativeState and clean native-state listeners.
+Build a text input in App.tsx using Expo UI that shares its value with the native layer and properly cleans up subscriptions.

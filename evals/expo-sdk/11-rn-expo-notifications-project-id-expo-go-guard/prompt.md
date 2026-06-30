@@ -1,1 +1,1 @@
-Build a push-token helper that resolves projectId from Expo Constants, handles missing projectId in Expo Go or local builds, and never calls getExpoPushTokenAsync with an undefined projectId.
+Build a push-token registration helper that works correctly in both development and production environments. It should gracefully handle cases where token registration is not possible.

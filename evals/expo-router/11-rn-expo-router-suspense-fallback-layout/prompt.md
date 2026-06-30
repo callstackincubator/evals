@@ -1,1 +1,1 @@
-Use Expo Router's route-level SuspenseFallback export for async route content.
+Add a loading fallback for async route content in an Expo Router layout.

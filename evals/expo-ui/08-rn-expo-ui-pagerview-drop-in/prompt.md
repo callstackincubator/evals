@@ -1,1 +1,1 @@
-Use @expo/ui/community/pager-view as the drop-in pager and handle page-selected state.
+Replace the pager implementation in App.tsx with the Expo UI pager and track the active page.

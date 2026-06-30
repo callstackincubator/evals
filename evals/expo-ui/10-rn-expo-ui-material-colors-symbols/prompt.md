@@ -1,1 +1,1 @@
-Use @expo/ui/jetpack-compose Material color helpers inside a Host instead of hardcoding a one-off Android palette.
+The Android screen in App.tsx uses hardcoded color values. Refactor it to use the platform's dynamic color system through Expo UI.

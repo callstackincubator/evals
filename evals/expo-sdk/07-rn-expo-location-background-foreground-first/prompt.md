@@ -1,1 +1,1 @@
-Create a background-location opt-in screen. It must ask for foreground permission before background permission, register a TaskManager task once, and avoid starting updates until both permissions are granted.
+Create a screen that lets the user opt into background location tracking. Use expo-location and TaskManager to receive location updates when the app is in the background.

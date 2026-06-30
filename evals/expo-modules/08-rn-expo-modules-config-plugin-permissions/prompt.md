@@ -1,1 +1,1 @@
-Create a config plugin that adds platform permission strings idempotently through Expo config-plugins.
+The app needs camera access on both iOS and Android. Create a local config plugin that ensures the necessary permissions are declared in the native projects during prebuild.

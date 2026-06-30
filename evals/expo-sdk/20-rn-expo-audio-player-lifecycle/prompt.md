@@ -1,1 +1,1 @@
-Build an audio preview component with expo-audio, not expo-av. Use the managed player hook, subscribe to player status, configure audio mode deliberately, and release/stop playback on lifecycle changes.
+Build an audio preview component that plays a sound file, shows playback status, and handles app lifecycle correctly (backgrounding, unmount). Use current Expo audio APIs.

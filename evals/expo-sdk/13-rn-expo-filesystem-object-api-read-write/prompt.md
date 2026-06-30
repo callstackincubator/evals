@@ -1,1 +1,1 @@
-Implement a cache-backed notes file using the current expo-file-system object API. Create directories idempotently, write text, read text, and avoid root-level legacy functions that throw in SDK 56.
+Implement a simple notes feature that persists text to a cache file using expo-file-system. The app should handle first-run (no existing file) gracefully.

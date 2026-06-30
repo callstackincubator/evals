@@ -1,1 +1,1 @@
-Compose Expo Router Stack header buttons/search/title with Stack child components and route-level options.
+Add a back button and title to a screen header in an Expo Router app.

@@ -1,1 +1,1 @@
-Build a universal Expo UI screen with Host as the native UI root and React Native content only where it is intentionally hosted.
+Build a universal Expo UI screen that renders native UI components alongside React Native content.

@@ -1,1 +1,1 @@
-Configure expo-build-properties for an SDK 56 project that opts into iOS precompiled React Native dependencies and Android build properties without using stale property names.
+Configure build properties for an SDK 56 Expo project. The iOS build should use prebuilt dependencies where possible, and Android SDK versions should match current requirements. Use the expo-build-properties config plugin.

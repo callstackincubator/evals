@@ -1,1 +1,1 @@
-Repair a file helper that still uses legacy FileSystem method names. Either migrate it to the object API or import legacy methods from expo-file-system/legacy; do not use runtime-throwing root exports.
+A file helper is broken after an SDK upgrade — file operations crash at runtime. Fix it so the helper works with the current version of expo-file-system.

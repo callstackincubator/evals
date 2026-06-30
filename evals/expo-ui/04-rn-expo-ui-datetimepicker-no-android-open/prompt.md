@@ -1,1 +1,1 @@
-Implement date selection with @expo/ui/community/datetime-picker without using DateTimePickerAndroid.open.
+Add cross-platform date selection to the app using Expo UI's date/time picker.

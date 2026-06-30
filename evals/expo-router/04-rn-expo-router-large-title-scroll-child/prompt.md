@@ -1,1 +1,1 @@
-Implement an iOS large-title screen whose scroll content is the first child and whose options live in Expo Router Stack.
+Build an iOS screen with a large collapsing title that collapses on scroll.

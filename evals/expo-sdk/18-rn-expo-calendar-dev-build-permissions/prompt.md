@@ -1,1 +1,1 @@
-Build a calendar-event creation screen that uses the current expo-calendar API surface, handles permission denial, and avoids legacy Async helpers that now live behind legacy warnings.
+Build a screen that lets the user create a calendar event. Use expo-calendar to list available calendars, pick one, and create the event. Handle permission denial gracefully.
