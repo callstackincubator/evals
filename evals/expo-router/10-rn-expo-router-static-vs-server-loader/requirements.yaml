@@ -3,6 +3,8 @@ inputs:
   files:
     - app/_layout.tsx
     - app/index.tsx
+    - app/profile.tsx
+    - app/server/profile.server.ts
 requirements:
   - id: server-only-code-isolated
     description: "Must place server-only secret/env access in a server-only module or loader boundary."

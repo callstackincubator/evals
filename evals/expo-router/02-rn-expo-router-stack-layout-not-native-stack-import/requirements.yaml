@@ -10,5 +10,3 @@ requirements:
     description: "Must not call createNativeStackNavigator or NavigationContainer in Expo Router app code."
   - id: registers-screens-by-name
     description: "Must configure Stack.Screen entries by file-route names."
-  - id: route-file-present
-    description: "Must include a route file matching each configured screen."

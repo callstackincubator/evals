@@ -8,8 +8,8 @@ requirements:
   - id: swift-file-class-match
     description: "Must make the Swift file name match the Swift module class name."
   - id: swift-name-matches-class
-    description: "Must set Name(\"...\") to the same module name or omit it only when inference is correct."
+    description: "Must set Name(\"...\") to match the class name, or omit Name when the class name already matches."
   - id: uses-expo-modules-core
     description: "Must import ExpoModulesCore and conform to Module."
-  - id: js-wrapper-same-name
+  - id: swift-js-wrapper-same-name
     description: "Must require the native module from JS using the same name."

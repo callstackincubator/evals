@@ -10,6 +10,6 @@ requirements:
   - id: uses-use-loader-data
     description: "Must read loader results with useLoaderData typed to the loader."
   - id: router-plugin-configured
-    description: "Must configure the expo-router plugin with unstable_useServerDataLoaders and web output set to static or server."
+    description: "Must configure the expo-router plugin with unstable_useServerDataLoaders, unstable_useServerRendering, and web output set to server."
   - id: no-client-fetch-duplication
     description: "Must not duplicate the same data fetch in a client mount effect."

@@ -1,6 +1,6 @@
 import { useVideoPlayer, VideoView } from 'expo-video'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AppState, Image, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useEffect } from 'react'
+import { AppState, Pressable, StyleSheet, Text, View } from 'react-native'
 
 export default function App() {
   const player = useVideoPlayer('https://example.com/demo.mp4', (nextPlayer) => {
@@ -38,14 +38,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
   },
-  card: {
-    backgroundColor: '#f9fafb',
-    borderColor: '#e5e7eb',
-    borderRadius: 12,
-    borderWidth: 1,
-    padding: 14,
-    width: '100%',
-  },
   media: {
     backgroundColor: '#e5e7eb',
     borderRadius: 12,
@@ -58,9 +50,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     rowGap: 12,
-  },
-  subtitle: {
-    color: '#4b5563',
   },
   title: {
     color: '#111827',

@@ -8,6 +8,6 @@ requirements:
   - id: host-root-wraps-native-ui
     description: "Must render Expo UI native components inside a Host root."
   - id: rn-host-view-only-for-rn-children
-    description: "Must use RNHostView only when intentionally hosting React Native children inside native UI."
+    description: "Must not use RNHostView unless embedding React Native children inside a native UI subtree."
   - id: no-glass-effect
     description: "Must not import expo-glass-effect or treat GlassEffect as part of @expo/ui."

@@ -1,14 +1,19 @@
 import { Stack } from 'expo-router'
-import { Alert } from 'react-native'
+import { Alert, Pressable, Text } from 'react-native'
 
 export default function Layout() {
   return (
     <Stack>
-      <Stack.Screen name="index">
-        <Stack.Toolbar placement="right">
-          <Stack.Toolbar.Button icon="plus" onPress={() => Alert.alert('New item')} />
-        </Stack.Toolbar>
-      </Stack.Screen>
+      <Stack.Screen
+        name="index"
+        options={{
+          headerRight: () => (
+            <Pressable onPress={() => Alert.alert('New item')}>
+              <Text>+</Text>
+            </Pressable>
+          ),
+        }}
+      />
     </Stack>
   )
 }

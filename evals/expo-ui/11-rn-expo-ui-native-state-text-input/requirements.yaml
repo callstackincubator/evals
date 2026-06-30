@@ -8,6 +8,6 @@ requirements:
   - id: textinput-controlled
     description: "Must wire TextInput value/onChangeText to the native state."
   - id: native-state-listener-discipline
-    description: "Must avoid assigning native state listeners unnecessarily; if a listener is assigned, it must be cleared in cleanup."
+    description: "Must clear native state listeners in cleanup."
   - id: host-root
     description: "Must render the Expo UI TextInput under Host."

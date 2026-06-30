@@ -12,6 +12,6 @@ requirements:
   - id: single-flight-permission-request
     description: "Must prevent overlapping permission prompts with a request-in-flight state or equivalent guard."
   - id: expo-camera-grant-gated-preview
-    description: "Must render CameraView only when the current permission object is granted and show deterministic fallback UI otherwise."
+    description: "Must gate CameraView rendering behind a granted permission check and show deterministic fallback UI for all other permission states."
   - id: implementation-expo-camera-current-api
     description: "Must use CameraView and useCameraPermissions or current get/request camera permission APIs from expo-camera."
