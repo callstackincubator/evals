@@ -1,9 +1,14 @@
 import { useState } from 'react'
-import { StyleSheet, Switch, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Switch, Text, View } from 'react-native'
 
 export default function App() {
   const [pushEnabled, setPushEnabled] = useState(true)
   const [emailEnabled, setEmailEnabled] = useState(false)
+
+  const handleReset = () => {
+    setPushEnabled(true)
+    setEmailEnabled(false)
+  }
 
   return (
     <View style={styles.screen}>
@@ -18,11 +23,25 @@ export default function App() {
         <Text style={styles.rowLabel}>Email updates</Text>
         <Switch value={emailEnabled} onValueChange={setEmailEnabled} />
       </View>
+
+      <Pressable style={styles.button} onPress={handleReset}>
+        <Text style={styles.buttonText}>Reset to defaults</Text>
+      </Pressable>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  button: {
+    alignItems: 'center',
+    backgroundColor: '#111827',
+    borderRadius: 10,
+    paddingVertical: 12,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
   row: {
     alignItems: 'center',
     backgroundColor: '#f9fafb',

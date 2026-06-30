@@ -1,9 +1,14 @@
-import { Column, Host, Row, Switch, Text as UIText } from '@expo/ui'
+import { Button, Column, Host, Row, Switch, Text as UIText } from '@expo/ui'
 import { useState } from 'react'
 
 export default function App() {
   const [pushEnabled, setPushEnabled] = useState(true)
   const [emailEnabled, setEmailEnabled] = useState(false)
+
+  const handleReset = () => {
+    setPushEnabled(true)
+    setEmailEnabled(false)
+  }
 
   return (
     <Host style={{ flex: 1 }}>
@@ -19,6 +24,8 @@ export default function App() {
           <UIText>Email updates</UIText>
           <Switch value={emailEnabled} onValueChange={setEmailEnabled} />
         </Row>
+
+        <Button onPress={handleReset}>Reset to defaults</Button>
       </Column>
     </Host>
   )

@@ -9,6 +9,9 @@ type BarStyle = 'light' | 'dark'
 export default function App() {
   const [barStyle, setBarStyle] = useState<BarStyle>('dark')
   const [glass, setGlass] = useState(false)
+  const [navVisibility, setNavVisibility] = useState<'visible' | 'hidden'>(
+    'visible',
+  )
   const canUseGlass = isGlassEffectAPIAvailable()
 
   useEffect(() => {
@@ -19,7 +22,9 @@ export default function App() {
       }
     }
     NavigationBar.setStyle(barStyle)
-    const subscription = addVisibilityListener(() => {})
+    const subscription = addVisibilityListener((event) => {
+      setNavVisibility(event.visibility)
+    })
     return () => {
       subscription.remove()
       StatusBar.setStyle('auto', true)
@@ -32,6 +37,10 @@ export default function App() {
       <StatusBar style={barStyle} />
       {Platform.OS === 'android' ? <NavigationBar style={barStyle} /> : null}
       <Text style={styles.title}>Appearance</Text>
+
+      {Platform.OS === 'android' ? (
+        <Text style={styles.subtitle}>Navigation bar: {navVisibility}</Text>
+      ) : null}
 
       <View style={styles.controls}>
         <Pressable
