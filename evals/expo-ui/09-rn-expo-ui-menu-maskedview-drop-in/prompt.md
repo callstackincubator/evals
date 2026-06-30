@@ -1,1 +1,0 @@
-Migrate the context menu and masked view in App.tsx to their Expo UI equivalents.

@@ -1,1 +1,0 @@
-Create a shell script that scaffolds a new Expo module for the project's CI pipeline. The script must work in a headless environment with no human interaction.

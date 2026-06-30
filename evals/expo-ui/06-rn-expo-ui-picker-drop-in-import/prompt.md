@@ -1,1 +1,0 @@
-Migrate the picker in App.tsx to the Expo UI equivalent with controlled selection.

@@ -1,1 +1,0 @@
-Migrate the slider and segmented control in App.tsx to their Expo UI equivalents.

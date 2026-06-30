@@ -1,1 +1,0 @@
-Build a push-token registration helper that works correctly in both development and production environments. It should gracefully handle cases where token registration is not possible.
