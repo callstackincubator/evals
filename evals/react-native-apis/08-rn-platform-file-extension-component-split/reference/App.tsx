@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-// @ts-expect-error we have not configured platform extensions 
+// @ts-expect-error we have not configured platform extensions
 import PlatformMessage from './PlatformMessage'
 
 export default function App() {

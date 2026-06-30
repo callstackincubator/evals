@@ -10,8 +10,18 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 const NOTIFICATIONS = [
   { id: 'n1', text: 'Welcome to the app', mentions: false, unread: false },
   { id: 'n2', text: '@you commented on a post', mentions: true, unread: true },
-  { id: 'n3', text: 'Build finished successfully', mentions: false, unread: true },
-  { id: 'n4', text: '@you were assigned a task', mentions: true, unread: false },
+  {
+    id: 'n3',
+    text: 'Build finished successfully',
+    mentions: false,
+    unread: true,
+  },
+  {
+    id: 'n4',
+    text: '@you were assigned a task',
+    mentions: true,
+    unread: false,
+  },
 ] as const
 
 type Filter = 'all' | 'mentions' | 'unread'
@@ -31,13 +41,13 @@ function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Button title='Open' onPress={openNotificationsDefault} />
+      <Button title="Open" onPress={openNotificationsDefault} />
       <Button
-        title='Open notifications (mentions)'
+        title="Open notifications (mentions)"
         onPress={openNotificationsMentions}
       />
       <Button
-        title='Open notifications (unread)'
+        title="Open notifications (unread)"
         onPress={openNotificationsUnread}
       />
     </View>

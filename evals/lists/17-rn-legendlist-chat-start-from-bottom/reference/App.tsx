@@ -1,10 +1,5 @@
 import React, { useState } from 'react'
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { LegendList } from '@legendapp/list/react-native'
 
 const INITIAL_MESSAGES = Array.from({ length: 8 }, (_, index) => ({

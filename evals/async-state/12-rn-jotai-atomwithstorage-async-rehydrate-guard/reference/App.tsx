@@ -128,9 +128,13 @@ function PreferencesScreen() {
     <View style={styles.screen}>
       <Text style={styles.title}>Preferences</Text>
       <Text style={styles.meta}>Theme: {preferences.theme}</Text>
-      <Text style={styles.meta}>Compact mode: {preferences.compact ? 'on' : 'off'}</Text>
+      <Text style={styles.meta}>
+        Compact mode: {preferences.compact ? 'on' : 'off'}
+      </Text>
       <Text style={styles.meta}>Profile status: {profileStatus}</Text>
-      {profileName ? <Text style={styles.meta}>Profile: {profileName}</Text> : null}
+      {profileName ? (
+        <Text style={styles.meta}>Profile: {profileName}</Text>
+      ) : null}
 
       <Pressable onPress={toggleTheme} style={styles.button}>
         <Text style={styles.buttonText}>Toggle theme</Text>

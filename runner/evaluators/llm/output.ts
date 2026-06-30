@@ -6,9 +6,7 @@ import { sanitizeSegment } from 'runner/utils/fs'
 /*
   Creates run output directories and returns absolute paths used by writers.
  */
-export async function createRunOutputDirectories(
-  runDirectory: string
-) {
+export async function createRunOutputDirectories(runDirectory: string) {
   const resolvedRunDirectory = path.resolve(process.cwd(), runDirectory)
   await mkdir(resolvedRunDirectory, { recursive: true })
 

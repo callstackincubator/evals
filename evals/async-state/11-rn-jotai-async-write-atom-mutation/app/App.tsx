@@ -20,15 +20,12 @@ export default function App() {
       <View style={styles.row}>
         <TextInput
           onChangeText={setDraft}
-          placeholder='Post title'
-          placeholderTextColor='#94a3b8'
+          placeholder="Post title"
+          placeholderTextColor="#94a3b8"
           style={styles.input}
           value={draft}
         />
-        <Pressable
-          onPress={() => {}}
-          style={styles.button}
-        >
+        <Pressable onPress={() => {}} style={styles.button}>
           <Text style={styles.buttonText}>Save</Text>
         </Pressable>
       </View>

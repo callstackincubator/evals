@@ -27,8 +27,8 @@ function HomeScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>People</Text>
       <Text>{`Items: ${PEOPLE.map((person) => person.name).join(', ')}`}</Text>
-      <Button title='Open Alice' onPress={openAlice} />
-      <Button title='Open Bob' onPress={openBob} />
+      <Button title="Open Alice" onPress={openAlice} />
+      <Button title="Open Bob" onPress={openBob} />
     </View>
   )
 }

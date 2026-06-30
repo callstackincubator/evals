@@ -19,9 +19,9 @@ const HomeStack = createNativeStackNavigator({
 const TabNavigator = createBottomTabNavigator({
   id: 'bottom-tab',
   screens: {
-    HomeTab: { 
+    HomeTab: {
       screen: HomeStack,
-      options: { headerShown: false } 
+      options: { headerShown: false },
     },
     Settings: SettingsScreen,
   },
@@ -48,10 +48,7 @@ function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Button
-        title="Open"
-        onPress={handleNavigateToArticleDetails}
-      />
+      <Button title="Open" onPress={handleNavigateToArticleDetails} />
     </View>
   )
 }

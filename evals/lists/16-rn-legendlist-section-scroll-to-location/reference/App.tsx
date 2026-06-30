@@ -1,10 +1,5 @@
 import React, { useRef } from 'react'
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { SectionList } from '@legendapp/list/section-list'
 
 const AGENDA = [

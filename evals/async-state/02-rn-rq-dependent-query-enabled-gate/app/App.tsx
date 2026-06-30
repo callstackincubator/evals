@@ -17,9 +17,7 @@ function ProjectsScreen() {
 }
 
 export default function App() {
-  return (
-    <ProjectsScreen />
-  )
+  return <ProjectsScreen />
 }
 
 const styles = StyleSheet.create({

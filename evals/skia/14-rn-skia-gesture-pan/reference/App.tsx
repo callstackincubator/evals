@@ -16,15 +16,21 @@ export default function App() {
       cy.value += e.changeY
     })
     .onEnd((e) => {
-      cx.value = withDecay({ velocity: e.velocityX, clamp: [RADIUS, width - RADIUS] })
-      cy.value = withDecay({ velocity: e.velocityY, clamp: [RADIUS, height - RADIUS] })
+      cx.value = withDecay({
+        velocity: e.velocityX,
+        clamp: [RADIUS, width - RADIUS],
+      })
+      cy.value = withDecay({
+        velocity: e.velocityY,
+        clamp: [RADIUS, height - RADIUS],
+      })
     })
 
   return (
     <GestureDetector gesture={gesture}>
       <Canvas style={{ flex: 1 }}>
-        <Fill color='#0f172a' />
-        <Circle cx={cx} cy={cy} r={RADIUS} color='#f472b6' />
+        <Fill color="#0f172a" />
+        <Circle cx={cx} cy={cy} r={RADIUS} color="#f472b6" />
       </Canvas>
     </GestureDetector>
   )

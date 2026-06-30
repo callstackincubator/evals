@@ -1,5 +1,11 @@
 import { Platform } from 'react-native'
-import { Canvas, Fill, Text, matchFont, useCanvasSize } from '@shopify/react-native-skia'
+import {
+  Canvas,
+  Fill,
+  Text,
+  matchFont,
+  useCanvasSize,
+} from '@shopify/react-native-skia'
 
 const FONT_SIZE = 18
 
@@ -20,8 +26,8 @@ function CanvasContent() {
 
   return (
     <>
-      <Fill color='#1e293b' />
-      <Text x={textX} y={textY} text={label} font={font} color='#f8fafc' />
+      <Fill color="#1e293b" />
+      <Text x={textX} y={textY} text={label} font={font} color="#f8fafc" />
     </>
   )
 }

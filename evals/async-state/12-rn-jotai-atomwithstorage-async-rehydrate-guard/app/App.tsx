@@ -42,7 +42,9 @@ export default function App() {
     <View style={styles.screen}>
       <Text style={styles.title}>Preferences</Text>
       <Text style={styles.meta}>Theme: {preferences.theme}</Text>
-      <Text style={styles.meta}>Compact mode: {preferences.compact ? 'on' : 'off'}</Text>
+      <Text style={styles.meta}>
+        Compact mode: {preferences.compact ? 'on' : 'off'}
+      </Text>
 
       <Pressable onPress={toggleTheme} style={styles.button}>
         <Text style={styles.buttonText}>Toggle theme</Text>

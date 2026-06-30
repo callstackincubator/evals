@@ -4,25 +4,29 @@ import { z } from 'zod'
 
 const GENERATION_MANIFEST_FILE_NAME = 'manifest.json'
 
-const generationManifestEvalSchema = z.object({
-  evalId: z.string().min(1),
-  evalPath: z.string().min(1),
-  outputFiles: z.array(z.string().min(1)),
-  generatedPath: z.string().min(1),
-  solverSessionArtifactPath: z.string().min(1),
-}).strict()
+const generationManifestEvalSchema = z
+  .object({
+    evalId: z.string().min(1),
+    evalPath: z.string().min(1),
+    outputFiles: z.array(z.string().min(1)),
+    generatedPath: z.string().min(1),
+    solverSessionArtifactPath: z.string().min(1),
+  })
+  .strict()
 
-const generationManifestSchema = z.object({
-  runId: z.string().min(1),
-  startedAt: z.string().datetime(),
-  finishedAt: z.string().datetime(),
-  solverModel: z.string().min(1),
-  pattern: z.string().min(1),
-  evalCount: z.number().int().nonnegative(),
-  evalsProcessed: z.number().int().nonnegative(),
-  evalsErrored: z.number().int().nonnegative(),
-  evals: z.array(generationManifestEvalSchema),
-}).strict()
+const generationManifestSchema = z
+  .object({
+    runId: z.string().min(1),
+    startedAt: z.string().datetime(),
+    finishedAt: z.string().datetime(),
+    solverModel: z.string().min(1),
+    pattern: z.string().min(1),
+    evalCount: z.number().int().nonnegative(),
+    evalsProcessed: z.number().int().nonnegative(),
+    evalsErrored: z.number().int().nonnegative(),
+    evals: z.array(generationManifestEvalSchema),
+  })
+  .strict()
 
 export type GenerationManifest = z.infer<typeof generationManifestSchema>
 

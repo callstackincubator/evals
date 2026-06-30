@@ -1,10 +1,5 @@
 import React, { useState } from 'react'
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
 
 const INITIAL_POSTS = Array.from({ length: 8 }, (_, index) => ({
   id: `post-${index + 1}`,

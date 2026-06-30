@@ -7,13 +7,9 @@ import {
   useQuery,
 } from '@tanstack/react-query'
 
-const FILTER_OPTIONS = [
-  'all',
-  'smartphones',
-  'laptops',
-] as const
+const FILTER_OPTIONS = ['all', 'smartphones', 'laptops'] as const
 
-type ProductFilter = typeof FILTER_OPTIONS[number]
+type ProductFilter = (typeof FILTER_OPTIONS)[number]
 
 type Product = {
   id: number
@@ -112,7 +108,10 @@ function ProductsScreen() {
               onPress={() => {
                 setNextFilter(candidate)
               }}
-              style={[styles.filterButton, isActive && styles.filterButtonActive]}
+              style={[
+                styles.filterButton,
+                isActive && styles.filterButtonActive,
+              ]}
             >
               <Text
                 style={[
@@ -128,7 +127,9 @@ function ProductsScreen() {
       </View>
 
       {isLoading ? <Text style={styles.meta}>Loading…</Text> : null}
-      {isFetching && !isLoading ? <Text style={styles.meta}>Refreshing…</Text> : null}
+      {isFetching && !isLoading ? (
+        <Text style={styles.meta}>Refreshing…</Text>
+      ) : null}
 
       <FlatList
         data={data?.items ?? []}
@@ -164,7 +165,10 @@ function ProductsScreen() {
           onPress={() => {
             setPage((previous) => Math.min(totalPages, previous + 1))
           }}
-          style={[styles.pageButton, page >= totalPages && styles.pageButtonDisabled]}
+          style={[
+            styles.pageButton,
+            page >= totalPages && styles.pageButtonDisabled,
+          ]}
         >
           <Text style={styles.pageButtonText}>Next</Text>
         </Pressable>
