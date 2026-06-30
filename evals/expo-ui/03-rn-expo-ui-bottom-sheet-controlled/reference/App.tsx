@@ -1,4 +1,4 @@
-import { BottomSheet, BottomSheetView } from '@expo/ui/community/bottom-sheet'
+import BottomSheet, { BottomSheetView } from '@expo/ui/community/bottom-sheet'
 import { useRef } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 

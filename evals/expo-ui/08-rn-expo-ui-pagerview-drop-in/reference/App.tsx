@@ -1,4 +1,4 @@
-import { PagerView } from '@expo/ui/community/pager-view'
+import PagerView from '@expo/ui/community/pager-view'
 import { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 

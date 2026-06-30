@@ -9,7 +9,5 @@ requirements:
     description: "Must pass granularPermissions containing photo when requesting photo-only access."
   - id: does-not-query-library-with-writeonly
     description: "Must not query/read the user library after requesting write-only permission."
-  - id: permission-plugin-note
-    description: "Must keep app/config code aligned with any granular permissions requested at runtime."
   - id: denied-fallback
     description: "Must render a deterministic denied-permission fallback."

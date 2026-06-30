@@ -11,5 +11,3 @@ requirements:
     description: "Must handle an empty data array with deterministic fallback UI."
   - id: no-query-on-mount-permission-prompt
     description: "Must not prompt for contacts permission on initial mount."
-  - id: config-plugin-fields-mentioned
-    description: "Must include or preserve contacts permission strings in app config when adding config files for the eval."

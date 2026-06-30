@@ -7,7 +7,6 @@ export default function App() {
   const [battery, setBattery] = useState('loading…')
 
   useEffect(() => {
-    // No types here, so this call site is unchecked.
     DeviceAudit.getBatteryLabelAsync()
       .then((label: string) => setBattery(label))
       .catch(() => setBattery('unavailable'))
