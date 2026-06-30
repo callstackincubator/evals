@@ -1,27 +1,42 @@
 import { Directory, File, Paths } from 'expo-file-system'
-import * as LegacyFileSystem from 'expo-file-system/legacy'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AppState, Image, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
+
+const PROFILE_DIR = new Directory(Paths.cache, 'profile')
+const PROFILE_FILE = new File(PROFILE_DIR, 'profile.json')
 
 export default function App() {
   const [message, setMessage] = useState('Ready.')
 
-  const migrate = async () => {
-    const file = new File(Paths.cache, 'profile.json')
-    file.write(JSON.stringify({ name: 'Expo' }))
-    setMessage(await file.text())
+  const saveProfile = async () => {
+    try {
+      PROFILE_DIR.create({ intermediates: true, idempotent: true })
+      PROFILE_FILE.write(JSON.stringify({ name: 'Expo' }))
+      setMessage('Saved profile.')
+    } catch (error) {
+      setMessage(`Save failed: ${String(error)}`)
+    }
   }
 
-  const readLegacyUri = async (uri: string) => {
-    return LegacyFileSystem.readAsStringAsync(uri)
+  const loadProfile = async () => {
+    try {
+      const contents = PROFILE_FILE.text()
+      setMessage(contents)
+    } catch (error) {
+      setMessage(`Load failed: ${String(error)}`)
+    }
   }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Filesystem migration</Text>
+      <Text style={styles.title}>Filesystem helper</Text>
       <Text style={styles.subtitle}>{message}</Text>
-      <Pressable onPress={migrate} style={styles.action}><Text style={styles.actionText}>Use object API</Text></Pressable>
-      <Pressable onPress={() => void readLegacyUri(new File(new Directory(Paths.cache), 'profile.json').uri)} style={styles.action}><Text style={styles.actionText}>Read legacy uri</Text></Pressable>
+      <Pressable onPress={saveProfile} style={styles.action}>
+        <Text style={styles.actionText}>Save profile</Text>
+      </Pressable>
+      <Pressable onPress={loadProfile} style={styles.action}>
+        <Text style={styles.actionText}>Load profile</Text>
+      </Pressable>
     </View>
   )
 }
@@ -36,21 +51,6 @@ const styles = StyleSheet.create({
   actionText: {
     color: '#fff',
     fontWeight: '600',
-  },
-  card: {
-    backgroundColor: '#f9fafb',
-    borderColor: '#e5e7eb',
-    borderRadius: 12,
-    borderWidth: 1,
-    padding: 14,
-    width: '100%',
-  },
-  media: {
-    backgroundColor: '#e5e7eb',
-    borderRadius: 12,
-    height: 180,
-    overflow: 'hidden',
-    width: '100%',
   },
   screen: {
     backgroundColor: '#fff',

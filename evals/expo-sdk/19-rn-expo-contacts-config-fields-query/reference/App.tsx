@@ -1,69 +1,139 @@
 import * as Contacts from 'expo-contacts'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AppState, Image, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import {
+  FlatList,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
+
+type ContactRow = {
+  id: string
+  name: string
+  email?: string
+  imageUri?: string
+}
 
 export default function App() {
-  const [contacts, setContacts] = useState<
-    Array<{ fullName?: string | null; id: string }>
-  >([])
-  const [message, setMessage] = useState('Contacts not loaded.')
+  const [contacts, setContacts] = useState<ContactRow[]>([])
+  const [loaded, setLoaded] = useState(false)
+  const [denied, setDenied] = useState(false)
 
-  const load = async () => {
+  const loadContacts = async () => {
     const permission = await Contacts.requestPermissionsAsync()
     if (!permission.granted) {
-      setMessage('Contacts permission denied.')
+      setDenied(true)
       return
     }
+
     const result = await Contacts.Contact.getAllDetails(
       [
         Contacts.ContactField.FULL_NAME,
         Contacts.ContactField.EMAILS,
         Contacts.ContactField.IMAGE,
       ],
-      { limit: 20 }
+      { limit: 50 },
     )
-    setContacts(result.map((contact) => ({
-      fullName: contact.fullName,
-      id: contact.id,
-    })))
-    setMessage(result.length ? 'Contacts loaded.' : 'No contacts available.')
+
+    setContacts(
+      result.map((contact) => ({
+        id: contact.id,
+        name: contact.fullName ?? 'Unnamed contact',
+        email: contact.emails?.[0]?.email,
+        imageUri: contact.image?.uri,
+      })),
+    )
+    setLoaded(true)
+  }
+
+  if (denied) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.title}>Contacts</Text>
+        <Text style={styles.subtitle}>Contacts permission was denied.</Text>
+      </View>
+    )
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.screen}>
+    <View style={styles.screen}>
       <Text style={styles.title}>Contacts</Text>
-      <Text style={styles.subtitle}>{message}</Text>
-      {contacts.map((contact) => <Text key={contact.id} style={styles.subtitle}>{contact.fullName ?? 'Unnamed contact'}</Text>)}
-      <Pressable onPress={load} style={styles.action}><Text style={styles.actionText}>Load contacts</Text></Pressable>
-    </ScrollView>
+
+      {!loaded ? (
+        <Pressable style={styles.button} onPress={loadContacts}>
+          <Text style={styles.buttonText}>Load contacts</Text>
+        </Pressable>
+      ) : (
+        <FlatList
+          data={contacts}
+          keyExtractor={(item) => item.id}
+          ListEmptyComponent={
+            <Text style={styles.subtitle}>No contacts found.</Text>
+          }
+          renderItem={({ item }) => (
+            <View style={styles.row}>
+              {item.imageUri ? (
+                <Image source={{ uri: item.imageUri }} style={styles.avatar} />
+              ) : (
+                <View style={[styles.avatar, styles.avatarPlaceholder]} />
+              )}
+              <View>
+                <Text style={styles.name}>{item.name}</Text>
+                {item.email ? (
+                  <Text style={styles.email}>{item.email}</Text>
+                ) : null}
+              </View>
+            </View>
+          )}
+        />
+      )}
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  action: {
+  avatar: {
+    backgroundColor: '#e5e7eb',
+    borderRadius: 20,
+    height: 40,
+    width: 40,
+  },
+  avatarPlaceholder: {
+    backgroundColor: '#cbd5e1',
+  },
+  button: {
+    alignSelf: 'flex-start',
     backgroundColor: '#111827',
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
-  actionText: {
+  buttonText: {
     color: '#fff',
     fontWeight: '600',
   },
-  card: {
-    backgroundColor: '#f9fafb',
-    borderColor: '#e5e7eb',
-    borderRadius: 12,
-    borderWidth: 1,
-    padding: 14,
-    width: '100%',
+  centered: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+    rowGap: 8,
   },
-  media: {
-    backgroundColor: '#e5e7eb',
-    borderRadius: 12,
-    height: 180,
-    overflow: 'hidden',
-    width: '100%',
+  email: {
+    color: '#6b7280',
+  },
+  name: {
+    color: '#111827',
+    fontWeight: '600',
+  },
+  row: {
+    alignItems: 'center',
+    columnGap: 12,
+    flexDirection: 'row',
+    paddingVertical: 8,
   },
   screen: {
     backgroundColor: '#fff',
@@ -72,7 +142,7 @@ const styles = StyleSheet.create({
     rowGap: 12,
   },
   subtitle: {
-    color: '#4b5563',
+    color: '#6b7280',
   },
   title: {
     color: '#111827',

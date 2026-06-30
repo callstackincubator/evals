@@ -1,48 +1,77 @@
+import { Directory, File, Paths } from 'expo-file-system'
 import * as MediaLibrary from 'expo-media-library'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AppState, Image, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
+
+const GENERATED_IMAGE_URI = 'https://example.com/generated/poster.png'
+
+type SaveState = 'idle' | 'saving' | 'saved' | 'denied'
 
 export default function App() {
-  const [message, setMessage] = useState('Ready to save a generated photo.')
+  const [saveState, setSaveState] = useState<SaveState>('idle')
 
-  const requestSaveAccess = async () => {
+  const saveToLibrary = async () => {
+    setSaveState('saving')
     const permission = await MediaLibrary.requestPermissionsAsync(true, ['photo'])
-    setMessage(permission.granted ? 'Write-only photo access granted.' : 'Photo save permission denied.')
+    if (!permission.granted) {
+      setSaveState('denied')
+      return
+    }
+    try {
+      const cache = new Directory(Paths.cache, 'posters')
+      cache.create({ idempotent: true, intermediates: true })
+      const file = await File.downloadFileAsync(GENERATED_IMAGE_URI, cache)
+      await MediaLibrary.saveToLibraryAsync(file.uri)
+      setSaveState('saved')
+    } catch {
+      setSaveState('denied')
+    }
   }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Save access</Text>
-      <Text style={styles.subtitle}>{message}</Text>
-      <Pressable onPress={requestSaveAccess} style={styles.action}><Text style={styles.actionText}>Request save access</Text></Pressable>
+      <Text style={styles.title}>Save poster</Text>
+
+      <Image source={{ uri: GENERATED_IMAGE_URI }} style={styles.preview} />
+
+      {saveState === 'saved' ? (
+        <Text style={styles.status}>Saved to your photos.</Text>
+      ) : null}
+      {saveState === 'denied' ? (
+        <Text style={styles.error}>
+          Photo access is required to save this image.
+        </Text>
+      ) : null}
+
+      <Pressable
+        style={styles.button}
+        disabled={saveState === 'saving'}
+        onPress={saveToLibrary}
+      >
+        <Text style={styles.buttonText}>Save to photos</Text>
+      </Pressable>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  action: {
+  button: {
     backgroundColor: '#111827',
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
-  actionText: {
+  buttonText: {
     color: '#fff',
     fontWeight: '600',
   },
-  card: {
-    backgroundColor: '#f9fafb',
-    borderColor: '#e5e7eb',
-    borderRadius: 12,
-    borderWidth: 1,
-    padding: 14,
-    width: '100%',
+  error: {
+    color: '#b91c1c',
   },
-  media: {
+  preview: {
     backgroundColor: '#e5e7eb',
     borderRadius: 12,
-    height: 180,
-    overflow: 'hidden',
+    height: 220,
     width: '100%',
   },
   screen: {
@@ -51,7 +80,7 @@ const styles = StyleSheet.create({
     padding: 20,
     rowGap: 12,
   },
-  subtitle: {
+  status: {
     color: '#4b5563',
   },
   title: {

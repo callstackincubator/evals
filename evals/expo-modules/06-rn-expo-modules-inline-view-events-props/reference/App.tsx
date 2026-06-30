@@ -1,12 +1,18 @@
 import { StyleSheet, Text, View } from 'react-native'
 
+import AuditLabel from './src/AuditLabel'
+
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Build properties audit</Text>
-      <Text style={styles.subtitle}>
-        Native build configuration is managed in app.config.ts.
-      </Text>
+      <Text style={styles.title}>Audit Label</Text>
+      <AuditLabel
+        title="Tap to audit"
+        onReady={() => {
+          console.log('AuditLabel is ready')
+        }}
+        style={styles.label}
+      />
     </View>
   )
 }
@@ -18,15 +24,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    rowGap: 8,
-  },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
+    rowGap: 10,
   },
   title: {
     color: '#111827',
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  label: {
+    height: 44,
+    width: 200,
   },
 })

@@ -1,12 +1,10 @@
 import { CameraView, useCameraPermissions } from 'expo-camera'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AppState, Image, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useEffect, useState } from 'react'
+import { AppState, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 
 export default function App() {
   const [permission, requestPermission, getPermission] = useCameraPermissions()
   const [requesting, setRequesting] = useState(false)
-
-  const state = requesting ? 'requesting' : permission?.granted ? 'granted' : permission?.canAskAgain === false ? 'blocked' : 'denied'
 
   useEffect(() => {
     const sub = AppState.addEventListener('change', (nextState) => {
@@ -15,8 +13,10 @@ export default function App() {
     return () => sub.remove()
   }, [getPermission])
 
-  const request = async () => {
-    if (requesting || state === 'blocked') return
+  const blocked = permission?.granted === false && permission.canAskAgain === false
+
+  const handleRequestPermission = async () => {
+    if (requesting || blocked) return
     setRequesting(true)
     try {
       await requestPermission()
@@ -25,54 +25,92 @@ export default function App() {
     }
   }
 
+  const handleOpenSettings = () => {
+    void Linking.openSettings()
+  }
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Camera access</Text>
-      {permission?.granted ? <CameraView style={styles.media} facing="back" /> : <Text style={styles.subtitle}>Preview unavailable until camera permission is granted.</Text>}
-      <Pressable disabled={requesting} onPress={request} style={styles.action}><Text style={styles.actionText}>Request or retry</Text></Pressable>
-      {state === 'blocked' ? <Pressable onPress={() => Linking.openSettings()} style={styles.action}><Text style={styles.actionText}>Open settings</Text></Pressable> : null}
+      <Text style={styles.title}>Camera</Text>
+
+      <View style={styles.preview}>
+        {permission?.granted ? (
+          <CameraView style={styles.camera} facing="back" />
+        ) : (
+          <Text style={styles.previewText}>Camera is off</Text>
+        )}
+      </View>
+
+      {blocked ? (
+        <View style={styles.statusBlock}>
+          <Text style={styles.statusText}>
+            Camera access is turned off. Enable it in Settings to continue.
+          </Text>
+          <Pressable style={styles.button} onPress={handleOpenSettings}>
+            <Text style={styles.buttonText}>Open Settings</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <Pressable
+          style={styles.button}
+          disabled={requesting}
+          onPress={handleRequestPermission}
+        >
+          <Text style={styles.buttonText}>
+            {permission?.granted ? 'Camera Enabled' : 'Enable Camera'}
+          </Text>
+        </Pressable>
+      )}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  action: {
+  button: {
     backgroundColor: '#111827',
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
-  actionText: {
+  buttonText: {
     color: '#fff',
     fontWeight: '600',
+    textAlign: 'center',
   },
-  card: {
-    backgroundColor: '#f9fafb',
-    borderColor: '#e5e7eb',
-    borderRadius: 12,
-    borderWidth: 1,
-    padding: 14,
+  camera: {
+    height: '100%',
     width: '100%',
   },
-  media: {
-    backgroundColor: '#e5e7eb',
+  preview: {
+    alignItems: 'center',
+    aspectRatio: 3 / 4,
+    backgroundColor: '#1f2937',
     borderRadius: 12,
-    height: 180,
+    justifyContent: 'center',
     overflow: 'hidden',
     width: '100%',
+  },
+  previewText: {
+    color: '#9ca3af',
   },
   screen: {
     backgroundColor: '#fff',
     flex: 1,
+    justifyContent: 'center',
     padding: 20,
-    rowGap: 12,
+    rowGap: 16,
   },
-  subtitle: {
-    color: '#4b5563',
+  statusBlock: {
+    alignItems: 'center',
+    rowGap: 10,
+  },
+  statusText: {
+    color: '#6b7280',
+    textAlign: 'center',
   },
   title: {
     color: '#111827',
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: '700',
   },
 })

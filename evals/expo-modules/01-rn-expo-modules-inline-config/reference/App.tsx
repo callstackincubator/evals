@@ -1,28 +1,33 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { requireNativeModule } from 'expo'
+import { StyleSheet, Text, View } from 'react-native'
+
+type DeviceAuditModule = {
+  source: string
+  getOsVersion(): string
+}
+
+let osVersion = 'unknown'
+let source = 'unavailable'
+
+try {
+  const DeviceAudit = requireNativeModule<DeviceAuditModule>('DeviceAuditModule')
+  osVersion = DeviceAudit.getOsVersion()
+  source = DeviceAudit.source
+} catch {
+  // Native module is not registered with the current build yet.
+}
 
 export default function App() {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Inline module config</Text>
-      <Text style={styles.subtitle}>Replace this scaffold with the requested Expo implementation.</Text>
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Start</Text>
-      </Pressable>
+      <Text style={styles.title}>Device Audit</Text>
+      <Text style={styles.row}>OS version: {osVersion}</Text>
+      <Text style={styles.row}>Module source: {source}</Text>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
   screen: {
     alignItems: 'center',
     backgroundColor: '#fff',
@@ -31,14 +36,13 @@ const styles = StyleSheet.create({
     padding: 20,
     rowGap: 10,
   },
-  subtitle: {
-    color: '#6b7280',
-    textAlign: 'center',
-  },
   title: {
     color: '#111827',
     fontSize: 20,
     fontWeight: '600',
     textAlign: 'center',
+  },
+  row: {
+    color: '#374151',
   },
 })

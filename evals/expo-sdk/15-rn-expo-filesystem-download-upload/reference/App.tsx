@@ -1,58 +1,94 @@
 import { Directory, File, Paths } from 'expo-file-system'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AppState, Image, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
+
+const REMOTE_URL = 'https://example.com/report.pdf'
+const UPLOAD_ENDPOINT = 'https://example.com/api/upload'
+
+type Phase = 'idle' | 'downloading' | 'uploading' | 'done' | 'error'
 
 export default function App() {
-  const [status, setStatus] = useState('Idle.')
+  const [phase, setPhase] = useState<Phase>('idle')
+  const [progress, setProgress] = useState(0)
 
-  const sync = async () => {
+  const transfer = async () => {
+    setPhase('downloading')
+    setProgress(0)
     try {
-      const downloads = new Directory(Paths.cache, 'downloads')
+      const downloads = new Directory(Paths.document, 'downloads')
       downloads.create({ idempotent: true, intermediates: true })
-      const file = await File.downloadFileAsync('https://example.com/report.txt', downloads)
+      const file = await File.downloadFileAsync(REMOTE_URL, downloads)
+      setProgress(1)
+
+      setPhase('uploading')
       const body = new FormData()
-      body.append('file', file as unknown as Blob)
-      await fetch('https://example.com/upload', { body, method: 'POST' })
-      setStatus(`Uploaded ${file.name}`)
-    } catch (error) {
-      setStatus(error instanceof Error ? error.message : 'Sync failed.')
+      body.append('file', {
+        name: file.name,
+        type: 'application/pdf',
+        uri: file.uri,
+      } as unknown as Blob)
+      const response = await fetch(UPLOAD_ENDPOINT, { body, method: 'POST' })
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.status}`)
+      }
+      setPhase('done')
+    } catch {
+      setPhase('error')
     }
   }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>File sync</Text>
-      <Text style={styles.subtitle}>{status}</Text>
-      <Pressable onPress={sync} style={styles.action}><Text style={styles.actionText}>Sync</Text></Pressable>
+      <Text style={styles.title}>Sync report</Text>
+      <Text style={styles.subtitle}>{REMOTE_URL}</Text>
+
+      {phase === 'downloading' || phase === 'uploading' ? (
+        <View style={styles.progressRow}>
+          <ActivityIndicator />
+          <Text style={styles.status}>
+            {phase === 'downloading'
+              ? `Downloading ${Math.round(progress * 100)}%`
+              : 'Uploading…'}
+          </Text>
+        </View>
+      ) : null}
+
+      {phase === 'done' ? <Text style={styles.status}>Upload complete.</Text> : null}
+      {phase === 'error' ? (
+        <Text style={styles.error}>Transfer failed.</Text>
+      ) : null}
+
+      <Pressable style={styles.button} onPress={transfer}>
+        <Text style={styles.buttonText}>Download &amp; upload</Text>
+      </Pressable>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  action: {
+  button: {
     backgroundColor: '#111827',
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
-  actionText: {
+  buttonText: {
     color: '#fff',
     fontWeight: '600',
   },
-  card: {
-    backgroundColor: '#f9fafb',
-    borderColor: '#e5e7eb',
-    borderRadius: 12,
-    borderWidth: 1,
-    padding: 14,
-    width: '100%',
+  error: {
+    color: '#b91c1c',
   },
-  media: {
-    backgroundColor: '#e5e7eb',
-    borderRadius: 12,
-    height: 180,
-    overflow: 'hidden',
-    width: '100%',
+  progressRow: {
+    alignItems: 'center',
+    columnGap: 10,
+    flexDirection: 'row',
   },
   screen: {
     backgroundColor: '#fff',
@@ -60,8 +96,11 @@ const styles = StyleSheet.create({
     padding: 20,
     rowGap: 12,
   },
-  subtitle: {
+  status: {
     color: '#4b5563',
+  },
+  subtitle: {
+    color: '#6b7280',
   },
   title: {
     color: '#111827',

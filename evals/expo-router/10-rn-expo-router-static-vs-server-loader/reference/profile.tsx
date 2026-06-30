@@ -1,9 +1,9 @@
 import { useLoaderData } from 'expo-router'
 import { Text } from 'react-native'
-import { readProfile } from './server/profile.server'
+import { getProfile } from './server/profile.server'
 
 export async function loader() {
-  return readProfile()
+  return getProfile()
 }
 
 export default function Profile() {

@@ -7,6 +7,8 @@ export default function Layout() {
       <Stack.Screen
         name="index"
         options={{
+          title: 'Inbox',
+          headerBackTitle: 'Back',
           headerRight: () => (
             <Pressable onPress={() => Alert.alert('New item')}>
               <Text>+</Text>

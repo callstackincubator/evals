@@ -1,11 +1,7 @@
 import { requireNativeModule } from 'expo-modules-core'
 
-type DeviceAuditModule = {
+export type DeviceAuditModule = {
   getBatteryLabelAsync(): Promise<string>
 }
 
-const NativeDeviceAudit = requireNativeModule<DeviceAuditModule>('DeviceAudit')
-
-export async function getBatteryLabel() {
-  return NativeDeviceAudit.getBatteryLabelAsync()
-}
+export const DeviceAudit = requireNativeModule<DeviceAuditModule>('DeviceAudit')

@@ -1,73 +1,83 @@
 import * as ImagePicker from 'expo-image-picker'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AppState, Image, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 
 export default function App() {
-  const [assetUri, setAssetUri] = useState<string | null>(null)
-  const [message, setMessage] = useState('No image selected.')
+  const [imageUri, setImageUri] = useState<string | null>(null)
+  const [status, setStatus] = useState('No image selected')
 
-  const pick = async () => {
+  const handlePickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       mediaTypes: ['images'],
       quality: 0.8,
     })
     if (result.canceled || !result.assets?.length) {
-      setAssetUri(null)
-      setMessage('Selection canceled.')
+      setImageUri(null)
+      setStatus('No image selected')
       return
     }
-    setAssetUri(result.assets[0].uri)
-    setMessage(result.assets[0].fileName ?? 'Image selected.')
+    setImageUri(result.assets[0].uri)
+    setStatus('Image selected')
   }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Image picker</Text>
-      {assetUri ? <Image source={{ uri: assetUri }} style={styles.media} /> : <Text style={styles.subtitle}>{message}</Text>}
-      <Pressable onPress={pick} style={styles.action}><Text style={styles.actionText}>Choose image</Text></Pressable>
+      <Text style={styles.title}>Profile Photo</Text>
+
+      <View style={styles.preview}>
+        {imageUri ? (
+          <Image source={{ uri: imageUri }} style={styles.image} />
+        ) : (
+          <Text style={styles.previewText}>{status}</Text>
+        )}
+      </View>
+
+      <Pressable style={styles.button} onPress={handlePickImage}>
+        <Text style={styles.buttonText}>Choose from Library</Text>
+      </Pressable>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  action: {
+  button: {
     backgroundColor: '#111827',
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
-  actionText: {
+  buttonText: {
     color: '#fff',
     fontWeight: '600',
+    textAlign: 'center',
   },
-  card: {
-    backgroundColor: '#f9fafb',
-    borderColor: '#e5e7eb',
-    borderRadius: 12,
-    borderWidth: 1,
-    padding: 14,
+  image: {
+    height: '100%',
     width: '100%',
   },
-  media: {
-    backgroundColor: '#e5e7eb',
+  preview: {
+    alignItems: 'center',
+    aspectRatio: 1,
+    backgroundColor: '#f3f4f6',
     borderRadius: 12,
-    height: 180,
+    justifyContent: 'center',
     overflow: 'hidden',
     width: '100%',
+  },
+  previewText: {
+    color: '#9ca3af',
   },
   screen: {
     backgroundColor: '#fff',
     flex: 1,
+    justifyContent: 'center',
     padding: 20,
-    rowGap: 12,
-  },
-  subtitle: {
-    color: '#4b5563',
+    rowGap: 16,
   },
   title: {
     color: '#111827',
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: '700',
   },
 })

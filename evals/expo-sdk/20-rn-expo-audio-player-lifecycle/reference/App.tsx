@@ -1,57 +1,77 @@
 import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AppState, Image, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useEffect } from 'react'
+import { AppState, Pressable, StyleSheet, Text, View } from 'react-native'
+
+const SOUND_URL = 'https://example.com/preview.mp3'
 
 export default function App() {
-  const player = useAudioPlayer('https://example.com/preview.mp3', { updateInterval: 250 })
+  const player = useAudioPlayer(SOUND_URL)
   const status = useAudioPlayerStatus(player)
+  const isPlaying = status.playing
 
   useEffect(() => {
-    void setAudioModeAsync({ playsInSilentMode: true })
-    const sub = AppState.addEventListener('change', (state) => {
+    void setAudioModeAsync({
+      playsInSilentMode: true,
+      interruptionMode: 'mixWithOthers',
+    })
+    const subscription = AppState.addEventListener('change', (state) => {
       if (state !== 'active') player.pause()
     })
     return () => {
       player.pause()
-      sub.remove()
+      subscription.remove()
     }
   }, [player])
+
+  const togglePlayback = () => {
+    // Play or pause the audio preview.
+    if (player.playing) {
+      player.pause()
+    } else {
+      player.play()
+    }
+  }
 
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Audio preview</Text>
-      <Text style={styles.subtitle}>{status.playing ? 'Playing' : 'Paused'}</Text>
-      <Pressable onPress={() => player.play()} style={styles.action}><Text style={styles.actionText}>Play</Text></Pressable>
-      <Pressable onPress={() => player.pause()} style={styles.action}><Text style={styles.actionText}>Pause</Text></Pressable>
+      <Text style={styles.subtitle}>{SOUND_URL}</Text>
+
+      <View style={styles.statusRow}>
+        <View
+          style={[styles.dot, isPlaying ? styles.dotPlaying : styles.dotIdle]}
+        />
+        <Text style={styles.status}>{isPlaying ? 'Playing' : 'Paused'}</Text>
+      </View>
+
+      <Pressable style={styles.button} onPress={togglePlayback}>
+        <Text style={styles.buttonText}>{isPlaying ? 'Pause' : 'Play'}</Text>
+      </Pressable>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  action: {
+  button: {
     backgroundColor: '#111827',
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
-  actionText: {
+  buttonText: {
     color: '#fff',
     fontWeight: '600',
   },
-  card: {
-    backgroundColor: '#f9fafb',
-    borderColor: '#e5e7eb',
-    borderRadius: 12,
-    borderWidth: 1,
-    padding: 14,
-    width: '100%',
+  dot: {
+    borderRadius: 6,
+    height: 12,
+    width: 12,
   },
-  media: {
-    backgroundColor: '#e5e7eb',
-    borderRadius: 12,
-    height: 180,
-    overflow: 'hidden',
-    width: '100%',
+  dotIdle: {
+    backgroundColor: '#cbd5e1',
+  },
+  dotPlaying: {
+    backgroundColor: '#16a34a',
   },
   screen: {
     backgroundColor: '#fff',
@@ -59,8 +79,16 @@ const styles = StyleSheet.create({
     padding: 20,
     rowGap: 12,
   },
-  subtitle: {
+  status: {
     color: '#4b5563',
+  },
+  statusRow: {
+    alignItems: 'center',
+    columnGap: 8,
+    flexDirection: 'row',
+  },
+  subtitle: {
+    color: '#6b7280',
   },
   title: {
     color: '#111827',

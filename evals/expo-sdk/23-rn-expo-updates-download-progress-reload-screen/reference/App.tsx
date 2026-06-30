@@ -1,59 +1,93 @@
 import * as Updates from 'expo-updates'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AppState, Image, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 
 export default function App() {
-  const updateState = Updates.useUpdates()
-  const [message, setMessage] = useState('Check for updates.')
+  const {
+    currentlyRunning,
+    isDownloading,
+    downloadProgress,
+    isUpdateAvailable,
+    isUpdatePending,
+    downloadError,
+  } = Updates.useUpdates()
+  const [status, setStatus] = useState(
+    currentlyRunning.isEmbeddedLaunch ? 'Running embedded build.' : 'Up to date.',
+  )
 
-  const apply = async () => {
-    if (!updateState.isUpdatePending) {
-      setMessage(updateState.downloadError?.message ?? 'No downloaded update to apply.')
-      return
+  const checkForUpdate = async () => {
+    setStatus('Checking…')
+    try {
+      const update = await Updates.checkForUpdateAsync()
+      if (!update.isAvailable) {
+        setStatus('Up to date.')
+        return
+      }
+      setStatus('Downloading…')
+      await Updates.fetchUpdateAsync()
+      await Updates.reloadAsync({
+        reloadScreenOptions: {
+          backgroundColor: '#111827',
+          fade: true,
+        },
+      })
+      // Execution does not reliably continue after reloadAsync resolves.
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : 'Update failed.')
     }
-    await Updates.reloadAsync({
-      reloadScreenOptions: {
-        backgroundColor: '#111827',
-        fade: true,
-      },
-    })
   }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Updates</Text>
-      <Text style={styles.subtitle}>{updateState.isDownloading ? `Downloading ${Math.round((updateState.downloadProgress ?? 0) * 100)}%` : message}</Text>
-      <Text style={styles.subtitle}>{updateState.currentlyRunning.isEmbeddedLaunch ? 'Embedded launch' : 'Update launch'}</Text>
-      <Pressable onPress={apply} style={styles.action}><Text style={styles.actionText}>Apply update</Text></Pressable>
+      <Text style={styles.title}>App updates</Text>
+
+      {isDownloading ? (
+        <View style={styles.progressRow}>
+          <ActivityIndicator />
+          <Text style={styles.status}>
+            Downloading {Math.round((downloadProgress ?? 0) * 100)}%
+          </Text>
+        </View>
+      ) : (
+        <Text style={styles.status}>
+          {downloadError
+            ? downloadError.message
+            : isUpdatePending
+              ? 'Update ready. Reloading…'
+              : isUpdateAvailable
+                ? 'Update available.'
+                : status}
+        </Text>
+      )}
+
+      <Pressable style={styles.button} onPress={checkForUpdate}>
+        <Text style={styles.buttonText}>Check for updates</Text>
+      </Pressable>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  action: {
+  button: {
     backgroundColor: '#111827',
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
-  actionText: {
+  buttonText: {
     color: '#fff',
     fontWeight: '600',
   },
-  card: {
-    backgroundColor: '#f9fafb',
-    borderColor: '#e5e7eb',
-    borderRadius: 12,
-    borderWidth: 1,
-    padding: 14,
-    width: '100%',
-  },
-  media: {
-    backgroundColor: '#e5e7eb',
-    borderRadius: 12,
-    height: 180,
-    overflow: 'hidden',
-    width: '100%',
+  progressRow: {
+    alignItems: 'center',
+    columnGap: 10,
+    flexDirection: 'row',
   },
   screen: {
     backgroundColor: '#fff',
@@ -61,7 +95,7 @@ const styles = StyleSheet.create({
     padding: 20,
     rowGap: 12,
   },
-  subtitle: {
+  status: {
     color: '#4b5563',
   },
   title: {

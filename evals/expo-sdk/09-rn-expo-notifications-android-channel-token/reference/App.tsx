@@ -1,12 +1,14 @@
 import Constants from 'expo-constants'
 import * as Notifications from 'expo-notifications'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AppState, Image, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 
 export default function App() {
-  const [status, setStatus] = useState('Not registered.')
+  const [pushToken, setPushToken] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
-  const register = async () => {
+  const handleRegister = async () => {
+    setError(null)
     try {
       if (Platform.OS === 'android') {
         await Notifications.setNotificationChannelAsync('default', {
@@ -14,70 +16,86 @@ export default function App() {
           name: 'Default',
         })
       }
-      const permission = await Notifications.requestPermissionsAsync()
+
+      const existing = await Notifications.getPermissionsAsync()
+      const permission = existing.granted
+        ? existing
+        : await Notifications.requestPermissionsAsync()
       if (!permission.granted) {
-        setStatus('Notification permission denied.')
+        setError('Notification permission denied')
         return
       }
-      const projectId = Constants.easConfig?.projectId ?? Constants.expoConfig?.extra?.eas?.projectId
+
+      const projectId =
+        Constants.easConfig?.projectId ??
+        Constants.expoConfig?.extra?.eas?.projectId
       if (!projectId) {
-        setStatus('Missing EAS project id.')
+        setError('Missing EAS project id')
         return
       }
+
       const token = await Notifications.getExpoPushTokenAsync({ projectId })
-      setStatus(token.data)
-    } catch (error) {
-      setStatus(error instanceof Error ? error.message : 'Token registration failed.')
+      setPushToken(token.data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Token registration failed')
     }
   }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Push token</Text>
-      <Text style={styles.subtitle}>{status}</Text>
-      <Pressable onPress={register} style={styles.action}><Text style={styles.actionText}>Register</Text></Pressable>
+      <Text style={styles.title}>Push Notifications</Text>
+
+      <View style={styles.card}>
+        <Text style={styles.cardLabel}>Expo push token</Text>
+        <Text style={styles.cardValue} numberOfLines={2}>
+          {error ?? pushToken ?? 'Not registered'}
+        </Text>
+      </View>
+
+      <Pressable style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>Register for Notifications</Text>
+      </Pressable>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  action: {
+  button: {
     backgroundColor: '#111827',
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
-  actionText: {
+  buttonText: {
     color: '#fff',
     fontWeight: '600',
+    textAlign: 'center',
   },
   card: {
-    backgroundColor: '#f9fafb',
-    borderColor: '#e5e7eb',
+    backgroundColor: '#f3f4f6',
     borderRadius: 12,
-    borderWidth: 1,
-    padding: 14,
-    width: '100%',
+    padding: 16,
+    rowGap: 6,
   },
-  media: {
-    backgroundColor: '#e5e7eb',
-    borderRadius: 12,
-    height: 180,
-    overflow: 'hidden',
-    width: '100%',
+  cardLabel: {
+    color: '#6b7280',
+    fontSize: 13,
+  },
+  cardValue: {
+    color: '#111827',
+    fontSize: 14,
+    fontWeight: '600',
   },
   screen: {
     backgroundColor: '#fff',
     flex: 1,
+    justifyContent: 'center',
     padding: 20,
-    rowGap: 12,
-  },
-  subtitle: {
-    color: '#4b5563',
+    rowGap: 16,
   },
   title: {
     color: '#111827',
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: '700',
   },
 })

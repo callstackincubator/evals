@@ -4,8 +4,9 @@ import { StyleSheet, Text, View } from 'react-native'
 export default function Index() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Products</Text>
-      <Link href={{ pathname: '/details', params: { id: '42' } }}>View details</Link>
+      <Text style={styles.title}>Welcome</Text>
+      <Link href="/account">Account</Link>
+      <Link href="/sign-in">Sign in</Link>
     </View>
   )
 }

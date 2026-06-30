@@ -1,59 +1,94 @@
 import * as Updates from 'expo-updates'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AppState, Image, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
+
+const CHANNELS = ['production', 'staging', 'beta'] as const
+
+type Channel = (typeof CHANNELS)[number]
 
 export default function App() {
-  const [cohort, setCohort] = useState<'default' | 'beta'>('default')
-  const [message, setMessage] = useState('Default updates.')
+  const [channel, setChannel] = useState<Channel>('production')
+  const [status, setStatus] = useState('')
 
-  const select = async (next: 'default' | 'beta') => {
-    setCohort(next)
-    Updates.setUpdateRequestHeadersOverride(next === 'default' ? null : { 'expo-channel-name': 'beta' })
-    const result = await Updates.checkForUpdateAsync()
-    setMessage(result.isAvailable ? 'Update available for cohort.' : 'No update for cohort.')
+  const selectChannel = async (next: Channel) => {
+    setChannel(next)
+    setStatus(`Checking ${next}…`)
+    try {
+      Updates.setUpdateRequestHeadersOverride(
+        next === 'production' ? null : { 'expo-channel-name': next },
+      )
+      const result = await Updates.checkForUpdateAsync()
+      setStatus(
+        result.isAvailable
+          ? `Update available on ${next}.`
+          : `No update on ${next}.`,
+      )
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : 'Update check failed.')
+    }
   }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Update cohort</Text>
-      <Text style={styles.subtitle}>{cohort}: {message}</Text>
-      <Pressable onPress={() => select('beta')} style={styles.action}><Text style={styles.actionText}>Beta</Text></Pressable>
-      <Pressable onPress={() => select('default')} style={styles.action}><Text style={styles.actionText}>Default</Text></Pressable>
+      <Text style={styles.title}>Release channel</Text>
+
+      <View style={styles.channelRow}>
+        {CHANNELS.map((option) => {
+          const isActive = option === channel
+          return (
+            <Pressable
+              key={option}
+              onPress={() => selectChannel(option)}
+              style={[styles.chip, isActive && styles.chipActive]}
+            >
+              <Text
+                style={[styles.chipText, isActive && styles.chipTextActive]}
+              >
+                {option}
+              </Text>
+            </Pressable>
+          )
+        })}
+      </View>
+
+      <Text style={styles.subtitle}>Active channel: {channel}</Text>
+      {status ? <Text style={styles.status}>{status}</Text> : null}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  action: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+  channelRow: {
+    flexDirection: 'row',
+    gap: 8,
   },
-  actionText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
-  card: {
-    backgroundColor: '#f9fafb',
-    borderColor: '#e5e7eb',
-    borderRadius: 12,
+  chip: {
+    borderColor: '#94a3b8',
+    borderRadius: 999,
     borderWidth: 1,
-    padding: 14,
-    width: '100%',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
-  media: {
-    backgroundColor: '#e5e7eb',
-    borderRadius: 12,
-    height: 180,
-    overflow: 'hidden',
-    width: '100%',
+  chipActive: {
+    backgroundColor: '#0f172a',
+    borderColor: '#0f172a',
+  },
+  chipText: {
+    color: '#334155',
+    fontWeight: '600',
+    textTransform: 'capitalize',
+  },
+  chipTextActive: {
+    color: '#fff',
   },
   screen: {
     backgroundColor: '#fff',
     flex: 1,
     padding: 20,
     rowGap: 12,
+  },
+  status: {
+    color: '#6b7280',
   },
   subtitle: {
     color: '#4b5563',

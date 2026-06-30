@@ -1,18 +1,30 @@
-import { BottomSheet, BottomSheetModalProvider, BottomSheetView } from '@expo/ui/community/bottom-sheet'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AppState, Image, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { BottomSheet, BottomSheetView } from '@expo/ui/community/bottom-sheet'
+import { useRef } from 'react'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 export default function App() {
-  const ref = useRef<BottomSheet>(null)
+  const sheetRef = useRef<BottomSheet>(null)
+
   return (
-    <BottomSheetModalProvider>
-      <View style={styles.screen}>
-        <Pressable onPress={() => ref.current?.present()} style={styles.action}><Text style={styles.actionText}>Open sheet</Text></Pressable>
-        <BottomSheet ref={ref} index={-1} snapPoints={['40%']} onDismiss={() => {}}>
-          <BottomSheetView><Text>Sheet content</Text></BottomSheetView>
-        </BottomSheet>
-      </View>
-    </BottomSheetModalProvider>
+    <View style={styles.screen}>
+      <Text style={styles.title}>Trip details</Text>
+      <Pressable
+        onPress={() => sheetRef.current?.expand()}
+        style={styles.action}
+      >
+        <Text style={styles.actionText}>Show summary</Text>
+      </Pressable>
+
+      <BottomSheet ref={sheetRef} index={-1} snapPoints={['40%']} enablePanDownToClose>
+        <BottomSheetView style={styles.sheetContent}>
+          <Text style={styles.sheetTitle}>Summary</Text>
+          <Text style={styles.subtitle}>3 nights · 2 guests · $640 total</Text>
+          <Pressable onPress={() => sheetRef.current?.close()} style={styles.action}>
+            <Text style={styles.actionText}>Done</Text>
+          </Pressable>
+        </BottomSheetView>
+      </BottomSheet>
+    </View>
   )
 }
 
@@ -27,33 +39,27 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
   },
-  card: {
-    backgroundColor: '#f9fafb',
-    borderColor: '#e5e7eb',
-    borderRadius: 12,
-    borderWidth: 1,
-    padding: 14,
-    width: '100%',
-  },
-  media: {
-    backgroundColor: '#e5e7eb',
-    borderRadius: 12,
-    height: 180,
-    overflow: 'hidden',
-    width: '100%',
-  },
   screen: {
     backgroundColor: '#fff',
     flex: 1,
     padding: 20,
     rowGap: 12,
   },
+  sheetContent: {
+    padding: 20,
+    rowGap: 6,
+  },
+  sheetTitle: {
+    color: '#111827',
+    fontSize: 18,
+    fontWeight: '700',
+  },
   subtitle: {
     color: '#4b5563',
   },
   title: {
     color: '#111827',
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: '700',
   },
 })

@@ -1,14 +1,14 @@
-import { AndroidConfig, ConfigPlugin, IOSConfig, withAndroidManifest, withInfoPlist } from 'expo/config-plugins'
+import { AndroidConfig, ConfigPlugin, withAndroidManifest, withInfoPlist } from 'expo/config-plugins'
 
-const MICROPHONE = 'android.permission.RECORD_AUDIO'
+const CAMERA = 'android.permission.CAMERA'
 
-export const withAuditPermissions: ConfigPlugin<{ microphoneMessage: string }> = (config, props) => {
+export const withAuditPermissions: ConfigPlugin<{ cameraMessage: string }> = (config, props) => {
   config = withInfoPlist(config, (nextConfig) => {
-    nextConfig.modResults.NSMicrophoneUsageDescription = props.microphoneMessage
+    nextConfig.modResults.NSCameraUsageDescription = props.cameraMessage
     return nextConfig
   })
   return withAndroidManifest(config, (nextConfig) => {
-    AndroidConfig.Permissions.addPermission(nextConfig.modResults, MICROPHONE)
+    AndroidConfig.Permissions.addPermission(nextConfig.modResults, CAMERA)
     return nextConfig
   })
 }

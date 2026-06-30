@@ -1,59 +1,89 @@
-import { File, Paths } from 'expo-file-system'
+import { File } from 'expo-file-system'
 import * as MediaLibrary from 'expo-media-library'
 import { useState } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 
-const transparentPng = Uint8Array.from([
-  137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 1,
-  0, 0, 0, 1, 8, 6, 0, 0, 0, 31, 21, 196, 137, 0, 0, 0, 13, 73, 68, 65,
-  84, 120, 156, 99, 248, 255, 255, 63, 0, 5, 254, 2, 254, 167, 53, 129, 132,
-  0, 0, 0, 0, 73, 69, 78, 68, 174, 66, 96, 130,
-])
+const ALBUM_NAME = 'My Renders'
+const LOCAL_IMAGE_URI = 'file:///tmp/render.png'
+
+type SaveState = 'idle' | 'saving' | 'saved' | 'error'
 
 export default function App() {
-  const [message, setMessage] = useState('No asset saved.')
+  const [saveState, setSaveState] = useState<SaveState>('idle')
 
-  const save = async () => {
-    const permission = await MediaLibrary.requestPermissionsAsync(true, ['photo'])
-    if (!permission.granted) {
-      setMessage('Cannot save without photo permission.')
-      return
+  const saveToAlbum = async () => {
+    setSaveState('saving')
+    try {
+      const permission = await MediaLibrary.requestPermissionsAsync(true, ['photo'])
+      if (!permission.granted) {
+        setSaveState('error')
+        return
+      }
+
+      const file = new File(LOCAL_IMAGE_URI)
+      if (!file.exists) {
+        setSaveState('error')
+        return
+      }
+
+      const asset = await MediaLibrary.Asset.create(file.uri)
+      const album = await MediaLibrary.Album.get(ALBUM_NAME)
+      if (album) {
+        await album.add(asset)
+      } else {
+        await MediaLibrary.Album.create(ALBUM_NAME, [asset], false)
+      }
+
+      setSaveState('saved')
+    } catch {
+      setSaveState('error')
     }
-    const file = new File(Paths.cache, 'generated-photo.png')
-    file.write(transparentPng)
-    if (!file.exists) {
-      setMessage('Generated file was not written.')
-      return
-    }
-    const asset = await MediaLibrary.Asset.create(file.uri)
-    const album = await MediaLibrary.Album.get('Exports')
-    if (album) {
-      await album.add(asset)
-    } else {
-      await MediaLibrary.Album.create('Exports', [asset], false)
-    }
-    setMessage(await asset.getFilename())
   }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Media asset</Text>
-      <Text style={styles.subtitle}>{message}</Text>
-      <Pressable onPress={save} style={styles.action}><Text style={styles.actionText}>Save asset</Text></Pressable>
+      <Text style={styles.title}>Save render</Text>
+      <Text style={styles.subtitle}>Album: {ALBUM_NAME}</Text>
+
+      <Image source={{ uri: LOCAL_IMAGE_URI }} style={styles.preview} />
+
+      {saveState === 'saved' ? (
+        <Text style={styles.status}>Added to {ALBUM_NAME}.</Text>
+      ) : null}
+      {saveState === 'error' ? (
+        <Text style={styles.error}>Could not save the image.</Text>
+      ) : null}
+
+      <Pressable
+        style={styles.button}
+        disabled={saveState === 'saving'}
+        onPress={saveToAlbum}
+      >
+        <Text style={styles.buttonText}>Save to album</Text>
+      </Pressable>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  action: {
+  button: {
     backgroundColor: '#111827',
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
-  actionText: {
+  buttonText: {
     color: '#fff',
     fontWeight: '600',
+  },
+  error: {
+    color: '#b91c1c',
+  },
+  preview: {
+    backgroundColor: '#e5e7eb',
+    borderRadius: 12,
+    height: 220,
+    width: '100%',
   },
   screen: {
     backgroundColor: '#fff',
@@ -61,8 +91,11 @@ const styles = StyleSheet.create({
     padding: 20,
     rowGap: 12,
   },
-  subtitle: {
+  status: {
     color: '#4b5563',
+  },
+  subtitle: {
+    color: '#6b7280',
   },
   title: {
     color: '#111827',

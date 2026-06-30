@@ -1,56 +1,70 @@
-import { DateTimePicker } from '@expo/ui/community/datetime-picker'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AppState, Image, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import DateTimePicker from '@expo/ui/community/datetime-picker'
+import { useState } from 'react'
+import { StyleSheet, Text, TextInput, View } from 'react-native'
 
 export default function App() {
+  const [name, setName] = useState('')
   const [date, setDate] = useState(new Date())
+
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Date</Text>
-      <DateTimePicker mode="date" value={date} onChange={(_, next) => next && setDate(next)} />
-      <Text style={styles.subtitle}>{date.toDateString()}</Text>
+      <Text style={styles.title}>New reservation</Text>
+
+      <View style={styles.field}>
+        <Text style={styles.label}>Guest name</Text>
+        <TextInput
+          value={name}
+          onChangeText={setName}
+          placeholder="Full name"
+          style={styles.input}
+        />
+      </View>
+
+      <View style={styles.field}>
+        <Text style={styles.label}>Date</Text>
+        <DateTimePicker
+          mode="date"
+          value={date}
+          onValueChange={(_event, selectedDate) => {
+            if (selectedDate) {
+              setDate(selectedDate)
+            }
+          }}
+        />
+        <Text style={styles.inputText}>{date.toDateString()}</Text>
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  action: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+  field: {
+    rowGap: 6,
   },
-  actionText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
-  card: {
+  input: {
     backgroundColor: '#f9fafb',
     borderColor: '#e5e7eb',
-    borderRadius: 12,
+    borderRadius: 10,
     borderWidth: 1,
-    padding: 14,
-    width: '100%',
+    paddingHorizontal: 12,
+    paddingVertical: 12,
   },
-  media: {
-    backgroundColor: '#e5e7eb',
-    borderRadius: 12,
-    height: 180,
-    overflow: 'hidden',
-    width: '100%',
+  inputText: {
+    color: '#111827',
+  },
+  label: {
+    color: '#6b7280',
+    fontSize: 13,
   },
   screen: {
     backgroundColor: '#fff',
     flex: 1,
     padding: 20,
-    rowGap: 12,
-  },
-  subtitle: {
-    color: '#4b5563',
+    rowGap: 16,
   },
   title: {
     color: '#111827',
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: '700',
   },
 })

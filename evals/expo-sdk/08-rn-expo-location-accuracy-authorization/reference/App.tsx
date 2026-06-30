@@ -1,71 +1,114 @@
 import * as Location from 'expo-location'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AppState, Image, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import { Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 
 export default function App() {
-  const [permission, setPermission] = useState<Location.LocationPermissionResponse | null>(null)
-  const [message, setMessage] = useState('Check location accuracy.')
+  const [permission, setPermission] =
+    useState<Location.LocationPermissionResponse | null>(null)
 
-  const refresh = async () => {
-    const nextPermission = await Location.requestForegroundPermissionsAsync()
-    setPermission(nextPermission)
-    if (!nextPermission.granted) {
-      setMessage('Location permission denied.')
-      return
-    }
-    const accuracy = nextPermission.android?.accuracy ?? nextPermission.ios?.scope ?? 'unknown'
-    const position = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced })
-    setMessage(`Accuracy: ${accuracy}; lat ${position.coords.latitude.toFixed(3)}`)
+  const handleRefresh = async () => {
+    const next = await Location.requestForegroundPermissionsAsync()
+    setPermission(next)
+    if (!next.granted) return
+    // Touch the position API with explicit accuracy options; do not assume the
+    // grant implies precise location.
+    await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.Balanced,
+    })
   }
+
+  const permissionStatus = permission?.status ?? 'undetermined'
+  // iOS exposes an authorization scope; Android exposes fine/coarse accuracy.
+  // A granted permission can still be approximate, so do not assume precise.
+  const androidAccuracy = permission?.android?.accuracy
+  const iosScope = permission?.ios?.scope
+  const preciseAccuracy = androidAccuracy === 'fine'
+  const accuracyDetail =
+    androidAccuracy ?? (iosScope ? `iOS ${iosScope}` : undefined)
+  const blocked = permission != null && !permission.granted && !permission.canAskAgain
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Accuracy status</Text>
-      <Text style={styles.subtitle}>{message}</Text>
-      <Pressable onPress={refresh} style={styles.action}><Text style={styles.actionText}>Refresh</Text></Pressable>
-      {permission?.canAskAgain === false ? <Pressable onPress={() => Linking.openSettings()} style={styles.action}><Text style={styles.actionText}>Open settings</Text></Pressable> : null}
+      <Text style={styles.title}>Location Status</Text>
+
+      <View style={styles.card}>
+        <View style={styles.statusRow}>
+          <Text style={styles.statusLabel}>Permission</Text>
+          <Text style={styles.statusValue}>{permissionStatus}</Text>
+        </View>
+        <View style={styles.statusRow}>
+          <Text style={styles.statusLabel}>Accuracy</Text>
+          <Text style={styles.statusValue}>
+            {preciseAccuracy ? 'Precise' : 'Approximate'}
+          </Text>
+        </View>
+        {!preciseAccuracy && permission?.granted ? (
+          <Text style={styles.note}>
+            Only approximate location is available
+            {accuracyDetail ? ` (${accuracyDetail})` : ''}.
+          </Text>
+        ) : null}
+      </View>
+
+      <Pressable style={styles.button} onPress={handleRefresh}>
+        <Text style={styles.buttonText}>Refresh Status</Text>
+      </Pressable>
+
+      {blocked ? (
+        <Pressable style={styles.button} onPress={() => Linking.openSettings()}>
+          <Text style={styles.buttonText}>Open Settings</Text>
+        </Pressable>
+      ) : null}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  action: {
+  button: {
     backgroundColor: '#111827',
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
-  actionText: {
+  buttonText: {
     color: '#fff',
     fontWeight: '600',
+    textAlign: 'center',
   },
   card: {
-    backgroundColor: '#f9fafb',
-    borderColor: '#e5e7eb',
+    backgroundColor: '#f3f4f6',
     borderRadius: 12,
-    borderWidth: 1,
-    padding: 14,
-    width: '100%',
+    padding: 16,
+    rowGap: 12,
   },
-  media: {
-    backgroundColor: '#e5e7eb',
-    borderRadius: 12,
-    height: 180,
-    overflow: 'hidden',
-    width: '100%',
+  note: {
+    color: '#6b7280',
+    fontSize: 13,
   },
   screen: {
     backgroundColor: '#fff',
     flex: 1,
+    justifyContent: 'center',
     padding: 20,
-    rowGap: 12,
+    rowGap: 16,
   },
-  subtitle: {
-    color: '#4b5563',
+  statusLabel: {
+    color: '#6b7280',
+    fontSize: 15,
+  },
+  statusRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  statusValue: {
+    color: '#111827',
+    fontSize: 15,
+    fontWeight: '600',
+    textTransform: 'capitalize',
   },
   title: {
     color: '#111827',
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: '700',
   },
 })

@@ -12,8 +12,6 @@ export default {
           },
           ios: {
             buildReactNativeFromSource: false,
-            ccacheEnabled: true,
-            forceStaticLinking: ['RNFBApp'],
             useFrameworks: 'static',
           },
         },

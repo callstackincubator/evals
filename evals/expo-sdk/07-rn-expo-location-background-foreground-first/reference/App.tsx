@@ -1,9 +1,9 @@
 import * as Location from 'expo-location'
 import * as TaskManager from 'expo-task-manager'
 import { useState } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Switch, Text, View } from 'react-native'
 
-const TASK_NAME = 'background-location-audit'
+const TASK_NAME = 'trip-tracking-location'
 
 TaskManager.defineTask(TASK_NAME, async ({ data, error }) => {
   if (error) return
@@ -11,20 +11,32 @@ TaskManager.defineTask(TASK_NAME, async ({ data, error }) => {
 })
 
 export default function App() {
-  const [status, setStatus] = useState('Background tracking is off.')
+  const [tracking, setTracking] = useState(false)
+  const [lastUpdate, setLastUpdate] = useState<string | null>(null)
 
-  const start = async () => {
+  const handleToggleTracking = async (value: boolean) => {
+    if (!value) {
+      if (await Location.hasStartedLocationUpdatesAsync(TASK_NAME)) {
+        await Location.stopLocationUpdatesAsync(TASK_NAME)
+      }
+      setTracking(false)
+      setLastUpdate('Tracking stopped')
+      return
+    }
+
     const foreground = await Location.requestForegroundPermissionsAsync()
     if (!foreground.granted) {
-      setStatus('Foreground permission is required first.')
+      setLastUpdate('Foreground permission required')
       return
     }
     const background = await Location.requestBackgroundPermissionsAsync()
     if (!background.granted) {
-      setStatus('Background permission denied.')
+      setLastUpdate('Background permission denied')
       return
     }
-    const alreadyStarted = await Location.hasStartedLocationUpdatesAsync(TASK_NAME)
+
+    const alreadyStarted =
+      await Location.hasStartedLocationUpdatesAsync(TASK_NAME)
     if (!alreadyStarted) {
       await Location.startLocationUpdatesAsync(TASK_NAME, {
         accuracy: Location.Accuracy.Balanced,
@@ -32,30 +44,62 @@ export default function App() {
         pausesUpdatesAutomatically: true,
       })
     }
-    setStatus('Background tracking is active.')
-  }
-
-  const stop = async () => {
-    if (await Location.hasStartedLocationUpdatesAsync(TASK_NAME)) {
-      await Location.stopLocationUpdatesAsync(TASK_NAME)
-    }
-    setStatus('Background tracking is off.')
+    setTracking(true)
+    setLastUpdate('Tracking started')
   }
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Background location</Text>
-      <Text style={styles.subtitle}>{status}</Text>
-      <Pressable onPress={start} style={styles.action}><Text style={styles.actionText}>Enable</Text></Pressable>
-      <Pressable onPress={stop} style={styles.action}><Text style={styles.actionText}>Disable</Text></Pressable>
+      <Text style={styles.title}>Trip Tracking</Text>
+
+      <View style={styles.card}>
+        <Text style={styles.cardLabel}>Last update</Text>
+        <Text style={styles.cardValue}>{lastUpdate ?? 'No updates yet'}</Text>
+      </View>
+
+      <View style={styles.row}>
+        <Text style={styles.rowLabel}>Track in background</Text>
+        <Switch value={tracking} onValueChange={handleToggleTracking} />
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  action: { backgroundColor: '#111827', borderRadius: 10, padding: 12 },
-  actionText: { color: '#fff', fontWeight: '600' },
-  screen: { backgroundColor: '#fff', flex: 1, padding: 20, rowGap: 12 },
-  subtitle: { color: '#4b5563' },
-  title: { color: '#111827', fontSize: 20, fontWeight: '700' },
+  card: {
+    backgroundColor: '#f3f4f6',
+    borderRadius: 12,
+    padding: 16,
+    rowGap: 6,
+  },
+  cardLabel: {
+    color: '#6b7280',
+    fontSize: 13,
+  },
+  cardValue: {
+    color: '#111827',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  row: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  rowLabel: {
+    color: '#111827',
+    fontSize: 16,
+  },
+  screen: {
+    backgroundColor: '#fff',
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+    rowGap: 16,
+  },
+  title: {
+    color: '#111827',
+    fontSize: 24,
+    fontWeight: '700',
+  },
 })
