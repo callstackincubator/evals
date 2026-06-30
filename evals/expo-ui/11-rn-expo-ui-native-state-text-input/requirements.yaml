@@ -4,10 +4,10 @@ inputs:
     - app/App.tsx
 requirements:
   - id: uses-native-state
-    description: "Must use useNativeState from @expo/ui for native-shared state."
-  - id: textinput-controlled
-    description: "Must wire TextInput value/onChangeText to the native state."
-  - id: native-state-listener-discipline
-    description: "Must clear native state listeners in cleanup."
+    description: "Must use useNativeState from @expo/ui/jetpack-compose for native-shared state."
+  - id: textfield-controlled
+    description: "Must wire the Expo UI TextField value and onValueChange to the native state value."
   - id: host-root
-    description: "Must render the Expo UI TextInput under Host."
+    description: "Must render the Expo UI TextField under the Jetpack Compose Host."
+  - id: no-react-state-mirror
+    description: "Must hold the field value in native state, not a parallel React useState."
