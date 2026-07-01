@@ -1,4 +1,4 @@
-import { Column, Host, Text as MaterialText, useMaterialColors } from '@expo/ui/jetpack-compose'
+import { Column, Host, Text, useMaterialColors } from '@expo/ui/jetpack-compose'
 
 export default function App() {
   const colors = useMaterialColors()
@@ -6,9 +6,9 @@ export default function App() {
   return (
     <Host style={{ flex: 1, backgroundColor: colors.surface }}>
       <Column>
-        <MaterialText color={colors.onSurface}>Today</MaterialText>
+        <Text color={colors.onSurface}>Today</Text>
         <Column style={{ backgroundColor: colors.primary }}>
-          <MaterialText color={colors.onPrimary}>You have 3 tasks due</MaterialText>
+          <Text color={colors.onPrimary}>You have 3 tasks due</Text>
         </Column>
       </Column>
     </Host>

@@ -1,4 +1,4 @@
-import { Button, Column, Host, Row, Switch, Text as UIText } from '@expo/ui'
+import { Button, Column, Host, Row, Switch, Text } from '@expo/ui'
 import { useState } from 'react'
 
 export default function App() {
@@ -13,15 +13,15 @@ export default function App() {
   return (
     <Host style={{ flex: 1 }}>
       <Column>
-        <UIText>Notifications</UIText>
+        <Text>Notifications</Text>
 
         <Row>
-          <UIText>Push notifications</UIText>
+          <Text>Push notifications</Text>
           <Switch value={pushEnabled} onValueChange={setPushEnabled} />
         </Row>
 
         <Row>
-          <UIText>Email updates</UIText>
+          <Text>Email updates</Text>
           <Switch value={emailEnabled} onValueChange={setEmailEnabled} />
         </Row>
 
