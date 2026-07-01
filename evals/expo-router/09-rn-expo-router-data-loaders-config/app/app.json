@@ -1,8 +1,0 @@
-{
-  "expo": {
-    "plugins": ["expo-router"],
-    "web": {
-      "bundler": "metro"
-    }
-  }
-}

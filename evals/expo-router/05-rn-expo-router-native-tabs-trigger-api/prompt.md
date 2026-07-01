@@ -1,1 +1,1 @@
-Build a bottom tab layout using Expo Router's native tabs API.
+Convert the stack layout in _layout.tsx to Expo Router's native bottom tabs, keeping the Home and Settings routes as tabs.

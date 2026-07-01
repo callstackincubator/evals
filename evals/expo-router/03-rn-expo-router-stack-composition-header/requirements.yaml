@@ -5,10 +5,10 @@ inputs:
     - app/index.tsx
 requirements:
   - id: uses-stack-screen-options-for-header
-    description: "Must compose header actions via Stack.Screen options (headerRight/headerLeft), not Stack.Toolbar."
-  - id: route-options-in-layout
-    description: "Must keep screen options in Expo Router Stack layout/screen configuration."
-  - id: action-callback-defined
-    description: "Must wire header action callbacks to deterministic handlers."
+    description: "Must configure the header via Stack.Screen options (title/headerRight), not Stack.Toolbar."
+  - id: header-right-shows-alert
+    description: "The headerRight must render a pressable button whose press handler calls Alert.alert."
+  - id: sets-title-and-back-button
+    description: "Must set the screen title and a back button label via headerBackTitle in the Stack.Screen options."
   - id: no-react-navigation-header-imports
     description: "Must not import React Navigation header components or types directly."

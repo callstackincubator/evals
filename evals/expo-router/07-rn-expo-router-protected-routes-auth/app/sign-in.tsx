@@ -1,8 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 
 export default function SignIn() {
-  const handleSignIn = () => {}
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign in</Text>

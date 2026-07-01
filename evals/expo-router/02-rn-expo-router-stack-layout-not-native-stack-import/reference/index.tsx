@@ -1,11 +1,13 @@
 import { Link } from 'expo-router'
 import { StyleSheet, Text, View } from 'react-native'
 
+const PRODUCT = { id: '42', name: 'Aurora Headphones' }
+
 export default function Index() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Products</Text>
-      <Link href={{ pathname: '/details', params: { id: '42' } }}>View details</Link>
+      <Text style={styles.title}>{PRODUCT.name}</Text>
+      <Link href={{ pathname: '/details', params: { id: PRODUCT.id } }}>View details</Link>
     </View>
   )
 }

@@ -6,8 +6,8 @@ inputs:
     - app/account.tsx
     - app/sign-in.tsx
 requirements:
-  - id: uses-protected-routes
-    description: "Must use Stack.Protected, Tabs.Protected, or the Expo Router protected route API."
+  - id: uses-stack-protected
+    description: "Must gate routes with Stack.Protected, since the app uses a Stack layout."
   - id: signed-out-fallback
     description: "Must provide a deterministic signed-out fallback route."
   - id: guard-boolean-explicit

@@ -1,1 +1,0 @@
-Enable pre-render data fetching for a route in an Expo Router web app.

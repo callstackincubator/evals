@@ -1,8 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 
 export default function Index() {
-  const handleCreate = () => {}
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Inbox</Text>

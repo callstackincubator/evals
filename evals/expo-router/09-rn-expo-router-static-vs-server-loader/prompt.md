@@ -1,0 +1,1 @@
+The profile route reads process.env.PROFILE_NAME directly in the client component. Move that read into the server-only module and expose it through a route loader that returns the profile name, then render the name in the client with useLoaderData so the secret never ships in the client bundle.

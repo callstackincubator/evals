@@ -1,1 +1,1 @@
-Add a back button and title to a screen header in an Expo Router app.
+Configure the Inbox screen header in the Stack layout: set the title, a back button label, and a right-side header button that shows an alert when pressed.

@@ -1,1 +1,0 @@
-Fetch data in an Expo Router web route while keeping server secrets out of the client bundle.

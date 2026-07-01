@@ -1,0 +1,1 @@
+Implement a +not-found screen that shows a clear "this screen does not exist" message and a link back to the home screen, and scope the docs catch-all route so it does not shadow the not-found route for unknown paths.

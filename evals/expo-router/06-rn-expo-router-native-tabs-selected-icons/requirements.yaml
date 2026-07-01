@@ -5,11 +5,13 @@ inputs:
     - app/index.tsx
     - app/settings.tsx
 requirements:
-  - id: selected-default-icon-state
-    description: "Must configure selected/default icon or label state through NativeTabs.Trigger children."
-  - id: badge-or-label-child-api
-    description: "Must use NativeTabs.Trigger.Label/Icon/Badge child APIs for per-tab presentation."
+  - id: home-icon-default-and-selected
+    description: "The Home trigger must render NativeTabs.Trigger.Icon with sf set to a default symbol \"house\" and a selected symbol \"house.fill\"."
+  - id: settings-badge-value
+    description: "The Settings trigger must render NativeTabs.Trigger.Badge with the value 2."
+  - id: uses-trigger-child-apis
+    description: "Must configure per-tab presentation through NativeTabs.Trigger.Icon/Badge/Label child components."
   - id: route-name-alignment
-    description: "Must align tab trigger names with file routes."
+    description: "Must align tab trigger names with the file routes (index, settings)."
   - id: no-generic-tabs-api
     description: "Must not use generic Expo Router Tabs for this native-tabs task."

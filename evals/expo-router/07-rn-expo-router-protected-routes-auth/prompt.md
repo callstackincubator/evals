@@ -1,1 +1,1 @@
-Implement authentication-gated routes in an Expo Router app with a signed-out fallback.
+Add authentication gating to the existing Stack routes so the account screen is only reachable when signed in and the sign-in screen only when signed out, using the app's signedIn flag.

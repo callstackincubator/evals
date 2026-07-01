@@ -1,1 +1,1 @@
-Configure native tab icons, labels, and badges with selected and default states.
+In the native tabs layout, give the Home tab an SF Symbol icon that is "house" by default and "house.fill" when selected, and add a badge showing "2" on the Settings tab.
