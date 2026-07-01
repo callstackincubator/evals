@@ -1,11 +1,9 @@
-import { DefaultTheme, ThemeProvider, useNavigation } from '@react-navigation/native'
+import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 const Stack = createNativeStackNavigator()
 
 export default function Layout() {
-  useNavigation()
-
   return (
     <ThemeProvider value={DefaultTheme}>
       <Stack.Navigator screenOptions={{ headerShown: true }}>
