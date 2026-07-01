@@ -1,1 +1,1 @@
-Build a foreground-location status panel that shows the user's current location permission state and accuracy level. Handle all the ways permission and accuracy can differ across platforms.
+Wire up the location status panel to show the current permission state and whether access is precise or approximate, inspecting the platform accuracy details. Do not assume a granted permission means precise location, render an approximate-access explanation, and offer to open Settings when permission is permanently blocked.

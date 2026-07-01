@@ -1,1 +1,1 @@
-Implement push-notification registration using expo-notifications. The app should obtain an Expo push token and be ready to receive notifications on both platforms.
+Wire up the Register button to obtain an Expo push token with expo-notifications. On Android, create the notification channel before requesting the token; gate the request behind granted notification permission; pass the EAS projectId; and render a deterministic error state if registration fails.

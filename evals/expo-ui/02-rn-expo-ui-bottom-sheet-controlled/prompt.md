@@ -1,1 +1,1 @@
-Migrate the bottom sheet in App.tsx to use the Expo UI equivalent with controlled open and close behavior.
+Migrate the bottom sheet in App.tsx to the Expo UI community bottom sheet. Keep the ref-driven control that opens the sheet, and add a control inside the sheet that closes it.

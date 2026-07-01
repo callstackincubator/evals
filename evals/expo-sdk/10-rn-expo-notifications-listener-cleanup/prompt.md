@@ -1,1 +1,1 @@
-Create a notification inbox component that displays notifications received while the app is in the foreground and tracks when the user taps a notification.
+Wire up the notification inbox: subscribe to notifications received while the app is foregrounded and to the user tapping a notification, updating the list from both. Register the listeners on mount and remove each subscription on unmount.

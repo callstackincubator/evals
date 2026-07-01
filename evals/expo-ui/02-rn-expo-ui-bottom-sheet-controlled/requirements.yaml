@@ -5,8 +5,8 @@ inputs:
 requirements:
   - id: community-bottom-sheet-import
     description: "Must import BottomSheet APIs from @expo/ui/community/bottom-sheet."
-  - id: controlled-present-dismiss
-    description: "Must expose controlled present/dismiss behavior through a ref or state."
+  - id: controlled-open-and-close
+    description: "Must drive the sheet through the ref, both opening it (e.g. expand) and closing it (e.g. close) from a control."
   - id: uses-bottom-sheet-view
     description: "Must place sheet content in BottomSheetView or documented sheet child wrappers."
   - id: no-gorhom-import

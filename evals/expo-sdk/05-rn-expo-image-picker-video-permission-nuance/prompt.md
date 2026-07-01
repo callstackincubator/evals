@@ -1,1 +1,1 @@
-Build a video-library picker that lets the user select a video from their library. Handle all permission states and picker outcomes correctly.
+Wire up the Choose Video button to a video-library picker. Check media-library permission before launching (from the button, not on mount), render a distinct state for denied or limited access, select videos only, and display the chosen video after validating it is a video.

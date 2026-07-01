@@ -1,1 +1,1 @@
-Create a screen that lets the user opt into background location tracking. Use expo-location and TaskManager to receive location updates when the app is in the background.
+Wire up the Track in background switch. When turned on, request foreground location permission first and then background permission, and start background location updates only after both are granted; when turned off, stop the updates. Define the TaskManager task once and avoid starting duplicate updates.

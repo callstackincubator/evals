@@ -1,1 +1,1 @@
-Build a screen that controls the system status bar and navigation bar appearance and optionally applies a glass/blur effect when the platform supports it. Clean up properly on unmount.
+Wire up the appearance screen's controls to set the system status bar and navigation bar style, and to toggle a Liquid Glass surface when the platform supports it. Guard Android-only navigation bar calls, remove any visibility listener on cleanup, and restore the default bars on unmount.

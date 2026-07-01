@@ -1,1 +1,1 @@
-Implement a UI that lets users switch between release channels (e.g., production, staging, beta) and check for updates from the selected channel. Use expo-updates.
+Wire up the release-channel switcher (production, staging, beta): override the expo-updates request headers for the selected channel and check for an update from it, and reset the override back to default. Show which channel is currently active.

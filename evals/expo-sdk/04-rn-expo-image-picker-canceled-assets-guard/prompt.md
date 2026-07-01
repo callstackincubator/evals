@@ -1,1 +1,1 @@
-Implement an image picker flow that lets the user select an image from their library and displays it. Handle all outcomes of the picker gracefully.
+Wire up the Choose from Library button to expo-image-picker. Launch the picker only from the button, show the selected image in the preview, and keep a stable empty state when the user cancels. Read the current result shape (result.canceled and result.assets) and current mediaTypes so a cancel never crashes.

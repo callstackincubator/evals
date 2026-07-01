@@ -1,1 +1,1 @@
-Implement a simple notes feature that persists text to a cache file using expo-file-system. The app should handle first-run (no existing file) gracefully.
+Wire up the notes screen's save and load using the expo-file-system object API (File/Directory/Paths). Persist the text to a cache file, create the directory idempotently, and on first run (no file yet) load fallback text instead of crashing.

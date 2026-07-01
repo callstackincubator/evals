@@ -1,1 +1,1 @@
-Build a video player component that plays a video URL, supports looping and mute controls, and handles visibility changes properly. Use current Expo video APIs.
+Wire up the video player to play a video URL with looping and mute controls using the current Expo video APIs (expo-video, not expo-av). Pause or avoid autoplay when the app is backgrounded or the view is not visible.

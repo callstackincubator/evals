@@ -1,1 +1,1 @@
-Implement a flow that downloads a remote file to local storage and then uploads it to a server endpoint. Use expo-file-system and show download progress.
+Wire up the sync flow: download the remote file into a local cache directory while showing download progress, then upload it to the server endpoint. Use the expo-file-system object API for the download and a web-compatible upload (fetch/FormData), and render a deterministic failure state on error.

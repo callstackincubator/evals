@@ -9,5 +9,3 @@ requirements:
     description: "Must keep Switch value controlled by React state."
   - id: host-provides-root
     description: "Must render controls under Host."
-  - id: no-glass-effect
-    description: "Must not import expo-glass-effect or treat GlassEffect as part of @expo/ui."

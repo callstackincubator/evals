@@ -1,1 +1,1 @@
-Build an audio preview component that plays a sound file, shows playback status, and handles app lifecycle correctly (backgrounding, unmount). Use current Expo audio APIs.
+Wire up the audio preview to play a sound file and show its playback status using the current Expo audio APIs (expo-audio, not expo-av). Configure the audio mode deliberately, and pause playback when the app is backgrounded or the component unmounts.

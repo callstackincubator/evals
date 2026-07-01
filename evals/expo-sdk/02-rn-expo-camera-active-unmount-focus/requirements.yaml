@@ -4,7 +4,7 @@ inputs:
     - app/App.tsx
 requirements:
   - id: camera-active-derived-from-visibility
-    description: "Must pass CameraView an active prop derived from foreground/focus state and user-enabled preview state."
+    description: "Must pass CameraView an active prop derived from AppState foreground state and the user-enabled preview switch."
   - id: camera-appstate-background-pauses
     description: "Must listen to AppState and set active false when the app leaves the active state."
   - id: camera-view-unmounted-without-permission

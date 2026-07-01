@@ -4,10 +4,10 @@ inputs:
     - app/App.tsx
 requirements:
   - id: supported-props-only
-    description: "Must avoid unsupported community DateTimePicker props from legacy packages."
+    description: "Must configure the picker using only props supported by @expo/ui/community/datetime-picker (such as value/onValueChange and its display/mode options), not props specific to @react-native-community/datetimepicker."
   - id: uses-onchange-or-onvaluechange
     description: "Must handle date changes through onChange or onValueChange."
   - id: fallback-for-platform-differences
-    description: "Must render fallback copy for unsupported picker modes/platform behavior."
+    description: "Must render a visible text fallback for a date/time mode that is not available on the current platform."
   - id: no-react-native-community-datetimepicker-import
     description: "Must not import @react-native-community/datetimepicker directly."

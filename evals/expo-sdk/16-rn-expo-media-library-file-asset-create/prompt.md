@@ -1,1 +1,1 @@
-Implement a feature that saves a locally generated image to the user's media library and organizes it into an album. Use current expo-media-library APIs.
+Wire up the Save button to save the generated image to the media library and add it to an album, using the current expo-media-library class APIs (Asset/Album). Check permission and confirm the file exists before creating the asset.

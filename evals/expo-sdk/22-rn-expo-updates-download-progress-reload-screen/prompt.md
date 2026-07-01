@@ -1,1 +1,1 @@
-Create a screen that checks for OTA updates, shows download progress, and applies the update when ready. Use expo-updates and handle errors and the case where no update is available.
+Wire up the updates screen: check for an OTA update, show download progress while it downloads, and apply it with a reload once ready. Handle download errors and the case where no update is available, and do not rely on code running after the reload.

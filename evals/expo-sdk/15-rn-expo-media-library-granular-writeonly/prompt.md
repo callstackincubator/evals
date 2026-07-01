@@ -1,1 +1,1 @@
-Create a feature that saves a generated image to the user's photo library. The app only needs to save photos, not browse existing ones. Handle permissions appropriately on both platforms.
+Wire up the Save button to save the generated image to the photo library. Request write-only permission (the app never browses existing photos), do not read the library, and render a deterministic state when permission is denied.
