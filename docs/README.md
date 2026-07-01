@@ -4,6 +4,8 @@ This folder documents eval authoring and benchmark execution in this repository.
 
 For methodology details and scoring definitions, see [`../paper/benchmark-methodology-whitepaper.tex`](../paper/benchmark-methodology-whitepaper.tex).
 
+For the v2 judge scoring change (graded partial credit, intent-based judging, code-quality signal) and how to re-judge existing results, see [`judge-v2-graded-scoring.md`](./judge-v2-graded-scoring.md).
+
 Category status follows top-level folders under `evals/`: any group not present there is currently considered `WIP`.
 
 If you are starting fresh, read these in order:

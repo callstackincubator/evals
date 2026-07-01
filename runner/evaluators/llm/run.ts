@@ -1,7 +1,12 @@
 import { runJudgeCall, type JudgeOutput } from './judge-client'
 import { buildJudgePrompt } from './prompt'
 import { loadRequirements, type RequirementDefinition } from './requirements'
-import { computeScore, normalizeWeight } from './utils'
+import {
+  computeScore,
+  normalizeScore,
+  normalizeWeight,
+  PASS_THRESHOLD,
+} from './utils'
 import type { LoadedFile } from 'runner/utils/fs'
 import {
   cleanupOpencodeTempDir,
@@ -42,16 +47,21 @@ function mapRequirementResults(
         id: requirement.id,
         description: requirement.description,
         weight: normalizedWeight,
+        score: 0,
         passed: false,
         reason: 'judge did not return a result for this requirement',
         evidence: [],
       }
     }
 
+    const score = normalizeScore(row.score, row.passed)
+
     return {
       ...requirement,
       ...row,
       weight: normalizedWeight,
+      score,
+      passed: score >= PASS_THRESHOLD,
     }
   })
 }
@@ -124,6 +134,7 @@ export async function runLlmJudgeStage(
           requirements: mappedRequirements,
           summary: judgeCall.summary,
           score: computeScore(mappedRequirements),
+          codeQuality: judgeCall.codeQuality,
           opencodeSession: judgeCall.opencodeSession,
         }
       }
