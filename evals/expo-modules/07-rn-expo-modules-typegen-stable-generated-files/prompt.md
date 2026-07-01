@@ -1,1 +1,0 @@
-The package exports TypeScript types but consumers report the types are missing after install. Ensure the generated TypeScript declarations are available and exported correctly from the package.

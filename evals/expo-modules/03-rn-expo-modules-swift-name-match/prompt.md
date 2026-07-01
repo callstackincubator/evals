@@ -1,1 +1,0 @@
-The existing Swift inline module at modules/WeatherInlineModule.swift is not being picked up at runtime. Fix it so the module loads correctly and is accessible from JS.

@@ -1,1 +1,0 @@
-Create a typed JS wrapper module for the DeviceAudit native module so consumers have type-safe access to its functions.

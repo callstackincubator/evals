@@ -1,1 +1,0 @@
-The app needs camera access on both iOS and Android. Create a local config plugin that ensures the necessary permissions are declared in the native projects during prebuild.
