@@ -4,7 +4,7 @@ A benchmark suite for evaluating how coding models solve real React Native tasks
 
 ## Available Evals
 
-Groups map to top-level folders under `evals/`. The current suite contains 135 evals.
+Groups map to top-level folders under `evals/`. The current suite contains 134 evals.
 
 | Group             | Path                      | Evals | Status |
 | ----------------- | ------------------------- | ----: | ------ |
@@ -12,7 +12,7 @@ Groups map to top-level folders under `evals/`. The current suite contains 135 e
 | async-state       | `evals/async-state`       |    13 | Active |
 | expo-router       | `evals/expo-router`       |    11 | Active |
 | expo-sdk          | `evals/expo-sdk`          |    25 | Active |
-| expo-ui           | `evals/expo-ui`           |     8 | Active |
+| expo-ui           | `evals/expo-ui`           |     7 | Active |
 | lists             | `evals/lists`             |    18 | Active |
 | navigation        | `evals/navigation`        |    13 | Active |
 | react-native-apis | `evals/react-native-apis` |     9 | Active |

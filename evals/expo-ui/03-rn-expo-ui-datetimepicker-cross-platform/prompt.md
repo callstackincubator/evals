@@ -1,0 +1,1 @@
+Add cross-platform date and time selection to the appointment form using Expo UI's date/time picker. Keep the selected value in controlled state via onValueChange, guard against an undefined value when the user cancels, and render a text fallback for any date/time mode not available on the current platform.
