@@ -1,1 +1,1 @@
-Build a universal Expo UI screen that renders native UI components alongside React Native content.
+Migrate the account screen in App.tsx to Expo UI universal components under a Host, keeping React Native content only where it is intentionally hosted.

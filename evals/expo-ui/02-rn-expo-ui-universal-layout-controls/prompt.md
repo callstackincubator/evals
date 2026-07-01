@@ -1,1 +1,1 @@
-Build a settings panel in App.tsx using Expo UI universal layout and control components with controlled state.
+Migrate the settings panel in App.tsx from React Native components to Expo UI universal layout and control components, keeping the state controlled.

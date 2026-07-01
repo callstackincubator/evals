@@ -1,1 +1,1 @@
-Add platform-specific native styling modifiers to the Expo UI components in App.tsx, supporting both iOS and Android.
+Convert the platform-styled card in App.tsx to Expo UI, applying its iOS and Android styling through each platform's native modifiers.
