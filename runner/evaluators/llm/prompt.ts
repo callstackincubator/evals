@@ -23,7 +23,7 @@ export function buildJudgePrompt(
   const filesBlock = files
     .map((file) => {
       return `
-        <file>
+        <file path="${file.path}">
           ${file.content}
         </file>
       `
@@ -36,6 +36,7 @@ export function buildJudgePrompt(
 
     Rules:
     - Use only the submitted files as evidence.
+    - File paths are part of the submission and may be used as evidence for placement and naming requirements.
     - Return exactly one result per declared requirement id.
     - Mark passed=false if evidence is missing or contradictory.
     - Keep reasons concise, concrete, and technically specific.

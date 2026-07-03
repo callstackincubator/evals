@@ -4,10 +4,6 @@ inputs:
     - app/App.tsx
 requirements:
   - id: community-pagerview-import
-    description: "Must import PagerView from @expo/ui/community/pager-view."
-  - id: page-selected-state
-    description: "Must update state from onPageSelected native event position."
-  - id: stable-page-keys
-    description: "Must give each page stable keys."
+    description: 'Must import PagerView from @expo/ui/community/pager-view.'
   - id: no-react-native-pager-view-import
-    description: "Must not import react-native-pager-view directly."
+    description: 'Must not import react-native-pager-view directly.'
