@@ -5,10 +5,10 @@ inputs:
     - app/index.tsx
 requirements:
   - id: imports-from-expo-router
-    description: "Must import router hooks/themes/navigation helpers from expo-router exports rather than direct @react-navigation packages."
+    description: 'Must import router hooks/themes/navigation helpers from expo-router exports rather than direct @react-navigation packages.'
   - id: no-direct-react-navigation-imports
-    description: "Must not import from @react-navigation/native or @react-navigation/native-stack in app route files."
+    description: 'Must not import from @react-navigation/native or @react-navigation/native-stack in app route files.'
   - id: keeps-file-system-layout
-    description: "Must keep navigation defined through Expo Router layout and route files."
+    description: 'Must keep navigation defined through Expo Router layout and route files.'
   - id: migrates-theme-import-to-expo-router
-    description: "Must import React Navigation theming such as ThemeProvider and DefaultTheme from expo-router/react-navigation, and keep wrapping the Stack in it, rather than dropping it or importing from @react-navigation/native."
+    description: 'Must import React Navigation theming such as ThemeProvider and DefaultTheme from expo-router itself, and keep wrapping the Stack in it, rather than dropping it, importing from @react-navigation/native, or using the deprecated expo-router/react-navigation subpath.'

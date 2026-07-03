@@ -3,7 +3,7 @@ import {
   makeDirectoryAsync,
   readAsStringAsync,
   writeAsStringAsync,
-} from 'expo-file-system'
+} from 'expo-file-system/legacy'
 import { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 

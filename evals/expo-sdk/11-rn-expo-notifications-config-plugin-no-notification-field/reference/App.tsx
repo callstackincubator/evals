@@ -1,18 +1,7 @@
-import * as Notifications from 'expo-notifications'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 export default function App() {
-  const handleSendTest = async () => {
-    const permission = await Notifications.getPermissionsAsync()
-    if (!permission.granted) {
-      const requested = await Notifications.requestPermissionsAsync()
-      if (!requested.granted) return
-    }
-    await Notifications.scheduleNotificationAsync({
-      content: { title: 'Test notification', body: 'Configured via app.config.ts.' },
-      trigger: null,
-    })
-  }
+  const handleSendTest = () => {}
 
   return (
     <View style={styles.screen}>

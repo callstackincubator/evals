@@ -1,12 +1,6 @@
 import * as Calendar from 'expo-calendar'
 import { useEffect, useRef, useState } from 'react'
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native'
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 
 type CalendarOption = {
   id: string
@@ -19,7 +13,7 @@ export default function App() {
   const [eventTitle, setEventTitle] = useState('')
   const [status, setStatus] = useState('')
 
-  const calendarsRef = useRef<Calendar.Calendar[]>([])
+  const calendarsRef = useRef<Calendar.ExpoCalendar[]>([])
 
   const loadCalendars = async () => {
     const permission = await Calendar.requestCalendarPermissions()
@@ -29,7 +23,9 @@ export default function App() {
     }
 
     const available = await Calendar.getCalendars(Calendar.EntityTypes.EVENT)
-    const writable = available.filter((calendar) => calendar.allowsModifications)
+    const writable = available.filter(
+      (calendar) => calendar.allowsModifications
+    )
     if (writable.length === 0) {
       setStatus('No writable calendar available.')
       return
@@ -37,7 +33,7 @@ export default function App() {
 
     calendarsRef.current = writable
     setCalendars(
-      writable.map((calendar) => ({ id: calendar.id, title: calendar.title })),
+      writable.map((calendar) => ({ id: calendar.id, title: calendar.title }))
     )
     setSelectedId(writable[0].id)
   }
@@ -74,7 +70,9 @@ export default function App() {
               onPress={() => setSelectedId(calendar.id)}
               style={[styles.chip, isActive && styles.chipActive]}
             >
-              <Text style={[styles.chipText, isActive && styles.chipTextActive]}>
+              <Text
+                style={[styles.chipText, isActive && styles.chipTextActive]}
+              >
                 {calendar.title}
               </Text>
             </Pressable>

@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 export default function App() {
   const [videoUri, setVideoUri] = useState<string | null>(null)
   const [status, setStatus] = useState('No video selected')
+  const [accessNotice, setAccessNotice] = useState<string | null>(null)
 
   const handlePickVideo = async () => {
     const existing = await ImagePicker.getMediaLibraryPermissionsAsync()
@@ -12,16 +13,18 @@ export default function App() {
       ? existing
       : await ImagePicker.requestMediaLibraryPermissionsAsync(false)
     if (!permission.granted) {
-      setStatus(
+      setAccessNotice(
         permission.canAskAgain
           ? 'Video access denied'
-          : 'Enable video access in Settings',
+          : 'Enable video access in Settings'
       )
       return
     }
-    if (permission.accessPrivileges === 'limited') {
-      setStatus('Limited library access — only selected videos are available')
-    }
+    setAccessNotice(
+      permission.accessPrivileges === 'limited'
+        ? 'Limited library access — only selected videos are available'
+        : null
+    )
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['videos'],
       videoMaxDuration: 60,
@@ -52,6 +55,8 @@ export default function App() {
           <Text style={styles.previewText}>{status}</Text>
         )}
       </View>
+
+      {accessNotice ? <Text style={styles.status}>{accessNotice}</Text> : null}
 
       {videoUri ? <Text style={styles.status}>{status}</Text> : null}
 

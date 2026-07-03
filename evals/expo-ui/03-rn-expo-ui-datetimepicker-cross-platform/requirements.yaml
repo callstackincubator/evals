@@ -4,14 +4,14 @@ inputs:
     - app/App.tsx
 requirements:
   - id: community-datetime-import
-    description: "Must import DateTimePicker from @expo/ui/community/datetime-picker."
+    description: 'Must import DateTimePicker from @expo/ui/community/datetime-picker.'
   - id: no-android-open-api
-    description: "Must not use DateTimePickerAndroid.open."
+    description: 'Must not use DateTimePickerAndroid.open.'
   - id: no-react-native-community-datetimepicker-import
-    description: "Must not import @react-native-community/datetimepicker directly."
+    description: 'Must not import @react-native-community/datetimepicker directly.'
   - id: controlled-value-via-onvaluechange
-    description: "Must keep the selected date/time in controlled state and update it through onValueChange."
-  - id: handles-undefined-value
-    description: "Must guard against the onValueChange value being undefined when the user cancels."
+    description: 'Must keep the selected date/time in controlled state and update it through onValueChange.'
+  - id: handles-dismissal-via-ondismiss
+    description: 'Must handle the picker being dismissed without a selection via onDismiss, not by expecting an undefined date from onValueChange.'
   - id: platform-mode-fallback
-    description: "Must render a visible text fallback for a date/time mode not available on the current platform."
+    description: 'Must render a visible text fallback for a date/time mode not available on the current platform.'

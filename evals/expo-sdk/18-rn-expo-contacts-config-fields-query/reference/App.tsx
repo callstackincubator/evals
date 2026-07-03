@@ -34,16 +34,16 @@ export default function App() {
         Contacts.ContactField.EMAILS,
         Contacts.ContactField.IMAGE,
       ],
-      { limit: 50 },
+      { limit: 50 }
     )
 
     setContacts(
       result.map((contact) => ({
         id: contact.id,
         name: contact.fullName ?? 'Unnamed contact',
-        email: contact.emails?.[0]?.email,
-        imageUri: contact.image?.uri,
-      })),
+        email: contact.emails?.[0]?.address,
+        imageUri: contact.image ?? undefined,
+      }))
     )
     setLoaded(true)
   }

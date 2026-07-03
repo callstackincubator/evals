@@ -1,5 +1,4 @@
-import { Stack } from 'expo-router'
-import { DefaultTheme, ThemeProvider } from 'expo-router/react-navigation'
+import { DefaultTheme, Stack, ThemeProvider } from 'expo-router'
 
 export default function Layout() {
   return (

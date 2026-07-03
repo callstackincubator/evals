@@ -7,10 +7,10 @@ inputs:
     - app/sign-in.tsx
 requirements:
   - id: uses-stack-protected
-    description: "Must gate routes with Stack.Protected, since the app uses a Stack layout."
+    description: 'Must gate routes with Stack.Protected, since the app uses a Stack layout.'
   - id: signed-out-fallback
-    description: "Must provide a deterministic signed-out fallback route."
+    description: 'The layout must keep an unguarded, always-available route (such as index or the signed-out sign-in screen) declared so signed-out users deterministically land somewhere instead of a guarded screen.'
   - id: guard-boolean-explicit
-    description: "Must pass explicit guard booleans derived from auth state."
+    description: 'Must pass explicit guard booleans derived from auth state.'
   - id: no-redirect-loop
-    description: "Must avoid unconditional redirects that can loop between protected and sign-in routes."
+    description: 'Must avoid unconditional redirects that can loop between protected and sign-in routes.'

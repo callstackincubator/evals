@@ -1,9 +1,10 @@
+import { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 type PermissionState = 'undetermined' | 'granted' | 'denied'
 
 export default function App() {
-  const permissionState: PermissionState = 'undetermined'
+  const [permissionState] = useState<PermissionState>('undetermined')
 
   const handleRequestPermission = () => {}
   const handleOpenSettings = () => {}

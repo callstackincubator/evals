@@ -12,7 +12,9 @@ export default function App() {
 
   const saveToLibrary = async () => {
     setSaveState('saving')
-    const permission = await MediaLibrary.requestPermissionsAsync(true, ['photo'])
+    const permission = await MediaLibrary.requestPermissionsAsync(true, [
+      'photo',
+    ])
     if (!permission.granted) {
       setSaveState('denied')
       return
@@ -21,7 +23,7 @@ export default function App() {
       const cache = new Directory(Paths.cache, 'posters')
       cache.create({ idempotent: true, intermediates: true })
       const file = await File.downloadFileAsync(GENERATED_IMAGE_URI, cache)
-      await MediaLibrary.saveToLibraryAsync(file.uri)
+      await MediaLibrary.Asset.create(file.uri)
       setSaveState('saved')
     } catch {
       setSaveState('denied')

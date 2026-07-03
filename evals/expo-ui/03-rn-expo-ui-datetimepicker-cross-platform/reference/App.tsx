@@ -1,16 +1,20 @@
 import DateTimePicker from '@expo/ui/community/datetime-picker'
 import { useState } from 'react'
-import { Platform, StyleSheet, Text, TextInput, View } from 'react-native'
+import {
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native'
 
 export default function App() {
   const [title, setTitle] = useState('')
   const [startsAt, setStartsAt] = useState(new Date())
+  const [activePicker, setActivePicker] = useState<'date' | 'time' | null>(null)
 
-  const updateStartsAt = (next?: Date) => {
-    if (next) {
-      setStartsAt(next)
-    }
-  }
+  const closePicker = () => setActivePicker(null)
 
   return (
     <View style={styles.screen}>
@@ -32,24 +36,45 @@ export default function App() {
           <DateTimePicker
             mode="datetime"
             value={startsAt}
-            onValueChange={(_event, next) => updateStartsAt(next)}
+            onValueChange={(_event, next) => setStartsAt(next)}
           />
         ) : (
-          <View style={styles.inlineRow}>
-            <DateTimePicker
-              mode="date"
-              value={startsAt}
-              onValueChange={(_event, next) => updateStartsAt(next)}
-            />
-            <DateTimePicker
-              mode="time"
-              value={startsAt}
-              onValueChange={(_event, next) => updateStartsAt(next)}
-            />
+          <>
+            <View style={styles.inlineRow}>
+              <Pressable
+                onPress={() => setActivePicker('date')}
+                style={[styles.input, styles.grow]}
+              >
+                <Text style={styles.inputText}>{startsAt.toDateString()}</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => setActivePicker('time')}
+                style={[styles.input, styles.grow]}
+              >
+                <Text style={styles.inputText}>
+                  {startsAt.toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </Text>
+              </Pressable>
+            </View>
+            {activePicker != null && (
+              <DateTimePicker
+                mode={activePicker}
+                value={startsAt}
+                onValueChange={(_event, next) => {
+                  setStartsAt(next)
+                  closePicker()
+                }}
+                onDismiss={closePicker}
+              />
+            )}
             <Text style={styles.fallback}>
-              Combined date and time selection is not available on this platform; pick each separately.
+              Combined date and time selection is not available on this
+              platform; pick each separately.
             </Text>
-          </View>
+          </>
         )}
       </View>
     </View>
@@ -64,8 +89,12 @@ const styles = StyleSheet.create({
   field: {
     rowGap: 6,
   },
+  grow: {
+    flex: 1,
+  },
   inlineRow: {
-    rowGap: 8,
+    columnGap: 10,
+    flexDirection: 'row',
   },
   input: {
     backgroundColor: '#f9fafb',
@@ -74,6 +103,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 12,
     paddingVertical: 12,
+  },
+  inputText: {
+    color: '#111827',
   },
   label: {
     color: '#6b7280',

@@ -5,11 +5,12 @@ const signedIn = false
 export default function Layout() {
   return (
     <Stack>
+      <Stack.Screen name="index" />
       <Stack.Protected guard={signedIn}>
-        <Stack.Screen name="account" />
+        <Stack.Screen name="account" options={{ title: 'Account' }} />
       </Stack.Protected>
       <Stack.Protected guard={!signedIn}>
-        <Stack.Screen name="sign-in" />
+        <Stack.Screen name="sign-in" options={{ title: 'Sign in' }} />
       </Stack.Protected>
     </Stack>
   )

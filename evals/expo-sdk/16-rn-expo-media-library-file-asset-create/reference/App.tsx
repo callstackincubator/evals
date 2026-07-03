@@ -14,7 +14,9 @@ export default function App() {
   const saveToAlbum = async () => {
     setSaveState('saving')
     try {
-      const permission = await MediaLibrary.requestPermissionsAsync(true, ['photo'])
+      const permission = await MediaLibrary.requestPermissionsAsync(false, [
+        'photo',
+      ])
       if (!permission.granted) {
         setSaveState('error')
         return

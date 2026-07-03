@@ -1,1 +1,1 @@
-A file helper is broken after an SDK upgrade — file operations crash at runtime. Fix it so the helper works with the current version of expo-file-system.
+Migrate the profile file helper off the legacy expo-file-system API to the SDK 56 object API (Directory, File, Paths). Keep the save/load behavior identical.

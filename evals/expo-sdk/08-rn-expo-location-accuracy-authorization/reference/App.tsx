@@ -7,25 +7,20 @@ export default function App() {
     useState<Location.LocationPermissionResponse | null>(null)
 
   const handleRefresh = async () => {
-    const next = await Location.requestForegroundPermissionsAsync()
-    setPermission(next)
-    if (!next.granted) return
-    // Touch the position API with explicit accuracy options; do not assume the
-    // grant implies precise location.
-    await Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.Balanced,
-    })
+    setPermission(await Location.requestForegroundPermissionsAsync())
   }
 
   const permissionStatus = permission?.status ?? 'undetermined'
-  // iOS exposes an authorization scope; Android exposes fine/coarse accuracy.
-  // A granted permission can still be approximate, so do not assume precise.
+  // iOS exposes a full/reduced accuracy authorization; Android exposes
+  // fine/coarse accuracy. A granted permission can still be approximate,
+  // so do not assume precise.
   const androidAccuracy = permission?.android?.accuracy
-  const iosScope = permission?.ios?.scope
-  const preciseAccuracy = androidAccuracy === 'fine'
+  const iosAccuracy = permission?.ios?.accuracy
+  const preciseAccuracy = androidAccuracy === 'fine' || iosAccuracy === 'full'
   const accuracyDetail =
-    androidAccuracy ?? (iosScope ? `iOS ${iosScope}` : undefined)
-  const blocked = permission != null && !permission.granted && !permission.canAskAgain
+    androidAccuracy ?? (iosAccuracy ? `iOS ${iosAccuracy}` : undefined)
+  const blocked =
+    permission != null && !permission.granted && !permission.canAskAgain
 
   return (
     <View style={styles.screen}>

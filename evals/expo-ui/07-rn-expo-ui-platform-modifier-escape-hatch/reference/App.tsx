@@ -1,11 +1,19 @@
-import { Host as AndroidHost, Column as AndroidColumn, Text as AndroidText } from '@expo/ui/jetpack-compose'
+import {
+  Host as AndroidHost,
+  Column as AndroidColumn,
+  Text as AndroidText,
+} from '@expo/ui/jetpack-compose'
 import {
   background as androidBackground,
   clip as androidClip,
   shadow as androidShadow,
   Shapes,
 } from '@expo/ui/jetpack-compose/modifiers'
-import { Host as IOSHost, Column as IOSColumn, Text as IOSText } from '@expo/ui/swift-ui'
+import {
+  Host as IOSHost,
+  Text as IOSText,
+  VStack as IOSVStack,
+} from '@expo/ui/swift-ui'
 import {
   background as iosBackground,
   cornerRadius as iosCornerRadius,
@@ -18,7 +26,7 @@ export default function App() {
     return (
       <IOSHost style={{ flex: 1 }}>
         <IOSText>Featured</IOSText>
-        <IOSColumn
+        <IOSVStack
           modifiers={[
             iosBackground('#ffffff'),
             iosCornerRadius(16),
@@ -27,7 +35,7 @@ export default function App() {
         >
           <IOSText>Weekly digest</IOSText>
           <IOSText>Your top stories, every Monday.</IOSText>
-        </IOSColumn>
+        </IOSVStack>
       </IOSHost>
     )
   }

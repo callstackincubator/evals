@@ -4,13 +4,12 @@ inputs:
     - app/_layout.tsx
     - app/index.tsx
     - app/profile.tsx
-    - app/server/profile.server.ts
 requirements:
   - id: server-only-code-isolated
-    description: "Must place server-only secret/env access in a server-only module or loader boundary."
+    description: 'Must place server-only secret/env access in a server-only module or loader boundary.'
   - id: client-route-uses-loader-data
-    description: "Must render route UI from useLoaderData rather than importing secrets directly."
+    description: 'Must render route UI from useLoaderData rather than importing secrets directly.'
   - id: static-loader-data-serializable
-    description: "Must return serializable data from loader functions."
+    description: 'Must return serializable data from loader functions.'
   - id: no-secret-in-client-component
-    description: "Must not read process.env secrets in the client component body."
+    description: 'Must not read process.env secrets in the client component body.'

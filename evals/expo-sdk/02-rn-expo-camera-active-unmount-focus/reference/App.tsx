@@ -1,6 +1,13 @@
 import { CameraView, useCameraPermissions } from 'expo-camera'
 import { useEffect, useRef, useState } from 'react'
-import { AppState, Pressable, StyleSheet, Switch, Text, View } from 'react-native'
+import {
+  AppState,
+  Pressable,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+} from 'react-native'
 
 export default function App() {
   const [permission, requestPermission] = useCameraPermissions()
@@ -10,12 +17,13 @@ export default function App() {
 
   useEffect(() => {
     const sub = AppState.addEventListener('change', (state) =>
-      setAppActive(state === 'active'),
+      setAppActive(state === 'active')
     )
     return () => sub.remove()
   }, [])
 
-  const cameraActive = Boolean(permission?.granted) && appActive && cameraEnabled
+  const cameraActive =
+    Boolean(permission?.granted) && appActive && cameraEnabled
 
   const handleTakePhoto = async () => {
     if (!permission?.granted) {
@@ -31,11 +39,18 @@ export default function App() {
 
       <View style={styles.preview}>
         {permission?.granted ? (
-          cameraActive ? (
-            <CameraView ref={cameraRef} active={cameraActive} style={styles.camera} />
-          ) : (
-            <Text style={styles.previewText}>Camera paused</Text>
-          )
+          <>
+            <CameraView
+              ref={cameraRef}
+              active={cameraActive}
+              style={styles.camera}
+            />
+            {!cameraActive && (
+              <View style={styles.pausedOverlay}>
+                <Text style={styles.previewText}>Camera paused</Text>
+              </View>
+            )}
+          </>
         ) : (
           <Text style={styles.previewText}>Camera access required</Text>
         )}
@@ -77,6 +92,16 @@ const styles = StyleSheet.create({
   camera: {
     height: '100%',
     width: '100%',
+  },
+  pausedOverlay: {
+    alignItems: 'center',
+    backgroundColor: '#1f2937',
+    bottom: 0,
+    justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
   },
   preview: {
     alignItems: 'center',

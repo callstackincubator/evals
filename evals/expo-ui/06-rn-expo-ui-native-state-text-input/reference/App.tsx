@@ -6,12 +6,7 @@ export default function App() {
   return (
     <Host style={{ flex: 1 }}>
       <Text>Search</Text>
-      <TextField
-        value={query.value}
-        onValueChange={(next) => {
-          query.value = next
-        }}
-      />
+      <TextField value={query} />
     </Host>
   )
 }

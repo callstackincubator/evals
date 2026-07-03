@@ -23,8 +23,13 @@ export default function App() {
     try {
       const downloads = new Directory(Paths.document, 'downloads')
       downloads.create({ idempotent: true, intermediates: true })
-      const file = await File.downloadFileAsync(REMOTE_URL, downloads)
-      setProgress(1)
+      const file = await File.downloadFileAsync(REMOTE_URL, downloads, {
+        onProgress: ({ bytesWritten, totalBytes }) => {
+          if (totalBytes > 0) {
+            setProgress(bytesWritten / totalBytes)
+          }
+        },
+      })
 
       setPhase('uploading')
       const body = new FormData()
@@ -59,7 +64,9 @@ export default function App() {
         </View>
       ) : null}
 
-      {phase === 'done' ? <Text style={styles.status}>Upload complete.</Text> : null}
+      {phase === 'done' ? (
+        <Text style={styles.status}>Upload complete.</Text>
+      ) : null}
       {phase === 'error' ? (
         <Text style={styles.error}>Transfer failed.</Text>
       ) : null}

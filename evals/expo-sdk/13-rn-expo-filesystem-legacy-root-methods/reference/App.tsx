@@ -20,7 +20,7 @@ export default function App() {
 
   const loadProfile = async () => {
     try {
-      const contents = PROFILE_FILE.text()
+      const contents = await PROFILE_FILE.text()
       setMessage(contents)
     } catch (error) {
       setMessage(`Load failed: ${String(error)}`)

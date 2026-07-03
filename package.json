@@ -8,7 +8,8 @@
     "format": "prettier --write .",
     "bench:run": "bun runner/run.ts",
     "bench:judge": "bun runner/judge.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "typecheck:expo-evals": "tsc -p evals/tsconfig.expo.json --noEmit"
   },
   "devDependencies": {
     "@types/node": "^25.2.2",

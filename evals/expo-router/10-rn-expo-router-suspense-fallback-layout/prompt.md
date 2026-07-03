@@ -1,1 +1,1 @@
-The index route renders async content with React Suspense. Add a route-level SuspenseFallback that shows a "Loading…" indicator until the content resolves.
+The index route renders async content with React Suspense. Show a "Loading…" indicator while the content resolves, implemented at the route level rather than through a global wrapper, and keep the route's default export rendering the resolved content.

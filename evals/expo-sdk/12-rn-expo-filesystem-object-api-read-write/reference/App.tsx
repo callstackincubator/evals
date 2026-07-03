@@ -1,12 +1,6 @@
 import { Directory, File, Paths } from 'expo-file-system'
 import { useEffect, useMemo, useState } from 'react'
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native'
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 
 export default function App() {
   const [draft, setDraft] = useState('')
@@ -14,12 +8,12 @@ export default function App() {
 
   const noteFile = useMemo(
     () => new File(new Directory(Paths.cache, 'notes'), 'daily.txt'),
-    [],
+    []
   )
 
   const loadNote = async () => {
     try {
-      const contents = noteFile.text()
+      const contents = await noteFile.text()
       setDraft(contents)
       setStatus('Loaded saved note.')
     } catch {

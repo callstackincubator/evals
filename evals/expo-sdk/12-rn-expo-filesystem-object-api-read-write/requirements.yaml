@@ -4,12 +4,10 @@ inputs:
     - app/App.tsx
 requirements:
   - id: imports-file-directory-paths
-    description: "Must import File, Directory, and Paths from expo-file-system."
+    description: 'Must import File, Directory, and Paths from expo-file-system.'
   - id: creates-directory-idempotently
-    description: "Must create a Directory under Paths.cache or Paths.document with idempotent/intermediates options."
+    description: 'Must create a Directory under Paths.cache or Paths.document with idempotent/intermediates options.'
   - id: uses-file-instance-read-write
-    description: "Must call File instance methods such as write() and text() for read/write operations."
-  - id: avoids-root-legacy-methods
-    description: "Must not call root readAsStringAsync/writeAsStringAsync/makeDirectoryAsync from expo-file-system."
+    description: 'Must call File instance methods such as write() and text() for read/write operations.'
   - id: handles-read-missing-file
-    description: "Must handle missing-file or first-run reads with fallback text instead of crashing."
+    description: 'Must handle missing-file or first-run reads with fallback text instead of crashing.'

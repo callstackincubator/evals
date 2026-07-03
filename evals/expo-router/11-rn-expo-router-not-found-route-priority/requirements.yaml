@@ -3,12 +3,10 @@ inputs:
   files:
     - app/_layout.tsx
     - app/index.tsx
-    - app/+not-found.tsx
-    - app/[...slug].tsx
 requirements:
   - id: plus-not-found-route
-    description: "Must implement +not-found.tsx as the not-found route."
+    description: 'Must implement +not-found.tsx as the not-found route.'
   - id: not-found-message-and-home-link
-    description: "The +not-found screen must render a clear not-found message and a Link to the home route \"/\"."
+    description: 'The +not-found screen must render a clear not-found message and a Link to the home route "/".'
   - id: catch-all-scoped-not-shadowing
-    description: "Must scope the catch-all route (for example under docs/) so unknown paths fall through to +not-found instead of being caught by the catch-all."
+    description: 'Must create the docs catch-all route scoped under the docs directory (for example app/docs/[...slug].tsx) rather than as a root-level catch-all, which would shadow the not-found route for unknown non-docs paths.'
