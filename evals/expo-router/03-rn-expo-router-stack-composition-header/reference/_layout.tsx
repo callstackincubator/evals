@@ -18,7 +18,7 @@ export default function Layout() {
       <Stack.Screen
         name="details"
         options={{
-          headerBackTitle: 'Inbox',
+          headerBackTitle: 'All mail',
         }}
       />
     </Stack>

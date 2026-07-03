@@ -5,7 +5,7 @@ inputs:
     - app/app.config.ts
 requirements:
   - id: ios-precompiled-rn-enabled
-    description: 'Must opt into the SDK 56-era precompiled React Native dependency path with buildReactNativeFromSource: false or the current equivalent.'
+    description: 'Must explicitly pin the precompiled React Native choice in the plugin ios options (buildReactNativeFromSource: false or the current equivalent) rather than relying on the default.'
   - id: keeps-static-frameworks-intent
     description: 'Must preserve the existing useFrameworks: "static" iOS setting while adding the new build properties.'
   - id: android-sdk-values-current

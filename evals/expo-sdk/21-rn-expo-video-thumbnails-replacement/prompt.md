@@ -1,1 +1,1 @@
-A video thumbnail feature is broken after an SDK upgrade. Fix it to generate thumbnail images from a video file at specific time offsets using current Expo APIs. Handle cases where no thumbnails are generated.
+We are consolidating dependencies and removing the standalone expo-video-thumbnails package. This screen currently uses it to generate a preview image from a video file. Rework it to generate the thumbnails through the SDK 56 video player's thumbnail API instead. Request thumbnails at multiple explicit time offsets and handle the case where no thumbnails come back.

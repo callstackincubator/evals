@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: permission-gated-preview
+    description: 'Must render the CameraView preview only once camera permission is granted and otherwise show the placeholder with a button that requests permission.'
+  - id: limits-barcode-types
+    description: 'Must configure an explicit barcodeTypes allowlist containing qr and ean13 instead of accepting every type implicitly.'
+  - id: deduplicates-scan-results
+    description: 'Must ignore repeats of the value that was just scanned before updating the last-scan state.'
+  - id: renders-last-scan
+    description: 'Must render the most recent scanned value in the "Last scan" field.'

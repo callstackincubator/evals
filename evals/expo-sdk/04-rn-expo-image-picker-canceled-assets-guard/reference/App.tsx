@@ -8,9 +8,7 @@ export default function App() {
 
   const handlePickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
       mediaTypes: ['images'],
-      quality: 0.8,
     })
     if (result.canceled || !result.assets?.length) {
       setImageUri(null)
@@ -18,7 +16,6 @@ export default function App() {
       return
     }
     setImageUri(result.assets[0].uri)
-    setStatus('Image selected')
   }
 
   return (

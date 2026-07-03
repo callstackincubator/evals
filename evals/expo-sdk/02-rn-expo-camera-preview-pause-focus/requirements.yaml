@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: preview-pause-from-visibility
+    description: 'Must pause the preview through the CameraView ref (pausePreview) when the app is not foregrounded and resume it (resumePreview) once foregrounded again, keeping the CameraView mounted.'
+  - id: camera-appstate-background-pauses
+    description: 'Must listen to AppState and treat leaving the active state as a signal to pause the live preview.'
+  - id: camera-view-unmounted-without-permission
+    description: 'Must not render CameraView at all when camera permission is not granted.'
+  - id: toggle-drives-preview-pause
+    description: "Must drive the CameraView ref pausePreview/resumePreview from the 'Camera enabled' switch so toggling it pauses or resumes the preview without unmounting the camera view or losing permission state."
+  - id: cleanup-appstate-subscription
+    description: 'Must remove the AppState listener on unmount.'

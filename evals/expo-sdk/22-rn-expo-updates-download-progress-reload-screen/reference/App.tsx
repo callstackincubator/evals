@@ -10,18 +10,13 @@ import {
 
 export default function App() {
   const {
-    currentlyRunning,
     isDownloading,
     downloadProgress,
     isUpdateAvailable,
     isUpdatePending,
     downloadError,
   } = Updates.useUpdates()
-  const [status, setStatus] = useState(
-    currentlyRunning.isEmbeddedLaunch
-      ? 'Running embedded build.'
-      : 'Up to date.'
-  )
+  const [status, setStatus] = useState('Up to date.')
 
   const checkForUpdate = async () => {
     setStatus('Checking…')

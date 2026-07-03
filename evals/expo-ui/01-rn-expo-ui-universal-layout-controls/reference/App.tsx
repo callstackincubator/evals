@@ -25,7 +25,7 @@ export default function App() {
           <Switch value={emailEnabled} onValueChange={setEmailEnabled} />
         </Row>
 
-        <Button onPress={handleReset}>Reset to defaults</Button>
+        <Button label="Reset to defaults" onPress={handleReset} />
       </Column>
     </Host>
   )

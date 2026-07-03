@@ -4,10 +4,10 @@ inputs:
     - app/App.tsx
 requirements:
   - id: uses-useupdates-state
-    description: 'Must use Updates.useUpdates() to read isDownloading, downloadProgress, isUpdateAvailable, isUpdatePending, and currentlyRunning state.'
+    description: 'Must read the update and download state (isUpdateAvailable, isDownloading, downloadProgress, downloadError) from Updates.useUpdates().'
   - id: download-progress-rendered
-    description: 'Must render downloadProgress or a deterministic progress state while downloading.'
+    description: 'Must render the download progress from the updates hook state, not a hardcoded local value.'
   - id: no-post-reload-assumption
-    description: 'Must not update React state after awaiting reloadAsync as if execution will reliably continue.'
+    description: 'Must make reloadAsync the final step of the apply path, with no state updates sequenced after it.'
   - id: handles-disabled-or-error
-    description: 'Must render a fallback for unavailable updates or download errors.'
+    description: 'Must drive the no-update and download-error fallbacks from the check/download results, not a static default message.'

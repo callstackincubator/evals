@@ -10,4 +10,4 @@ requirements:
   - id: uses-file-instance-read-write
     description: 'Must call File instance methods such as write() and text() for read/write operations.'
   - id: handles-read-missing-file
-    description: 'Must handle missing-file or first-run reads with fallback text instead of crashing.'
+    description: 'Must actually read the file through the File API and drive the fallback text from a caught missing-file/failed read (e.g. try/catch around text()), not from a static status or by never reading.'

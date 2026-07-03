@@ -1,9 +1,8 @@
 import { useLoaderData } from 'expo-router'
 import { Text } from 'react-native'
-import { getProfile } from './lib/profile.server'
 
 export async function loader() {
-  return getProfile()
+  return { name: process.env.PROFILE_NAME ?? 'Expo' }
 }
 
 export default function Profile() {

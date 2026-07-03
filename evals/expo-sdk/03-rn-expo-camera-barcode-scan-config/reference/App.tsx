@@ -1,31 +1,12 @@
-import { CameraView, useCameraPermissions, useMicrophonePermissions } from 'expo-camera'
+import { CameraView, useCameraPermissions } from 'expo-camera'
 import { useRef, useState } from 'react'
-import { Pressable, StyleSheet, Switch, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 export default function App() {
   const [cameraPermission, requestCamera] = useCameraPermissions()
-  const [micPermission, requestMic] = useMicrophonePermissions()
-  const [recordAudio, setRecordAudio] = useState(false)
   const [lastScan, setLastScan] = useState<string | null>(null)
   const lastScanRef = useRef<string | null>(null)
   const cameraRef = useRef<CameraView>(null)
-
-  const handleToggleAudio = async (value: boolean) => {
-    if (!value) {
-      setRecordAudio(false)
-      return
-    }
-    const result = micPermission?.granted ? micPermission : await requestMic()
-    setRecordAudio(result.granted)
-  }
-
-  const handleStartRecording = async () => {
-    if (!cameraPermission?.granted) {
-      await requestCamera()
-      return
-    }
-    await cameraRef.current?.recordAsync()
-  }
 
   return (
     <View style={styles.screen}>
@@ -35,8 +16,6 @@ export default function App() {
         {cameraPermission?.granted ? (
           <CameraView
             ref={cameraRef}
-            mode="video"
-            mute={!recordAudio}
             barcodeScannerSettings={{ barcodeTypes: ['qr', 'ean13'] }}
             onBarcodeScanned={(event) => {
               if (event.data === lastScanRef.current) return
@@ -58,16 +37,11 @@ export default function App() {
         <Text style={styles.resultValue}>{lastScan ?? '—'}</Text>
       </View>
 
-      <View style={styles.row}>
-        <Text style={styles.rowLabel}>Record audio</Text>
-        <Switch value={recordAudio} onValueChange={handleToggleAudio} />
-      </View>
-
-      <Pressable style={styles.button} onPress={handleStartRecording}>
-        <Text style={styles.buttonText}>
-          {cameraPermission?.granted ? 'Record Video' : 'Enable Camera'}
-        </Text>
-      </Pressable>
+      {!cameraPermission?.granted && (
+        <Pressable style={styles.button} onPress={() => requestCamera()}>
+          <Text style={styles.buttonText}>Enable Camera</Text>
+        </Pressable>
+      )}
     </View>
   )
 }
@@ -111,15 +85,6 @@ const styles = StyleSheet.create({
   resultValue: {
     color: '#111827',
     fontWeight: '600',
-  },
-  row: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  rowLabel: {
-    color: '#111827',
-    fontSize: 16,
   },
   scanFrame: {
     borderColor: '#22c55e',

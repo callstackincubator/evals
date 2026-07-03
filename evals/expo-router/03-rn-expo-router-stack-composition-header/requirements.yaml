@@ -6,12 +6,12 @@ inputs:
     - app/details.tsx
 requirements:
   - id: uses-stack-screen-options-for-header
-    description: 'Must configure the header via Stack.Screen options (title/headerRight), not Stack.Toolbar.'
+    description: "Must configure the header via the screen's options object in the Stack layout (title and a right-side header button)."
   - id: header-right-shows-alert
     description: 'The index (Inbox) screen headerRight must render a pressable button whose press handler calls Alert.alert.'
   - id: sets-inbox-title
     description: 'Must set the index (Inbox) screen title via its Stack.Screen options.'
   - id: sets-details-back-title
-    description: "Must set headerBackTitle in the details screen's Stack.Screen options so the back button on the pushed details screen shows the custom label; setting headerBackTitle on the index screen would not affect the back button."
+    description: "Must set headerBackTitle in the details screen's Stack.Screen options to a custom label distinct from the previous screen's title (which is the default back label) so the back button on the pushed details screen shows that custom label; setting headerBackTitle on the index screen would not affect the back button."
   - id: no-react-navigation-header-imports
     description: 'Must not import React Navigation header components or types directly.'

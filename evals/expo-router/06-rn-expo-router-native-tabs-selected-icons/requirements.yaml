@@ -9,5 +9,3 @@ requirements:
     description: 'The Home trigger must render NativeTabs.Trigger.Icon with sf set to a default symbol "house" and a selected symbol "house.fill".'
   - id: settings-badge-value
     description: 'The Settings trigger must render NativeTabs.Trigger.Badge with the value 2.'
-  - id: uses-trigger-child-apis
-    description: 'Must configure per-tab presentation through NativeTabs.Trigger.Icon/Badge/Label child components.'

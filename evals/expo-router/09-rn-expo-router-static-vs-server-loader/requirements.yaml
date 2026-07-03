@@ -6,7 +6,7 @@ inputs:
     - app/profile.tsx
 requirements:
   - id: server-only-code-isolated
-    description: 'Must place server-only secret/env access in a server-only module or loader boundary.'
+    description: "Must read the process.env secret only inside the route's loader export, not in the component body or at module scope, so it is stripped from the client bundle."
   - id: client-route-uses-loader-data
     description: 'Must render route UI from useLoaderData rather than importing secrets directly.'
   - id: static-loader-data-serializable

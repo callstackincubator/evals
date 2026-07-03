@@ -10,4 +10,4 @@ requirements:
   - id: saves-image-via-write-path
     description: 'Must save the generated image to the library through a write/save path (such as Asset.create) once write-only permission is granted.'
   - id: denied-fallback
-    description: 'Must render a deterministic denied-permission fallback.'
+    description: 'Must drive the denied state from the permission response (e.g. the granted flag being false), not from a static or dead branch.'

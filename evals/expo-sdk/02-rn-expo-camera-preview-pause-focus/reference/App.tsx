@@ -25,6 +25,17 @@ export default function App() {
   const cameraActive =
     Boolean(permission?.granted) && appActive && cameraEnabled
 
+  useEffect(() => {
+    if (!permission?.granted) {
+      return
+    }
+    if (cameraActive) {
+      cameraRef.current?.resumePreview()
+    } else {
+      cameraRef.current?.pausePreview()
+    }
+  }, [cameraActive, permission?.granted])
+
   const handleTakePhoto = async () => {
     if (!permission?.granted) {
       await requestPermission()
@@ -40,11 +51,7 @@ export default function App() {
       <View style={styles.preview}>
         {permission?.granted ? (
           <>
-            <CameraView
-              ref={cameraRef}
-              active={cameraActive}
-              style={styles.camera}
-            />
+            <CameraView ref={cameraRef} style={styles.camera} />
             {!cameraActive && (
               <View style={styles.pausedOverlay}>
                 <Text style={styles.previewText}>Camera paused</Text>

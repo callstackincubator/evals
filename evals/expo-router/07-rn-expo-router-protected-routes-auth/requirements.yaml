@@ -14,5 +14,3 @@ requirements:
     description: 'The sign-in screen must be wrapped so it is only present when signedIn is false.'
   - id: guard-boolean-explicit
     description: 'Must pass explicit guard booleans derived from auth state to Stack.Protected.'
-  - id: signed-out-fallback
-    description: 'The layout must keep an unguarded, always-available route (such as index) declared so signed-out users deterministically land somewhere instead of every route being guarded away.'

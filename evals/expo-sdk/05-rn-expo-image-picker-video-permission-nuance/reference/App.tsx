@@ -7,24 +7,23 @@ export default function App() {
   const [status, setStatus] = useState('No video selected')
   const [accessNotice, setAccessNotice] = useState<string | null>(null)
 
-  const handlePickVideo = async () => {
+  const handleCheckAccess = async () => {
     const existing = await ImagePicker.getMediaLibraryPermissionsAsync()
     const permission = existing.granted
       ? existing
       : await ImagePicker.requestMediaLibraryPermissionsAsync(false)
-    if (!permission.granted) {
+    if (permission.accessPrivileges === 'all') {
+      setAccessNotice('Full library access')
+    } else if (permission.accessPrivileges === 'limited') {
       setAccessNotice(
-        permission.canAskAgain
-          ? 'Video access denied'
-          : 'Enable video access in Settings'
+        'Limited library access — only selected videos are available'
       )
-      return
+    } else {
+      setAccessNotice('No library access — you can still pick a single video')
     }
-    setAccessNotice(
-      permission.accessPrivileges === 'limited'
-        ? 'Limited library access — only selected videos are available'
-        : null
-    )
+  }
+
+  const handlePickVideo = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['videos'],
     })
@@ -59,6 +58,10 @@ export default function App() {
 
       {videoUri ? <Text style={styles.status}>{status}</Text> : null}
 
+      <Pressable style={styles.buttonSecondary} onPress={handleCheckAccess}>
+        <Text style={styles.buttonSecondaryText}>Check Library Access</Text>
+      </Pressable>
+
       <Pressable style={styles.button} onPress={handlePickVideo}>
         <Text style={styles.buttonText}>Choose Video</Text>
       </Pressable>
@@ -72,6 +75,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
+  },
+  buttonSecondary: {
+    borderColor: '#111827',
+    borderRadius: 10,
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  buttonSecondaryText: {
+    color: '#111827',
+    fontWeight: '600',
+    textAlign: 'center',
   },
   buttonText: {
     color: '#fff',

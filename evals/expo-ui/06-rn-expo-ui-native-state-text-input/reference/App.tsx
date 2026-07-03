@@ -13,7 +13,12 @@ export default function App() {
     <Host style={{ flex: 1 }}>
       <Column>
         <Text>Search</Text>
-        <TextField value={query} />
+        <TextField value={query} keyboardOptions={{ capitalization: 'none' }}>
+          <TextField.Placeholder>
+            <Text>Type to filter</Text>
+          </TextField.Placeholder>
+        </TextField>
+        <Text>Start typing above</Text>
       </Column>
     </Host>
   )

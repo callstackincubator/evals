@@ -401,8 +401,8 @@ These controls are authoring policy for dataset quality; they are not independen
 The judge prompt includes:
 \begin{itemize}
   \item declared requirements (including weights when present)
-  \item generated files under evaluation
-  \item rules instructing the judge to use only provided files as evidence and return one result per declared requirement ID
+  \item generated files under evaluation, each wrapped in a \texttt{<file path="...">} element whose escaped \texttt{path} attribute carries the file's location within the submission
+  \item rules instructing the judge to use only provided files as evidence, treat file paths as part of the submission that may serve as evidence for placement and naming requirements, and return one result per declared requirement ID
 \end{itemize}
 
 \subsection{Structured Judge Output}

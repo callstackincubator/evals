@@ -1,11 +1,10 @@
 import { useState } from 'react'
-import { Pressable, StyleSheet, Switch, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 export default function App() {
-  const [recordAudio, setRecordAudio] = useState(false)
   const [lastScan, setLastScan] = useState<string | null>(null)
 
-  const handleStartRecording = () => {}
+  const handleEnableCamera = () => {}
 
   return (
     <View style={styles.screen}>
@@ -21,13 +20,8 @@ export default function App() {
         <Text style={styles.resultValue}>{lastScan ?? '—'}</Text>
       </View>
 
-      <View style={styles.row}>
-        <Text style={styles.rowLabel}>Record audio</Text>
-        <Switch value={recordAudio} onValueChange={setRecordAudio} />
-      </View>
-
-      <Pressable style={styles.button} onPress={handleStartRecording}>
-        <Text style={styles.buttonText}>Record Video</Text>
+      <Pressable style={styles.button} onPress={handleEnableCamera}>
+        <Text style={styles.buttonText}>Enable Camera</Text>
       </Pressable>
     </View>
   )
@@ -67,15 +61,6 @@ const styles = StyleSheet.create({
   resultValue: {
     color: '#111827',
     fontWeight: '600',
-  },
-  row: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  rowLabel: {
-    color: '#111827',
-    fontSize: 16,
   },
   scanFrame: {
     borderColor: '#22c55e',

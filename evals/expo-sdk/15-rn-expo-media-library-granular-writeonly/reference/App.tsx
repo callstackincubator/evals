@@ -22,7 +22,9 @@ export default function App() {
     try {
       const cache = new Directory(Paths.cache, 'posters')
       cache.create({ idempotent: true, intermediates: true })
-      const file = await File.downloadFileAsync(GENERATED_IMAGE_URI, cache)
+      const file = await File.downloadFileAsync(GENERATED_IMAGE_URI, cache, {
+        idempotent: true,
+      })
       await MediaLibrary.Asset.create(file.uri)
       setSaveState('saved')
     } catch {
