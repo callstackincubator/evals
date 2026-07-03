@@ -6,9 +6,9 @@ inputs:
     - app/details.tsx
 requirements:
   - id: uses-stack-screen-options-for-header
-    description: "Must configure the header via the screen's options object in the Stack layout (title and a right-side header button)."
+    description: "Must configure the Inbox header from the Stack layout (via the screen's options or Stack.Toolbar composition), not by importing React Navigation header components into the screens."
   - id: header-right-shows-alert
-    description: 'The index (Inbox) screen headerRight must render a pressable button whose press handler calls Alert.alert.'
+    description: 'Must give the Inbox header a right-side pressable button (via headerRight or a Stack.Toolbar button) whose press handler calls Alert.alert.'
   - id: sets-inbox-title
     description: 'Must set the index (Inbox) screen title via its Stack.Screen options.'
   - id: sets-details-back-title
