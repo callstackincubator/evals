@@ -1,1 +1,1 @@
-Wire up the audio preview to play a sound file and show its playback status using the current Expo audio APIs (expo-audio, not expo-av). Configure the audio mode deliberately, and pause playback when the app is backgrounded or the component unmounts.
+Wire up the audio preview to play a sound file and show its playback status using the current SDK 56 audio API (expo-av is deprecated). Configure the audio mode deliberately, and pause playback when the app is backgrounded.

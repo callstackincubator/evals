@@ -1,4 +1,8 @@
-import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
+import {
+  setAudioModeAsync,
+  useAudioPlayer,
+  useAudioPlayerStatus,
+} from 'expo-audio'
 import { useEffect } from 'react'
 import { AppState, Pressable, StyleSheet, Text, View } from 'react-native'
 
@@ -18,7 +22,6 @@ export default function App() {
       if (state !== 'active') player.pause()
     })
     return () => {
-      player.pause()
       subscription.remove()
     }
   }, [player])

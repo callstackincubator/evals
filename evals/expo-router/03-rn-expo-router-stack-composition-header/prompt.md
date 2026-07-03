@@ -1,1 +1,1 @@
-Configure the Inbox screen header in the Stack layout: set the title, a back button label, and a right-side header button that shows an alert when pressed.
+In the Stack layout, configure the Inbox (index) screen header: set its title and a right-side header button that shows an alert when pressed. There is also a Details screen pushed from the Inbox. Configure the Details screen so that when it is open, its back button reads "Inbox" instead of the default label.

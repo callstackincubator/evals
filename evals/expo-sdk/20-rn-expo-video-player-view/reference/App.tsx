@@ -26,7 +26,6 @@ export default function App() {
       if (state !== 'active') player.pause()
     })
     return () => {
-      player.pause()
       subscription.remove()
     }
   }, [player])

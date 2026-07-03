@@ -1,1 +1,1 @@
-Wire up the Save button to save the generated image to the media library and add it to an album, using the current expo-media-library class APIs (Asset/Album). Check permission and confirm the file exists before creating the asset.
+Wire up the Save button to save the generated image to the media library and add it to an album, using the current class-based expo-media-library API. Check permission and confirm the file exists before creating the asset.

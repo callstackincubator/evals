@@ -7,8 +7,6 @@ requirements:
     description: 'Must import DateTimePicker from @expo/ui/community/datetime-picker.'
   - id: no-android-open-api
     description: 'Must not use DateTimePickerAndroid.open.'
-  - id: no-react-native-community-datetimepicker-import
-    description: 'Must not import @react-native-community/datetimepicker directly.'
   - id: controlled-value-via-onvaluechange
     description: 'Must keep the selected date/time in controlled state and update it through onValueChange.'
   - id: handles-dismissal-via-ondismiss

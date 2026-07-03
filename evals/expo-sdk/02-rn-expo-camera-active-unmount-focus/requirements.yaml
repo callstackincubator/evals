@@ -4,12 +4,12 @@ inputs:
     - app/App.tsx
 requirements:
   - id: camera-active-derived-from-visibility
-    description: "Must pass CameraView an active prop derived from AppState foreground state and the user-enabled preview switch."
+    description: 'Must pass CameraView an active prop derived from AppState foreground state and the user-enabled preview switch.'
   - id: camera-appstate-background-pauses
-    description: "Must listen to AppState and set active false when the app leaves the active state."
+    description: 'Must listen to AppState and set active false when the app leaves the active state.'
   - id: camera-view-unmounted-without-permission
-    description: "Must not render CameraView at all when camera permission is not granted."
+    description: 'Must not render CameraView at all when camera permission is not granted.'
   - id: manual-preview-toggle
-    description: "Must expose a user action that toggles the preview without losing permission state."
+    description: "Must feed the 'Camera enabled' switch into the CameraView active prop so toggling it pauses/resumes the preview without losing permission state."
   - id: cleanup-appstate-subscription
-    description: "Must remove the AppState listener on unmount."
+    description: 'Must remove the AppState listener on unmount.'

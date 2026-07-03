@@ -4,16 +4,14 @@ inputs:
     - app/App.tsx
 requirements:
   - id: uses-statusbar-component-or-namespace
-    description: "Must use StatusBar component or StatusBar.setStyle/setHidden from expo-status-bar rather than deprecated setStatusBarStyle/setStatusBarHidden helpers."
+    description: 'Must use StatusBar component or StatusBar.setStyle/setHidden from expo-status-bar rather than deprecated setStatusBarStyle/setStatusBarHidden helpers.'
   - id: uses-navigationbar-component-or-namespace
-    description: "Must use NavigationBar component or NavigationBar.setStyle from expo-navigation-bar rather than deprecated root setStyle."
-  - id: visibility-listener-cleanup
-    description: "Must remove addVisibilityListener subscription on cleanup when listening for navigation bar visibility changes."
+    description: 'Must use NavigationBar component or NavigationBar.setStyle from expo-navigation-bar rather than deprecated root setStyle.'
   - id: platform-android-guard
-    description: "Must guard Android-only navigation bar behavior with Platform.OS === \"android\" or a safe cross-platform component path."
+    description: 'Must guard Android-only navigation bar behavior with Platform.OS === "android" or a safe cross-platform component path.'
   - id: restores-bars-on-unmount
-    description: "Must restore default bar visibility/style on unmount or when leaving the screen."
+    description: 'Must restore default bar visibility/style on unmount or when leaving the screen.'
   - id: glass-effect-current-package
-    description: "Must import GlassView or GlassContainer from expo-glass-effect, not from @expo/ui."
+    description: 'Must import GlassView or GlassContainer from expo-glass-effect, not from @expo/ui.'
   - id: glass-effect-availability-guard
-    description: "Must check isGlassEffectAPIAvailable() or isLiquidGlassAvailable() before rendering Liquid Glass UI and render a deterministic fallback otherwise."
+    description: 'Must check isGlassEffectAPIAvailable() or isLiquidGlassAvailable() before rendering Liquid Glass UI and render a deterministic fallback otherwise.'

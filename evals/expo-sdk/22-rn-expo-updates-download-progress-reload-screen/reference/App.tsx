@@ -18,7 +18,9 @@ export default function App() {
     downloadError,
   } = Updates.useUpdates()
   const [status, setStatus] = useState(
-    currentlyRunning.isEmbeddedLaunch ? 'Running embedded build.' : 'Up to date.',
+    currentlyRunning.isEmbeddedLaunch
+      ? 'Running embedded build.'
+      : 'Up to date.'
   )
 
   const checkForUpdate = async () => {
@@ -31,12 +33,7 @@ export default function App() {
       }
       setStatus('Downloading…')
       await Updates.fetchUpdateAsync()
-      await Updates.reloadAsync({
-        reloadScreenOptions: {
-          backgroundColor: '#111827',
-          fade: true,
-        },
-      })
+      await Updates.reloadAsync()
       // Execution does not reliably continue after reloadAsync resolves.
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'Update failed.')

@@ -1,5 +1,5 @@
 import { GlassView, isGlassEffectAPIAvailable } from 'expo-glass-effect'
-import { NavigationBar, addVisibilityListener } from 'expo-navigation-bar'
+import { NavigationBar } from 'expo-navigation-bar'
 import { StatusBar } from 'expo-status-bar'
 import { useEffect, useState } from 'react'
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native'
@@ -9,9 +9,6 @@ type BarStyle = 'light' | 'dark'
 export default function App() {
   const [barStyle, setBarStyle] = useState<BarStyle>('dark')
   const [glass, setGlass] = useState(false)
-  const [navVisibility, setNavVisibility] = useState<'visible' | 'hidden'>(
-    'visible',
-  )
   const canUseGlass = isGlassEffectAPIAvailable()
 
   useEffect(() => {
@@ -22,11 +19,7 @@ export default function App() {
       }
     }
     NavigationBar.setStyle(barStyle)
-    const subscription = addVisibilityListener((event) => {
-      setNavVisibility(event.visibility)
-    })
     return () => {
-      subscription.remove()
       StatusBar.setStyle('auto', true)
       NavigationBar.setStyle('auto')
     }
@@ -37,10 +30,6 @@ export default function App() {
       <StatusBar style={barStyle} />
       {Platform.OS === 'android' ? <NavigationBar style={barStyle} /> : null}
       <Text style={styles.title}>Appearance</Text>
-
-      {Platform.OS === 'android' ? (
-        <Text style={styles.subtitle}>Navigation bar: {navVisibility}</Text>
-      ) : null}
 
       <View style={styles.controls}>
         <Pressable

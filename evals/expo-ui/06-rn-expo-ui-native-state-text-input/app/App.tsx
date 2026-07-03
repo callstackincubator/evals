@@ -14,9 +14,7 @@ export default function App() {
         autoCapitalize="none"
         style={styles.input}
       />
-      <Text style={styles.preview}>
-        {query ? `Searching for "${query}"` : 'Start typing above'}
-      </Text>
+      <Text style={styles.preview}>Start typing above</Text>
     </View>
   )
 }

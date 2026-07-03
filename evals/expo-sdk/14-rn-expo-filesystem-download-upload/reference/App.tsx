@@ -21,9 +21,10 @@ export default function App() {
     setPhase('downloading')
     setProgress(0)
     try {
-      const downloads = new Directory(Paths.document, 'downloads')
+      const downloads = new Directory(Paths.cache, 'downloads')
       downloads.create({ idempotent: true, intermediates: true })
       const file = await File.downloadFileAsync(REMOTE_URL, downloads, {
+        idempotent: true,
         onProgress: ({ bytesWritten, totalBytes }) => {
           if (totalBytes > 0) {
             setProgress(bytesWritten / totalBytes)

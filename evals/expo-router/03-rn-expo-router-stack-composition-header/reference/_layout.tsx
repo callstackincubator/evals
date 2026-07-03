@@ -8,12 +8,17 @@ export default function Layout() {
         name="index"
         options={{
           title: 'Inbox',
-          headerBackTitle: 'Back',
           headerRight: () => (
             <Pressable onPress={() => Alert.alert('New item')}>
               <Text>+</Text>
             </Pressable>
           ),
+        }}
+      />
+      <Stack.Screen
+        name="details"
+        options={{
+          headerBackTitle: 'Inbox',
         }}
       />
     </Stack>

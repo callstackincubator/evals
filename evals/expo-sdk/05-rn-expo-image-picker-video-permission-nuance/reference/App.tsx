@@ -27,7 +27,6 @@ export default function App() {
     )
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['videos'],
-      videoMaxDuration: 60,
     })
     const asset =
       !result.canceled && result.assets?.[0]?.type === 'video'

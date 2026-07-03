@@ -4,10 +4,10 @@ inputs:
     - app/App.tsx
 requirements:
   - id: uses-header-override-api
-    description: "Must call Updates.setUpdateRequestHeadersOverride with a record or null."
+    description: 'Must call Updates.setUpdateRequestHeadersOverride with a record or null.'
   - id: clear-override-path
-    description: "Must provide a default path that calls setUpdateRequestHeadersOverride(null)."
+    description: 'Must provide a default path that calls setUpdateRequestHeadersOverride(null).'
   - id: check-after-header-change
-    description: "Must trigger or expose an update check/fetch flow after changing headers."
+    description: 'Must trigger or expose an update check/fetch flow after changing headers.'
   - id: visible-selected-cohort
-    description: "Must render the active channel/header selection so behavior is auditable."
+    description: 'Must render the currently selected channel that drives the header override so the active selection is auditable.'

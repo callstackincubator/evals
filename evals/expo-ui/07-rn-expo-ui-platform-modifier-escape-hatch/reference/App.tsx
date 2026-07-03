@@ -25,16 +25,18 @@ export default function App() {
   if (Platform.OS === 'ios') {
     return (
       <IOSHost style={{ flex: 1 }}>
-        <IOSText>Featured</IOSText>
-        <IOSVStack
-          modifiers={[
-            iosBackground('#ffffff'),
-            iosCornerRadius(16),
-            iosShadow({ radius: 8, x: 0, y: 2, color: '#00000026' }),
-          ]}
-        >
-          <IOSText>Weekly digest</IOSText>
-          <IOSText>Your top stories, every Monday.</IOSText>
+        <IOSVStack>
+          <IOSText>Featured</IOSText>
+          <IOSVStack
+            modifiers={[
+              iosBackground('#ffffff'),
+              iosCornerRadius(16),
+              iosShadow({ radius: 8, x: 0, y: 2, color: '#00000026' }),
+            ]}
+          >
+            <IOSText>Weekly digest</IOSText>
+            <IOSText>Your top stories, every Monday.</IOSText>
+          </IOSVStack>
         </IOSVStack>
       </IOSHost>
     )
@@ -42,16 +44,18 @@ export default function App() {
 
   return (
     <AndroidHost style={{ flex: 1 }}>
-      <AndroidText>Featured</AndroidText>
-      <AndroidColumn
-        modifiers={[
-          androidShadow(4),
-          androidClip(Shapes.RoundedCorner(4)),
-          androidBackground('#ffffff'),
-        ]}
-      >
-        <AndroidText>Weekly digest</AndroidText>
-        <AndroidText>Your top stories, every Monday.</AndroidText>
+      <AndroidColumn>
+        <AndroidText>Featured</AndroidText>
+        <AndroidColumn
+          modifiers={[
+            androidShadow(4),
+            androidClip(Shapes.RoundedCorner(4)),
+            androidBackground('#ffffff'),
+          ]}
+        >
+          <AndroidText>Weekly digest</AndroidText>
+          <AndroidText>Your top stories, every Monday.</AndroidText>
+        </AndroidColumn>
       </AndroidColumn>
     </AndroidHost>
   )

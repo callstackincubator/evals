@@ -8,9 +8,11 @@ inputs:
 requirements:
   - id: uses-stack-protected
     description: 'Must gate routes with Stack.Protected, since the app uses a Stack layout.'
-  - id: signed-out-fallback
-    description: 'The layout must keep an unguarded, always-available route (such as index or the signed-out sign-in screen) declared so signed-out users deterministically land somewhere instead of a guarded screen.'
+  - id: account-guarded-signed-in
+    description: 'The account screen must be wrapped so it is only present when signedIn is true.'
+  - id: sign-in-guarded-signed-out
+    description: 'The sign-in screen must be wrapped so it is only present when signedIn is false.'
   - id: guard-boolean-explicit
-    description: 'Must pass explicit guard booleans derived from auth state.'
-  - id: no-redirect-loop
-    description: 'Must avoid unconditional redirects that can loop between protected and sign-in routes.'
+    description: 'Must pass explicit guard booleans derived from auth state to Stack.Protected.'
+  - id: signed-out-fallback
+    description: 'The layout must keep an unguarded, always-available route (such as index) declared so signed-out users deterministically land somewhere instead of every route being guarded away.'

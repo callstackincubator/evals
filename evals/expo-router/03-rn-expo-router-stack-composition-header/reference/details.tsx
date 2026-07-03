@@ -1,12 +1,9 @@
-import { Link } from 'expo-router'
 import { StyleSheet, Text, View } from 'react-native'
 
-export default function Index() {
+export default function Details() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Inbox</Text>
-      <Text>Tap the header action to add a new item.</Text>
-      <Link href="/details">Open details</Link>
+      <Text style={styles.title}>Details</Text>
     </View>
   )
 }
