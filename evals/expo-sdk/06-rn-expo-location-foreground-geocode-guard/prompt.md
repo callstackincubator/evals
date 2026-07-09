@@ -1,0 +1,1 @@
+Wire up the Find My Location button: request foreground location permission on press, get the current position with an explicit accuracy, and reverse-geocode it to a human-readable address — falling back gracefully when no address is returned.

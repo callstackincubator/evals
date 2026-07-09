@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/_layout.tsx
+    - app/index.tsx
+    - app/details.tsx
+requirements:
+  - id: link-carries-id-and-tab
+    description: 'The Open details link must carry both the product id and the selected tab (from the PRODUCT constant) as route params to the details screen.'
+  - id: uses-local-search-params
+    description: 'Must read route params with useLocalSearchParams or useGlobalSearchParams from expo-router.'
+  - id: param-fallbacks
+    description: 'Must handle missing params (e.g. a direct deep link) with fallback values instead of rendering blanks.'
+  - id: no-object-function-params
+    description: 'Must not pass functions, class instances, or non-serializable objects as route params; the carried params must be serializable primitives.'

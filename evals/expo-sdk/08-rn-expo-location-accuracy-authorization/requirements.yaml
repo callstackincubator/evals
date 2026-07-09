@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-location-permission-details
+    description: 'Must inspect platform permission details such as permission.ios?.accuracy or permission.android?.accuracy when present.'
+  - id: does-not-assume-precise-location
+    description: 'Must derive precise vs approximate from the permission response accuracy fields (ios full/reduced or android fine/coarse) rather than a hardcoded flag, so a granted permission is not assumed precise.'
+  - id: fallback-for-approximate
+    description: 'Must render the approximate-location explanation driven by that derived approximate state, not by an unconditional/static value.'
+  - id: settings-recovery-for-blocked
+    description: 'Must offer Linking.openSettings() when permission canAskAgain is false.'

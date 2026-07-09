@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: received-listener-registered
+    description: 'Must register addNotificationReceivedListener in a mount effect.'
+  - id: response-listener-registered
+    description: 'Must register addNotificationResponseReceivedListener in the same component lifecycle.'
+  - id: subscriptions-removed
+    description: 'Must call remove() on every notification subscription in the effect cleanup.'
+  - id: state-update-from-listeners
+    description: 'Must update visible local state from both received notification and response listener payloads.'

@@ -1,0 +1,1 @@
+Configure build properties for an SDK 56 Expo project. The iOS build should use prebuilt dependencies where possible, and Android SDK versions should match current requirements. Make the prebuilt-dependencies choice explicit in the config so it stays fixed even if the plugin's defaults change later.

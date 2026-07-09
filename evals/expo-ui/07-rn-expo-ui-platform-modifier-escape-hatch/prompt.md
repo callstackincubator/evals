@@ -1,0 +1,1 @@
+Convert the platform-styled card in App.tsx to Expo UI, applying its iOS and Android styling through each platform's native modifiers.

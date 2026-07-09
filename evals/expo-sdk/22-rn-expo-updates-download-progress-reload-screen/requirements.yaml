@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-useupdates-state
+    description: 'Must read the update and download state (isUpdateAvailable, isDownloading, downloadProgress, downloadError) from Updates.useUpdates().'
+  - id: download-progress-rendered
+    description: 'Must render the download progress from the updates hook state, not a hardcoded local value.'
+  - id: no-post-reload-assumption
+    description: 'Must make reloadAsync the final step of the apply path, with no state updates sequenced after it.'
+  - id: handles-disabled-or-error
+    description: 'Must drive the no-update and download-error fallbacks from the check/download results, not a static default message.'

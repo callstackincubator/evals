@@ -1,0 +1,17 @@
+version: 1
+inputs:
+  files:
+    - app/_layout.tsx
+    - app/index.tsx
+    - app/details.tsx
+requirements:
+  - id: uses-stack-screen-options-for-header
+    description: "Must configure the Inbox header from the Stack layout (via the screen's options or Stack.Toolbar composition), not by importing React Navigation header components into the screens."
+  - id: header-right-shows-alert
+    description: 'Must give the Inbox header a right-side pressable button (via headerRight or a Stack.Toolbar button) whose press handler calls Alert.alert.'
+  - id: sets-inbox-title
+    description: 'Must set the index (Inbox) screen title via its Stack.Screen options.'
+  - id: sets-details-back-title
+    description: "Must set headerBackTitle in the details screen's Stack.Screen options to a custom label distinct from the previous screen's title (which is the default back label) so the back button on the pushed details screen shows that custom label; setting headerBackTitle on the index screen would not affect the back button."
+  - id: no-react-navigation-header-imports
+    description: 'Must not import React Navigation header components or types directly.'

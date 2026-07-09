@@ -1,0 +1,1 @@
+Wire up the appearance screen's controls to set the system status bar and navigation bar style, and to toggle a Liquid Glass surface when the platform supports it. Guard Android-only navigation bar calls, and restore the default bars on unmount.

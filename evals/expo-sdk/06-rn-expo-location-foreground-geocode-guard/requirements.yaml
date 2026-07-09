@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: foreground-permission-before-location
+    description: "Must call requestForegroundPermissionsAsync before getCurrentPositionAsync when permission is not already granted."
+  - id: request-on-user-action
+    description: "Must request location permission from a user-triggered action."
+  - id: reverse-geocode-after-coordinate
+    description: "Must call reverseGeocodeAsync only after a valid coordinate is available."
+  - id: empty-geocode-result-guard
+    description: "Must handle an empty reverseGeocodeAsync result array with fallback text."
+  - id: accuracy-explicit
+    description: "Must pass an explicit Location.Accuracy value to getCurrentPositionAsync."

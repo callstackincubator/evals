@@ -1,0 +1,1 @@
+The index route renders async content with React Suspense. Show a "Loading…" indicator while the content resolves: the layout should provide the fallback for its child routes rather than you wrapping the app in a global loading gate, and keep the index route's default export rendering the resolved content.

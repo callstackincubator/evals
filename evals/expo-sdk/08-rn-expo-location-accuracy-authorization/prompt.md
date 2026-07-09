@@ -1,0 +1,1 @@
+Wire up the location status panel to show the current permission state and whether access is precise or approximate, inspecting the platform accuracy details. Do not assume a granted permission means precise location, render an approximate-access explanation, and offer to open Settings when permission is permanently blocked.

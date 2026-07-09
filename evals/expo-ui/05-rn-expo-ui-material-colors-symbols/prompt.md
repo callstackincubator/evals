@@ -1,0 +1,1 @@
+The Android screen in App.tsx uses hardcoded color values. Refactor it to use the platform's dynamic color system through Expo UI.

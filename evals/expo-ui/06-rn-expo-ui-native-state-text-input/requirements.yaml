@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-native-state
+    description: 'Must use useNativeState from @expo/ui/jetpack-compose for native-shared state.'
+  - id: textfield-controlled
+    description: 'Must pass the native state object from useNativeState directly to the Expo UI TextField value prop.'
+  - id: host-root
+    description: 'Must render the Expo UI TextField under the Jetpack Compose Host.'
+  - id: no-react-state-mirror
+    description: 'Must hold the field value in native state, not a parallel React useState.'

@@ -1,0 +1,14 @@
+version: 1
+inputs:
+  files:
+    - app/_layout.tsx
+    - app/index.tsx
+requirements:
+  - id: large-title-option
+    description: 'Must enable the large title via the Stack headerLargeTitleEnabled option (not the deprecated headerLargeTitle spelling).'
+  - id: scroll-view-first-child
+    description: 'Must make the page content start with a ScrollView or compatible scrollable child.'
+  - id: content-inset-adjustment
+    description: 'Must set contentInsetAdjustmentBehavior to automatic on the scrollable so the large title collapses correctly.'
+  - id: stack-only
+    description: 'Must use Expo Router Stack, not a manually created native stack.'

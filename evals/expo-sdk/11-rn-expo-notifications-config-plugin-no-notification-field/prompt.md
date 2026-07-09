@@ -1,0 +1,1 @@
+Configure native notification settings (icon, color, default channel, and background remote notifications) for an Expo project using current SDK conventions. The project has notification configuration in app.config.ts that may need updating.

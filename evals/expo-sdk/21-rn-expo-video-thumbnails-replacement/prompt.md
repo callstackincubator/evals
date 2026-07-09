@@ -1,0 +1,1 @@
+We are consolidating dependencies and removing the standalone expo-video-thumbnails package. This screen currently uses it to generate a preview image from a video file. Rework it to generate the thumbnails through the SDK 56 video player's thumbnail API instead. Request thumbnails at multiple explicit time offsets and handle the case where no thumbnails come back.

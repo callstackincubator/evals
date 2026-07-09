@@ -1,0 +1,1 @@
+Wire up the notification inbox: subscribe to notifications received while the app is foregrounded and to the user tapping a notification, updating the list from both. Register the listeners on mount and remove each subscription on unmount.

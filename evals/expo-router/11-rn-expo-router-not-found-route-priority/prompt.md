@@ -1,0 +1,1 @@
+Add a docs section to the app: any path under /docs/ should render a screen that shows the requested slug. Every other unknown path should land on a screen with a clear "this screen does not exist" message and a link back to the home screen — make sure unknown non-docs paths reach that screen rather than the docs renderer.

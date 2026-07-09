@@ -4,18 +4,19 @@ A benchmark suite for evaluating how coding models solve real React Native tasks
 
 ## Available Evals
 
-Groups map to top-level folders under `evals/`.
+Groups map to top-level folders under `evals/`. The current suite contains 134 evals.
 
-| Group             | Path                      | Status |
-| ----------------- | ------------------------- | ------ |
-| animation         | `evals/animation`         | Active |
-| async-state       | `evals/async-state`       | Active |
-| navigation        | `evals/navigation`        | Active |
-| react-native-apis | `evals/react-native-apis` | Active |
-| expo-sdk          | `evals/expo-sdk`          | WIP    |
-| brownfield        | `evals/brownfield`        | WIP    |
-| nitro-modules     | `evals/nitro-modules`     | WIP    |
-| lists             | `evals/lists`             | Active |
+| Group             | Path                      | Evals | Status |
+| ----------------- | ------------------------- | ----: | ------ |
+| animation         | `evals/animation`         |    13 | Active |
+| async-state       | `evals/async-state`       |    13 | Active |
+| expo-router       | `evals/expo-router`       |    11 | Active |
+| expo-sdk          | `evals/expo-sdk`          |    25 | Active |
+| expo-ui           | `evals/expo-ui`           |     7 | Active |
+| lists             | `evals/lists`             |    18 | Active |
+| navigation        | `evals/navigation`        |    13 | Active |
+| react-native-apis | `evals/react-native-apis` |     9 | Active |
+| skia              | `evals/skia`              |    25 | Active |
 
 > Want a group that is not listed here? [Open an issue](https://github.com/callstackincubator/evals/issues/new/choose) to request it. Contributions are also welcome.
 

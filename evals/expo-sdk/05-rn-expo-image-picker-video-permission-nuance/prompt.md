@@ -1,0 +1,1 @@
+Wire up a video-library picker. Picking a video must always work — do not block the picker on media-library permission. Separately, offer a control that requests media-library permission and surfaces the current access level (full, limited, or none) as a persistent notice. Select videos only, and display the chosen video after validating it is a video.

@@ -61,7 +61,7 @@ This whitepaper documents the benchmark in an implementation-faithful manner rel
 
 The meritorious content of this benchmark is concentrated around validation of primitive Large Language Models without any external augmentations such as RAG, documentation access or agent skills. The purpose of this benchmark is to assess how those models perform in the task of React Native development including the most common third party libraries in the React Native ecosystem.
 
-The benchmark we propose in this work includes evaluation cases (referred to as \textit{evals}), divided into categories; each eval consists of multiple requirements as to the outputs of the evaluated model (referred to as \textit{solver}), as described in \cref{sec:generation,sec:judgement}. Finally, the solver performs the task in each evaluation, and in the second stage of the benchmark, another LLM (referred to as \textit{judge}) assesses the result by assigning scores to each of the requirements, along with generating a justification in natural language (for interpretability). The breakdown of the categories of evals is presented in \cref{tab:category-evals-scope}. For the sake of this experiment, the chosen requirements were adjusted such that they mattered equally, thus implying weights of all requirements being set to $1.0$.
+The benchmark we propose in this work includes evaluation cases (referred to as \textit{evals}), divided into categories; each eval consists of multiple requirements as to the outputs of the evaluated model (referred to as \textit{solver}), as described in \cref{sec:generation,sec:judgement}. Finally, the solver performs the task in each evaluation, and in the second stage of the benchmark, another LLM (referred to as \textit{judge}) assesses the result by assigning scores to each of the requirements, along with generating a justification in natural language (for interpretability). The breakdown of the categories of evals is presented in \cref{tab:category-evals-scope}. Requirements default to a weight of $1.0$ when no explicit weight is provided, while individual evals may set positive custom weights where finer scoring granularity is useful.
 
 \begin{table}[htbp]
 \centering
@@ -70,11 +70,15 @@ The benchmark we propose in this work includes evaluation cases (referred to as 
 \toprule
 \textbf{Category} & \textbf{\# Evals} & \textbf{Scope} \\
 \midrule
-Animation & 14 & React Native animation behavior, including \texttt{Animated} and \texttt{react-native-reanimated}. \\
-Asynchronous state & 14 & Async state/data-flow tasks with \texttt{TanStack Query}, \texttt{Zustand}, and \texttt{Jotai}. \\
+Animation & 13 & React Native animation behavior, including \texttt{Animated} and \texttt{react-native-reanimated}. \\
+Asynchronous state & 13 & Async state/data-flow tasks with \texttt{TanStack Query}, \texttt{Zustand}, and \texttt{Jotai}. \\
+Expo Router & 11 & Expo Router SDK 56 tasks covering import boundaries, layouts, native tabs, protected routes, static/server loaders, suspense, and not-found routing. \\
+Expo SDK & 25 & Expo SDK 56 capability-module behavior covering permissions, media, FileSystem, notifications, updates, system UI, and native config. \\
+Expo UI & 7 & \texttt{@expo/ui} universal components, community drop-in replacements, native state, and platform-native entrypoints. \\
 Lists & 18 & List rendering, item interactions, virtualization patterns, and sectioned data presentation. \\
-Navigation & 15 & Screen transitions, stack/modal flows, route params, and navigation state handling. \\
+Navigation & 13 & Screen transitions, stack/modal flows, route params, and navigation state handling. \\
 React Native APIs & 9 & Core platform API usage such as layout, keyboard, accessibility, and device integration primitives. \\
+Skia & 25 & \texttt{@shopify/react-native-skia} drawing, shaders, images, text, gestures, animation, and canvas APIs. \\
 \bottomrule
 \end{tabularx}
 \caption{Benchmark categories, number of evals per category, and short scope descriptions.}
@@ -233,7 +237,7 @@ Implement X where performing interaction Y causes Z and state A uses an animatio
 
 \subsubsection{\texttt{app/}}
 
-The \texttt{app/} directory must contain all files serving as baseline input provided to the solver. The files that shall be evaluated by the judge must be listed in the \texttt{requirements.yaml} file.
+The \texttt{app/} directory contains the baseline input files provided to the solver. The current generation runner copies the full \texttt{app/} directory for each eval; by authoring convention, files that are expected as baseline inputs should also be listed in the \texttt{requirements.yaml} metadata so eval scope remains auditable.
 
 \subsection{Judgement stage inputs}
 \label{sec:judgement}
@@ -284,7 +288,7 @@ The manifest file contains a summary of the generation stage (\cref{sec:generati
 
 Task prompt used by the solver model. A representative logical template of this type of file is presented in \cref{lst:requirements-yaml-template}.
 The \mintinline{yaml}{version} is a constant element present for compatibility reasons for future versions of the project, that must be set to \mintinline{yaml}{1}.
-The \mintinline{yaml}{inputs} list shall contain all files to be copied to the temporary workspace for the solver.
+The \mintinline{yaml}{inputs} list documents the intended baseline files for the eval. In the current runner it is metadata rather than the copy source of truth: generation copies the full eval \texttt{app/} directory to the temporary solver workspace.
 The \mintinline{yaml}{requirements} list shall contain all the requirements, described in natural language. The requirements should explicitly state specific elements or behaviors that the presence of is to be asserted in the judgement stage.
 Optionally, each requirement may contain a \mintinline{yaml}{weight} value set to a positive value to emphasize its impact on the score for that requirement. If omitted, its value defaults to \mintinline{yaml}{1}.
 
@@ -397,8 +401,8 @@ These controls are authoring policy for dataset quality; they are not independen
 The judge prompt includes:
 \begin{itemize}
   \item declared requirements (including weights when present)
-  \item generated files under evaluation
-  \item rules instructing the judge to use only provided files as evidence and return one result per declared requirement ID
+  \item generated files under evaluation, each wrapped in a \texttt{<file path="...">} element whose escaped \texttt{path} attribute carries the file's location within the submission
+  \item rules instructing the judge to use only provided files as evidence, treat file paths as part of the submission that may serve as evidence for placement and naming requirements, and return one result per declared requirement ID
 \end{itemize}
 
 \subsection{Structured Judge Output}
@@ -590,7 +594,7 @@ Text drafting and editorial refinement used artificial intelligence-assisted too
 The authors are affiliated with Callstack. The experiments used commercially available infrastructure acquired and operated independently; no direct sponsorship, funding, or editorial influence was provided for this work.
 
 \section{Conclusion}
-We evaluated \textbf{18} solver models on the React Native eval suite (\textbf{66} evals in total), with \textbf{10 repeated runs per model} under the same pipeline and scoring rules. Across completed runs, the highest mean \texttt{weightedAverageScore} was \textbf{0.961} (\textbf{96.1\%}, model: \texttt{composer-2}); the median across models was \textbf{0.761} (\textbf{76.1\%}). Category-level analysis (\cref{fig:model-comparison}) shows strongest performance on \textbf{navigation} and \textbf{react native apis}, while \textbf{animation} remains the weakest and most discriminative category; \textbf{lists} and \textbf{async state} provide additional separation among otherwise closely clustered models. Recurring failures were concentrated in behavior-heavy requirements, especially animation dynamics and async-state consistency/invalidation logic.
+The current repository state contains \textbf{134} evals across the categories in \cref{tab:category-evals-scope}. The benchmark result snapshot reported below was run earlier on a \textbf{66}-eval suite: we evaluated \textbf{18} solver models with \textbf{10 repeated runs per model} under the same pipeline and scoring rules. Across completed runs, the highest mean \texttt{weightedAverageScore} was \textbf{0.961} (\textbf{96.1\%}, model: \texttt{composer-2}); the median across models was \textbf{0.761} (\textbf{76.1\%}). Category-level analysis (\cref{fig:model-comparison}) shows strongest performance on \textbf{navigation} and \textbf{react native apis}, while \textbf{animation} remains the weakest and most discriminative category; \textbf{lists} and \textbf{async state} provide additional separation among otherwise closely clustered models. Recurring failures were concentrated in behavior-heavy requirements, especially animation dynamics and async-state consistency/invalidation logic.
 
 Two practical implications follow. First, React Native development difficulty is not uniform: models that are competitive on navigation and structural code generation can still be unreliable on behavior-heavy work, where correctness depends on timing, gesture/animation dynamics, and state invalidation semantics. For practitioners, this suggests applying the most scrutiny (and the most automated protection via tests and runtime validation) to animation and async-state code paths, even when a model performs strongly overall. Second, requirement-level evaluation yields actionable signals: per-requirement verdict traces support targeted prompt iteration, scaffolding improvements, and dataset evolution without collapsing all behavior into a single task-level pass/fail.
 

@@ -1,0 +1,1 @@
+Wire up the Register button to obtain an Expo push token with expo-notifications. On Android, create the notification channel before requesting the token; gate the request behind granted notification permission; request the token explicitly for the app's EAS project rather than relying on defaults; and render a deterministic error state if registration fails.

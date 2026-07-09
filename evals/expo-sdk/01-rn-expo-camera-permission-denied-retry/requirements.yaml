@@ -1,0 +1,17 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: permission-request-on-demand
+    description: "Must call camera permission request APIs only from a user-triggered action, not from initial render or an unconditional mount effect."
+  - id: denied-flow-retry-and-settings
+    description: "Must support denied retry and blocked recovery by retrying while permission.canAskAgain is true and calling Linking.openSettings() when canAskAgain is false."
+  - id: lifecycle-permission-refresh
+    description: "Must refresh camera permission when AppState changes back to active using the hook getter or getCameraPermissionsAsync()."
+  - id: single-flight-permission-request
+    description: "Must prevent overlapping permission prompts with a request-in-flight state or equivalent guard."
+  - id: expo-camera-grant-gated-preview
+    description: "Must gate CameraView rendering behind a granted permission check and show deterministic fallback UI for all other permission states."
+  - id: implementation-expo-camera-current-api
+    description: "Must use CameraView and useCameraPermissions or current get/request camera permission APIs from expo-camera."

@@ -1,0 +1,11 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: no-root-legacy-import
+    description: 'Must not import readAsStringAsync, writeAsStringAsync, downloadAsync, uploadAsync, getInfoAsync, or makeDirectoryAsync from the root expo-file-system module, and must not import them from expo-file-system/legacy in the final solution.'
+  - id: object-api-preferred
+    description: 'Must use File/Directory/Paths from expo-file-system for new read/write code.'
+  - id: keeps-uri-boundary-explicit
+    description: "Must build file paths with the object API's Paths/Directory instead of string-concatenating the legacy documentDirectory/cacheDirectory root constants."

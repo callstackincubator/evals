@@ -1,0 +1,1 @@
+Wire up the audio preview to play a sound file and show its playback status using the current SDK 56 audio API (expo-av is deprecated). Configure the audio mode deliberately, and pause playback when the app is backgrounded.

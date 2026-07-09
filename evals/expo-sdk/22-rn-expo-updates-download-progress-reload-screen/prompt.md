@@ -1,0 +1,1 @@
+Wire up the updates screen: check for an OTA update, show download progress while it downloads, and apply it with a reload once ready. Handle download errors and the case where no update is available, and do not rely on code running after the reload.

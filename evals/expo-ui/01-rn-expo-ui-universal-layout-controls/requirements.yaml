@@ -1,0 +1,11 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-universal-layout-primitives
+    description: 'Must use @expo/ui universal layout/control primitives such as Column, Row, Button, Text, and Switch.'
+  - id: controlled-switch-state
+    description: 'Must keep the @expo/ui Switch value controlled by React state via its value and onValueChange props.'
+  - id: host-provides-root
+    description: 'Must render controls under Host.'

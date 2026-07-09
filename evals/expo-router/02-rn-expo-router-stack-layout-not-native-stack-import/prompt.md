@@ -1,0 +1,1 @@
+Set up a stack layout and add a Details screen. On the Products screen, add a button that navigates to Details and passes the product id as a route parameter. The Details screen must read that id from the route and render it.

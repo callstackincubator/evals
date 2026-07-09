@@ -1,0 +1,12 @@
+version: 1
+inputs:
+  files:
+    - app/_layout.tsx
+    - app/index.tsx
+requirements:
+  - id: uses-suspense-fallback
+    description: 'Must export a SuspenseFallback function from the layout route (app/_layout.tsx) so descendant routes suspend into it; a SuspenseFallback exported from a leaf route module is ignored by expo-router in sync import mode.'
+  - id: fallback-renders-loading-indicator
+    description: 'SuspenseFallback must render a visible loading indicator (for example a Text reading "Loading…") while the async route content is pending.'
+  - id: default-export-renders-async-content
+    description: "Must keep the index route's default export rendering the resolved async content, not replace it with a permanent loading screen that never shows the resolved content."

@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: community-bottom-sheet-import
+    description: 'Must import BottomSheet APIs from @expo/ui/community/bottom-sheet.'
+  - id: controlled-open-and-close
+    description: 'Must drive the sheet through the ref, both opening it (e.g. expand) and closing it (e.g. close) from a control.'
+  - id: uses-bottom-sheet-view
+    description: 'Must place sheet content in the BottomSheetView (or documented sheet child wrapper) imported from @expo/ui/community/bottom-sheet.'
+  - id: no-gorhom-import
+    description: 'Must not import @gorhom/bottom-sheet directly.'

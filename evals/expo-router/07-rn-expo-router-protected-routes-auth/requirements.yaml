@@ -1,0 +1,16 @@
+version: 1
+inputs:
+  files:
+    - app/_layout.tsx
+    - app/index.tsx
+    - app/account.tsx
+    - app/sign-in.tsx
+requirements:
+  - id: uses-stack-protected
+    description: 'Must gate routes with Stack.Protected, since the app uses a Stack layout.'
+  - id: account-guarded-signed-in
+    description: 'The account screen must be wrapped so it is only present when signedIn is true.'
+  - id: sign-in-guarded-signed-out
+    description: 'The sign-in screen must be wrapped so it is only present when signedIn is false.'
+  - id: guard-boolean-explicit
+    description: 'Must pass explicit guard booleans derived from auth state to Stack.Protected.'

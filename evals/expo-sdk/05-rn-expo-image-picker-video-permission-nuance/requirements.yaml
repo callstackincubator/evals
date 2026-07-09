@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: picker-not-gated-on-permission
+    description: 'Must launch launchImageLibraryAsync without gating it on a media-library permission check, since the library picker requires no permission.'
+  - id: access-level-notice-from-permission
+    description: 'Must surface the current access level (full, limited, or none) as a persistent notice derived from the media-library permission response accessPrivileges.'
+  - id: current-video-media-type
+    description: 'Must use mediaTypes: ["videos"] or "videos" instead of deprecated MediaTypeOptions.Videos.'
+  - id: video-asset-guard
+    description: 'Must verify the selected asset exists and is a video before reading uri/duration fields.'

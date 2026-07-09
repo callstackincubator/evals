@@ -1,0 +1,1 @@
+Wire up the Load contacts button to display the user's contacts with their name, emails, and photo. Request permission only when the button is pressed (not on mount), query only the fields shown, and render a deterministic empty state when there are no contacts or permission is denied.

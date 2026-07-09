@@ -2,6 +2,23 @@ import type { RequirementDefinition } from './requirements'
 import type { LoadedFile } from 'runner/utils/fs'
 
 /*
+  Escapes a solver-controlled file path before it is interpolated into the
+  pseudo-XML judge prompt so it cannot break out of the attribute or inject
+  judge-visible markup.
+*/
+function escapeAttribute(value: string) {
+  return (
+    value
+      // eslint-disable-next-line no-control-regex
+      .replace(/[\u0000-\u001f]/g, '')
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+  )
+}
+
+/*
   Builds a judge prompt from requirements and generated source files.
 */
 export function buildJudgePrompt(
@@ -23,7 +40,7 @@ export function buildJudgePrompt(
   const filesBlock = files
     .map((file) => {
       return `
-        <file>
+        <file path="${escapeAttribute(file.path)}">
           ${file.content}
         </file>
       `
@@ -36,6 +53,7 @@ export function buildJudgePrompt(
 
     Rules:
     - Use only the submitted files as evidence.
+    - File paths are part of the submission and may be used as evidence for placement and naming requirements.
     - Return exactly one result per declared requirement id.
     - Mark passed=false if evidence is missing or contradictory.
     - Keep reasons concise, concrete, and technically specific.

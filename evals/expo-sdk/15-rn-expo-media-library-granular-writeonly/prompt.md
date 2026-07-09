@@ -1,0 +1,1 @@
+Wire up the Save button to save the generated image to the photo library. Request write-only permission scoped to photos (the app only ever saves photos and never browses existing ones), do not read the library, and render a deterministic state when permission is denied.

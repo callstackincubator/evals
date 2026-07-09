@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: community-datetime-import
+    description: 'Must import DateTimePicker from @expo/ui/community/datetime-picker.'
+  - id: controlled-value-via-onvaluechange
+    description: 'Must keep the selected date/time in controlled state and update it through onValueChange.'
+  - id: handles-dismissal-via-ondismiss
+    description: 'Must handle the picker being dismissed without a selection via onDismiss, not by expecting an undefined date from onValueChange.'
+  - id: platform-mode-fallback
+    description: 'On platforms where a requested date/time mode is not available (such as the combined mode on Android), must render a visible text fallback.'

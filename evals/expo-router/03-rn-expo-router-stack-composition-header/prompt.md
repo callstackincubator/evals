@@ -1,0 +1,1 @@
+Configure the Inbox (index) screen header from the Stack layout: set its title and add a right-side header button that shows an alert when pressed. A Details screen is pushed from the Inbox; configure it so its back button reads a custom label ("All mail") instead of the previous screen's title.

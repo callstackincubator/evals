@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: write-only-permission-request
+    description: 'Must call MediaLibrary.requestPermissionsAsync with writeOnly true for save-only behavior.'
+  - id: granular-photo-permission
+    description: 'Must pass granularPermissions containing photo when requesting photo-only access.'
+  - id: saves-image-via-write-path
+    description: 'Must save the generated image to the library through a write/save path (such as Asset.create) once write-only permission is granted.'
+  - id: denied-fallback
+    description: 'Must drive the denied state from the permission response (e.g. the granted flag being false), not from a static or dead branch.'

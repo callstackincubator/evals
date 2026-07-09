@@ -1,0 +1,11 @@
+version: 1
+inputs:
+  files:
+    - app/_layout.tsx
+    - app/index.tsx
+    - app/settings.tsx
+requirements:
+  - id: home-icon-default-and-selected
+    description: 'The Home trigger must render NativeTabs.Trigger.Icon with sf set to a default symbol "house" and a selected symbol "house.fill".'
+  - id: settings-badge-value
+    description: 'The Settings trigger must render NativeTabs.Trigger.Badge with the value 2.'

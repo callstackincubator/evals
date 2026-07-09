@@ -1,0 +1,1 @@
+Add a large title to the Activity screen that starts large and collapses as the list scrolls.

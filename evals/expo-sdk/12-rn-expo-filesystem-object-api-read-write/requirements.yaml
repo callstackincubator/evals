@@ -1,0 +1,13 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: imports-file-directory-paths
+    description: 'Must import File, Directory, and Paths from expo-file-system.'
+  - id: creates-directory-idempotently
+    description: 'Must create a Directory under Paths.cache or Paths.document with idempotent/intermediates options.'
+  - id: uses-file-instance-read-write
+    description: 'Must call File instance methods such as write() and text() for read/write operations.'
+  - id: handles-read-missing-file
+    description: 'Must actually read the file through the File API and drive the fallback text from a caught missing-file/failed read (e.g. try/catch around text()), not from a static status or by never reading.'

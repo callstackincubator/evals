@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-request-calendar-permissions
+    description: 'Must use Calendar.requestCalendarPermissions instead of requestCalendarPermissionsAsync from the root module.'
+  - id: uses-get-calendars-current
+    description: 'Must use Calendar.getCalendars instead of getCalendarsAsync from the root module.'
+  - id: uses-calendar-instance-create-event
+    description: 'Must create events through a calendar object createEvent method rather than root createEventAsync.'
+  - id: permission-denied-fallback
+    description: 'Must drive the denied fallback from the actual permission check result (e.g. the granted flag being false), not from an unconditional status message.'
+  - id: selects-writable-calendar
+    description: 'Must choose a writable calendar or handle the absence of one explicitly.'

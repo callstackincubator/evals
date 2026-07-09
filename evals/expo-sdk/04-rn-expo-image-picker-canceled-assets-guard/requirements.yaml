@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-current-canceled-spelling
+    description: 'Must check result.canceled, not the old result.cancelled spelling.'
+  - id: assets-null-guard
+    description: 'Must guard result.assets before indexing because canceled results have assets: null.'
+  - id: no-launch-on-mount
+    description: 'Must call launchImageLibraryAsync only from a user action.'
+  - id: uses-current-media-types-array
+    description: 'Must use the current MediaType array form such as mediaTypes: ["images"] rather than depending on deprecated MediaTypeOptions.'
+  - id: renders-empty-state
+    description: 'Must keep the UI in its stable empty state without crashing when the user cancels the picker.'

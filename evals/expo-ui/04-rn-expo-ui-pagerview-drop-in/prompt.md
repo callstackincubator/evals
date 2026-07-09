@@ -1,0 +1,1 @@
+Replace the pager implementation in App.tsx with the Expo UI pager and track the active page.

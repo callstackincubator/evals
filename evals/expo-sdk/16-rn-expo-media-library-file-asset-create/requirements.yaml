@@ -1,0 +1,15 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: uses-asset-create
+    description: "Must use MediaLibrary.Asset.create or the exported Asset class create() method for new assets."
+  - id: avoids-root-createassetasync
+    description: "Must not call root MediaLibrary.createAssetAsync from expo-media-library."
+  - id: album-current-api
+    description: "Must use Album.get/Album.create or album.add for album management instead of stale createAlbumAsync helpers."
+  - id: permission-before-asset-create
+    description: "Must request/check media-library permission before creating the asset."
+  - id: file-uri-validated
+    description: "Must validate that a file path/URI exists before creating the asset."

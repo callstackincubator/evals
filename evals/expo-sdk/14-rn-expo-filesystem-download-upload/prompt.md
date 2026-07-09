@@ -1,0 +1,1 @@
+Wire up the sync flow: download the remote file into a local cache directory while showing download progress, then upload it to the server endpoint. Use the expo-file-system object API for the download and a web-compatible multipart upload that works without the legacy native upload helper, and render a deterministic failure state on error.

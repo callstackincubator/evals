@@ -1,0 +1,16 @@
+version: 1
+inputs:
+  files:
+    - app/_layout.tsx
+    - app/index.tsx
+requirements:
+  - id: uses-expo-router-stack
+    description: 'Must render Stack from expo-router in _layout.tsx and not call createNativeStackNavigator or NavigationContainer.'
+  - id: navigates-to-details
+    description: 'Must navigate from the Products screen to the details route using expo-router Link or router navigation.'
+  - id: passes-id-param
+    description: 'Must pass the product id as a route parameter when navigating to details.'
+  - id: details-reads-id-with-hook
+    description: 'The details screen must read the id from the route with useLocalSearchParams or useGlobalSearchParams.'
+  - id: details-renders-id
+    description: 'The details screen must render the received id value.'

@@ -1,0 +1,1 @@
+The profile route reads process.env.PROFILE_NAME directly in the client component, so the secret ships in the client bundle. Move the read so it runs only on the server side and never reaches the client bundle, and render the profile name on the client from that server-loaded data instead. The secret must never be read from client component code.

@@ -1,0 +1,9 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: community-pagerview-import
+    description: 'Must import PagerView from @expo/ui/community/pager-view.'
+  - id: no-react-native-pager-view-import
+    description: 'Must not import react-native-pager-view directly.'

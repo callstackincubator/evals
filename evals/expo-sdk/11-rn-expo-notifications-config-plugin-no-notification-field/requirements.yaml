@@ -1,0 +1,16 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+    - app/app.config.ts
+requirements:
+  - id: uses-expo-notifications-plugin
+    description: 'Must configure expo-notifications through the plugins array in app.config.ts/app.json.'
+  - id: removes-top-level-notification
+    description: 'Must not leave a top-level expo.notification object in app config.'
+  - id: preserves-icon-color-channel
+    description: 'Must preserve the existing notification icon and color inside the expo-notifications plugin options and configure an Android default notification channel there (defaultChannel).'
+  - id: background-remote-plugin-option
+    description: 'Must configure enableBackgroundRemoteNotifications in plugin options when background remote notifications are required.'
+  - id: config-remains-static-export
+    description: 'Must keep app config as a valid exported object or config function.'
