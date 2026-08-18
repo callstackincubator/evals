@@ -1,0 +1,19 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: legend-state-observable-cart-store
+    description: Cart state lives in a store created with `observable` from `@legendapp/state`
+  - id: derived-values-are-computed-functions-in-observable
+    description: Item count and subtotal are defined as computed functions inside the observable rather than recomputed with `useMemo` or mirrored in `useState`
+  - id: derived-values-read-with-tracked-hook
+    description: Derived values are read through a tracked context - `useValue`/`use$` from `@legendapp/state/react` or `.get()` inside a reactive render function such as `Memo`/`Computed`/`observer`
+  - id: promo-update-is-batched
+    description: Promo action applies its multi-field state change inside `batch` from `@legendapp/state`
+  - id: summary-uses-fine-grained-reactivity
+    description: Cart summary output is isolated with `Memo` or `Computed` from `@legendapp/state/react` or an `observer` wrapped child component
+  - id: no-usestate-mirror-of-store
+    description: Cart quantities and totals are not duplicated into React `useState`
+  - id: cart-seeded-from-provided-catalog
+    description: Cart items are the provided catalog products `Espresso beans` (12), `Pour-over filters` (8), and `Ceramic mug` (24) with quantities managed per product id

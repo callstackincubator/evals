@@ -1,0 +1,17 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: form-state-in-observable
+    description: Draft and saved profile state live in an observable created with `observable` from `@legendapp/state`
+  - id: inputs-two-way-bound-with-reactive-components
+    description: Name and email inputs are `$TextInput` from `@legendapp/state/react-native` two-way bound through the `$value` prop
+  - id: dirty-flag-is-computed-in-observable
+    description: Unsaved-changes flag is a computed function inside the observable comparing draft fields against saved fields
+  - id: save-bar-rendered-with-show
+    description: Save bar visibility is driven by `Show` from `@legendapp/state/react` with the dirty flag as its `if` condition
+  - id: save-action-applies-draft-through-set
+    description: Save action copies the draft into the saved profile through an observable write (`.set` or `.assign`)
+  - id: no-usestate-mirror-of-fields
+    description: Input field values are not duplicated into React `useState`

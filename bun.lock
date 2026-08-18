@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "react-native-evals",
@@ -35,6 +36,7 @@
         "@expo/ui": "~56.0.18",
         "@gorhom/bottom-sheet": "^5.2.6",
         "@legendapp/list": "^3.0.0-beta.42",
+        "@legendapp/state": "^3.0.0-beta.48",
         "@react-native-async-storage/async-storage": "2.2.0",
         "@react-native-community/netinfo": "^12.0.1",
         "@react-navigation/bottom-tabs": "^7.3.0",
@@ -425,6 +427,8 @@
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
 
     "@legendapp/list": ["@legendapp/list@3.0.0-beta.42", "", { "dependencies": { "use-sync-external-store": "^1.5.0" }, "peerDependencies": { "react": "*" } }, "sha512-hXSfgau3Y37QNdtqWHzXCiixc/f4jnfiEdI7UmfneF+m7qOchrQ0xjeQ47jgBm5o0vfhENye4zq5C4rCY7+iDA=="],
+
+    "@legendapp/state": ["@legendapp/state@3.0.0-beta.48", "", { "dependencies": { "use-sync-external-store": "^1.2.2" }, "peerDependencies": { "expo-sqlite": "^15.0.0" }, "optionalPeers": ["expo-sqlite"] }, "sha512-aa7vpUSoBHnXQhYf2x/10C0w1EiesegRhR7LuxnIcEPyZzZyuSF2mevf1jphlh0zzqwIJm9QxnsayDNn8/kwcA=="],
 
     "@napi-rs/wasm-runtime": ["@napi-rs/wasm-runtime@0.2.12", "", { "dependencies": { "@emnapi/core": "^1.4.3", "@emnapi/runtime": "^1.4.3", "@tybys/wasm-util": "^0.10.0" } }, "sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ=="],
 

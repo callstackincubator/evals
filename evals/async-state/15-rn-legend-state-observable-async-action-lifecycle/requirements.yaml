@@ -1,0 +1,21 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: legend-state-observable-store
+    description: Feed state lives in a store created with `observable` from `@legendapp/state`
+  - id: components-read-through-tracked-hooks
+    description: Components read observable state through a tracked hook (`useValue` or `use$`) or an `observer` wrapper from `@legendapp/state/react` rather than bare `.get()` calls in untracked render code
+  - id: async-action-sets-loading-before-await
+    description: Async fetch action writes loading status through an observable write (`.set` or `.assign`) before awaiting network work
+  - id: async-action-writes-success-data
+    description: Async fetch action writes fetched items and success status through an observable write (`.set` or `.assign`) in its success path
+  - id: async-action-writes-error-state
+    description: Async fetch action writes error state through an observable write (`.set` or `.assign`) in a separate failure path
+  - id: feed-fetches-todos-endpoint-and-maps-todo-field
+    description: Fetch action requests the `https://dummyjson.com/todos` endpoint pattern and maps feed entries from the `todo` field
+  - id: retry-path-calls-same-action
+    description: Error UI retry trigger calls the same async action used by initial fetch
+  - id: status-driven-ui-branching
+    description: UI output branches by lifecycle status values for idle loading success and error

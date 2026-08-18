@@ -1,0 +1,21 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: preferences-persisted-with-syncobservable
+    description: Preferences observable is persisted with `syncObservable` from `@legendapp/state/sync` using the `persist` option with a storage `name`
+  - id: asyncstorage-persist-plugin-configured
+    description: Persist plugin comes from `@legendapp/state/persist-plugins/async-storage` and is given the `AsyncStorage` instance - either `observablePersistAsyncStorage({ AsyncStorage })` or `ObservablePersistAsyncStorage` with the `asyncStorage` persist option
+  - id: hydration-read-from-sync-state
+    description: Hydration completion is read from `isPersistLoaded` on `syncState` of the persisted observable
+  - id: pre-hydration-ui-is-gated
+    description: Preference-dependent content is gated behind a deterministic pre-hydration UI branch
+  - id: profile-load-runs-after-hydration
+    description: Profile loading is triggered only after `isPersistLoaded` becomes true
+  - id: profile-preview-fetches-users-endpoint
+    description: Profile load fetches the `https://dummyjson.com/users/1` endpoint
+  - id: profile-preview-built-from-first-and-last-name
+    description: Profile preview text is built from the `firstName` and `lastName` response fields
+  - id: preference-updates-write-through-set
+    description: Preference toggle actions update the persisted observable through functional `.set` updaters or `.toggle()`
