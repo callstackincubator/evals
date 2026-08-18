@@ -1,4 +1,3 @@
-import React from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { batch, observable } from '@legendapp/state'
 import { Memo, observer, useValue } from '@legendapp/state/react'

@@ -90,3 +90,4 @@ This document is the reference for the async-state category eval pack under `eva
 - `D21`: batch multi-field observable writes to avoid intermediate renders and persistence churn.
 - `D22`: gate persisted observable UI on `syncState(...).isPersistLoaded` before reading rehydrated data.
 - `D23`: two-way bind inputs with reactive `$` components instead of mirroring observable values in `useState`.
+- `D24`: model lazily-loaded server data as async observables with `syncState`-derived load and error status instead of `useEffect` fetches.

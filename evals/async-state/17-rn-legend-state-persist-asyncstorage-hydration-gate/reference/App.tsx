@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { observable, syncState } from '@legendapp/state'
 import { observablePersistAsyncStorage } from '@legendapp/state/persist-plugins/async-storage'

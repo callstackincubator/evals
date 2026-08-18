@@ -1,5 +1,5 @@
-Using Legend State, build a feed screen with an async action lifecycle state.
-Keep feed state in a Legend State observable store and read it in components through tracked hooks.
+Using Legend State v3, build a feed screen with an explicit async action lifecycle (idle, loading, success, error) driven by store actions.
+Keep feed state in a Legend State observable store, write lifecycle transitions from the fetch action, and read state in components through tracked hooks.
 
 Use this endpoint pattern:
 
