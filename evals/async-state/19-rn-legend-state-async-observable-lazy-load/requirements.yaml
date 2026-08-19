@@ -1,0 +1,17 @@
+version: 1
+inputs:
+  files:
+    - app/App.tsx
+requirements:
+  - id: product-data-is-async-observable
+    description: Product data is created with `observable` from `@legendapp/state` given an async or promise-returning function that fetches the products endpoint
+  - id: no-useeffect-or-usestate-fetch
+    description: Data fetching is not driven by `useEffect` and the response is not mirrored into `useState`
+  - id: data-read-through-tracked-hooks
+    description: Product data is read through `useValue`/`use$` or an `observer` wrapper from `@legendapp/state/react`
+  - id: loading-derived-from-sync-state
+    description: Loading UI branch is derived from `isLoaded` on `syncState` of the async observable
+  - id: error-derived-from-sync-state
+    description: Error UI branch is derived from the `error` state on `syncState` of the async observable
+  - id: product-fields-mapped
+    description: Rendered product details use the `title` and `price` response fields

@@ -9,6 +9,7 @@ This document is the reference for the async-state category eval pack under `eva
 - Server-state and caching baseline: `@tanstack/react-query`
 - Client async orchestration baseline: `zustand`
 - Atom-based async state baseline: `jotai` (including async atoms)
+- Fine-grained observable state baseline: `@legendapp/state` (v3 API; docs baseline is the v3 beta line)
 - Built-in React concurrency baseline: `Suspense`, `startTransition`, `useTransition`, `useDeferredValue`
 
 ## best practices
@@ -47,6 +48,16 @@ This document is the reference for the async-state category eval pack under `eva
 - [Jotai README](https://github.com/pmndrs/jotai)
 - [Jotai releases](https://github.com/pmndrs/jotai/releases)
 
+#### Legend State
+
+- [Legend State v3 docs (full)](https://legendapp.com/open-source/state/v3/llms-full.md)
+- [Legend State: intro](https://legendapp.com/open-source/state/v3/intro/introduction/)
+- [Legend State: React API](https://legendapp.com/open-source/state/v3/react/react-api/)
+- [Legend State: fine-grained reactivity](https://legendapp.com/open-source/state/v3/react/fine-grained-reactivity/)
+- [Legend State: persist and sync](https://legendapp.com/open-source/state/v3/sync/persist-sync/)
+- [Legend State: v2 to v3 migration (`persistObservable` → `syncObservable`, `useSelector` → `useValue`)](https://legendapp.com/open-source/state/v3/other/migrating/)
+- [Legend State releases](https://github.com/LegendApp/legend-state/releases)
+
 #### React built-ins
 
 - [React docs: Suspense](https://react.dev/reference/react/Suspense)
@@ -74,3 +85,9 @@ This document is the reference for the async-state category eval pack under `eva
 - `D16`: use transitions for non-urgent updates that may suspend.
 - `D17`: preserve urgent input responsiveness with deferred rendering.
 - `D18`: guard transition-driven async ordering so stale completions do not overwrite newer intent.
+- `D19`: read Legend State observables through tracked contexts (`useValue`/`use$`, `observer`, or reactive render functions like `Memo`) instead of untracked `.get()` in render.
+- `D20`: model derived values as computed functions inside the observable rather than duplicating them in React state.
+- `D21`: batch multi-field observable writes to avoid intermediate renders and persistence churn.
+- `D22`: gate persisted observable UI on `syncState(...).isPersistLoaded` before reading rehydrated data.
+- `D23`: two-way bind inputs with reactive `$` components instead of mirroring observable values in `useState`.
+- `D24`: model lazily-loaded server data as async observables with `syncState`-derived load and error status instead of `useEffect` fetches.
