@@ -18,7 +18,9 @@ const fontStyle = {
 const font = matchFont(fontStyle)
 
 function CanvasContent() {
-  const { width, height } = useCanvasSize()
+  const {
+    size: { width, height },
+  } = useCanvasSize()
 
   const label = `${Math.round(width)} × ${Math.round(height)}`
   const textX = width / 2 - (font?.getTextWidth(label) ?? 0) / 2

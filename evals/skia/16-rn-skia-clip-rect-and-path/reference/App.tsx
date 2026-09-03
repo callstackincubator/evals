@@ -1,12 +1,11 @@
 import {
   Canvas,
-  ClipPath,
-  ClipRect,
   Fill,
   Group,
   LinearGradient,
   Rect,
   Skia,
+  rect,
   vec,
 } from '@shopify/react-native-skia'
 
@@ -19,9 +18,8 @@ export default function App() {
     <Canvas style={{ flex: 1 }}>
       <Fill color="#0f172a" />
 
-      {/* ClipRect: restrict a gradient to a rectangle */}
-      <Group>
-        <ClipRect rect={{ x: 20, y: 60, width: 200, height: 140 }} />
+      {/* Clip a gradient to a rectangular region via Group's clip prop */}
+      <Group clip={rect(20, 60, 200, 140)}>
         <Rect x={0} y={0} width={320} height={320} color="transparent">
           <LinearGradient
             start={vec(0, 60)}
@@ -31,9 +29,8 @@ export default function App() {
         </Rect>
       </Group>
 
-      {/* ClipPath: clip a solid block to a star shape */}
-      <Group>
-        <ClipPath path={starPath} />
+      {/* Clip a solid block to a star shape via Group's clip prop */}
+      <Group clip={starPath}>
         <Rect x={0} y={240} width={320} height={320} color="#38bdf8" />
       </Group>
     </Canvas>

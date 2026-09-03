@@ -1,1 +1,1 @@
-Demonstrate two clipping techniques on a Skia canvas: use ClipRect to restrict a gradient fill to a rectangular region, and use ClipPath to clip a solid-color rectangle to a non-rectangular polygon or star shape defined by an SVG path string.
+Demonstrate two clipping techniques on a Skia canvas using the `clip` prop on `Group`: clip a gradient fill to a rectangular region, and clip a solid-color rectangle to a non-rectangular polygon or star shape defined by an SVG path string.

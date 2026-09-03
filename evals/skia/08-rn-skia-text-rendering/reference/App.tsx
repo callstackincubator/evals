@@ -20,7 +20,9 @@ const font = matchFont(fontStyle)
 const LABEL = 'Hello, Skia!'
 
 function CenteredText() {
-  const { width, height } = useCanvasSize()
+  const {
+    size: { width, height },
+  } = useCanvasSize()
   const textWidth = font?.getTextWidth(LABEL) ?? 0
   const x = (width - textWidth) / 2
   const y = height / 2 + FONT_SIZE / 2

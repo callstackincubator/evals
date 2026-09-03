@@ -37,7 +37,7 @@ React Native Skia evals — testing how well LLMs implement high-performance 2D 
 | 10  | Capture canvas output with `makeImageSnapshot()` via `useCanvasRef`; call `encodeToBytes()` for raw pixel data                            | canvas/overview        |
 | 11  | Use `matchFont` with a `fontStyle` object for system font resolution; the Text `y` origin is the text baseline, not the top               | text/text              |
 | 12  | Apply blend modes at the `Group` level with the `blendMode` prop to composite child elements                                              | paint/overview         |
-| 13  | Use `ClipRect` / `ClipPath` as children of a `Group` or drawing element to mask content                                                   | canvas/overview        |
+| 13  | Use the `clip` prop on `Group` (rect, rrect, or path) to mask content; `invertClip` reverses it                                           | group                  |
 | 14  | Use `SweepGradient` / `TwoPointConicalGradient` for angular and conical fills beyond linear/radial                                        | shaders/gradients      |
 | 15  | Apply effects to a group composite with the `layer` prop (`<Paint>` + image filters), not per-child filters alone                         | group                  |
 | 16  | Use `Skia.ParagraphBuilder` + `<Paragraph>` for multi-style text layouts; call `layout(width)` before rendering                           | text/paragraph         |
@@ -86,7 +86,7 @@ The pack now covers three built-in gradient shaders (linear, radial, sweep). Maj
 | Canvas sizing (UI thread) | `onSize` shared value prop                 | Partially covered by `useCanvasSize` in eval 01                            |
 | Per-element gestures      | `Animated.View` overlay tracking           | Documented in rule 4; eval 14 only tests canvas-level pan                  |
 | Nested image shaders      | `ImageShader` inside custom `Shader`       | Advanced; needs bundled image asset                                        |
-| Fitbox / Group clip props | `FitBox`, `Group clip` / `invertClip`      | Overlap path/SVG evals; `FitBox` is a strong future add                    |
+| FitBox                    | `FitBox`                                   | Overlaps path/SVG evals; a strong future add                               |
 | Path / mask filters       | `DashPathEffect`, `BlurMask`, morphology   | Lower-level paint modifiers; narrow use cases                              |
 
 ## Common issue clusters
