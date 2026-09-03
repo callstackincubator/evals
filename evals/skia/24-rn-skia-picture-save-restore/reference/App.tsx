@@ -23,7 +23,7 @@ export default function App() {
     paint.setColor(Skia.Color(FIRST_RECT_COLOR))
     canvas.save()
     canvas.translate(CX, 90)
-    canvas.rotate(FIRST_RECT_ROTATION_DEG)
+    canvas.rotate(FIRST_RECT_ROTATION_DEG, 0, 0)
     canvas.drawRect(
       {
         x: -RECT_WIDTH / 2,
@@ -41,7 +41,7 @@ export default function App() {
     paint.setColor(Skia.Color(THIRD_RECT_COLOR))
     canvas.save()
     canvas.translate(CX, 230)
-    canvas.rotate(THIRD_RECT_ROTATION_DEG)
+    canvas.rotate(THIRD_RECT_ROTATION_DEG, 0, 0)
     canvas.drawRect(
       {
         x: -RECT_WIDTH / 2,

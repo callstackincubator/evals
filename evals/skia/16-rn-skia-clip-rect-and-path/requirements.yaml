@@ -7,10 +7,10 @@ requirements:
     description: Must render all drawing content inside a Canvas component from @shopify/react-native-skia.
     weight: 0.1
   - id: uses-clip-rect
-    description: Must use the ClipRect component from @shopify/react-native-skia to clip a drawing to a rectangular region.
+    description: Must use the `clip` prop on a Group component with a rectangle (e.g. from `rect()` or an `{ x, y, width, height }` object) to clip a drawing to a rectangular region.
   - id: uses-clip-path
-    description: Must use the ClipPath component from @shopify/react-native-skia with a path or SVG path string.
+    description: Must use the `clip` prop on a Group component with a path (an SkPath or SVG path string) to clip a drawing to a non-rectangular shape.
   - id: clip-path-is-non-rectangular
-    description: The ClipPath shape must be a non-rectangular polygon, star, or curve — not just a simple rectangle.
+    description: The path-based clip shape must be a non-rectangular polygon, star, or curve — not just a simple rectangle.
   - id: both-clips-applied-to-distinct-drawings
-    description: ClipRect and ClipPath must each be applied to a different visual element so both clipping techniques are demonstrated independently.
+    description: The rectangular clip and the path clip must each be applied to a different visual element (separate Group components) so both clipping techniques are demonstrated independently.
