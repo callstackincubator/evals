@@ -30,6 +30,11 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
   },
-  "include": ["runner/**/*.ts", "evals/**/*.ts", "evals/**/*.tsx"],
+  "include": [
+    "runner/**/*.ts",
+    "scripts/**/*.ts",
+    "evals/**/*.ts",
+    "evals/**/*.tsx"
+  ],
   "exclude": ["**/node_modules", "**/Pods", "evals/"]
 }
