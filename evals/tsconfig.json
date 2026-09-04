@@ -12,5 +12,14 @@
     "**/example/**/*.tsx",
     "**/reference/**/*.ts",
     "**/reference/**/*.tsx"
+  ],
+  "exclude": [
+    // Pre-migration baseline for eval 01: it intentionally imports theming from
+    // '@react-navigation/native' (that is the eval's whole premise). That package's
+    // global ReactNavigation.Theme augmentation merges into this shared program and
+    // conflicts with expo-router's vendored theming types, breaking the idiomatic
+    // SDK 56 reference in the same program. The reference stays idiomatic; we exclude
+    // only the deliberately-legacy baseline file from the typecheck gate.
+    "expo-router/01-rn-expo-router-sdk56-react-navigation-imports/app/_layout.tsx"
   ]
 }
