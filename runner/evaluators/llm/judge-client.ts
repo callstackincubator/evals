@@ -144,10 +144,16 @@ export async function runJudgeCall(
   )
 
   // OpenCode's JSON mode is prompt-only, so models often wrap the JSON in
-  // markdown fences; strip them so structured output parses on the first call.
+  // markdown fences, sometimes after prose or quoted code fences; extract the
+  // last fenced JSON object so structured output parses on the first call.
   const judgeModel = wrapLanguageModel({
     model: opencodeModel,
-    middleware: extractJsonMiddleware(),
+    middleware: extractJsonMiddleware({
+      transform: (text) =>
+        [...text.matchAll(/```(?:json)?\s*([\s\S]*?)\s*```/gi)]
+          .map((match) => match[1]?.trim() ?? '')
+          .findLast((block) => block.startsWith('{')) ?? text.trim(),
+    }),
   })
 
   try {
