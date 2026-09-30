@@ -1,4 +1,10 @@
-import { Output, generateText } from 'ai'
+import {
+  extractJsonMiddleware,
+  generateText,
+  NoObjectGeneratedError,
+  Output,
+  wrapLanguageModel,
+} from 'ai'
 import { z } from 'zod'
 import {
   collectOpencodeSessionSnapshot,
@@ -129,13 +135,26 @@ export async function runJudgeCall(
     inputSummary: `promptBytes=${promptBytes}`,
   })
 
-  const { model: judgeModel, dispose } = createIsolatedOpencodeModel(
+  const { model: opencodeModel, dispose } = createIsolatedOpencodeModel(
     options.model,
     {
       port: options.port,
       cwd: options.cwd,
     }
   )
+
+  // OpenCode's JSON mode is prompt-only, so models often wrap the JSON in
+  // markdown fences, sometimes after prose or quoted code fences; extract the
+  // last fenced JSON object so structured output parses on the first call.
+  const judgeModel = wrapLanguageModel({
+    model: opencodeModel,
+    middleware: extractJsonMiddleware({
+      transform: (text) =>
+        [...text.matchAll(/```(?:json)?\s*([\s\S]*?)\s*```/gi)]
+          .map((match) => match[1]?.trim() ?? '')
+          .findLast((block) => block.startsWith('{')) ?? text.trim(),
+    }),
+  })
 
   try {
     try {
@@ -167,6 +186,27 @@ export async function runJudgeCall(
         }),
       }
     } catch (structuredOutputError) {
+      // Recover the verdict from the first call's text before paying for a
+      // second full judge call with the same prompt.
+      if (
+        NoObjectGeneratedError.isInstance(structuredOutputError) &&
+        structuredOutputError.text
+      ) {
+        const recoveredOutput = parseJudgeOutputFromText(
+          structuredOutputError.text
+        )
+        if (recoveredOutput.success) {
+          logOpencodeTrace(
+            'structured output failed; recovered verdict from response text'
+          )
+
+          return {
+            summary: recoveredOutput.data.summary,
+            requirements: recoveredOutput.data.requirements,
+          }
+        }
+      }
+
       logOpencodeTrace(
         `structured output failed; trying JSON fallback: ${structuredOutputError instanceof Error ? structuredOutputError.message : String(structuredOutputError)}`
       )
