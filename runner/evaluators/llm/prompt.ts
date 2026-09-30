@@ -52,7 +52,7 @@ export function buildJudgePrompt(
     Decide pass/fail for each criterion based only on the submitted files.
 
     Rules:
-    - Use only the submitted files as evidence.
+    - Use only the submitted files as evidence (does not include reference files).
     - File paths are part of the submission and may be used as evidence for placement and naming requirements.
     - Return exactly one result per declared requirement id.
     - Mark passed=false if evidence is missing or contradictory.
