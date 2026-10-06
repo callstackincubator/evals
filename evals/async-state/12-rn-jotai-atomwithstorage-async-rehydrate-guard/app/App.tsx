@@ -25,17 +25,25 @@ export default function App() {
   const [preferences, setPreferences] = useAtom(preferencesAtom)
 
   const toggleTheme = () => {
-    return setPreferences((previous) => ({
-      ...previous,
-      theme: previous.theme === 'light' ? 'dark' : 'light',
-    }))
+    return setPreferences(async (previous) => {
+      const previousValue = await previous
+
+      return {
+        ...previousValue,
+        theme: previousValue.theme === 'light' ? 'dark' : 'light',
+      }
+    })
   }
 
   const toggleCompact = () => {
-    return setPreferences((previous) => ({
-      ...previous,
-      compact: !previous.compact,
-    }))
+    return setPreferences(async (previous) => {
+      const previousValue = await previous
+
+      return {
+        ...previousValue,
+        compact: !previousValue.compact,
+      }
+    })
   }
 
   return (
